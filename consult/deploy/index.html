@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deploy-your-own runbook · how an ownership engagement actually works — Hudson Valley AI</title>
+<meta name="description" content="Phase-by-phase walkthrough of how we deploy skateOS or Branch Manager on YOUR infrastructure. What you provide, what we do, how long it takes, what it costs ongoing.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://consult.skateos.com/deploy/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{--ink:#0a0a0a;--ink-soft:#404040;--muted:#737373;--bg:#fafaf9;--card:#fff;--line:#e5e5e0;--accent:#e11d48;}
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);}
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+  .nav{background:#fff;border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:880px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+
+  h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:900;letter-spacing:-0.028em;line-height:1.05;margin-bottom:14px;}
+  h1 .accent{color:var(--accent);}
+  .subtitle{font-size:1.1rem;color:var(--ink-soft);max-width:720px;margin-bottom:36px;line-height:1.55;}
+
+  h2{font-size:clamp(1.4rem,2.5vw,1.85rem);font-weight:800;letter-spacing:-0.02em;margin:36px 0 14px;color:var(--ink);}
+  h2 .accent{color:var(--accent);}
+  h3{font-size:1.05rem;font-weight:800;margin:18px 0 8px;color:var(--ink);}
+  p{margin-bottom:12px;color:var(--ink-soft);font-size:.98rem;}
+  p strong{color:var(--ink);}
+  ul,ol{margin:8px 0 14px 22px;color:var(--ink-soft);font-size:.96rem;}
+  li{margin-bottom:5px;}
+  li strong{color:var(--ink);}
+  code{font-family:ui-monospace,monospace;font-size:.84rem;background:#f3f4f6;padding:1px 5px;border-radius:3px;color:var(--ink);}
+
+  /* Phase blocks */
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:0;margin-bottom:18px;overflow:hidden;}
+  .phase-head{padding:22px 28px;display:flex;align-items:flex-start;gap:18px;background:linear-gradient(180deg,#fafaf9,#fff);border-bottom:1px solid var(--line);}
+  .phase-num{width:48px;height:48px;background:#0a0a0a;color:#fb7185;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:900;flex-shrink:0;}
+  .phase-head h2{margin:0 0 4px;font-size:1.3rem;font-weight:900;letter-spacing:-0.018em;color:var(--ink);}
+  .phase-head .when{font-size:.74rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;}
+  .phase-body{padding:24px 28px;}
+  .phase-body .lede{font-size:.96rem;color:var(--ink-soft);margin-bottom:14px;}
+
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:14px 0;}
+  @media(max-width:680px){.two-col{grid-template-columns:1fr;}}
+  .two-col .col{background:#fafaf9;border:1px solid var(--line);border-radius:10px;padding:18px;}
+  .two-col .col h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:10px;}
+  .two-col .col.we h4{color:#e11d48;}
+  .two-col .col.you h4{color:#15803d;}
+  .two-col .col ul{margin:0;list-style:none;padding:0;}
+  .two-col .col li{padding:5px 0 5px 22px;font-size:.88rem;color:var(--ink-soft);position:relative;}
+  .two-col .col.we li::before{content:'→';position:absolute;left:0;color:#e11d48;font-weight:800;}
+  .two-col .col.you li::before{content:'✓';position:absolute;left:0;color:#15803d;font-weight:800;}
+
+  .pull{background:#fef9c3;border-left:4px solid #d97706;padding:14px 18px;border-radius:6px;margin:14px 0;font-size:.92rem;color:#7c2d12;}
+  .pull strong{color:#854d0e;}
+
+  .cost-table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.9rem;}
+  .cost-table th{text-align:left;padding:10px 12px;background:#0a0a0a;color:#fafaf9;font-weight:700;font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;}
+  .cost-table th.r{text-align:right;}
+  .cost-table td{padding:10px 12px;border-bottom:1px solid var(--line);color:var(--ink-soft);}
+  .cost-table td.r{text-align:right;font-family:ui-monospace,monospace;font-weight:700;color:var(--ink);}
+  .cost-table tfoot td{background:#fafaf9;font-weight:800;border-bottom:none;border-top:2px solid var(--ink);color:var(--ink);}
+
+  .cta{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;border-radius:14px;padding:32px 30px;margin-top:30px;text-align:center;}
+  .cta h2{color:#fafaf9;margin-top:0;font-size:1.5rem;}
+  .cta p{color:#a3a3a3;margin-bottom:20px;}
+  .cta .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .cta a{padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;font-size:.94rem;}
+  .cta a.primary{background:#fb7185;color:#0a0a0a;}
+  .cta a.primary:hover{background:#fff;}
+  .cta a.alt{background:transparent;color:#fafaf9;border:1.5px solid #525252;}
+  .cta a.alt:hover{background:#262626;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Software your business <em>actually owns</em> · <a href="/">Back to overview →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="/"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="/ownership/">Why ownership</a>
+    <a href="/savings/">Savings calc</a>
+    <a href="/products.html">Products</a>
+    <a href="/work.html">Work</a>
+    <a href="/process.html">Process</a>
+  </div>
+  <a href="/intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="/">Hudson Valley AI</a> / Deploy-your-own runbook</div>
+
+  <h1>How a <span class="accent">deploy-your-own</span> engagement actually works.</h1>
+  <p class="subtitle">Phase-by-phase walkthrough of what we do, what you do, how long each step takes, and what infrastructure you'll be paying for on an ongoing basis. The honest version. Nothing handwaved.</p>
+
+  <p>If you've decided to deploy skateOS or Branch Manager on your own infrastructure (instead of staying on our hosted instance), here's what the engagement looks like from signed engagement letter to live system. About <strong>3-5 weeks end-to-end</strong> depending on data-migration complexity.</p>
+
+  <div class="pull">
+    <strong>Before we start:</strong> You'll need to be available for ~30 minutes on Day 1 for account setup, ~2 hours total spread across the first week for decisions + branding choices, and ~3-4 hours of staff training in the final week. Nothing else is required of you beyond reviewing what we ship.
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">1</div>
+      <div>
+        <h2>Cloud-account provisioning</h2>
+        <div class="when">Day 1-2 · 30-min call + async</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">Step zero of ownership: the cloud accounts have to be in <em>your</em> name, not ours. We walk you through creating each account on a screen-share call, you receive the welcome emails, you set the master passwords. We never have ownership of any of these — only scoped access we'll revoke at handoff.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>Walk you through Supabase signup live on a screen-share</li>
+            <li>Help you pick the right region (US-East for Hudson Valley)</li>
+            <li>Configure Cloudflare DNS for your domain</li>
+            <li>Set up Resend sending domain verification</li>
+            <li>Configure Twilio number provisioning if SMS in scope</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you provide</h4>
+          <ul>
+            <li>A credit card (paying these vendors directly — not us)</li>
+            <li>Domain name (we'll help you register if needed)</li>
+            <li>Business email for account ownership</li>
+            <li>~30 minutes on a video call, Day 1</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Accounts you'll create</h3>
+      <ul>
+        <li><strong>Supabase</strong> — Postgres database + auth + storage + edge functions. Free tier covers low-volume; Pro ($25/mo) kicks in around 200 daily-active users.</li>
+        <li><strong>Cloudflare</strong> — DNS + static-asset hosting via Workers. Free tier for both at typical SMB volume.</li>
+        <li><strong>GitHub</strong> — source code repository. Free tier fine for private repos.</li>
+        <li><strong>Resend</strong> — transactional email. Free tier = 3,000 emails/month; $20/mo for 50k.</li>
+        <li><strong>Twilio</strong> — SMS (optional, recommended). Pay-per-message at ~$0.0079 each.</li>
+        <li><strong>Helcim</strong> (skateOS) or <strong>Stripe Connect</strong> (Branch Manager) — payment processing direct merchant account. No SaaS markup, interchange-plus pricing.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">2</div>
+      <div>
+        <h2>Code + database installation</h2>
+        <div class="when">Day 3-7 · async on our side</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">We push the codebase into your GitHub repo and apply the database schema to your Supabase project. You watch happen via shared screens or recordings if you want; nothing requires your active participation here.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>Push the canonical skateOS or Branch Manager codebase to your GitHub</li>
+            <li>Apply the migration sequence (60+ migrations, idempotent, ordered)</li>
+            <li>Deploy the static admin SPA to your Cloudflare Workers</li>
+            <li>Deploy ~17 Edge Functions to your Supabase</li>
+            <li>Configure Vault secrets (Helcim API token, Resend API key, etc.)</li>
+            <li>Set up pg_cron schedules (lesson reminders, daily digest, backups)</li>
+            <li>Configure webhook endpoints (Helcim/Stripe, Smartwaiver)</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you provide</h4>
+          <ul>
+            <li>Approval to push code into your repo (one click)</li>
+            <li>API keys you've received from Resend/Twilio/etc. (paste them in our shared secrets doc)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>What's installed</h3>
+      <ul>
+        <li><strong>Database</strong> — ~60 tables across CRM, sales, lessons, products, equipment, multi-tenant infrastructure, audit log</li>
+        <li><strong>Admin SPA</strong> — web app at <code>app.yourdomain.com</code> for staff to operate the business</li>
+        <li><strong>Edge Functions</strong> — payments (Helcim/Stripe), email (Resend), SMS (Twilio), waiver lookup (Smartwaiver), daily-digest, backup, etc.</li>
+        <li><strong>pg_cron schedules</strong> — hourly lesson reminders, daily renewal reminders, daily digest at 8am ET, weekly backup, etc.</li>
+        <li><strong>RLS policies</strong> — Row-Level Security on every business table, so your data is isolated at the database layer (not just the app layer)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">3</div>
+      <div>
+        <h2>Branding + business configuration</h2>
+        <div class="when">Day 8-14 · ~2 hr of your time spread out</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">Time for the system to actually look and behave like <em>your</em> business, not 2nd Nature Park or 2nd Nature Tree. We work through this together on a series of short async exchanges + one or two short calls.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>Apply your colors, logo, business name everywhere</li>
+            <li>Configure operating hours, tax rates, sales tax registration</li>
+            <li>Set up your product/service catalog</li>
+            <li>Configure staff accounts with roles + permissions</li>
+            <li>Set up customer-portal magic-link auth</li>
+            <li>Configure payment processor webhooks + test flow</li>
+            <li>Wire up email/SMS templates with your branding</li>
+            <li>Set business-specific feature flags (mobile bus, equipment loaners, etc.)</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you provide</h4>
+          <ul>
+            <li>Logo file (SVG ideal, PNG fine)</li>
+            <li>Brand colors (or we'll suggest from your existing site)</li>
+            <li>Business address, phone, EIN for receipt footers</li>
+            <li>Tax rate + sales-tax registration number</li>
+            <li>Operating hours, day-of-week schedule</li>
+            <li>Product/service catalog (we'll help format)</li>
+            <li>Staff names + email addresses + roles</li>
+            <li>~2 hours total spread across 5-7 days, mostly async</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 4 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">4</div>
+      <div>
+        <h2>Data migration from your current system</h2>
+        <div class="when">Day 15-21 · varies by source system</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">The "leaving your current SaaS" part. Most painful when source data is messy (it usually is), but doable. We've migrated from Square, Mindbody, Jobber, ServiceTitan, Smartwaiver, and from paper / spreadsheet operations.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>Pull export from your existing system (CSV, API, scraping if needed)</li>
+            <li>Map fields from source schema to skateOS/BM schema</li>
+            <li>Transform + clean the data (de-dupe customers, fix bad dates, etc.)</li>
+            <li>Load into your Supabase, validate row counts</li>
+            <li>Reconciliation pass: sample 10-20 records by hand against source</li>
+            <li>Plan migration cutover window</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you provide</h4>
+          <ul>
+            <li>Credentials to export from your existing system, OR exported CSVs/JSON</li>
+            <li>Approval on the migration cutover window (typically a low-traffic day)</li>
+            <li>Review of the reconciliation sample to confirm data integrity</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>Source systems we know</h3>
+      <ul>
+        <li><strong>Square POS / Square for Restaurants</strong> — CSV export, well-documented schema</li>
+        <li><strong>Mindbody</strong> — paid data export, painful but doable</li>
+        <li><strong>Jobber</strong> — CSV per data type, straightforward</li>
+        <li><strong>ServiceTitan</strong> — API export available with their support</li>
+        <li><strong>Smartwaiver</strong> — direct integration in skateOS already (no migration needed; just connect)</li>
+        <li><strong>Stripe / Shopify</strong> — clean CSV exports</li>
+        <li><strong>Paper / spreadsheets</strong> — case by case; we'll quote</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- PHASE 5 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">5</div>
+      <div>
+        <h2>Staff training + parallel run</h2>
+        <div class="when">Day 22-28 · ~3-4 hr of staff time</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">Where most software rollouts fail isn't the software — it's that the staff don't know how to use it. We do live training, record it, and run a 1-2 week parallel period where both systems are live.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>2-hour live training session for all staff (recorded for future hires)</li>
+            <li>Role-specific cheat sheets (front desk, owner, instructor, etc.)</li>
+            <li>Daily check-ins during parallel-run week</li>
+            <li>Fix any "I tried to do X and it didn't work" issues same-day</li>
+            <li>Document any final tweaks needed before full cutover</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you provide</h4>
+          <ul>
+            <li>Staff availability for the 2-hour training</li>
+            <li>Willingness to run parallel for 1-2 weeks (extra register entry, but lowers cutover risk)</li>
+            <li>Honest feedback on what's confusing or broken</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHASE 6 -->
+  <div class="phase">
+    <div class="phase-head">
+      <div class="phase-num">6</div>
+      <div>
+        <h2>Go-live + handoff</h2>
+        <div class="when">Day 29-35 · we step back, you take the keys</div>
+      </div>
+    </div>
+    <div class="phase-body">
+      <p class="lede">Cutover day. Old system gets decommissioned, new system handles all transactions, and we revoke our access — you officially own the stack.</p>
+
+      <div class="two-col">
+        <div class="col we">
+          <h4>What we do</h4>
+          <ul>
+            <li>Final cutover: flip DNS, point payment webhooks at new system</li>
+            <li>Watch for issues in the first 48 hours (we're on standby)</li>
+            <li>Cancel your legacy SaaS subscription (you confirm; we walk you through it)</li>
+            <li>Transfer all credentials, secrets, runbooks to your control</li>
+            <li>Revoke our access to your Supabase / GitHub / Cloudflare</li>
+            <li>Provide a written attestation of access removal</li>
+            <li>30-day post-delivery support window for any issues</li>
+          </ul>
+        </div>
+        <div class="col you">
+          <h4>What you walk away with</h4>
+          <ul>
+            <li><strong>Source code</strong> in your git repo, full history</li>
+            <li><strong>Database</strong> in your Supabase project, accessible by you</li>
+            <li><strong>Cloud accounts</strong> all in your name, paid directly by you</li>
+            <li><strong>Runbooks</strong> for deploy, rollback, common incidents</li>
+            <li><strong>Architecture doc</strong> — every system, every dependency</li>
+            <li><strong>30 days free post-delivery support</strong></li>
+            <li><strong>Optional maintenance retainer</strong> — $1-3k/yr for ongoing updates</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGOING COSTS -->
+  <h2>Your ongoing cost (paid directly to vendors, not us)</h2>
+  <p>Realistic monthly cost of running your own infrastructure post-deploy. These are the bills you'll pay directly to the cloud providers — Hudson Valley AI doesn't take a cut on any of them.</p>
+
+  <table class="cost-table">
+    <thead>
+      <tr><th>Vendor</th><th>What it does</th><th class="r">Typical /mo</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Supabase Pro</td><td>Postgres + auth + storage + edge functions</td><td class="r">$25</td></tr>
+      <tr><td>Cloudflare</td><td>DNS + Workers static hosting</td><td class="r">$0-10</td></tr>
+      <tr><td>GitHub</td><td>Private code repository</td><td class="r">$0</td></tr>
+      <tr><td>Resend</td><td>Transactional email (3k free, $20/50k)</td><td class="r">$0-20</td></tr>
+      <tr><td>Twilio</td><td>SMS — pay per message (~$0.0079 each)</td><td class="r">$10-30</td></tr>
+      <tr><td>Domain registration</td><td>Annual, amortized monthly</td><td class="r">$1-2</td></tr>
+      <tr><td>Payment processor</td><td>Interchange-plus, no markup on top — typically 2.0-2.5% effective on card volume</td><td class="r">Pay per tx</td></tr>
+    </tbody>
+    <tfoot>
+      <tr><td colspan="2"><strong>Monthly infrastructure base cost</strong></td><td class="r">$36-87</td></tr>
+    </tfoot>
+  </table>
+
+  <p>Add to that an optional maintenance retainer with us ($1-3k/yr for quarterly updates + on-call) if you'd rather not handle infra-level concerns yourself. Most operators end up around <strong>$50-150/month all-in for everything not-payment-processing</strong>.</p>
+
+  <!-- FAQ-LITE -->
+  <h2>Common questions</h2>
+
+  <h3>What if I want to change something after handoff?</h3>
+  <p>Three options: (1) modify it yourself / hire any developer (it's your code now), (2) come back to us for a $3k Fix-it Sprint, (3) put us on retainer at $1-3k/yr for quarterly updates.</p>
+
+  <h3>What if Hudson Valley AI disappears tomorrow?</h3>
+  <p>You keep running. Source code is in your git, database in your Supabase, cloud accounts in your name. The only thing you lose is our future support — and any competent developer can pick up the codebase since it's standard Postgres + vanilla JS + Cloudflare Workers (no exotic frameworks, no proprietary anything).</p>
+
+  <h3>What if I outgrow the platform and need to leave?</h3>
+  <p>Export your data from Postgres anytime. It's standard SQL — every other system can ingest it. You'll lose the skateOS/BM-specific workflows, but no SaaS lock-in keeps you stuck.</p>
+
+  <h3>Do you do this for free trials too?</h3>
+  <p>No — trials run on our hosted instance for the 30-day evaluation period. The full deploy-your-own engagement happens after you decide to convert. Trial data exports to your new tenant on Day 30 of the trial if you choose deploy-your-own.</p>
+
+  <div class="cta">
+    <h2>Ready to scope a deploy-your-own engagement?</h2>
+    <p>15-min discovery call. We'll figure out timeline, scope any custom work, and give you a fixed price within 48 hours of the call.</p>
+    <div class="btns">
+      <a href="/intake.html" class="primary">📝 Start an engagement</a>
+      <a href="/savings/" class="alt">💰 Calculate savings first</a>
+      <a href="/ownership/" class="alt">📖 Read the ownership case</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Hudson Valley AI · Hudson Valley, NY · <a href="/">Home</a> · <a href="/ownership/">Why ownership</a> · <a href="/savings/">Savings calc</a> · <a href="/products.html">Products</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a>
+</footer>
+
+</body>
+</html>

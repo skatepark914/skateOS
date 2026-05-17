@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Calculate your 5-year savings · ownership vs legacy SaaS — Hudson Valley AI</title>
+<meta name="description" content="Interactive calculator: how much does owning your software save vs paying Mindbody / Square / Jobber / ServiceTitan forever? Includes credit card processing rate savings.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://consult.skateos.com/savings/">
+<meta property="og:title" content="Calculate your 5-year savings · ownership vs legacy SaaS">
+<meta property="og:description" content="See what owning your software actually saves you vs renting Mindbody / Square / Jobber forever. Includes CC processing rate.">
+<meta property="og:image" content="https://consult.skateos.com/og.png">
+<meta property="og:url" content="https://consult.skateos.com/savings/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a; --ink-soft:#404040; --muted:#737373;
+    --bg:#fafaf9; --card:#fff; --line:#e5e5e0; --accent:#e11d48;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+
+  h1{font-size:clamp(2rem,4.4vw,3rem);font-weight:900;letter-spacing:-0.028em;line-height:1.05;margin-bottom:14px;}
+  h1 .accent{color:var(--accent);}
+  .subtitle{font-size:1.1rem;color:var(--ink-soft);max-width:720px;margin-bottom:36px;line-height:1.55;}
+
+  /* Layout grid: inputs on left, results on right */
+  .calc-grid{display:grid;grid-template-columns:380px 1fr;gap:30px;align-items:start;}
+  @media(max-width:880px){.calc-grid{grid-template-columns:1fr;}}
+
+  /* Inputs card */
+  .inputs{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:28px;position:sticky;top:80px;}
+  .inputs h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800;margin-bottom:18px;}
+  .field{margin-bottom:18px;}
+  .field label{display:block;font-size:.86rem;font-weight:700;color:var(--ink);margin-bottom:6px;}
+  .field .hint{font-size:.74rem;color:var(--muted);margin-top:4px;line-height:1.45;}
+  .field input[type=number], .field select{
+    width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:8px;font-size:1rem;font-family:inherit;
+    color:var(--ink);background:#fff;
+  }
+  .field input[type=number]:focus, .field select:focus{outline:none;border-color:var(--ink);}
+  .field .input-prefix{position:relative;}
+  .field .input-prefix input{padding-left:30px;}
+  .field .input-prefix::before{content:attr(data-prefix);position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);font-size:.94rem;pointer-events:none;}
+  .field .input-suffix{position:relative;}
+  .field .input-suffix input{padding-right:50px;}
+  .field .input-suffix::after{content:attr(data-suffix);position:absolute;right:14px;top:50%;transform:translateY(-50%);font-weight:700;color:var(--muted);font-size:.86rem;pointer-events:none;}
+  .field .preset-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+  .field .preset-row button{padding:5px 10px;background:#f3f4f6;border:1px solid var(--line);border-radius:6px;font-size:.74rem;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:inherit;}
+  .field .preset-row button:hover{background:#e5e5e0;color:var(--ink);}
+  .field .preset-row button.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+
+  /* Results column */
+  .results{display:flex;flex-direction:column;gap:18px;}
+
+  /* Headline savings number */
+  .savings-hero{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;border-radius:14px;padding:32px 30px;}
+  .savings-hero .label{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:#fb7185;font-weight:800;margin-bottom:6px;}
+  .savings-hero .num{font-size:clamp(2.5rem,5vw,3.6rem);font-weight:900;letter-spacing:-0.028em;line-height:1;color:#fafaf9;margin-bottom:6px;font-family:ui-monospace,monospace;}
+  .savings-hero .num.win{color:#86efac;}
+  .savings-hero .num.lose{color:#fca5a5;}
+  .savings-hero .sub{font-size:.92rem;color:#a3a3a3;line-height:1.55;}
+  .savings-hero .sub strong{color:#fb7185;}
+
+  /* Comparison bar chart */
+  .bars-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 28px;}
+  .bars-card h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800;margin-bottom:18px;}
+  .bar-row{margin-bottom:14px;}
+  .bar-row .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:.88rem;}
+  .bar-row .top .label{font-weight:700;color:var(--ink);}
+  .bar-row .top .val{font-family:ui-monospace,monospace;font-weight:700;font-size:1rem;}
+  .bar-row .bar{height:32px;background:#f3f4f6;border-radius:6px;overflow:hidden;position:relative;}
+  .bar-row .bar-fill{height:100%;border-radius:6px;transition:width .25s ease;}
+  .bar-row.legacy .bar-fill{background:linear-gradient(90deg,#fca5a5,#dc2626);}
+  .bar-row.legacy .val{color:#dc2626;}
+  .bar-row.own .bar-fill{background:linear-gradient(90deg,#86efac,#15803d);}
+  .bar-row.own .val{color:#15803d;}
+
+  /* Breakdown card */
+  .breakdown{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 28px;}
+  .breakdown h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:800;margin-bottom:14px;}
+  .bd-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  @media(max-width:680px){.bd-cols{grid-template-columns:1fr;}}
+  .bd-col h4{font-size:.86rem;font-weight:800;letter-spacing:-0.012em;margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid var(--line);}
+  .bd-col.legacy h4{color:#dc2626;border-bottom-color:#fca5a5;}
+  .bd-col.own h4{color:#15803d;border-bottom-color:#86efac;}
+  .bd-row{display:flex;justify-content:space-between;padding:7px 0;font-size:.86rem;border-bottom:1px dotted var(--line);}
+  .bd-row:last-child{border-bottom:none;}
+  .bd-row .l{color:var(--ink-soft);}
+  .bd-row .v{font-family:ui-monospace,monospace;font-weight:700;color:var(--ink);}
+  .bd-row.total{margin-top:6px;padding-top:10px;border-top:2px solid var(--ink);border-bottom:none;font-weight:800;font-size:.94rem;}
+  .bd-row.total .l{color:var(--ink);}
+  .bd-row.cc{background:#fef9c3;margin:4px -8px;padding:7px 8px;border-radius:4px;border-bottom:none;}
+  .bd-row.cc .l, .bd-row.cc .v{color:#854d0e;}
+
+  /* Break-even card */
+  .breakeven{background:linear-gradient(135deg,#fff5f7,#ffe4e6);border:1.5px solid #fda4af;border-radius:14px;padding:22px 26px;display:flex;gap:18px;align-items:center;}
+  .breakeven .icon{font-size:2rem;flex-shrink:0;}
+  .breakeven .text{flex:1;}
+  .breakeven .text .num{font-size:1.8rem;font-weight:900;color:#9f1239;letter-spacing:-0.02em;line-height:1.1;font-family:ui-monospace,monospace;}
+  .breakeven .text .lbl{font-size:.86rem;color:#7c2d12;margin-top:2px;line-height:1.5;}
+
+  /* CC Savings spotlight */
+  .cc-spotlight{background:#fef9c3;border:1.5px solid #fde047;border-radius:14px;padding:22px 26px;}
+  .cc-spotlight .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+  .cc-spotlight h3{font-size:.84rem;text-transform:uppercase;letter-spacing:.08em;color:#854d0e;font-weight:800;margin:0;}
+  .cc-spotlight .num{font-size:1.8rem;font-weight:900;color:#854d0e;letter-spacing:-0.02em;line-height:1;font-family:ui-monospace,monospace;}
+  .cc-spotlight p{font-size:.88rem;color:#854d0e;line-height:1.55;margin:0;}
+  .cc-spotlight strong{color:#713f12;}
+
+  /* CTA */
+  .cta{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;border-radius:14px;padding:28px 30px;text-align:center;}
+  .cta h2{color:#fafaf9;font-size:1.4rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.018em;}
+  .cta p{color:#a3a3a3;margin-bottom:18px;font-size:.95rem;}
+  .cta .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+  .cta a{padding:11px 22px;border-radius:8px;font-weight:700;text-decoration:none;font-size:.92rem;}
+  .cta a.primary{background:#fb7185;color:#0a0a0a;}
+  .cta a.primary:hover{background:#fff;}
+  .cta a.alt{background:transparent;color:#fafaf9;border:1.5px solid #525252;}
+  .cta a.alt:hover{background:#262626;}
+
+  /* Methodology section */
+  .methodology{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px 28px;font-size:.86rem;color:var(--ink-soft);}
+  .methodology details{margin-bottom:10px;}
+  .methodology summary{cursor:pointer;font-weight:700;color:var(--ink);font-size:.92rem;padding:8px 0;}
+  .methodology summary::marker{color:var(--accent);}
+  .methodology details[open] summary{margin-bottom:8px;}
+  .methodology p{margin-bottom:8px;line-height:1.6;}
+  .methodology strong{color:var(--ink);}
+  .methodology code{font-family:ui-monospace,monospace;font-size:.82rem;background:#f3f4f6;padding:1px 5px;border-radius:3px;color:var(--ink);}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Software your business <em>actually owns</em> · <a href="/">Back to overview →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="/"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="/ownership/">Why ownership</a>
+    <a href="/products.html">Products</a>
+    <a href="/work.html">Work</a>
+    <a href="/security.html">Security</a>
+    <a href="/process.html">Process</a>
+    <a href="/compare.html">Compare</a>
+  </div>
+  <a href="/intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="/">Hudson Valley AI</a> / Savings calculator</div>
+
+  <h1>Calculate your <span class="accent">5-year savings.</span></h1>
+  <p class="subtitle">Enter what you currently pay for SaaS + payment processing. See what owning your software (one-time deploy + your own merchant account) actually saves you over 5 years. Math runs live in your browser. Nothing sent anywhere.</p>
+
+  <div class="calc-grid">
+
+    <!-- ─── INPUTS ───────────────────────────────────────── -->
+    <div class="inputs">
+      <h2>Your numbers</h2>
+
+      <div class="field">
+        <label for="saasMo">Current SaaS subscription</label>
+        <div class="input-prefix" data-prefix="$">
+          <input type="number" id="saasMo" value="200" min="0" step="10">
+        </div>
+        <div class="hint">Monthly fee for Mindbody, Square POS, Jobber, ServiceTitan, etc.</div>
+        <div class="preset-row">
+          <button data-saas="50">Light</button>
+          <button data-saas="200" class="active">Typical</button>
+          <button data-saas="400">Heavy</button>
+          <button data-saas="800">Enterprise</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="addons">Add-on subscriptions</label>
+        <div class="input-prefix" data-prefix="$">
+          <input type="number" id="addons" value="80" min="0" step="10">
+        </div>
+        <div class="hint">/mo for Smartwaiver, Mailchimp, Stripe Atlas, payroll integrations, etc.</div>
+      </div>
+
+      <div class="field">
+        <label for="cardVol">Annual card-payment volume</label>
+        <div class="input-prefix" data-prefix="$">
+          <input type="number" id="cardVol" value="500000" min="0" step="10000">
+        </div>
+        <div class="hint">Total $ your business processes via credit card / debit per year. Skip cash + checks.</div>
+        <div class="preset-row">
+          <button data-vol="100000">$100k</button>
+          <button data-vol="500000" class="active">$500k</button>
+          <button data-vol="1000000">$1M</button>
+          <button data-vol="2500000">$2.5M</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="ccLegacy">Current processing rate</label>
+        <div class="input-suffix" data-suffix="%">
+          <input type="number" id="ccLegacy" value="2.7" min="0" max="10" step="0.05">
+        </div>
+        <div class="hint">Effective rate including markups. Square = 2.6%. Mindbody = ~2.9%. If unsure, leave at 2.7%.</div>
+      </div>
+
+      <div class="field">
+        <label for="ccOwn">After switch (Helcim/interchange-plus)</label>
+        <div class="input-suffix" data-suffix="%">
+          <input type="number" id="ccOwn" value="2.2" min="0" max="10" step="0.05">
+        </div>
+        <div class="hint">Direct merchant account (Helcim or similar). Typical effective rate after switching off legacy POS markups.</div>
+      </div>
+
+      <div class="field">
+        <label for="deployFee">One-time deploy fee</label>
+        <div class="input-prefix" data-prefix="$">
+          <input type="number" id="deployFee" value="20000" min="0" step="1000">
+        </div>
+        <div class="hint">skateOS: $15-25k. Branch Manager: $20-35k. Default to mid-range.</div>
+      </div>
+
+      <div class="field">
+        <label for="years">Project over</label>
+        <div class="input-suffix" data-suffix="yrs">
+          <input type="number" id="years" value="5" min="1" max="15" step="1">
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── RESULTS ──────────────────────────────────────── -->
+    <div class="results">
+
+      <div class="savings-hero">
+        <div class="label">Your total savings over <span id="yrLabel">5</span> years</div>
+        <div class="num win" id="totalSavings">$0</div>
+        <div class="sub" id="savingsBlurb">Updates as you type.</div>
+      </div>
+
+      <div class="cc-spotlight">
+        <div class="top">
+          <h3>💳 Credit card processing alone</h3>
+          <div class="num" id="ccSavings">$0</div>
+        </div>
+        <p id="ccBlurb">Switching from your current rate (<strong id="ccLegBlurb">2.7%</strong>) to a direct merchant account (<strong id="ccOwnBlurb">2.2%</strong>) on <strong id="volBlurb">$500k</strong> annual card volume saves you this much over <span id="yrBlurb2">5</span> years — independent of any software change. Pure processor markup that the SaaS vendor was keeping.</p>
+      </div>
+
+      <div class="breakeven">
+        <div class="icon">⚖️</div>
+        <div class="text">
+          <div class="num" id="breakeven">Year 0</div>
+          <div class="lbl" id="breakevenBlurb">The point where you've recouped the deploy fee and are net-ahead vs staying on legacy.</div>
+        </div>
+      </div>
+
+      <div class="bars-card">
+        <h3>Cumulative cost · <span id="yrLabel2">5</span> years</h3>
+        <div class="bar-row legacy">
+          <div class="top"><span class="label">Legacy SaaS (Mindbody/Square/Jobber + your current processor)</span><span class="val" id="legacyTotal">$0</span></div>
+          <div class="bar"><div class="bar-fill" id="legacyBar" style="width:100%"></div></div>
+        </div>
+        <div class="bar-row own">
+          <div class="top"><span class="label">Own it (deploy + your own merchant account + light infra)</span><span class="val" id="ownTotal">$0</span></div>
+          <div class="bar"><div class="bar-fill" id="ownBar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="breakdown">
+        <h3>Line-by-line breakdown</h3>
+        <div class="bd-cols">
+          <div class="bd-col legacy">
+            <h4>📉 Stay on legacy SaaS</h4>
+            <div class="bd-row"><span class="l">SaaS subscription</span><span class="v" id="bdLegSaas">$0</span></div>
+            <div class="bd-row"><span class="l">Add-on subscriptions</span><span class="v" id="bdLegAddons">$0</span></div>
+            <div class="bd-row"><span class="l">Annual price hikes (2 × 15%)</span><span class="v" id="bdLegHikes">$0</span></div>
+            <div class="bd-row cc"><span class="l">💳 Processing fees</span><span class="v" id="bdLegCC">$0</span></div>
+            <div class="bd-row total"><span class="l">Total over <span id="yrLabel3">5</span>yr</span><span class="v" id="bdLegTotal">$0</span></div>
+          </div>
+          <div class="bd-col own">
+            <h4>🏰 Own your software</h4>
+            <div class="bd-row"><span class="l">One-time deploy</span><span class="v" id="bdOwnDeploy">$0</span></div>
+            <div class="bd-row"><span class="l">Cloud infra (Supabase + CF + email/SMS)</span><span class="v" id="bdOwnInfra">$0</span></div>
+            <div class="bd-row"><span class="l">Maintenance retainer (optional)</span><span class="v" id="bdOwnMaint">$0</span></div>
+            <div class="bd-row cc"><span class="l">💳 Processing fees</span><span class="v" id="bdOwnCC">$0</span></div>
+            <div class="bd-row total"><span class="l">Total over <span id="yrLabel4">5</span>yr</span><span class="v" id="bdOwnTotal">$0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta">
+        <h2>Want to talk it through?</h2>
+        <p id="ctaBlurb">15-min discovery call. We'll sanity-check these numbers against your actual situation, walk you through the migration path, and answer whether ownership is right for your specific business.</p>
+        <div class="btns">
+          <a href="mailto:doug@2ntr.com?subject=Ownership%20%E2%80%94%20discovery%20call&amp;body=Hi%20Doug%20%E2%80%94%20I%20ran%20the%20numbers%20on%20your%20calculator%20and%20want%20to%20talk%20through%20whether%20ownership%20makes%20sense%20for%20me.%0A%0AMy%20business%2Fcurrent%20software%3A%0A%0AMy%20calculator%20inputs%3A%0A-%20Current%20SaaS%20%2B%20add-ons%3A%20%24%20%2Fmo%0A-%20Annual%20card%20volume%3A%20%24%0A-%20Current%20processing%20rate%3A%20%25%0A%0AMy%20availability%20for%20a%2015-min%20call%3A" class="primary">📺 Book a discovery call</a>
+          <a href="/ownership/" class="alt">📖 Read the full ownership case</a>
+        </div>
+      </div>
+
+      <div class="methodology">
+        <details>
+          <summary>📐 How the math works (the honest version)</summary>
+          <p><strong>SaaS subscription growth</strong> — We project two price hikes of 15% each over 5 years, compounding. This matches the public pricing history of Mindbody, Square POS Plus, ServiceTitan, and Jobber. Light operators may see less; heavy operators routinely see more.</p>
+          <p><strong>Credit card processing</strong> — The "current rate" is your effective rate including all markups your POS vendor adds on top of interchange. Square's published rate is 2.6%+$0.10, but effective rates after add-ons typically land at 2.7-2.9%. The "after switch" rate is what a direct merchant account on interchange-plus pricing typically delivers (Helcim, Payment Cloud, similar). We default to 2.2% which is a conservative middle estimate — real Helcim accounts often run 2.0-2.3% depending on card mix.</p>
+          <p><strong>Cloud infrastructure</strong> — Assumes Supabase Pro ($25/mo), Cloudflare Workers (free tier on low volume, ~$10/mo at scale), Resend ($20/mo), Twilio (~$15/mo for typical SMS volume). Total ~$70/mo paid directly to vendors. Real numbers vary with usage.</p>
+          <p><strong>Maintenance retainer</strong> — Set to $1,500/yr as a middle estimate. Some operators pay $0 (handle updates themselves), some pay $3k/yr (we handle quarterly updates + on-call). Adjust the retainer line in the breakdown to match your expected level.</p>
+          <p><strong>One-time deploy</strong> — Mid-range estimate. skateOS deploy-your-own is $15-25k, Branch Manager is $20-35k. Custom multi-location or industry-specific work runs higher.</p>
+          <p><strong>What we're NOT modeling</strong> — Switching costs (~$2-5k of your time during onboarding), opportunity cost of capital tied up in the deploy fee, value of customizations you can do on owned software that you can't do on SaaS. The first two argue against ownership; the third argues for it. Roughly washes out.</p>
+        </details>
+
+        <details>
+          <summary>🤔 When does this NOT work?</summary>
+          <p>The math only favors ownership if your <strong>current SaaS bill + processing fees are nontrivial</strong>. Specifically:</p>
+          <p>• If you're paying &lt;$100/mo total in software + add-ons AND processing &lt;$250k/yr in card volume, the legacy SaaS bill is too small to justify a $15-25k deploy fee. Stay on what you have.</p>
+          <p>• If you're a brand-new business and don't yet know what features you need, build on legacy SaaS first. Switch later when the workflow is settled.</p>
+          <p>• If you have zero technical capability AND don't want to pay a maintenance retainer, the ongoing infrastructure self-management may not work for you. Stay on hosted SaaS (theirs or ours).</p>
+          <p>• If your industry has hard SOC 2 / HIPAA / PCI requirements that you cannot meet on self-hosted, stay on a vendor that has the attestations.</p>
+        </details>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Hudson Valley AI · Hudson Valley, NY · <a href="/">Home</a> · <a href="/ownership/">Why ownership</a> · <a href="/products.html">Products</a> · <a href="/security.html">Security</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a>
+</footer>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const fmt = n => '$' + Math.round(n).toLocaleString('en-US');
+  const fmtK = n => n >= 1000000 ? '$' + (n/1000000).toFixed(1) + 'M' : '$' + Math.round(n/1000) + 'k';
+
+  function recalc(){
+    const saasMo = +$('saasMo').value || 0;
+    const addonsMo = +$('addons').value || 0;
+    const cardVol = +$('cardVol').value || 0;
+    const ccLeg = (+$('ccLegacy').value || 0) / 100;
+    const ccOwn = (+$('ccOwn').value || 0) / 100;
+    const deploy = +$('deployFee').value || 0;
+    const years = Math.max(1, Math.min(15, +$('years').value || 5));
+
+    // Legacy cost calculation
+    // Subscription + add-ons with 15% hikes at years 2 and 4 (compounding)
+    let legSaas = 0, legAddons = 0;
+    let saasYearMonthly = saasMo, addonsYearMonthly = addonsMo;
+    for(let y=1; y<=years; y++){
+      if(y === 3) { saasYearMonthly *= 1.15; addonsYearMonthly *= 1.15; }
+      if(y === 5) { saasYearMonthly *= 1.15; addonsYearMonthly *= 1.15; }
+      legSaas += saasYearMonthly * 12;
+      legAddons += addonsYearMonthly * 12;
+    }
+    // Hike impact = total - what it would have been flat
+    const legBaseline = saasMo * 12 * years;
+    const legHikes = Math.max(0, legSaas - legBaseline);
+    const legSaasFlat = legBaseline;
+    const legCC = cardVol * ccLeg * years;
+    const legTotal = legSaasFlat + legAddons + legHikes + legCC;
+
+    // Own cost
+    const infraYr = 70 * 12; // ~$840/yr
+    const maintYr = 1500;
+    const ownInfra = infraYr * years;
+    const ownMaint = maintYr * years;
+    const ownCC = cardVol * ccOwn * years;
+    const ownTotal = deploy + ownInfra + ownMaint + ownCC;
+
+    const totalSavings = legTotal - ownTotal;
+    const ccSavings = legCC - ownCC;
+
+    // Break-even calc
+    // Year-by-year cumulative
+    let cumLeg = 0, cumOwn = deploy;
+    let breakevenYr = 0;
+    let saasMonth = saasMo, addonsMonth = addonsMo;
+    for(let y=1; y<=Math.max(years,15); y++){
+      if(y === 3) { saasMonth *= 1.15; addonsMonth *= 1.15; }
+      if(y === 5) { saasMonth *= 1.15; addonsMonth *= 1.15; }
+      if(y === 7) { saasMonth *= 1.15; addonsMonth *= 1.15; }
+      cumLeg += (saasMonth + addonsMonth) * 12 + cardVol * ccLeg;
+      cumOwn += infraYr + maintYr + cardVol * ccOwn;
+      if(breakevenYr === 0 && cumOwn <= cumLeg){ breakevenYr = y; break; }
+    }
+
+    // Update DOM
+    $('totalSavings').textContent = totalSavings >= 0 ? fmt(totalSavings) : '-' + fmt(-totalSavings);
+    $('totalSavings').className = 'num ' + (totalSavings >= 0 ? 'win' : 'lose');
+    $('savingsBlurb').innerHTML = totalSavings >= 0
+      ? `Over ${years} years, owning your software saves <strong>${fmt(totalSavings)}</strong> vs paying for legacy SaaS + their processor markup. Break-even at <strong>year ${breakevenYr || '?'}</strong>.`
+      : `Over ${years} years, ownership costs <strong>${fmt(-totalSavings)}</strong> more. <strong>You're not the right candidate</strong> — your current setup is cheap enough that the deploy fee doesn't pay back. Stay on what you have.`;
+
+    $('ccSavings').textContent = fmt(ccSavings);
+    $('ccLegBlurb').textContent = (ccLeg*100).toFixed(2) + '%';
+    $('ccOwnBlurb').textContent = (ccOwn*100).toFixed(2) + '%';
+    $('volBlurb').textContent = fmtK(cardVol);
+    $('yrBlurb2').textContent = years;
+
+    $('breakeven').textContent = breakevenYr > 0 ? 'Year ' + breakevenYr : 'Doesn\'t break even in window';
+    $('breakevenBlurb').textContent = breakevenYr > 0 && breakevenYr <= years
+      ? `After ${breakevenYr} year${breakevenYr>1?'s':''}, you\'ve recouped the deploy fee and every dollar after is savings vs staying on legacy.`
+      : `The deploy fee doesn\'t recoup within ${years} years at your current spend. Try increasing your card volume / subscription costs, or extending the projection.`;
+
+    $('legacyTotal').textContent = fmt(legTotal);
+    $('ownTotal').textContent = fmt(ownTotal);
+    const max = Math.max(legTotal, ownTotal, 1);
+    $('legacyBar').style.width = (legTotal/max*100) + '%';
+    $('ownBar').style.width = (ownTotal/max*100) + '%';
+
+    // Breakdown
+    $('bdLegSaas').textContent = fmt(legSaasFlat);
+    $('bdLegAddons').textContent = fmt(legAddons);
+    $('bdLegHikes').textContent = fmt(legHikes);
+    $('bdLegCC').textContent = fmt(legCC);
+    $('bdLegTotal').textContent = fmt(legTotal);
+    $('bdOwnDeploy').textContent = fmt(deploy);
+    $('bdOwnInfra').textContent = fmt(ownInfra);
+    $('bdOwnMaint').textContent = fmt(ownMaint);
+    $('bdOwnCC').textContent = fmt(ownCC);
+    $('bdOwnTotal').textContent = fmt(ownTotal);
+
+    // Year labels
+    $('yrLabel').textContent = years;
+    $('yrLabel2').textContent = years;
+    $('yrLabel3').textContent = years;
+    $('yrLabel4').textContent = years;
+  }
+
+  // Wire inputs
+  ['saasMo','addons','cardVol','ccLegacy','ccOwn','deployFee','years'].forEach(id => {
+    $(id).addEventListener('input', recalc);
+  });
+
+  // Wire SaaS presets
+  document.querySelectorAll('[data-saas]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      $('saasMo').value = e.target.dataset.saas;
+      document.querySelectorAll('[data-saas]').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      recalc();
+    });
+  });
+
+  // Wire volume presets
+  document.querySelectorAll('[data-vol]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      $('cardVol').value = e.target.dataset.vol;
+      document.querySelectorAll('[data-vol]').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      recalc();
+    });
+  });
+
+  recalc();
+</script>
+
+</body>
+</html>

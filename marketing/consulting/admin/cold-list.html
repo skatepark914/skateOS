@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cold-call list — internal — Hudson Valley AI</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="50 Westchester businesses to cold call. Top candidate deep-dive. Password-gated.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  /* Lock screen */
+  .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;background:#0a0a0a;}
+  .lock-card{background:#fff;border-radius:14px;padding:36px;max-width:420px;width:100%;box-shadow:0 20px 50px -10px rgba(0,0,0,.5);}
+  .lock-card .lk-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .lock-card .lk-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .lock-card .lk-logo .name{font-weight:900;}
+  .lock-card h1{font-size:1.4rem;font-weight:900;letter-spacing:-0.018em;margin-bottom:6px;}
+  .lock-card p{color:#737373;font-size:.86rem;margin-bottom:18px;}
+  .lock-card input{width:100%;padding:12px 14px;border:1.5px solid #e5e5e0;border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;}
+  .lock-card input:focus{outline:none;border-color:#0a0a0a;}
+  .lock-card button{width:100%;padding:12px;background:#0a0a0a;color:#fafaf9;border:none;border-radius:8px;font-size:.96rem;font-weight:700;font-family:inherit;cursor:pointer;}
+  .lock-card button:hover{background:#e11d48;}
+  .lock-err{color:#dc2626;font-size:.84rem;margin-top:8px;display:none;}
+
+  /* Doc styles */
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar strong{color:#fb7185;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+  .lock-out{padding:6px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:40px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:18px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  h1.title{font-size:clamp(2rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.022em;line-height:1.1;margin-bottom:8px;}
+  .meta{font-size:.82rem;color:#737373;margin-bottom:24px;}
+
+  section.doc{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:30px;margin-bottom:18px;scroll-margin-top:80px;}
+  section.doc h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+  section.doc h2 .num{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.84rem;font-weight:900;flex-shrink:0;}
+  section.doc h2 + p.lede{color:#737373;margin-bottom:14px;font-size:.92rem;}
+  section.doc p{color:#404040;font-size:.95rem;margin-bottom:12px;}
+  section.doc ul{margin:8px 0 14px 22px;color:#404040;font-size:.94rem;}
+  section.doc li{margin-bottom:5px;}
+  section.doc strong{color:#0a0a0a;}
+
+  /* Tier blocks */
+  .tier{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:24px 28px;margin-bottom:14px;scroll-margin-top:80px;}
+  .tier.A{border-left:6px solid #e11d48;}
+  .tier.B{border-left:6px solid #d97706;}
+  .tier.C{border-left:6px solid #15803d;}
+  .tier.D{border-left:6px solid #0369a1;}
+  .tier.E{border-left:6px solid #7c3aed;}
+  .tier-head{display:flex;align-items:baseline;gap:14px;margin-bottom:14px;flex-wrap:wrap;}
+  .tier-letter{font-size:1.6rem;font-weight:900;letter-spacing:-0.02em;}
+  .tier.A .tier-letter{color:#e11d48;}
+  .tier.B .tier-letter{color:#d97706;}
+  .tier.C .tier-letter{color:#15803d;}
+  .tier.D .tier-letter{color:#0369a1;}
+  .tier.E .tier-letter{color:#7c3aed;}
+  .tier-name{font-size:1.1rem;font-weight:800;letter-spacing:-0.015em;}
+  .tier-sub{font-size:.84rem;color:#737373;}
+  .tier table{width:100%;border-collapse:collapse;font-size:.86rem;margin-top:8px;}
+  .tier th{text-align:left;padding:8px 10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#737373;font-weight:700;border-bottom:2px solid #0a0a0a;}
+  .tier th.c{text-align:center;}
+  .tier td{padding:10px;border-bottom:1px solid #f3f4f6;vertical-align:top;color:#404040;}
+  .tier td.c{text-align:center;}
+  .tier td a{color:#0369a1;text-decoration:none;font-size:.78rem;}
+  .tier td a:hover{text-decoration:underline;}
+  .tier .biz-name{font-weight:800;color:#0a0a0a;}
+  .tier .biz-loc{font-size:.78rem;color:#737373;margin-top:2px;}
+  .tier .score{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;font-weight:900;font-size:.82rem;font-family:ui-monospace,monospace;}
+  .tier .score.s5{background:#dcfce7;color:#15803d;}
+  .tier .score.s4{background:#fef3c7;color:#92400e;}
+  .tier .score.s3{background:#e5e7eb;color:#404040;}
+  .tier .verify{font-style:italic;color:#d97706;font-size:.74rem;}
+
+  /* Index legend */
+  .legend{display:flex;flex-wrap:wrap;gap:18px;margin:14px 0 24px;font-size:.82rem;color:#404040;}
+  .legend-item{display:flex;align-items:center;gap:8px;}
+  .legend-dot{width:10px;height:10px;border-radius:50%;}
+
+  /* Top candidate */
+  .top-candidate{background:linear-gradient(135deg,#fff5f7,#ffe4e6);border:2px solid #fb7185;border-radius:14px;padding:34px;margin-bottom:18px;scroll-margin-top:80px;}
+  .top-candidate .crown{font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:#9f1239;font-weight:900;margin-bottom:6px;}
+  .top-candidate h2{font-size:1.8rem;font-weight:900;letter-spacing:-0.022em;line-height:1.1;margin-bottom:8px;}
+  .top-candidate .sub{font-size:.92rem;color:#9f1239;margin-bottom:18px;font-style:italic;}
+  .top-candidate h3{font-size:.86rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#9f1239;margin:22px 0 8px;}
+  .top-candidate p{color:#404040;font-size:.94rem;margin-bottom:10px;}
+  .top-candidate ul, .top-candidate ol{margin:6px 0 12px 22px;color:#404040;font-size:.92rem;}
+  .top-candidate li{margin-bottom:5px;}
+  .top-candidate strong{color:#0a0a0a;}
+  .top-candidate .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:14px 0 18px;}
+  .top-candidate .stat-tile{background:#fff;border:1px solid #fda4af;border-radius:10px;padding:14px;text-align:center;}
+  .top-candidate .stat-tile .v{font-size:1.2rem;font-weight:900;color:#9f1239;letter-spacing:-0.015em;line-height:1;margin-bottom:4px;font-family:ui-monospace,monospace;}
+  .top-candidate .stat-tile .l{font-size:.7rem;color:#737373;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .top-candidate .email-block{background:#fff;border:1px dashed #fb7185;border-radius:10px;padding:18px 22px;margin:10px 0 18px;font-family:ui-monospace,monospace;font-size:.86rem;line-height:1.6;white-space:pre-wrap;color:#404040;}
+  .top-candidate .email-block .subj{font-weight:800;color:#0a0a0a;display:block;margin-bottom:10px;}
+  .top-candidate .question{background:#fff;border-left:4px solid #e11d48;padding:14px 18px;border-radius:6px;font-style:italic;font-size:1rem;color:#0a0a0a;margin:10px 0 18px;}
+
+  .pull{background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;margin:14px 0;font-size:.92rem;}
+  .pull strong{color:#e11d48;}
+  .ok{background:#dcfce7;border-left:3px solid #15803d;padding:12px 16px;border-radius:6px;margin:14px 0;font-size:.9rem;color:#14532d;}
+  .ok strong{color:#15803d;}
+
+  /* TOC */
+  .toc{background:#fff;border:1px solid #e5e5e0;border-radius:10px;padding:18px 24px;margin-bottom:24px;}
+  .toc strong{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:#737373;margin-bottom:8px;}
+  .toc a{display:inline-block;margin-right:14px;font-size:.86rem;font-weight:700;color:#0a0a0a;text-decoration:none;padding:4px 0;}
+  .toc a:hover{color:#e11d48;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ─── LOCK SCREEN ──────────────────────────────────────────────── -->
+<div id="lockScreen" class="lock-wrap">
+  <div class="lock-card">
+    <div class="lk-logo"><span class="mark">HV</span><span class="name">Hudson Valley AI</span></div>
+    <h1>Internal access required</h1>
+    <p>Westchester cold-call target list. Restricted to Doug + Jon.</p>
+    <form onsubmit="return tryUnlock(event)">
+      <input type="password" id="pw" placeholder="Shared password" autofocus>
+      <button type="submit">Unlock →</button>
+      <div class="lock-err" id="lockErr"></div>
+    </form>
+    <p style="font-size:.74rem;color:#a3a3a3;margin-top:14px;font-style:italic;">Same password as the plan page.</p>
+  </div>
+</div>
+
+<!-- ─── CONTENT ──────────────────────────────────────────────────── -->
+<div id="content" style="display:none;">
+
+<div class="topbar">🔒 <strong>INTERNAL DOCUMENT</strong> · Doug + Jon · do not share</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="../index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="nav-back" href="index.html">⌂ Admin</a>
+    <a class="nav-back" href="cold-emails.html">Email kit →</a>
+    <a class="nav-back" href="waiver-mock.html">Waiver mock →</a>
+    <a class="nav-back" href="../index.html">Public site</a>
+    <button class="lock-out" onclick="lockOut()">🔒 Lock</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Hudson Valley AI</a> / Internal / Cold-call list</div>
+  <h1 class="title">Westchester · 50 to call.</h1>
+  <div class="meta">v1 · 2026-05-10 · ICP-scored target list + top-candidate deep-dive</div>
+
+  <div class="toc">
+    <strong>Jump to:</strong>
+    <a href="#how">How to use this</a>
+    <a href="#top">★ Top candidate</a>
+    <a href="#A">Tier A · Recreation</a>
+    <a href="#B">Tier B · Service trades</a>
+    <a href="#C">Tier C · Fitness</a>
+    <a href="#D">Tier D · Healthcare</a>
+    <a href="#E">Tier E · Other</a>
+    <a href="cold-emails.html" style="color:#e11d48;">📨 Email kit →</a>
+  </div>
+
+  <!-- HOW TO USE -->
+  <section class="doc" id="how">
+    <h2><span class="num">①</span>How to use this</h2>
+    <p class="lede">50 real Westchester businesses sorted by how well they fit our offer + DecisionLayer + skateOS pattern-match. Researched via web search; everything is verifiable except items flagged <em>[verify]</em>. Sort order within each tier is roughly by fit score (5 = warmest).</p>
+    <ul>
+      <li><strong>Score 5 (green):</strong> Strong fit on multiple dimensions — software pain + waiver / contract heavy + owner-led + Doug has analogous pattern shipping.</li>
+      <li><strong>Score 4 (amber):</strong> Strong fit on most dimensions, smaller deal size or less obvious DecisionLayer angle.</li>
+      <li><strong>Score 3 (gray):</strong> Worth a call but lower priority — possibly franchise-affected decision-making, or fit is more "general dev shop" than "us specifically."</li>
+    </ul>
+    <div class="pull"><strong>One golden rule:</strong> only cold-outreach 5-10 in the first month. Quality &gt; quantity. Two of these turning into a Spike is a great month.</div>
+    <p><strong>Recommended cadence:</strong> 5 emails / 3 in-person walk-ins / 2 phone calls per week. Track every touch (a Notion or Google Sheet is fine).</p>
+  </section>
+
+  <!-- TOP CANDIDATE -->
+  <div class="top-candidate" id="top">
+    <div class="crown">★ Top candidate — start here</div>
+    <h2>The Rock Club · New Rochelle</h2>
+    <div class="sub">17,000 sqft indie climbing gym · since 2006 · parent: Pine Brook Fitness · 130 Rhodes St., New Rochelle</div>
+
+    <div class="stat-row">
+      <div class="stat-tile"><div class="v">17k</div><div class="l">Sqft climbing</div></div>
+      <div class="stat-tile"><div class="v">2006</div><div class="l">Founded</div></div>
+      <div class="stat-tile"><div class="v">Indie</div><div class="l">Owner-led, 1 location</div></div>
+      <div class="stat-tile"><div class="v">Heavy</div><div class="l">Waiver / minor flow</div></div>
+      <div class="stat-tile"><div class="v">5/5</div><div class="l">Fit score</div></div>
+    </div>
+
+    <h3>Why this one over all 49 others</h3>
+    <p>Climbing gyms are the cleanest possible ICP intersection. Doug already runs skateOS for a comparable action-sport facility (waivers, memberships, punch cards, lessons, parties, minors with guardians). The Rock Club is independent, single-location, owner-supervised, established 2006 — exactly the size where one good software conversation reaches the decision-maker in one phone call.</p>
+
+    <h3>Business profile</h3>
+    <ul>
+      <li><strong>Parent umbrella:</strong> Pine Brook Fitness — also operates The New Rochelle Racquet Club + "The Studios." This is a small multi-facility independent operator, not a chain.</li>
+      <li><strong>Revenue lines:</strong> memberships, day passes, coaching, kids' after-school programs, summer climbing camps, birthday parties, bar/bat mitzvahs, corporate events, fundraisers. Heavy minor-climber volume = heavy guardian-waiver volume.</li>
+      <li><strong>Public management contact:</strong> Jordan P. listed as manager. Owner not publicly named — 5-min LinkedIn lookup before calling (search "Pine Brook Fitness owner" + Westchester biz registry).</li>
+    </ul>
+
+    <h3>Their likely software stack</h3>
+    <p>Industry standard for an indie climbing gym this size is <strong>Rock Gym Pro (RGP)</strong>. Recurring complaints from public reviews — these are gold for the cold-call:</p>
+    <ol>
+      <li><strong>Data loss on waivers and belay certifications</strong> — customers forced to redo waivers. This is exactly what DecisionLayer + persistent intake fixes.</li>
+      <li><strong>Group booking is a nightmare</strong> — multiple windows, "least intuitive aspect," painful when groups arrive without exact headcount. A 17,000 sqft gym hosting parties every weekend lives this pain.</li>
+      <li><strong>System downtime + constant re-login.</strong></li>
+      <li><strong>Steep learning curve</strong> for front-desk hires.</li>
+      <li><strong>No native Mac client</strong> — long-standing user request.</li>
+    </ol>
+    <p>If they're not on RGP, the next-most-likely stack is Square POS + Mindbody + paper / DocuSign waivers. Either way the pain points are predictable.</p>
+
+    <h3>Why DecisionLayer hits especially hard for them</h3>
+    <p>A climbing gym signs liability waivers on every walk-in and every minor. Every dispute that escalates — bruised kid, dropped belay, equipment damage claim — is exactly the use case DecisionLayer is built for. The pitch isn't "AI is cool"; it's:</p>
+    <p style="background:#fff;border-left:3px solid #e11d48;padding:12px 16px;border-radius:6px;font-style:italic;"><strong>"Your waiver already exists. We're adding one clause that routes disputes to a structured AI-mediated review before they become lawsuits or insurance claims. Insurers love it. Plaintiffs' attorneys hate it. It costs you nothing on day one and lowers your premium conversation."</strong></p>
+
+    <h3>Cold email script</h3>
+    <div class="email-block"><span class="subj">Subject: 17,000 sqft and one lost belay cert — a 5-minute idea</span>Hi [Owner first name],
+
+Doug Brown here — I built skateOS (operating system for skateparks; live at 2nd Nature Park in Peekskill) and Branch Manager (route ops for tree-care companies). My partner Jon Marchand is a CISSP/OSCP security pro. We're a 2-person shop that does one-week prototypes and four-week production sprints for owner-led businesses fighting their software.
+
+I've watched skateparks struggle with Square/Mindbody for years, and the climbing-gym version is the same playbook with higher stakes. Rock Gym Pro reviews consistently flag two specific failures — lost waiver/belay-cert data and brutal group-booking — that I'd bet money cost you real time every weekend with parties and mitzvahs. I'd like 20 minutes to show you a working punch-card + waiver flow we already built for a skatepark, and a feature DecisionLayer.ai gives every one of our customers: an AI-arbitration clause baked right into your liability waivers that routes disputes before they hit your insurer. Worth a coffee in New Rochelle next week?
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+
+    <h3>The first-30-seconds homework question</h3>
+    <div class="question">"How many belay certifications has Rock Gym Pro lost on you in the last twelve months — and what does your front desk do when a regular shows up and the system says they were never certified?"</div>
+    <p>This question signals (a) we know their stack, (b) we know the specific failure mode the community complains about, (c) we're not selling generic software — we're solving a problem they've already lived. It's a 30-second test of whether they'll lean in.</p>
+
+    <h3>What to bring to the first meeting</h3>
+    <p>A 5-minute screen-share of skateOS's live waiver-resolution flow at 2nd Nature Park: front desk types a climber's name → if waiver is missing/expired the system blocks check-in and offers four resolution paths (paper-confirmed, emailed Smartwaiver link, texted SMS link, in-person tablet sign). Plus a one-page mock of a Rock Club-branded liability waiver with the DecisionLayer arbitration clause inserted as paragraph 6 — show, don't tell.</p>
+    <p><strong>Goal of meeting 1:</strong> walk out with verbal interest in a $5k Spike to prototype a Rock Club-shaped version. No closing pressure.</p>
+
+    <div class="ok"><strong>If The Rock Club doesn't bite within 2 weeks:</strong> the same playbook works on Air Riderz Port Chester (trampoline park, A3), Crazy Paint (paintball, A7), Old Salem Farm (equestrian, A10), or Camp Hillard (day camp, E1). The pitch flexes — waivers + minors + parties + party-bookings is the through-line.</div>
+  </div>
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#e11d48;"></span><strong>A · Recreation</strong></div>
+    <div class="legend-item"><span class="legend-dot" style="background:#d97706;"></span><strong>B · Service trades</strong></div>
+    <div class="legend-item"><span class="legend-dot" style="background:#15803d;"></span><strong>C · Fitness / wellness</strong></div>
+    <div class="legend-item"><span class="legend-dot" style="background:#0369a1;"></span><strong>D · Healthcare-adjacent</strong></div>
+    <div class="legend-item"><span class="legend-dot" style="background:#7c3aed;"></span><strong>E · Other</strong></div>
+  </div>
+
+  <!-- TIER A -->
+  <div class="tier A" id="A">
+    <div class="tier-head">
+      <div class="tier-letter">A</div>
+      <div>
+        <div class="tier-name">Recreation with waivers</div>
+        <div class="tier-sub">Highest fit · DecisionLayer angle hits hardest · skateOS pattern transfers cleanly</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Business</th><th>Sector</th><th>Why fit</th><th>Contact angle</th><th class="c">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>A1</td><td><div class="biz-name">★ The Rock Club</div><div class="biz-loc">New Rochelle · <a href="https://pinebrookfitness.com/the-rock-club" target="_blank">site →</a></div></td><td>Climbing gym</td><td>17k sqft indie, est. 2006, parent Pine Brook Fitness. Heavy waiver / mitzvah / party volume. Likely Rock Gym Pro (known data-loss + group-booking complaints).</td><td>Manager Jordan P. — ask for owner</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>A2</td><td><div class="biz-name">Movement Valhalla</div><div class="biz-loc">Valhalla · <a href="https://movementgyms.com/valhalla" target="_blank">site →</a></div></td><td>Climbing gym</td><td>Formerly The Cliffs, now Movement chain — local decision-light. Still worth a Spike conversation on per-gym ops gaps.</td><td>GM line</td><td class="c"><span class="score s3">3</span></td></tr>
+        <tr><td>A3</td><td><div class="biz-name">Air Riderz Port Chester</div><div class="biz-loc">Port Chester · <a href="https://airriderz.com/portchester" target="_blank">site →</a></div></td><td>Trampoline park</td><td>Independent franchise. Heavy waiver flow, parties, walk-ins — classic Square/Mindbody pain.</td><td>Front desk → owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>A4</td><td><div class="biz-name">Bananas Axe Cabana</div><div class="biz-loc">33 Lecount Pl, New Rochelle · (914) 278-9355 · <a href="https://bananasaxecabana.com" target="_blank">site →</a></div></td><td>Axe throwing + tiki bar</td><td>Themed venue, parties, alcohol + axes = waiver-critical. DecisionLayer arbitration clause is a no-brainer here.</td><td>Owner inquiry form</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>A5</td><td><div class="biz-name">Bad Axe Throwing New Rochelle</div><div class="biz-loc">33 Lecount Pl, New Rochelle (same building as A4) · <a href="https://badaxethrowing.com/new-rochelle-westchester-axe-throwing" target="_blank">site →</a></div></td><td>Axe throwing</td><td><strong>Corporate franchise (HQ Canada).</strong> Local manager may book parties but pricing/decisions are corporate. <em>Recommend leaning on A4 instead.</em></td><td>Local manager (limited authority)</td><td class="c"><span class="score s3">3</span></td></tr>
+        <tr><td>A6</td><td><div class="biz-name">Hour to Exit</div><div class="biz-loc">New Rochelle · <a href="https://hourtoexit.com" target="_blank">site →</a></div></td><td>Escape rooms</td><td>Indie escape room. Booking/intake pain, party packages.</td><td>Owner via site contact</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>A7</td><td><div class="biz-name">Crazy Paint</div><div class="biz-loc">Mohegan Lake · <a href="https://crazypaint.net" target="_blank">site →</a></div></td><td>Paintball</td><td>17 fields, parties, big waiver volume, lots of minors. Probably paper waivers + spreadsheet bookings.</td><td>Front desk</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>A8</td><td><div class="biz-name">5th Dimension VR</div><div class="biz-loc">Westchester · <a href="https://5thdimensionvr.com" target="_blank">site →</a></div></td><td>VR arcade / escape</td><td>Smaller, owner-led, growing party business. Spike-sized customer.</td><td>Owner via site</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>A9</td><td><div class="biz-name">Yorktown Golf &amp; Baseball</div><div class="biz-loc">Yorktown Heights · <a href="https://yorktowngolfandbaseball.com" target="_blank">site →</a></div></td><td>Batting cages + mini-golf</td><td>8 cages, family business, party packages, token-based — ripe for digital memberships + booking.</td><td>Front desk → owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>A10</td><td><div class="biz-name">Old Salem Farm</div><div class="biz-loc">North Salem · <a href="https://oldsalemfarm.net" target="_blank">site →</a></div></td><td>Equestrian — 120 acres</td><td>66 stalls, horse shows. Waivers, lesson billing, boarding contracts — heavy software opportunity.</td><td>GM line</td><td class="c"><span class="score s5">5</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TIER B -->
+  <div class="tier B" id="B">
+    <div class="tier-head">
+      <div class="tier-letter">B</div>
+      <div>
+        <div class="tier-name">Service trades · route ops</div>
+        <div class="tier-sub">Branch Manager pattern transfers · quote-to-invoice + crew dispatch + subscriptions</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Business</th><th>Sector</th><th>Why fit</th><th>Contact</th><th class="c">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>B1</td><td><div class="biz-name">Potanovic &amp; Sons Tree Care</div><div class="biz-loc">Yonkers · <a href="https://potanovicandsons.net" target="_blank">site →</a></div></td><td>Tree care</td><td>Family-owned since 1985, owner-supervised every job. Direct Branch Manager analog.</td><td>Potanovic family</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>B2</td><td><div class="biz-name">Mauricio's Tree Service</div><div class="biz-loc">White Plains / Bedford · <a href="https://mauriciostreeservice.com" target="_blank">site →</a></div></td><td>Tree care</td><td>Family-owned, multi-town service area. Likely on paper or Jobber.</td><td>Mauricio (founder)</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>B3</td><td><div class="biz-name">Westchester Environmental Tree</div><div class="biz-loc">Westchester · <a href="https://westchesterenvironmentaltree.com" target="_blank">site →</a></div></td><td>Tree care</td><td>Family-owned since 1994, commercial + residential.</td><td>Owner via site</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>B4</td><td><div class="biz-name">WM Tree Service</div><div class="biz-loc">Yorktown Heights · <a href="https://wmtreeserviceinc.com" target="_blank">site →</a></div></td><td>Tree care</td><td>Local family-owned, smaller — Spike-sized fit.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>B5</td><td><div class="biz-name">Rayal Tree Services</div><div class="biz-loc">Westchester · <a href="https://rayaltreeservice.com" target="_blank">site →</a></div></td><td>Tree care</td><td>Independent operator.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>B6</td><td><div class="biz-name">A. Borrelli Mechanical</div><div class="biz-loc">Westchester · <a href="https://aborrelli.com" target="_blank">site →</a></div></td><td>HVAC + plumbing</td><td>Family-owned since 1981, multi-trade. Likely ServiceTitan or older.</td><td>Borrelli family</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>B7</td><td><div class="biz-name">Mazzacone Plumbing &amp; Heating</div><div class="biz-loc">Northern Westchester · <a href="https://mazzaconeplumbing.com" target="_blank">site →</a></div></td><td>Plumbing + HVAC</td><td>3 generations, 65+ years. Owner-led.</td><td>Mazzacone family</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>B8</td><td><div class="biz-name">Clover Heating &amp; Cooling</div><div class="biz-loc">Sleepy Hollow · <a href="https://clovercool.com" target="_blank">site →</a></div></td><td>HVAC + plumbing</td><td>Westchester / Rockland / Putnam route ops.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>B9</td><td><div class="biz-name">R. Dana Pest Control</div><div class="biz-loc">Hudson Valley · <a href="https://danapestcontrol.com" target="_blank">site →</a></div></td><td>Pest control</td><td>Third-generation, 50 years, recurring-service model — perfect for subscription billing rebuild.</td><td>Dana family</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>B10</td><td><div class="biz-name">Westex Pest Management</div><div class="biz-loc">Westchester · <a href="https://westexpestmanagement.com" target="_blank">site →</a></div></td><td>Pest control</td><td>Family-owned since 1928. Almost certainly antique software stack.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TIER C -->
+  <div class="tier C" id="C">
+    <div class="tier-head">
+      <div class="tier-letter">C</div>
+      <div>
+        <div class="tier-name">Boutique fitness · wellness</div>
+        <div class="tier-sub">Mindbody refugees · class booking + retail + recurring tuition</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Business</th><th>Sector</th><th>Why fit</th><th>Contact</th><th class="c">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>C1</td><td><div class="biz-name">Studio VMX</div><div class="biz-loc">Katonah · <a href="https://studiovmx.com" target="_blank">site →</a></div></td><td>Pilates (Xformer)</td><td>Owner-led boutique, hybrid method, premium membership base. Mindbody refugee candidate.</td><td>Owner via site</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>C2</td><td><div class="biz-name">ORA Yoga</div><div class="biz-loc">25 Barker St, Mount Kisco · <a href="https://ohrayoga.com" target="_blank">site →</a></div></td><td>Yoga</td><td>Solo founder-led (Michelle Prosper) — perfect Spike customer.</td><td>Michelle Prosper (founder)</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>C3</td><td><div class="biz-name">Mind &amp; Movement Pilates</div><div class="biz-loc">Westchester · <span class="verify">[address — phone-verify before calling]</span> · <a href="https://mindandmovementpilates.com" target="_blank">site →</a></div></td><td>Pilates</td><td>Owner-led boutique. Backup: Movement &amp; Wellness Pilates, White Plains.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C4</td><td><div class="biz-name">Pilates Loft</div><div class="biz-loc">1250 Pleasantville Rd, <strong>Briarcliff Manor</strong> (not Mt. Kisco)</div></td><td>Pilates</td><td>Indie studio in Briarcliff fitness corridor.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C5</td><td><div class="biz-name">Saw Mill Club</div><div class="biz-loc">Mt. Kisco · <a href="https://sawmillclub.com" target="_blank">site →</a></div></td><td>Multi-discipline health club</td><td>Larger but independent — multi-program billing pain.</td><td>GM / Ownership</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C6</td><td><div class="biz-name">Bedford Movement &amp; Massage</div><div class="biz-loc"><strong>Mount Kisco</strong> (not Bedford despite the name) · 25 yrs in operation</div></td><td>Pilates + massage</td><td>Hybrid practice, intake forms heavy.</td><td>Sarah Mace (owner/therapist)</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C7</td><td><div class="biz-name">Balanced Martial Arts</div><div class="biz-loc">Eastchester · <a href="https://balancedmartialarts.com" target="_blank">site →</a></div></td><td>Martial arts</td><td>Owner-led, all ages, recurring tuition + waivers.</td><td>Owner</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>C8</td><td><div class="biz-name">Dragon &amp; Crane</div><div class="biz-loc">Westchester · <a href="https://dragonandcrane.com" target="_blank">site →</a></div></td><td>Kung Fu / Tai Chi</td><td>Indie traditional martial arts — small, founder-led.</td><td>Founder</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C9</td><td><div class="biz-name">Central Park Dance</div><div class="biz-loc">Scarsdale · <a href="https://centralparkdance.com" target="_blank">site →</a></div></td><td>Dance studio</td><td>Multi-town reach, recurring tuition, recital programs.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>C10</td><td><div class="biz-name">Logrea Dance Academy</div><div class="biz-loc">2 Dale Ave, Ossining · 35+ years</div></td><td>Ballet / jazz</td><td>Family-led, performance-program billing.</td><td>Nick Logrea (now leading); founders Jean &amp; Beth Fritz-Logrea</td><td class="c"><span class="score s4">4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TIER D -->
+  <div class="tier D" id="D">
+    <div class="tier-head">
+      <div class="tier-letter">D</div>
+      <div>
+        <div class="tier-name">Healthcare-adjacent practices</div>
+        <div class="tier-sub">Booking + intake + light HIPAA · multi-practitioner scheduling pain</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Business</th><th>Sector</th><th>Why fit</th><th>Contact</th><th class="c">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>D1</td><td><div class="biz-name">ProClinix Sports PT &amp; Chiro</div><div class="biz-loc">West Harrison + 7 others · <a href="https://proclinix.com" target="_blank">site →</a></div></td><td>PT + Chiro</td><td>Multi-location independent — billing + scheduling at scale. Production Sprint sweet spot.</td><td>Practice owner</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>D2</td><td><div class="biz-name">True Way Physical Therapy</div><div class="biz-loc">Lower Westchester · <a href="https://truewaypt.com" target="_blank">site →</a></div></td><td>PT</td><td>Solo small practice — Spike-friendly.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D3</td><td><div class="biz-name">Joint Effort Chiropractic</div><div class="biz-loc">White Plains · <a href="https://jointeffortchiro.com" target="_blank">site →</a></div></td><td>Chiro</td><td>Indie, single-location.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D4</td><td><div class="biz-name">Body in Balance Chiropractic</div><div class="biz-loc">Westchester · <a href="https://bodyinbalanceny.com" target="_blank">site →</a></div></td><td>Chiro + massage</td><td>20-year indie, multi-modality.</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D5</td><td><div class="biz-name">Westchester Sports &amp; Wellness</div><div class="biz-loc">450 Mamaroneck Ave #409, <strong>Harrison</strong> · <a href="https://westchestersportsandwellness.com" target="_blank">site →</a></div></td><td>Chiro + acupuncture</td><td>Multi-practitioner scheduling pain. (Note: chiro/acupuncture practice, not a gym despite the name.)</td><td>Owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D6</td><td><div class="biz-name">White Plains Pain Management</div><div class="biz-loc">White Plains · <a href="https://completecareny.com" target="_blank">site →</a></div></td><td>Pain mgmt + chiro</td><td>3 locations, 20+ yrs, MVA / workers' comp focus = paperwork heavy. DecisionLayer angle is strong.</td><td>Owner</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>D7</td><td><div class="biz-name">Hartsdale Veterinary Hospital</div><div class="biz-loc">Hartsdale · <a href="https://hartsdalevet.com" target="_blank">site →</a></div></td><td>Vet</td><td>Full-service indie. Vet booking / intake software is notoriously bad — wide-open ICP.</td><td>Practice owner</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>D8</td><td><div class="biz-name">Pleasantville Animal Hospital</div><div class="biz-loc">Pleasantville · <a href="https://pleasantvillevet.com" target="_blank">site →</a></div></td><td>Vet</td><td>40+ years independent, AAHA-certified.</td><td>Owner-vet</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D9</td><td><div class="biz-name">Progressive Animal Hospital</div><div class="biz-loc">Somers · <a href="https://progressive-vet.com" target="_blank">site →</a></div></td><td>Vet</td><td>Privately owned, since 2004.</td><td>Owner-vet</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>D10</td><td><div class="biz-name">Pound Ridge Veterinary Center</div><div class="biz-loc">Pound Ridge · <a href="https://poundridgevet.com" target="_blank">site →</a></div></td><td>Vet</td><td>Indie, affluent area, dental + surgical.</td><td>Owner-vet</td><td class="c"><span class="score s4">4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TIER E -->
+  <div class="tier E" id="E">
+    <div class="tier-head">
+      <div class="tier-letter">E</div>
+      <div>
+        <div class="tier-name">Other interesting fits</div>
+        <div class="tier-sub">Day camps · wedding venues · catering · real estate · local SaaS</div>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Business</th><th>Sector</th><th>Why fit</th><th>Contact</th><th class="c">Score</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>E1</td><td><div class="biz-name">Camp Hillard</div><div class="biz-loc">Scarsdale · <a href="https://camphillard.com" target="_blank">site →</a></div></td><td>Day camp</td><td>2nd-oldest private day camp in US. Enrollment / medical-form / bus-route pain. DecisionLayer fits camp waivers.</td><td>Camp director</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>E2</td><td><div class="biz-name">Mount Tom Day Camp</div><div class="biz-loc">Pelham Manor (border w/ New Rochelle) · <a href="https://mounttomdaycamp.com" target="_blank">site →</a></div></td><td>Day camp</td><td>Premier private day camp, family-owned feel.</td><td>Owner / director</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>E3</td><td><div class="biz-name">Camp Nabby</div><div class="biz-loc">Northern Westchester · <a href="https://campnabby.com" target="_blank">site →</a></div></td><td>Day camp (17-acre)</td><td>Smaller indie camp — Spike fit.</td><td>Director</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>E4</td><td><div class="biz-name">Westchester Manor</div><div class="biz-loc">140 Saw Mill River Rd, Hastings-on-Hudson · <a href="https://westchestermanor.com" target="_blank">site →</a></div></td><td>Wedding venue + catering</td><td>Gresia family, 350-cap. Event booking + contracts (DecisionLayer arbitration angle).</td><td>John Gresia</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>E5</td><td><div class="biz-name">The Briarcliff Manor</div><div class="biz-loc">Briarcliff · <a href="https://thebriarcliffmanor.com" target="_blank">site →</a></div></td><td>Wedding venue</td><td>DiNapoli family, recently renovated.</td><td>DiNapoli family</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>E6</td><td><div class="biz-name">Greentree Country Club</div><div class="biz-loc">538 Davenport Ave, New Rochelle · <a href="https://greentreeclub.com" target="_blank">site →</a></div></td><td>Waterfront venue</td><td>Family-owned 40+ yrs. Heavy contracts.</td><td>Family-run (40+ yrs)</td><td class="c"><span class="score s5">5</span></td></tr>
+        <tr><td>E7</td><td><div class="biz-name">Cortlandt Colonial Manor</div><div class="biz-loc">714 Old Albany Post Rd, Cortlandt Manor · est. 1978</div></td><td>Wedding venue</td><td>Family-owned since 1978.</td><td>Evan (ops mgr)</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>E8</td><td><div class="biz-name">Ledley Food Service</div><div class="biz-loc">Brewster (Putnam, close) · <a href="https://ledleyfoodservice.com" target="_blank">site →</a></div></td><td>Catering</td><td>Family since 1958, multi-county.</td><td>Ledley family</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>E9</td><td><div class="biz-name">Ginnel Real Estate</div><div class="biz-loc">Bedford Hills + Pound Ridge · <a href="https://ginnel.com" target="_blank">site →</a></div></td><td>Real estate brokerage</td><td>#1 Northern Westchester since 1951. Agent CRM + lead pipeline pain.</td><td>Brokerage owner</td><td class="c"><span class="score s4">4</span></td></tr>
+        <tr><td>E10</td><td><div class="biz-name">Patricia Forgione's Realty Network</div><div class="biz-loc">Eastchester · since 1995 · 19 agents</div></td><td>Boutique brokerage</td><td>Founder-led boutique.</td><td>Patricia Forgione (owner since 1995)</td><td class="c"><span class="score s4">4</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- PLAYBOOK -->
+  <section class="doc">
+    <h2><span class="num">②</span>Outreach playbook</h2>
+    <p class="lede">Same shape for every business on this list. Adapt the language; don't adapt the structure.</p>
+    <ol>
+      <li><strong>5-min homework:</strong> open their site, find a software pain (e.g., booking form looks like 2008, "call to schedule"), find owner's name on LinkedIn / About page.</li>
+      <li><strong>First touch — email.</strong> 3 sentences max. Reference their specific pain. Offer 20-min meeting. Sign off with phone number.</li>
+      <li><strong>No reply in 5 days:</strong> walk-in OR call. "Hi, did Doug Brown's email land in your inbox last week?"</li>
+      <li><strong>Meeting:</strong> 20 min. Show a real demo (skateOS waiver flow). Ask 3 questions about their pain. Close on a $5k Spike, not a $20k Sprint.</li>
+      <li><strong>Follow-up:</strong> within 24 hours, email a one-page scope. Decision in 1 week or pass to next prospect.</li>
+    </ol>
+    <div class="ok"><strong>Track everything.</strong> A simple Google Sheet with columns: business / first-touch-date / response / next-step / status (cold / warm / meeting-booked / proposed / closed / lost). Don't fancy-tool this in month 1.</div>
+  </section>
+
+  <div style="text-align:center;margin-top:30px;padding:20px;color:#737373;font-size:.82rem;font-style:italic;">
+    <p>50 businesses. Start with one. The Rock Club.</p>
+    <p style="margin-top:14px;"><button class="lock-out" onclick="lockOut()">🔒 Lock</button></p>
+  </div>
+</div>
+
+<footer>© 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project · Internal — do not share · <a href="../index.html">Public site</a> · <a href="plan.html">Plan scenarios</a></footer>
+
+</div><!-- /content -->
+
+<script>
+  // SHA-256 password gate. Same shared password as plan.html.
+  const EXPECTED_HASH = 'f6a834024a630de3cf417b923a064a5ade17dcfc0e65f8c84cf9b7d41e9c6af4';
+
+  async function sha256(s){
+    const buf = new TextEncoder().encode(s);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  async function tryUnlock(e){
+    e.preventDefault();
+    const pw = document.getElementById('pw').value;
+    const errEl = document.getElementById('lockErr');
+    if(!pw) return false;
+    const h = await sha256(pw);
+    if(h === EXPECTED_HASH){
+      sessionStorage.setItem('hvai_plan_unlocked', '1');
+      showContent();
+    } else {
+      errEl.textContent = 'Wrong password.';
+      errEl.style.display = 'block';
+    }
+    return false;
+  }
+  function showContent(){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+  function lockOut(){
+    sessionStorage.removeItem('hvai_plan_unlocked');
+    location.reload();
+  }
+  if(sessionStorage.getItem('hvai_plan_unlocked') === '1') showContent();
+</script>
+
+</body>
+</html>

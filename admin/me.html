@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover">
+<title>My Account — 2nd Nature Park</title>
+<meta name="robots" content="noindex,nofollow">
+<!-- =====================================================================
+     CUSTOMER SELF-SERVE PORTAL
+     Skater logs in via Supabase magic-link → claims their customer
+     row (matched by email) → sees their punch balance / loyalty
+     points / upcoming lessons / recent purchases.
+
+     Setup:
+       1. Apply migration 019_customer_self_serve.sql.
+       2. In Supabase Dashboard → Auth → URL Configuration → add this
+          page's URL (e.g. https://2ntr.com/admin/me.html) to the
+          allowed redirect URLs list.
+       3. (Optional) Configure SMTP in Supabase to send via Resend
+          rather than Supabase's default — better deliverability.
+===================================================================== -->
+<style>
+  :root {
+    --rose:       #e11d48;
+    --rose-dark:  #be123c;
+    --rose-light: #ffe4e6;
+    --ink:        #14161a;
+    --ink-soft:   #555a63;
+    --bg:         #f6f6f4;
+    --line:       #e6e6e1;
+    --green:      #16a34a;
+    --green-bg:   #dcfce7;
+    --amber:      #d97706;
+    --amber-bg:   #fef3c7;
+    --red:        #dc2626;
+    --red-bg:     #fee2e2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    background: var(--bg); color: var(--ink);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+  .topbar {
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%);
+    color: #fff;
+    padding: 18px 20px;
+    text-align: center;
+  }
+  .topbar h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; }
+  .topbar .sub { font-size: 13px; opacity: .9; margin-top: 2px; }
+
+  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+
+  /* Login view */
+  .login-card {
+    background: #fff; border-radius: 16px; padding: 28px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.05);
+    margin-top: 24px;
+  }
+  .login-card h2 { font-size: 18px; margin-bottom: 6px; }
+  .login-card p  { font-size: 14px; color: var(--ink-soft); margin-bottom: 18px; line-height: 1.5; }
+  input[type=email] {
+    width: 100%; padding: 13px 14px;
+    border: 1px solid var(--line); border-radius: 10px;
+    font-size: 16px; font-family: inherit; color: var(--ink);
+    margin-bottom: 12px;
+  }
+  input[type=email]:focus { outline: 2px solid var(--rose); outline-offset: -1px; border-color: var(--rose); }
+  .btn {
+    width: 100%; padding: 14px; border: none; border-radius: 10px;
+    background: var(--rose); color: #fff;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    font-family: inherit;
+  }
+  .btn:hover { background: var(--rose-dark); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-ghost {
+    background: transparent; color: var(--ink-soft);
+    border: 1px solid var(--line);
+    margin-top: 8px;
+  }
+
+  /* Dashboard view */
+  .stat-card {
+    background: #fff; border-radius: 14px; padding: 18px 20px;
+    margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.04);
+  }
+  .stat-card .label {
+    font-size: 11px; font-weight: 700; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .stat-card .value {
+    font-size: 32px; font-weight: 900; margin-top: 4px;
+    letter-spacing: -0.02em;
+  }
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+
+  .section { margin: 22px 0 12px; }
+  .section h3 {
+    font-size: 12px; font-weight: 800; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;
+    padding-left: 4px;
+  }
+  .row {
+    background: #fff; border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 8px; display: flex; align-items: center; gap: 12px;
+  }
+  .row .name { font-weight: 700; font-size: 14px; }
+  .row .meta { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .row .right { margin-left: auto; text-align: right; font-weight: 700; }
+  .empty {
+    background: #fff; border-radius: 10px; padding: 24px;
+    text-align: center; font-size: 13px; color: var(--ink-soft);
+  }
+  .chip {
+    display: inline-block; padding: 2px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+  }
+  .chip-green { background: var(--green-bg); color: var(--green); }
+  .chip-amber { background: var(--amber-bg); color: var(--amber); }
+  .chip-red   { background: var(--red-bg);   color: var(--red); }
+  .chip-rose  { background: var(--rose-light); color: var(--rose-dark); }
+
+  .status-msg {
+    padding: 12px 14px; border-radius: 10px;
+    font-size: 14px; text-align: center; margin-top: 12px; display: none;
+  }
+  .status-msg.show { display: block; }
+  .status-msg.ok    { background: var(--green-bg); color: var(--green); }
+  .status-msg.err   { background: var(--red-bg);   color: var(--red); }
+  .status-msg.info  { background: var(--amber-bg); color: var(--amber); }
+
+  .signout-btn {
+    background: transparent; border: none; color: var(--ink-soft);
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    padding: 8px;
+  }
+
+  .footer {
+    text-align: center; font-size: 11px; color: var(--ink-soft);
+    margin: 30px 20px 24px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <h1 id="topTitle">My Account</h1>
+  <div class="sub" id="topSub">2nd Nature Park</div>
+</div>
+
+<div class="container">
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView">
+    <div class="login-card">
+      <h2>Sign in</h2>
+      <p>Enter the email you used at the front desk. We'll send you a one-time link — no password needed.</p>
+      <form id="loginForm" onsubmit="return sendMagicLink(event)">
+        <input type="email" id="emailInput" placeholder="you@example.com" autocomplete="email" required>
+        <button class="btn" id="loginBtn" type="submit">Send sign-in link</button>
+      </form>
+      <div id="loginStatus" class="status-msg"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashView" style="display:none;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.06em;">Welcome</div>
+        <div id="custName" style="font-size:22px;font-weight:900;letter-spacing:-0.01em;">—</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+        <button class="signout-btn" onclick="signOut()">Sign out</button>
+        <a href="#" onclick="event.preventDefault();signOutEverywhere();return false;" style="font-size:.7rem;color:var(--ink-soft);text-decoration:underline;text-decoration-style:dashed;text-underline-offset:2px;" title="Sign out from all devices currently logged in with this email — use after losing a phone or sharing a family device">↻ Sign out everywhere</a>
+      </div>
+    </div>
+
+    <!-- "You're at the park" magic-moment banner — surfaces when the
+         customer has an open checkin row right now. Pure JS, async-loaded.
+         Auto-hides when not currently checked in. -->
+    <div id="inParkBanner" style="display:none;"></div>
+
+    <!-- Park status pill — async-loaded via public_park_status RPC (mig 051).
+         Shows whether the park is open + closing time + capacity. Lets
+         customer answer "should I head over?" without calling. -->
+    <div id="parkStatusPill" style="display:none;"></div>
+
+    <!-- "Welcome back" re-engagement banner — surfaces when customer has
+         been away for ≥21 days. Drives return-visit motivation with a
+         personalized "we miss you" message. Pure JS using last_visit_at. -->
+    <div id="welcomeBackBanner" style="display:none;"></div>
+
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="label">★ Loyalty points</div>
+        <div class="value" id="ptsValue" style="color:var(--rose);">—</div>
+        <div id="ptsWorth" style="font-size:12px;color:var(--ink-soft);margin-top:2px;"></div>
+      </div>
+      <div class="stat-card">
+        <div class="label">🛹 Total visits</div>
+        <div class="value" id="visitsValue">—</div>
+        <div id="lastVisit" style="font-size:12px;color:var(--ink-soft);margin-top:2px;"></div>
+      </div>
+      <div class="stat-card" id="savingsCard" style="display:none;">
+        <div class="label">💰 You've saved</div>
+        <div class="value" id="savingsValue" style="color:#117a39;">—</div>
+        <div id="savingsSub" style="font-size:12px;color:var(--ink-soft);margin-top:2px;"></div>
+      </div>
+      <div class="stat-card" id="ytdCard" style="display:none;">
+        <div class="label">📅 This year</div>
+        <div class="value" id="ytdValue">—</div>
+        <div id="ytdSub" style="font-size:12px;color:var(--ink-soft);margin-top:2px;"></div>
+      </div>
+    </div>
+
+    <!-- Lifetime hours-skated stat — async-filled when ≥3 closed checkins
+         exist. Auto-hides for new skaters with no closed sessions yet. -->
+    <div id="hoursSkatedSlot"></div>
+
+    <!-- Achievement badges — gamification for customer engagement.
+         Mirrors the admin-side customer detail badges. Auto-shows when
+         the customer has earned at least one badge. -->
+    <div id="achievementsSection" class="section" style="display:none;background:linear-gradient(135deg,#f9fafb,#fef3c7);border:1px solid #fde68a;">
+      <h3 style="display:flex;align-items:center;gap:6px;">🏅 Your achievements <span style="font-size:.78rem;color:#6b7280;font-weight:400;" id="achievementsCount"></span></h3>
+      <div id="achievementsList" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+      <div style="margin-top:10px;font-size:.72rem;color:#6b7280;font-style:italic;">Earn more by skating with us, leveling up, and bringing friends. Tap any to see how you got it.</div>
+    </div>
+
+    <div id="passSection" class="section" style="display:none;">
+      <h3>Active passes</h3>
+      <div id="passList"></div>
+    </div>
+
+    <div class="section" id="lessonsSection" style="display:none;">
+      <h3>Upcoming lessons</h3>
+      <div id="lessonList"></div>
+    </div>
+
+    <!--
+      Quick actions — lesson booking (form-driven), gift card balance check.
+      Both link to existing public pages so this stays read-mostly. Lesson
+      requests come back as form_submissions; owner converts to lessons via
+      the smart-detection button in admin Forms.
+    -->
+    <div class="section" id="actionsSection">
+      <h3>Quick actions</h3>
+      <div id="actionList" style="display:flex;flex-direction:column;gap:10px;">
+        <a id="bookLessonLink" href="booking.html?form=lesson-request" class="btn-action" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;text-decoration:none;color:#14161a;transition:all .15s;">
+          <span style="font-size:1.5rem;">🎓</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.95rem;">Book a lesson</div>
+            <div style="font-size:.78rem;color:#6b7280;">Tell us when you'd like to skate — we'll confirm by email.</div>
+          </div>
+          <span style="color:#e11d48;font-weight:700;">→</span>
+        </a>
+        <a id="checkGiftCardLink" href="gift-card.html" class="btn-action" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;text-decoration:none;color:#14161a;transition:all .15s;">
+          <span style="font-size:1.5rem;">🎁</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.95rem;">Check a gift card balance</div>
+            <div style="font-size:.78rem;color:#6b7280;">Got a gift card? Look up the remaining balance.</div>
+          </div>
+          <span style="color:#e11d48;font-weight:700;">→</span>
+        </a>
+        <button id="editProfileBtn" onclick="openEditProfile()" class="btn-action" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;text-decoration:none;color:#14161a;transition:all .15s;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:1rem;">
+          <span style="font-size:1.5rem;">✏️</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.95rem;">Edit my profile</div>
+            <div style="font-size:.78rem;color:#6b7280;">Update your phone, email, or address.</div>
+          </div>
+          <span style="color:#e11d48;font-weight:700;">→</span>
+        </button>
+        <button id="memberCardBtn" onclick="openMyMemberCard()" class="btn-action" style="display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;text-decoration:none;color:#14161a;transition:all .15s;cursor:pointer;width:100%;text-align:left;font-family:inherit;font-size:1rem;">
+          <span style="font-size:1.5rem;">🪪</span>
+          <div style="flex:1;">
+            <div style="font-weight:700;font-size:.95rem;">My member card</div>
+            <div style="font-size:.78rem;color:#6b7280;">Print or save a wallet-size card with a QR code for fast Check-In.</div>
+          </div>
+          <span style="color:#e11d48;font-weight:700;">→</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Edit profile modal -->
+    <div id="editProfileBackdrop" style="display:none;position:fixed;inset:0;background:rgba(20,22,26,0.6);z-index:1000;align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeEditProfile()">
+      <div style="background:#fff;border-radius:14px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <h2 style="margin:0;font-size:1.2rem;">Edit profile</h2>
+          <button onclick="closeEditProfile()" style="background:transparent;border:0;font-size:1.5rem;cursor:pointer;color:#888;line-height:1;">×</button>
+        </div>
+        <div style="font-size:.85rem;color:#6b7280;margin-bottom:14px;">Keep your info up to date so we can reach you for lesson reminders + emergencies. Each save is logged for audit.</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <label style="display:block;"><div style="font-size:.78rem;color:#14161a;font-weight:600;margin-bottom:3px;">Email</div><input type="email" id="epEmail" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:inherit;"></label>
+          <label style="display:block;"><div style="font-size:.78rem;color:#14161a;font-weight:600;margin-bottom:3px;">Phone</div><input type="tel" id="epPhone" style="width:100%;padding:10px;border:1px solid #d1d5db;border-radius:8px;font-size:.95rem;font-family:inherit;"></label>
+          <details style="background:#f9fafb;border-radius:8px;padding:10px 12px;"><summary style="cursor:pointer;font-weight:600;font-size:.85rem;color:#14161a;">Address (optional)</summary>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+              <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">Street</div><input type="text" id="epAddress" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr;gap:6px;">
+                <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">City</div><input type="text" id="epCity" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+                <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">State</div><input type="text" id="epState" maxlength="3" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;text-transform:uppercase;"></label>
+                <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">Zip</div><input type="text" id="epZip" maxlength="10" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+              </div>
+            </div>
+          </details>
+          <details id="epGuardianDetails" style="background:#f9fafb;border-radius:8px;padding:10px 12px;"><summary style="cursor:pointer;font-weight:600;font-size:.85rem;color:#14161a;">Guardian / parent info (for minors)</summary>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:10px;">
+              <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">Guardian name</div><input type="text" id="epParentName" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+              <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">Guardian phone</div><input type="tel" id="epParentPhone" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+              <label style="display:block;"><div style="font-size:.74rem;color:#14161a;font-weight:600;margin-bottom:2px;">Guardian email</div><input type="email" id="epParentEmail" style="width:100%;padding:8px;border:1px solid #d1d5db;border-radius:6px;font-size:.9rem;font-family:inherit;"></label>
+            </div>
+          </details>
+          <div id="epStatus" style="font-size:.8rem;color:#6b7280;min-height:20px;"></div>
+          <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px;">
+            <button onclick="closeEditProfile()" style="padding:10px 16px;border:1px solid #d1d5db;background:#fff;color:#14161a;border-radius:8px;font-weight:600;font-family:inherit;font-size:.9rem;cursor:pointer;">Cancel</button>
+            <button id="epSaveBtn" onclick="saveProfileEdit()" style="padding:10px 18px;border:0;background:#e11d48;color:#fff;border-radius:8px;font-weight:700;font-family:inherit;font-size:.9rem;cursor:pointer;">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--
+      Team rider / affiliate dashboard — auto-shows when this customer is
+      enrolled as an affiliate (mig 045). Self-serve view of their own
+      stats, code, public profile link, and native-share buttons. Distinct
+      from the admin Team Riders page (owner sees all riders + earnings +
+      payouts); this is just THIS customer's own view.
+    -->
+    <div class="section" id="affiliateSection" style="display:none;background:linear-gradient(135deg,#fdf4ff 0%,#fef3c7 100%);padding:18px 16px;border-radius:14px;border:2px solid #a78bfa;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+        <span style="font-size:1.5rem;">🏆</span>
+        <h3 style="margin:0;color:#581c87;">You're a team rider!</h3>
+      </div>
+      <div style="font-size:.9rem;color:#6b21a8;margin-bottom:14px;line-height:1.4;">Share your code with friends. When they use it at the shop, you earn — automatically.</div>
+
+      <div style="background:#fff;border:2px dashed #a78bfa;border-radius:12px;padding:16px;text-align:center;margin-bottom:14px;">
+        <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;color:#7c3aed;margin-bottom:6px;font-weight:700;">Your code</div>
+        <div id="affCodeDisplay" style="font-family:ui-monospace,monospace;font-size:1.8rem;font-weight:800;color:#581c87;letter-spacing:.05em;">—</div>
+        <button id="affCopyBtn" onclick="copyMyAffiliateCode()" style="margin-top:10px;background:#7c3aed;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.9rem;font-family:inherit;">Copy code</button>
+        <div style="display:flex;gap:6px;margin-top:10px;">
+          <button onclick="shareAffiliateNative()" style="flex:1;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:.78rem;color:#6b7280;font-family:inherit;">📤 Share</button>
+          <button onclick="shareAffiliateTo('sms')" style="flex:1;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:.78rem;color:#6b7280;font-family:inherit;">💬 Text</button>
+          <button onclick="shareAffiliateTo('email')" style="flex:1;padding:8px;background:#fff;border:1px solid #e5e7eb;border-radius:6px;cursor:pointer;font-size:.78rem;color:#6b7280;font-family:inherit;">✉️ Email</button>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px;">
+        <div style="background:#fff;border-radius:10px;padding:12px;text-align:center;">
+          <div id="affRefs" style="font-size:1.6rem;font-weight:800;color:#7c3aed;">0</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-top:2px;">Friends referred</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:12px;text-align:center;">
+          <div id="affEarned" style="font-size:1.6rem;font-weight:800;color:#15803d;">$0</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-top:2px;">Earned</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:12px;text-align:center;">
+          <div id="affDriven" style="font-size:1.4rem;font-weight:800;color:#374151;">$0</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-top:2px;">Driven to shop</div>
+        </div>
+        <div style="background:#fff;border-radius:10px;padding:12px;text-align:center;">
+          <div id="affOwed" style="font-size:1.4rem;font-weight:800;color:#d97706;">$0</div>
+          <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:#6b7280;font-weight:700;margin-top:2px;">Pending payout</div>
+        </div>
+      </div>
+
+      <a id="affPublicLink" href="#" target="_blank" style="display:block;text-align:center;background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px;text-decoration:none;color:#7c3aed;font-weight:700;font-size:.85rem;">🌐 View my public profile →</a>
+
+      <div id="affMilestoneRow" style="display:none;margin-top:12px;padding:10px 12px;background:#fef3c7;border-radius:8px;font-size:.82rem;color:#78350f;text-align:center;"></div>
+
+      <details id="affEarningsDetails" style="margin-top:12px;background:#fff;border-radius:8px;padding:10px 12px;">
+        <summary style="cursor:pointer;font-weight:600;font-size:.85rem;color:#14161a;">Recent earnings</summary>
+        <div id="affEarningsList" style="margin-top:10px;font-size:.85rem;"></div>
+      </details>
+    </div>
+
+    <div class="section" id="loyaltySection" style="display:none;">
+      <h3>Recent points activity</h3>
+      <div id="loyaltyList"></div>
+    </div>
+
+    <!-- Pre-orders section (mig 050 my_preorders RPC) — shows the signed-in
+         customer's pre-order submissions with deposit/balance status. Auto-
+         hides when no preorders on file or the RPC isn't available. -->
+    <div class="section" id="preordersSection" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <h3 style="margin:0;">🛹 Your pre-orders</h3>
+        <a href="https://preorder.skateos.com" style="font-size:.78rem;color:var(--rose);text-decoration:underline;">Browse catalog →</a>
+      </div>
+      <div id="preordersList"></div>
+    </div>
+
+    <!-- Online retail orders (mig 058 my_retail_orders RPC) — shows
+         shop.skateos.com purchases with payment + fulfillment status. -->
+    <div class="section" id="retailOrdersSection" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <h3 style="margin:0;">🛒 Your online orders</h3>
+        <a href="https://shop.skateos.com" style="font-size:.78rem;color:var(--rose);text-decoration:underline;">Shop →</a>
+      </div>
+      <div id="retailOrdersList"></div>
+    </div>
+
+    <!-- Online lesson bookings (mig 058 my_lesson_bookings RPC) — shows
+         book.skateos.com bookings with instructor + scheduled time. -->
+    <div class="section" id="lessonBookingsSection" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <h3 style="margin:0;">🎓 Your online lesson bookings</h3>
+        <a href="https://book.skateos.com" style="font-size:.78rem;color:var(--rose);text-decoration:underline;">Book another →</a>
+      </div>
+      <div id="lessonBookingsList"></div>
+    </div>
+
+    <div class="section">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <h3 style="margin:0;">Recent purchases</h3>
+        <button id="downloadReceiptsBtn" onclick="downloadReceipts()" class="btn btn-ghost" style="display:none;font-size:.78rem;">📥 Download CSV (this year)</button>
+      </div>
+      <div id="salesList"><div class="empty">No purchases yet.</div></div>
+    </div>
+
+    <div class="section" style="margin-top:30px;">
+      <button class="btn btn-ghost" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  2nd Nature Park · Peekskill, NY · <a href="mailto:info@2ntr.com" style="color:var(--rose);">info@2ntr.com</a><br>
+  Need help? Reply to any email or stop by the front desk.
+</div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  const cfgScript = await fetch('config.js').then(r => r.text());
+  new Function(cfgScript)();
+  const CFG = window.APP_CONFIG;
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey, {
+    auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+  });
+  if (CFG.bizName) {
+    document.getElementById('topSub').textContent = CFG.bizName;
+    document.title = 'My Account — ' + CFG.bizName;
+  }
+</script>
+<script>
+  const $ = id => document.getElementById(id);
+  function status(msg, kind){
+    var s = $('loginStatus');
+    s.className = 'status-msg show ' + (kind || 'ok');
+    s.textContent = msg;
+  }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+  function money(n){ return '$' + (Number(n)||0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function fmtDate(iso){ if(!iso) return '—'; return new Date(iso).toLocaleDateString(); }
+  function fmtDateTime(iso){ if(!iso) return '—'; return new Date(iso).toLocaleString(); }
+  function fmtRelative(iso){
+    if(!iso) return 'never';
+    var days = Math.round((Date.now() - new Date(iso).getTime()) / 86400000);
+    if(days === 0) return 'today';
+    if(days === 1) return 'yesterday';
+    if(days < 30) return days + 'd ago';
+    if(days < 365) return Math.round(days/30) + 'mo ago';
+    return Math.round(days/365) + 'y ago';
+  }
+
+  // Wait for client
+  async function getClient(){
+    var tries = 0;
+    while (!window.supabaseClient && tries < 30) { await new Promise(r => setTimeout(r, 100)); tries++; }
+    return window.supabaseClient;
+  }
+
+  async function sendMagicLink(ev){
+    ev.preventDefault();
+    var email = $('emailInput').value.trim();
+    if(!email) return false;
+    var btn = $('loginBtn');
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      var sb = await getClient();
+      var { error } = await sb.auth.signInWithOtp({
+        email,
+        options: {
+          emailRedirectTo: window.location.origin + window.location.pathname
+        }
+      });
+      if (error) throw error;
+      status('✓ Check your email — we sent you a sign-in link. Tap it from the same device.', 'ok');
+      btn.textContent = 'Link sent';
+    } catch(e) {
+      status('Could not send link: ' + (e.message || e), 'err');
+      btn.disabled = false; btn.textContent = 'Send sign-in link';
+    }
+    return false;
+  }
+
+  async function signOut(){
+    var sb = await getClient();
+    await sb.auth.signOut();
+    window.location.reload();
+  }
+  window.signOut = signOut;
+
+  // Sign out from every device currently logged in with this email.
+  // Useful for: lost phones, shared family devices, suspicious activity.
+  // Supabase scope:'global' invalidates all refresh tokens server-side —
+  // other browsers / phones logged in to this email will get kicked within
+  // ~60 seconds (when their access tokens expire). Falls back to local
+  // sign-out if global fails (older Supabase clients).
+  async function signOutEverywhere(){
+    if(!confirm('Sign out from ALL devices?\n\nThis kicks every browser / phone currently logged in to this email. Use it when:\n  • A phone was lost or stolen\n  • A shared device shouldn\'t have access anymore\n  • You want to refresh from scratch after a security concern\n\nOther sessions will end within ~60 seconds. You\'ll need to sign in again on your devices.')){
+      return;
+    }
+    var sb = await getClient();
+    try {
+      await sb.auth.signOut({ scope: 'global' });
+    } catch(e){
+      // Fallback to local sign-out if global isn't supported
+      try { await sb.auth.signOut(); } catch(_){}
+    }
+    alert('Signed out from all devices. You\'ll need to sign in again to use your account.');
+    window.location.reload();
+  }
+  window.signOutEverywhere = signOutEverywhere;
+  window.sendMagicLink = sendMagicLink;
+
+  async function init(){
+    var sb = await getClient();
+    var { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      // Listen for session created from URL hash (post-magic-link redirect)
+      sb.auth.onAuthStateChange((evt, sess) => {
+        if (sess) loadDashboard();
+      });
+      return; // login view stays visible
+    }
+    loadDashboard();
+  }
+
+  async function loadDashboard(){
+    var sb = await getClient();
+
+    // 1. Claim/link the customer record
+    let custId = null;
+    try {
+      var { data: cid } = await sb.rpc('claim_customer_record');
+      custId = cid;
+    } catch (e) {
+      console.error('claim failed', e);
+    }
+
+    // 2. One-shot summary
+    var { data, error } = await sb.rpc('customer_portal_summary');
+    if (error || !data || !data.ok) {
+      $('loginView').style.display = 'block';
+      status('Could not load your account: ' + (error?.message || data?.error || 'unknown'), 'err');
+      return;
+    }
+    // Stash for the edit-profile modal pre-fill (mig 044)
+    window._lastPortalSummary = data;
+
+    $('loginView').style.display = 'none';
+    $('dashView').style.display = 'block';
+
+    var c = data.customer || {};
+    $('custName').textContent = c.first_name || c.name || c.email || 'there';
+    $('ptsValue').textContent = (c.loyalty_points || 0).toLocaleString();
+    $('visitsValue').textContent = data.checkin_count || 0;
+    if(c.last_visit_at){
+      $('lastVisit').textContent = 'Last visit ' + fmtRelative(c.last_visit_at);
+    }
+
+    // Park status pill — async-fetch public_park_status RPC (mig 051).
+    // Shows current open/closed state + closing time + capacity. Auto-hides
+    // when in-park banner is showing (the customer is obviously here, no
+    // point telling them the park is open). Pure JS, no migration required.
+    (async function(){
+      var pillEl = document.getElementById('parkStatusPill');
+      if(!pillEl) return;
+      try {
+        var { data: status, error } = await sb.rpc('public_park_status');
+        if(error || !status) return;
+        // Don't double-render if the in-park banner is visible — that's
+        // already a "you're here" signal, this would be redundant.
+        var inPark = document.getElementById('inParkBanner');
+        if(inPark && inPark.style.display !== 'none') return;
+        var bg, color, border, icon, lead, sub;
+        if(status.emergency){
+          bg = '#fee2e2'; color = '#991b1b'; border = '#fecaca'; icon = '🚨';
+          lead = 'Park temporarily closed';
+          sub = (status.emergency_reason ? esc(status.emergency_reason) + ' · ' : '') +
+                (status.emergency_until ? 'reopens ' + fmtDate(status.emergency_until) : 'reopens TBD');
+        } else if(status.is_closed_today && status.holiday_name){
+          bg = '#fef3c7'; color = '#92400e'; border = '#fde68a'; icon = '🎉';
+          lead = 'Closed today: ' + esc(status.holiday_name);
+          sub = 'Back tomorrow';
+        } else if(status.is_closed_today){
+          bg = '#f3f4f6'; color = '#374151'; border = '#d1d5db'; icon = '🌙';
+          lead = 'Closed today';
+          sub = 'Open most days · check our hours below';
+        } else if(status.status === 'opens_later'){
+          bg = '#fef3c7'; color = '#92400e'; border = '#fde68a'; icon = '🕒';
+          lead = 'Opens at ' + esc(status.today_open || 'soon');
+          sub = 'Park opens later today';
+        } else if(status.status === 'closed_for_today'){
+          bg = '#f3f4f6'; color = '#374151'; border = '#d1d5db'; icon = '🌙';
+          lead = 'Closed for the day';
+          sub = 'Open tomorrow';
+        } else if(status.is_open){
+          bg = '#dcfce7'; color = '#15803d'; border = '#86efac'; icon = '🛹';
+          lead = 'Open right now';
+          // Capacity hint when configured
+          var capDetail = '';
+          if(status.capacity_max && status.capacity_max > 0){
+            var pct = Math.round((status.capacity_current / status.capacity_max) * 100);
+            if(pct >= 100) capDetail = ' · ⚠ AT CAPACITY';
+            else if(pct >= 80) capDetail = ' · busy (' + status.capacity_current + '/' + status.capacity_max + ')';
+            else if(status.capacity_current > 0) capDetail = ' · ' + status.capacity_current + ' skaters in park';
+          }
+          sub = 'Closes at ' + esc(status.today_close || 'tonight') + capDetail;
+        } else {
+          return; // unknown state, skip rendering
+        }
+        pillEl.innerHTML = '<div style="margin-bottom:14px;padding:12px 16px;background:' + bg + ';color:' + color +
+          ';border:1px solid ' + border + ';border-radius:10px;display:flex;align-items:center;gap:12px;">' +
+          '<div style="font-size:1.4rem;flex-shrink:0;">' + icon + '</div>' +
+          '<div style="flex:1;">' +
+          '<div style="font-size:.95rem;font-weight:800;">' + esc(lead) + '</div>' +
+          '<div style="font-size:.78rem;opacity:.85;margin-top:2px;">' + sub + '</div>' +
+          '</div></div>';
+        pillEl.style.display = 'block';
+      } catch(_){ /* silent — RPC may not exist yet */ }
+    })();
+
+    // "Welcome back" re-engagement banner — surfaces when customer has been
+    // away ≥21 days. Skips when currently in-park (the in-park banner is the
+    // priority signal). Skips for brand-new customers (need at least 1 visit
+    // for "back" to make sense).
+    (function(){
+      var bannerEl = document.getElementById('welcomeBackBanner');
+      if(!bannerEl) return;
+      // Don't compete with the in-park banner — if they're currently here,
+      // saying "we miss you" is silly.
+      if((c.total_visits||0) < 1) return;
+      var lastVisit = c.last_visit_at;
+      if(!lastVisit) return;
+      var lastMs = new Date(lastVisit).getTime();
+      var daysAway = Math.floor((Date.now() - lastMs) / 86400000);
+      if(daysAway < 21) return; // not gone long enough
+      var lead, sub, bg, color, border, icon;
+      if(daysAway >= 180){
+        bg = '#fef2f2'; color = '#991b1b'; border = '#fecaca'; icon = '👋';
+        lead = "It's been a while — welcome back!";
+        sub = 'Last visit was ' + Math.round(daysAway/30) + ' months ago. We\'d love to see you back at the park.';
+      } else if(daysAway >= 60){
+        bg = '#fef3c7'; color = '#92400e'; border = '#fde68a'; icon = '💚';
+        lead = 'We miss you!';
+        sub = 'Last visit was ' + daysAway + ' days ago. Come crank out a session — we\'ll have boards, helmets, and pads ready.';
+      } else {
+        bg = '#fdf4ff'; color = '#6b21a8'; border = '#e9d5ff'; icon = '🛹';
+        lead = 'Hey, stranger!';
+        sub = "It's been " + daysAway + ' days since your last session. Drop in this week?';
+      }
+      bannerEl.innerHTML = '<div style="margin-bottom:14px;padding:14px 18px;background:' + bg + ';color:' + color +
+        ';border:1px solid ' + border + ';border-radius:10px;display:flex;align-items:center;gap:12px;">' +
+        '<div style="font-size:1.6rem;flex-shrink:0;">' + icon + '</div>' +
+        '<div style="flex:1;">' +
+        '<div style="font-size:1rem;font-weight:800;">' + esc(lead) + '</div>' +
+        '<div style="font-size:.82rem;opacity:.85;margin-top:2px;">' + sub + '</div>' +
+        '</div></div>';
+      bannerEl.style.display = 'block';
+    })();
+
+    // "You're at the park" magic-moment banner — async-fetch the customer's
+    // most-recent open checkin row (no checked_out_at). Mirrors admin-side
+    // "in park now" badge but flipped to customer perspective. Pulls every
+    // 60s while the page is open so duration counter stays fresh.
+    (async function(){
+      var bannerEl = document.getElementById('inParkBanner');
+      if(!bannerEl) return;
+      try {
+        var { data: openSessions } = await sb.from('checkins')
+          .select('checked_in_at')
+          .is('checked_out_at', null)
+          .order('checked_in_at', { ascending: false })
+          .limit(1);
+        if(!openSessions || !openSessions.length){
+          bannerEl.style.display = 'none';
+          return;
+        }
+        var startMs = new Date(openSessions[0].checked_in_at).getTime();
+        var paint = function(){
+          var elapsedMs = Date.now() - startMs;
+          if(elapsedMs < 0) elapsedMs = 0;
+          var hrs = Math.floor(elapsedMs / 3600000);
+          var mins = Math.floor((elapsedMs % 3600000) / 60000);
+          var label = hrs > 0 ? hrs+'h '+(mins<10?'0':'')+mins+'m' : mins+' min';
+          bannerEl.innerHTML =
+            '<div style="margin-bottom:14px;padding:14px 18px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:10px;border:1px solid #86efac;display:flex;align-items:center;gap:12px;">'
+            + '<div style="position:relative;width:14px;height:14px;background:#16a34a;border-radius:50%;flex-shrink:0;animation:livePulse 2s infinite;"></div>'
+            + '<div style="flex:1;">'
+            + '<div style="font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;letter-spacing:.06em;">🛹 You\'re at the park right now</div>'
+            + '<div style="font-size:18px;font-weight:800;color:#14532d;">Session: '+label+'</div>'
+            + '</div></div>'
+            + '<style>@keyframes livePulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.6);}50%{box-shadow:0 0 0 6px rgba(22,163,74,0);}}</style>';
+        };
+        paint();
+        bannerEl.style.display = 'block';
+        // Hide the welcome-back banner if it managed to render — currently-
+        // in-park is a stronger signal than "you've been away N days"
+        var wb = document.getElementById('welcomeBackBanner');
+        if(wb) wb.style.display = 'none';
+        // Tick every 30s while page is open
+        if(window._inParkTicker){ clearInterval(window._inParkTicker); }
+        window._inParkTicker = setInterval(paint, 30000);
+      } catch(_){ bannerEl.style.display = 'none'; }
+    })();
+
+    // Lifetime hours-skated stat — async fetch checkins via RLS (mig 019).
+    // Fire-and-forget; tolerates network failure (just hides the slot).
+    // Surfaces gamification data point: "you've skated 47 hours here."
+    (async function(){
+      try {
+        var { data: closedCheckins } = await sb.from('checkins')
+          .select('checked_in_at, checked_out_at')
+          .not('checked_out_at', 'is', null)
+          .order('checked_in_at', { ascending: true })
+          .limit(2000);
+        if(!closedCheckins || closedCheckins.length === 0) return;
+        var totalMs = 0, sessions = 0;
+        closedCheckins.forEach(function(r){
+          if(!r.checked_in_at || !r.checked_out_at) return;
+          var ms = new Date(r.checked_out_at).getTime() - new Date(r.checked_in_at).getTime();
+          if(ms <= 0 || ms > 12*3600000) return;
+          totalMs += ms;
+          sessions++;
+        });
+        if(sessions < 3) return; // skip noise
+        var totalHrs = totalMs / 3600000;
+        var avgMin = Math.round(totalMs / sessions / 60000);
+        var avgLabel = avgMin >= 60 ? Math.floor(avgMin/60)+'h '+(avgMin%60?(avgMin%60)+'m':'').trim() : avgMin+' min';
+        var slot = document.getElementById('hoursSkatedSlot');
+        if(slot){
+          slot.innerHTML = '<div style="margin-top:18px;padding:14px 18px;background:linear-gradient(135deg,#fef2f2,#faf8f3);border-radius:10px;border-left:4px solid #fb7185;">'
+            + '<div style="font-size:.7rem;color:#7f1d1d;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:4px;">⏱ Time on board</div>'
+            + '<div style="font-size:1.6rem;font-weight:800;color:#7f1d1d;">'+totalHrs.toFixed(1)+' hours</div>'
+            + '<div style="font-size:.85rem;color:#991b1b;opacity:.85;">across '+sessions+' session'+(sessions===1?'':'s')+' · avg '+avgLabel+' per visit</div>'
+            + '</div>';
+        }
+      } catch(e){ /* silent */ }
+    })();
+
+    // Lifetime savings + this-year stats — computed from recent_sales (capped at 50
+    // by the portal_summary RPC, so this is "recent savings" not strict-lifetime,
+    // but the line is "💰 You've saved" which is honest enough). Loyalty redemptions
+    // count as savings too.
+    var sales = data.recent_sales || [];
+    var totalSavings = 0;
+    var nowYear = new Date().getFullYear();
+    var ytdSpent = 0, ytdSaved = 0, ytdSales = 0;
+    sales.forEach(function(s){
+      if(s.status !== 'completed') return;
+      var disc = Number(s.discount)||0;
+      totalSavings += disc;
+      if(s.created_at && new Date(s.created_at).getFullYear() === nowYear){
+        ytdSpent += Number(s.total)||0;
+        ytdSaved += disc;
+        ytdSales++;
+      }
+    });
+    // Loyalty redemptions also count as savings (points → $)
+    var loyTx = data.recent_loyalty || [];
+    loyTx.forEach(function(t){
+      // Redemption rows have negative delta + reason='redeem'
+      if(t.reason === 'redeem' && Number(t.delta) < 0){
+        // Per RPC: each pt = 1/redeem_pts_per_dollar dollars
+        // Without rate available here, approximate via |delta|/100 (default rate).
+        // The cfg block below could refine this; OK as conservative estimate.
+        var ptsRedeemed = Math.abs(Number(t.delta));
+        totalSavings += ptsRedeemed / 100;  // best-effort with default rate
+      }
+    });
+    if(totalSavings >= 1){
+      $('savingsCard').style.display = '';
+      $('savingsValue').textContent = '$' + totalSavings.toFixed(2).replace(/\.00$/,'');
+      $('savingsSub').textContent = 'across ' + sales.filter(function(s){return s.status==='completed';}).length + ' purchases';
+    }
+    if(ytdSales >= 1){
+      $('ytdCard').style.display = '';
+      $('ytdValue').textContent = '$' + ytdSpent.toFixed(2).replace(/\.00$/,'');
+      $('ytdSub').textContent = ytdSales + ' purchase'+(ytdSales===1?'':'s')+(ytdSaved>=1 ? ' · saved $'+ytdSaved.toFixed(2).replace(/\.00$/,'') : '');
+    }
+
+    // Pre-fill the lesson-booking link with the customer's known info so they
+    // don't have to retype name/email/phone. The booking form (form-renderer
+    // at booking.html?form=...) reads URL params if present.
+    var bookLinkEl = $('bookLessonLink');
+    if(bookLinkEl){
+      var qs = new URLSearchParams();
+      qs.set('form', 'lesson-request');
+      if(c.name)  qs.set('name',  c.name);
+      if(c.email) qs.set('email', c.email);
+      if(c.phone) qs.set('phone', c.phone);
+      bookLinkEl.href = 'booking.html?' + qs.toString();
+    }
+
+    // Loyalty config (worth)
+    try {
+      var { data: cfg } = await sb.from('loyalty_config').select('*').eq('id', 1).single();
+      if (cfg && cfg.enabled) {
+        var rate = cfg.redeem_pts_per_dollar || 100;
+        var worth = (c.loyalty_points || 0) / rate;
+        if (worth > 0) $('ptsWorth').textContent = '≈ ' + money(worth) + ' off';
+      }
+    } catch(e){}
+
+    // Affiliate / team rider self-serve dashboard (mig 045)
+    // Async-fetch the customer's own affiliate_codes row + recent earnings.
+    // Tolerant of missing migration — silently skips if tables don't exist.
+    try { await _loadMyAffiliateDashboard(sb, custId, c); } catch(e){ /* silent */ }
+
+    // Achievement badges — gamification, drives engagement + sharability.
+    // Computed from already-loaded customer + sales + subscriptions + loyalty
+    // data + checkin count. Mirrors the admin customer-detail logic.
+    try { _renderMyAchievements(c, data); } catch(e){ /* silent */ }
+
+    // Passes
+    var subs = data.subscriptions || [];
+    if (subs.length) {
+      $('passSection').style.display = 'block';
+      $('passList').innerHTML = subs.map(s => {
+        var chip = '';
+        var detail = '';
+        if (s.plan_type === 'punch_card') {
+          var left = (s.punches_total || 0) - (s.punches_used || 0);
+          var low = left <= 2;
+          chip = '<span class="chip ' + (low ? 'chip-amber' : 'chip-green') + '">' + left + ' / ' + (s.punches_total || 0) + ' left</span>';
+          detail = 'Punch card';
+        } else if (s.plan_type === 'monthly') {
+          chip = '<span class="chip chip-green">Active</span>';
+          detail = 'Monthly · expires ' + fmtDate(s.end_date);
+        } else if (s.plan_type === 'annual') {
+          chip = '<span class="chip chip-green">Active</span>';
+          detail = 'Annual · expires ' + fmtDate(s.end_date);
+        } else if (s.plan_type === 'comped') {
+          chip = '<span class="chip chip-rose">Industry</span>';
+          detail = 'Comped';
+        } else {
+          chip = '<span class="chip chip-rose">' + esc(s.plan_type) + '</span>';
+        }
+        // Cancel + pause buttons — only for cancellable plan types (monthly /
+        // annual / punch_card) AND active status. Pause is monthly/annual-only.
+        // Day passes + comped subs skip (single-use / not customer-controlled).
+        var canCancel = (s.status === 'active' || s.status === 'pending') &&
+                        (s.plan_type === 'monthly' || s.plan_type === 'annual' || s.plan_type === 'punch_card');
+        var canPause = s.status === 'active' &&
+                       (s.plan_type === 'monthly' || s.plan_type === 'annual');
+        var pauseBtn = canPause
+          ? '<button onclick="pauseMySubscription(\'' + s.id + '\',\'' + esc(s.plan_name || s.plan_type) + '\')" style="margin-top:6px;margin-right:6px;padding:6px 12px;background:#fff;color:#d97706;border:1px solid #fde68a;border-radius:6px;font-size:.8rem;cursor:pointer;font-family:inherit;font-weight:600;"><i class="fa fa-pause"></i> Pause</button>'
+          : '';
+        var cancelBtn = canCancel
+          ? '<button onclick="cancelMySubscription(\'' + s.id + '\',\'' + esc(s.plan_name || s.plan_type) + '\')" style="margin-top:6px;padding:6px 12px;background:#fff;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-size:.8rem;cursor:pointer;font-family:inherit;font-weight:600;"><i class="fa fa-times"></i> Cancel</button>'
+          : '';
+        // Show currently-paused status with auto-resume info
+        var pausedNote = '';
+        if(s.status === 'paused' && s.paused_until){
+          pausedNote = '<div style="margin-top:6px;padding:6px 10px;background:#fef3c7;border-radius:6px;font-size:.78rem;color:#92400e;">⏸ Paused — auto-resumes ' + fmtDate(s.paused_until) + '</div>';
+        }
+        return '<div class="row"><div><div class="name">' + esc(s.plan_name || s.plan_type) + '</div><div class="meta">' + detail + '</div>' + pausedNote + pauseBtn + cancelBtn + '</div><div class="right">' + chip + '</div></div>';
+      }).join('');
+    }
+
+    // Lessons
+    var lessons = data.upcoming_lessons || [];
+    if (lessons.length) {
+      $('lessonsSection').style.display = 'block';
+      $('lessonList').innerHTML = lessons.map(l => {
+        var when = new Date(l.scheduled_at);
+        var typeLabel = l.type ? l.type.charAt(0).toUpperCase() + l.type.slice(1) : 'Lesson';
+        // Cancel button — only when lesson is in the future + not already cancelled
+        var canCancel = (l.status !== 'cancelled') && (when.getTime() > Date.now());
+        var cancelBtn = canCancel
+          ? '<button onclick="cancelMyLesson(\''+l.id+'\','+(Number(l.price)||0)+',\''+esc(l.scheduled_at)+'\')" class="btn-action" style="font-size:.7rem;padding:4px 10px;border:1px solid #fecaca;background:#fff;color:#dc2626;border-radius:6px;cursor:pointer;">Cancel</button>'
+          : '';
+        // "Add to calendar" — only when lesson is in the future. Generates a single-event .ics
+        // file the customer can import to Google / Apple / Outlook.
+        var calBtn = (when.getTime() > Date.now())
+          ? '<button onclick="downloadMyLessonIcs(\''+l.id+'\')" class="btn-action" style="font-size:.7rem;padding:4px 10px;border:1px solid #d1d5db;background:#fff;color:#14161a;border-radius:6px;cursor:pointer;margin-right:6px;" title="Download .ics file to add to your calendar">📅 Add</button>'
+          : '';
+        return '<div class="row"><div><div class="name">' + esc(typeLabel) + (l.instructor ? ' with ' + esc(l.instructor) : '') + '</div><div class="meta">' + when.toLocaleString([], { weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) + (l.duration_min ? ' · ' + l.duration_min + 'min' : '') + '</div></div><div class="right">'+calBtn+cancelBtn+'</div></div>';
+      }).join('');
+    }
+
+    // Recent loyalty
+    var lty = data.recent_loyalty || [];
+    if (lty.length) {
+      $('loyaltySection').style.display = 'block';
+      $('loyaltyList').innerHTML = lty.map(t => {
+        var sign = t.delta > 0 ? '+' : '';
+        var color = t.delta > 0 ? 'var(--green)' : 'var(--rose)';
+        return '<div class="row"><div><div class="name">' + esc(t.note || t.reason) + '</div><div class="meta">' + fmtDateTime(t.created_at) + '</div></div><div class="right" style="color:' + color + ';">' + sign + t.delta + '</div></div>';
+      }).join('');
+    }
+
+    // Sales
+    var sales = data.recent_sales || [];
+    if (sales.length) {
+      $('salesList').innerHTML = sales.map(s => {
+        return '<div class="row"><div><div class="name">' + (s.receipt_number ? '#' + esc(s.receipt_number) : 'Receipt') + '</div><div class="meta">' + fmtDateTime(s.created_at) + ' · ' + esc(s.payment_method || '—') + '</div></div><div class="right" style="color:var(--green);">' + money(s.total) + '</div></div>';
+      }).join('');
+      // Stash sales for the download function
+      window._mySales = sales;
+      var dlBtn = $('downloadReceiptsBtn');
+      if (dlBtn) dlBtn.style.display = '';
+    }
+
+    // Pre-orders (mig 050). Best-effort — silent fallback if RPC missing.
+    loadMyPreorders();
+    // Online retail orders + lesson bookings (mig 058)
+    loadMyRetailOrders();
+    loadMyLessonBookings();
+  }
+
+  // ─── Online retail orders (mig 058 my_retail_orders RPC) ──────────
+  async function loadMyRetailOrders(){
+    try {
+      var sb = await getClient();
+      var { data, error } = await sb.rpc('my_retail_orders');
+      if (error || !data || !data.found) return;
+      var orders = data.orders || [];
+      if (!orders.length) return;
+
+      var sec = $('retailOrdersSection');
+      var list = $('retailOrdersList');
+      if (!sec || !list) return;
+      sec.style.display = 'block';
+
+      list.innerHTML = orders.map(function(o){
+        var t = o.totals || {};
+        var paid = o.payment_status === 'paid';
+        var fulfilled = !!o.fulfilled_at;
+        var isShip = o.fulfillment === 'ship';
+        var itemCount = (o.items||[]).length;
+        var when = new Date(o.submitted_at);
+
+        var pill;
+        if (fulfilled) {
+          pill = '<span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">✓ ' + (isShip ? 'SHIPPED' : 'PICKED UP') + '</span>';
+        } else if (paid) {
+          pill = '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">📦 ' + (isShip ? 'PREPPING TO SHIP' : 'READY FOR PICKUP') + '</span>';
+        } else {
+          pill = '<span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">⏳ AWAITING PAYMENT</span>';
+        }
+
+        var payNow = '';
+        if (!paid && o.helcim_payment_url) {
+          payNow = '<a href="' + esc(o.helcim_payment_url) + '" target="_blank" style="display:inline-block;background:#e11d48;color:white;padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:700;text-decoration:none;margin-top:6px;">💳 Pay $' + (Number(t.subtotal)||0).toFixed(2) + ' now</a>';
+        }
+
+        var trackUrl = 'https://shop.skateos.com/order.html?id=' + esc(o.id);
+        return '<div class="row" style="cursor:pointer;" onclick="window.open(\'' + trackUrl + '\',\'_blank\')">'
+          + '<div>'
+          +   '<div class="name">' + itemCount + ' item' + (itemCount===1?'':'s') + ' · ' + money(Number(t.subtotal)||0) + '</div>'
+          +   '<div class="meta">Ordered ' + when.toLocaleDateString() + ' · ' + esc(o.fulfillment || 'pickup') + '</div>'
+          +   payNow
+          + '</div>'
+          + '<div class="right">' + pill + '</div>'
+          + '</div>';
+      }).join('');
+    } catch (e) {
+      console.warn('my_retail_orders failed:', e);
+    }
+  }
+
+  // ─── Online lesson bookings (mig 058 my_lesson_bookings RPC) ──────
+  async function loadMyLessonBookings(){
+    try {
+      var sb = await getClient();
+      var { data, error } = await sb.rpc('my_lesson_bookings');
+      if (error || !data || !data.found) return;
+      var bookings = data.bookings || [];
+      if (!bookings.length) return;
+
+      var sec = $('lessonBookingsSection');
+      var list = $('lessonBookingsList');
+      if (!sec || !list) return;
+      sec.style.display = 'block';
+
+      list.innerHTML = bookings.map(function(b){
+        var paid = b.payment_status === 'paid';
+        var when = b.scheduled_at ? new Date(b.scheduled_at) : null;
+        var future = when && when.getTime() > Date.now();
+        var whenLabel = when ? when.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'}) + ' · ' + when.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}) : '';
+
+        var pill;
+        if (paid && future) {
+          pill = '<span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">✓ CONFIRMED</span>';
+        } else if (paid) {
+          pill = '<span style="background:#f3f4f6;color:#4b5563;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">✓ COMPLETE</span>';
+        } else {
+          pill = '<span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">⏳ AWAITING PAYMENT</span>';
+        }
+
+        var payNow = '';
+        if (!paid && b.helcim_payment_url) {
+          payNow = '<a href="' + esc(b.helcim_payment_url) + '" target="_blank" style="display:inline-block;background:#e11d48;color:white;padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:700;text-decoration:none;margin-top:6px;">💳 Pay $' + (Number(b.price)||0).toFixed(2) + ' now</a>';
+        }
+
+        return '<div class="row">'
+          + '<div>'
+          +   '<div class="name">' + esc(b.lesson_type || 'Lesson') + (b.skater_name ? ' · ' + esc(b.skater_name) : '') + '</div>'
+          +   '<div class="meta">' + esc(whenLabel) + (b.duration_min ? ' · ' + b.duration_min + 'min' : '') + (b.instructor ? ' with ' + esc(b.instructor) : '') + '</div>'
+          +   payNow
+          + '</div>'
+          + '<div class="right">' + pill + '</div>'
+          + '</div>';
+      }).join('');
+    } catch (e) {
+      console.warn('my_lesson_bookings failed:', e);
+    }
+  }
+
+  // ─── Pre-orders section (mig 050 my_preorders RPC) ──────────────
+  // Lists the signed-in customer's preorder submissions with deposit/balance
+  // status pills + click-to-detail. Shows action chips when something needs
+  // the customer's attention (e.g. pay deposit link still pending).
+  async function loadMyPreorders(){
+    try {
+      var sb = await getClient();
+      var { data, error } = await sb.rpc('my_preorders');
+      if (error || !data || !data.found) return;  // mig 050 not applied or no matches
+      var preorders = data.preorders || [];
+      if (!preorders.length) return;
+
+      var sec = $('preordersSection');
+      var list = $('preordersList');
+      if (!sec || !list) return;
+      sec.style.display = 'block';
+
+      list.innerHTML = preorders.map(function(po){
+        var t = po.totals || {};
+        var dp = po.deposit_status === 'paid';
+        var bp = po.balance_status === 'paid' || po.balance_status === 'collected';
+        var supplierOrdered = !!po.supplier_ordered_at;
+        var itemCount = (po.items || []).length;
+        var when = new Date(po.submitted_at);
+
+        // Status pill — color reflects current stage
+        var pill = '';
+        if (bp) {
+          pill = '<span style="background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">✓ COMPLETE</span>';
+        } else if (supplierOrdered && dp) {
+          pill = '<span style="background:#fef3c7;color:#92400e;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">📦 GEAR ARRIVING</span>';
+        } else if (dp) {
+          pill = '<span style="background:#f0f9ff;color:#0e7490;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">💳 DEPOSIT PAID · ORDERING</span>';
+        } else {
+          pill = '<span style="background:#fee2e2;color:#991b1b;padding:3px 10px;border-radius:12px;font-size:.74rem;font-weight:700;">⏳ DEPOSIT PENDING</span>';
+        }
+
+        // Pay-now CTA when deposit pending + Helcim URL is cached on the submission
+        var payNow = '';
+        if (!dp && po.helcim_payment_url) {
+          payNow = '<a href="' + esc(po.helcim_payment_url) + '" target="_blank" style="display:inline-block;background:#e11d48;color:white;padding:6px 14px;border-radius:6px;font-size:.78rem;font-weight:700;text-decoration:none;margin-top:6px;">💳 Pay $' + (Number(t.deposit_50)||0).toFixed(2) + ' deposit now</a>';
+        }
+
+        var statusLink = 'status.html?id=' + esc(po.id);
+        var subtotal = Number(t.subtotal) || 0;
+        return '<div class="row" style="cursor:pointer;" onclick="window.open(\'' + statusLink + '\',\'_blank\')">'
+          + '<div>'
+          +   '<div class="name">' + itemCount + ' item' + (itemCount===1?'':'s') + ' · ' + money(subtotal) + '</div>'
+          +   '<div class="meta">Submitted ' + when.toLocaleDateString() + ' · ' + esc(po.fulfillment || 'pickup') + (po.is_shipping ? ' (ship)' : '') + '</div>'
+          +   payNow
+          + '</div>'
+          + '<div class="right">' + pill + '</div>'
+          + '</div>';
+      }).join('');
+    } catch (e) {
+      console.warn('my_preorders failed:', e);
+    }
+  }
+
+  // Public: customer cancels their own upcoming lesson via the
+  // customer_cancel_lesson RPC (migration 043). Server computes whether a
+  // ─── Edit profile (mig 044) ──────────────────────────────────────
+  // Self-serve update of email/phone/address/guardian via the
+  // customer_update_self RPC. Read-then-write — pre-fills with the
+  // already-loaded portal data so the customer sees their current values.
+  // ─── My affiliate / team rider dashboard (mig 045) ─────────────────
+  // Calls `my_affiliate_dashboard()` RPC which is SECURITY DEFINER and
+  // rigidly scopes by current_customer_id() so customers can ONLY see
+  // their own data. Direct table reads would expose other customers'
+  // earnings (RLS allows authenticated → all rows for staff-all pattern,
+  // which includes customer-portal sessions). The RPC closes that gap.
+  // Tolerant of missing migration — silent fail.
+  // Customer-facing achievement badges. Mirrors the admin-side logic so
+  // customers see the same milestones the owner does — drives gamification
+  // ("can I earn the next badge?") + social shareability ("post your Gold
+  // tier badge on Instagram"). Auto-hides when zero badges earned.
+  function _renderMyAchievements(c, summary){
+    if(!c) return;
+    var visits = Number(c.total_visits) || (summary && summary.checkin_count) || 0;
+    var spent  = Number(c.total_spent)  || 0;
+    var pts    = Number(c.loyalty_points) || 0;
+    var subs   = (summary && summary.subscriptions) || [];
+    var hasMember = subs.some(function(s){ return s.plan_type === 'monthly' || s.plan_type === 'annual'; });
+    var sales = (summary && summary.recent_sales) || [];
+    var hasReferral = /\[Referred by:/i.test(c.notes || '');
+    var ageDays = c.created_at ? (Date.now() - new Date(c.created_at).getTime()) / 86400000 : 0;
+    // recent_lessons may not be in the RPC result; fall back to 0
+    var recentLessons = (summary && summary.recent_lessons) || [];
+    var completedLessons = recentLessons.filter(function(l){ return l.status === 'completed' || l.attended_at; }).length;
+
+    var badges = [];
+
+    // Visit milestones
+    if(visits >= 1)   badges.push({ icon:'🛹', name:'First Visit',     color:'#7c3aed', bg:'#fdf4ff', tip:'Welcome to the park' });
+    if(visits >= 10)  badges.push({ icon:'🔥', name:'10 Sessions',     color:'#dc2626', bg:'#fef2f2', tip:visits+' visits and counting' });
+    if(visits >= 25)  badges.push({ icon:'⚡', name:'25 Sessions',     color:'#d97706', bg:'#fef3c7', tip:visits+' visits — true regular' });
+    if(visits >= 50)  badges.push({ icon:'🌟', name:'50 Sessions',     color:'#16a34a', bg:'#dcfce7', tip:visits+' visits — committed skater' });
+    if(visits >= 100) badges.push({ icon:'💯', name:'100 Sessions',    color:'#1e40af', bg:'#dbeafe', tip:visits+' visits — legendary regular' });
+    if(visits >= 250) badges.push({ icon:'🏛️', name:'250 Sessions',    color:'#581c87', bg:'#f3e8ff', tip:visits+' visits — Hall of Fame' });
+
+    // Spend milestones
+    if(spent >= 100)  badges.push({ icon:'💵', name:'$100 Lifetime',   color:'#15803d', bg:'#dcfce7', tip:'Lifetime spend over $100' });
+    if(spent >= 500)  badges.push({ icon:'💸', name:'Big Spender',     color:'#15803d', bg:'#dcfce7', tip:'$500+ lifetime — top-tier customer' });
+    if(spent >= 1000) badges.push({ icon:'👑', name:'$1K Lifetime',    color:'#92400e', bg:'#fef9c3', tip:'$1,000+ lifetime — VIP' });
+    if(spent >= 5000) badges.push({ icon:'💎', name:'Diamond',          color:'#0891b2', bg:'#cffafe', tip:'$5,000+ lifetime — diamond-tier customer' });
+
+    // Lesson milestones
+    if(completedLessons >= 1)  badges.push({ icon:'🎓', name:'First Lesson',    color:'#1e40af', bg:'#dbeafe', tip:'Completed first lesson' });
+    if(completedLessons >= 5)  badges.push({ icon:'📚', name:'Lesson Series',   color:'#1e40af', bg:'#dbeafe', tip:completedLessons+' lessons completed' });
+    if(completedLessons >= 25) badges.push({ icon:'🏅', name:'Lesson Veteran',  color:'#581c87', bg:'#f3e8ff', tip:completedLessons+' lessons completed' });
+
+    // Loyalty points
+    if(pts >= 100)   badges.push({ icon:'⭐', name:'100 Points',     color:'#be185d', bg:'#fce7f3', tip:pts.toLocaleString()+' loyalty points' });
+    if(pts >= 1000)  badges.push({ icon:'✨', name:'Star Collector', color:'#be185d', bg:'#fce7f3', tip:pts.toLocaleString()+' loyalty points · star collector' });
+
+    // Membership
+    if(hasMember) badges.push({ icon:'🎫', name:'Member',         color:'#0e7490', bg:'#cffafe', tip:'Active monthly or annual membership' });
+
+    // Community
+    if(hasReferral)  badges.push({ icon:'🤝', name:'Referred',     color:'#a16207', bg:'#fef3c7', tip:'Joined via referral' });
+
+    // Tenure
+    if(ageDays >= 365)  badges.push({ icon:'🎂', name:'1-Year Member', color:'#be185d', bg:'#fce7f3', tip:'Customer for 1+ year' });
+    if(ageDays >= 1825) badges.push({ icon:'🎉', name:'5-Year Member', color:'#581c87', bg:'#f3e8ff', tip:'Customer for 5+ years — that\'s loyalty' });
+
+    // Waiver
+    if(c.waiver_signed_at) badges.push({ icon:'🛡️', name:'Waiver Signed', color:'#16a34a', bg:'#dcfce7', tip:'Signed waiver on file' });
+
+    if(!badges.length){ $('achievementsSection').style.display = 'none'; return; }
+
+    $('achievementsSection').style.display = 'block';
+    $('achievementsCount').textContent = badges.length+' unlocked';
+    $('achievementsList').innerHTML = badges.map(function(b){
+      return '<span title="'+esc(b.tip)+'" style="display:inline-flex;align-items:center;gap:5px;padding:6px 10px;background:'+b.bg+';color:'+b.color+';border:1px solid '+b.color+'33;border-radius:14px;font-weight:700;font-size:.78rem;cursor:help;">'+b.icon+' '+esc(b.name)+'</span>';
+    }).join('');
+
+    // Next-milestone pill — surfaces the closest unearned milestone in three
+    // categories (visits / lifetime spend / loyalty pts) so customer sees
+    // what's next + how close they are. Drives engagement loop ("only 13
+    // more visits till the 100-Sessions badge!"). Pure JS analytic.
+    try {
+      var visits = Number(c.total_visits) || (summary && summary.checkin_count) || 0;
+      var spend  = Number(c.total_spent) || 0;
+      var pts    = Number(c.loyalty_points) || 0;
+      var milestones = [];
+      // Visit milestones
+      [10, 25, 50, 100, 250, 500, 1000].forEach(function(t){
+        if(visits < t) milestones.push({ kind:'visits', target:t, current:visits, label:t+' Sessions', pct: visits/t, gap: t-visits });
+      });
+      // Spend milestones
+      [100, 500, 1000, 2500, 5000].forEach(function(t){
+        if(spend < t) milestones.push({ kind:'spend', target:t, current:spend, label:'$'+t.toLocaleString()+' lifetime', pct: spend/t, gap: t-spend });
+      });
+      // Points milestones
+      [100, 500, 1000, 2500].forEach(function(t){
+        if(pts < t) milestones.push({ kind:'points', target:t, current:pts, label:t.toLocaleString()+' Loyalty Points', pct: pts/t, gap: t-pts });
+      });
+      // Pick the closest one (highest pct, since lower-target same-kind ones
+      // sort first naturally — but we want CLOSEST so highest pct)
+      milestones.sort(function(a,b){ return b.pct - a.pct; });
+      var next = milestones[0];
+      if(next && next.pct >= 0.1){  // skip when too far away — feels demoralizing
+        var gapStr = next.kind === 'spend'
+          ? '$'+Number(next.gap).toFixed(0)+' to go'
+          : Number(next.gap).toLocaleString()+' to go';
+        var pctRound = Math.round(next.pct * 100);
+        var section = $('achievementsSection');
+        if(section){
+          var pillHtml = '<div style="margin-top:14px;padding:12px 14px;background:#fff;border-radius:8px;border:1px solid #fde68a;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:.78rem;color:#92400e;text-transform:uppercase;letter-spacing:.06em;font-weight:800;margin-bottom:6px;">' +
+            '<span>🎯 Next milestone</span><span>'+pctRound+'%</span>' +
+            '</div>' +
+            '<div style="font-size:1rem;font-weight:700;color:#14161a;">'+esc(next.label)+'</div>' +
+            '<div style="font-size:.82rem;color:#6b7280;margin-top:2px;">'+gapStr+'</div>' +
+            '<div style="height:8px;background:#fef3c7;border-radius:4px;overflow:hidden;margin-top:6px;">' +
+            '<div style="height:100%;background:linear-gradient(90deg,#fbbf24,#f59e0b);width:'+pctRound+'%;"></div>' +
+            '</div></div>';
+          // Append to the achievements section (after the badges list)
+          if(!section.querySelector('.next-milestone-pill')){
+            var div = document.createElement('div');
+            div.className = 'next-milestone-pill';
+            div.innerHTML = pillHtml;
+            section.appendChild(div);
+          } else {
+            section.querySelector('.next-milestone-pill').innerHTML = pillHtml;
+          }
+        }
+      }
+    } catch(e){ /* silent */ }
+  }
+
+  async function _loadMyAffiliateDashboard(sb, custId, customer){
+    if(!custId) return;
+    var resp;
+    try {
+      var { data, error } = await sb.rpc('my_affiliate_dashboard');
+      if(error){ /* mig not applied or RPC missing — silent */ return; }
+      resp = data;
+    } catch(e){ return; }
+    if(!resp || !resp.ok) return;
+    if(!resp.enrolled) return;
+    var aff = resp.code;
+    if(!aff || aff.enabled === false) return;
+
+    // Stash for share helpers + render
+    window._myAffiliate = aff;
+    window._myAffiliateCustomerName = customer.name || customer.first_name || 'a friend';
+
+    $('affCodeDisplay').textContent = aff.code;
+    $('affRefs').textContent = aff.total_referrals || 0;
+    $('affEarned').textContent = '$' + Number(aff.total_earned || 0).toFixed(0);
+    $('affDriven').textContent = '$' + Number(aff.total_revenue || 0).toFixed(0);
+    var owed = (Number(aff.total_earned)||0) - (Number(aff.total_paid)||0);
+    $('affOwed').textContent = '$' + owed.toFixed(0);
+
+    // Public profile URL
+    var origin = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/,'/');
+    var publicUrl = origin + 'affiliate.html?code=' + encodeURIComponent(aff.code);
+    $('affPublicLink').href = publicUrl;
+    window._myAffiliatePublicUrl = publicUrl;
+
+    // Milestone progress display (program data comes back in the RPC response)
+    var prog = resp.program;
+    if(prog && prog.bonus_threshold_count > 0 && prog.bonus_value_dollars > 0){
+      var refs = aff.total_referrals || 0;
+      var nextMilestone = (Math.floor(refs / prog.bonus_threshold_count) + 1) * prog.bonus_threshold_count;
+      var toNext = nextMilestone - refs;
+      if(toNext > 0){
+        $('affMilestoneRow').style.display = '';
+        $('affMilestoneRow').innerHTML = '🏆 <strong>'+toNext+' more referral'+(toNext===1?'':'s')+'</strong> until your next $'+prog.bonus_value_dollars+' bonus!';
+      }
+    }
+
+    // Recent earnings (already in RPC response, last 20)
+    var earnings = resp.earnings || [];
+    var listEl = $('affEarningsList');
+    if(!earnings.length){
+      listEl.innerHTML = '<div style="color:#6b7280;font-style:italic;">No earnings yet — share your code to start earning.</div>';
+    } else {
+      listEl.innerHTML = earnings.slice(0, 10).map(function(e){
+        var when = new Date(e.created_at).toLocaleDateString();
+        var amt = '$' + Number(e.earning_amount||0).toFixed(2);
+        var statusLabel = e.status === 'paid' ? '<span style="color:#15803d;font-weight:700;">PAID</span>'
+                        : e.status === 'pending' ? '<span style="color:#d97706;">pending</span>'
+                        : e.status === 'reversed' ? '<span style="color:#dc2626;">reversed</span>'
+                        : esc(e.status||'');
+        var kindLabel = e.earning_kind === 'bonus_milestone' ? '🏆 Milestone bonus' : (e.earning_kind === 'flat' ? 'Flat referral' : 'Commission');
+        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-top:1px solid #f3f4f6;">'
+          +    '<div><div style="font-weight:600;">'+kindLabel+'</div><div style="font-size:.72rem;color:#6b7280;">'+when+'</div></div>'
+          +    '<div style="text-align:right;"><div style="font-weight:700;color:#15803d;">'+amt+'</div><div style="font-size:.7rem;">'+statusLabel+'</div></div>'
+          +    '</div>';
+      }).join('');
+    }
+
+    // Show the section
+    $('affiliateSection').style.display = '';
+  }
+
+  // Share helpers — exposed on window for onclick handlers.
+  // Match the public profile page's share intents so the rider gets a
+  // consistent UX. Native Web Share API → falls back to clipboard.
+  window.copyMyAffiliateCode = function(){
+    var aff = window._myAffiliate;
+    if(!aff) return;
+    var btn = document.getElementById('affCopyBtn');
+    var doFallback = function(){
+      var ta = document.createElement('textarea');
+      ta.value = aff.code;
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(_) {}
+      document.body.removeChild(ta);
+    };
+    var afterCopy = function(){
+      if(btn){ var orig = btn.textContent; btn.textContent = '✓ Copied!'; setTimeout(function(){ btn.textContent = orig; }, 1800); }
+    };
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(aff.code).then(afterCopy).catch(function(){ doFallback(); afterCopy(); });
+    } else { doFallback(); afterCopy(); }
+  };
+  window.shareAffiliateNative = function(){
+    var aff = window._myAffiliate;
+    if(!aff) return;
+    var name = window._myAffiliateCustomerName || 'I';
+    var biz = (window.APP_CONFIG && window.APP_CONFIG.bizName) || 'the shop';
+    var url = window._myAffiliatePublicUrl || window.location.href;
+    var text = "Use my code " + aff.code + " at " + biz + "!";
+    if(navigator.share){
+      navigator.share({ title: name + ' · ' + biz + ' team rider', text: text, url: url }).catch(function(){});
+    } else if(navigator.clipboard){
+      navigator.clipboard.writeText(url + '\nCode: ' + aff.code).then(function(){
+        alert('Link + code copied — paste anywhere to share.');
+      });
+    }
+  };
+  window.shareAffiliateTo = function(channel){
+    var aff = window._myAffiliate;
+    if(!aff) return;
+    var biz = (window.APP_CONFIG && window.APP_CONFIG.bizName) || 'the shop';
+    var url = window._myAffiliatePublicUrl || window.location.href;
+    var msg = 'Use my code ' + aff.code + ' at ' + biz + '! ' + url;
+    if(channel === 'sms') window.location.href = 'sms:?body=' + encodeURIComponent(msg);
+    if(channel === 'email') window.location.href = 'mailto:?subject=' + encodeURIComponent('Skate at ' + biz) + '&body=' + encodeURIComponent(msg);
+  };
+
+  // ─── My member card (printable wallet-size with QR) ──────────────
+  // Generates a self-contained popup with the QR code (`skateos:<id>`)
+  // for fast Check-In. Lazy-loads the qrcode lib from jsdelivr so it
+  // doesn't bloat the portal load. Pure JS.
+  window.openMyMemberCard = function(){
+    var sum = window._lastPortalSummary || {};
+    var c = sum.customer || {};
+    if(!c.id){ status('Could not load member card — try refreshing the page','err'); return; }
+
+    var w = window.open('', '_blank', 'width=600,height=700');
+    if(!w){ status('Popup blocked — allow popups for this site','err'); return; }
+    var biz = (window.APP_CONFIG && window.APP_CONFIG.bizName) || '2nd Nature Park';
+    var bizPhone = (window.APP_CONFIG && window.APP_CONFIG.bizPhone) || '';
+    var rose = '#e11d48';
+    var initials = (c.name||'').split(' ').map(function(p){return (p[0]||'').toUpperCase();}).slice(0,2).join('');
+    var photoBg = c.photo_url
+      ? 'background:#fff url('+JSON.stringify(c.photo_url)+') center/cover no-repeat;'
+      : 'background:'+rose+';color:#fff;display:grid;place-items:center;font-weight:800;font-size:28px;letter-spacing:.04em;';
+    var photoCell = c.photo_url ? '<div style="'+photoBg+'width:84px;height:84px;border-radius:50%;border:3px solid '+rose+';"></div>'
+                                : '<div style="'+photoBg+'width:84px;height:84px;border-radius:50%;border:3px solid '+rose+';">'+esc(initials||'?')+'</div>';
+    var doc = '<!doctype html><html><head><meta charset="utf-8"><title>Member card — '+esc(c.name||'')+' · '+esc(biz)+'</title>'
+      + '<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"><'+'/script>'
+      + '<style>'
+      + '@page{size:auto;margin:0.4in}'
+      + '*{margin:0;padding:0;box-sizing:border-box}'
+      + 'body{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;color:#14161a;padding:24px;background:#f6f6f4;}'
+      + '.card{background:#fff;border-radius:16px;padding:24px 20px;max-width:380px;margin:0 auto;box-shadow:0 4px 20px rgba(0,0,0,.08);border-top:6px solid '+rose+';}'
+      + '.card h1{font-size:14px;color:'+rose+';font-weight:900;letter-spacing:.06em;text-transform:uppercase;text-align:center;margin-bottom:14px;}'
+      + '.card .body{display:flex;align-items:center;gap:14px;margin-bottom:14px;}'
+      + '.card .body .info{flex:1;}'
+      + '.card .body .info .nm{font-size:18px;font-weight:800;line-height:1.2;}'
+      + '.card .body .info .sub{font-size:11px;color:#555;margin-top:3px;}'
+      + '.card .qr{display:flex;justify-content:center;padding:12px;background:#fff;border:1px dashed #e6e6e1;border-radius:10px;margin-bottom:10px;}'
+      + '.card .foot{font-size:10px;color:#888;text-align:center;line-height:1.4;}'
+      + '.no-print{text-align:center;margin-top:18px;}'
+      + '.no-print button{padding:10px 18px;background:'+rose+';color:#fff;border:0;border-radius:8px;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;}'
+      + '@media print{body{padding:0;background:#fff;}.no-print{display:none}.card{box-shadow:none;border:1px solid #ddd;max-width:340px;}}'
+      + '</style></head><body>'
+      + '<div class="card">'
+      + '  <h1>'+esc(biz)+' · Member card</h1>'
+      + '  <div class="body">'
+      +     photoCell
+      + '    <div class="info"><div class="nm">'+esc(c.name||'?')+'</div>'
+      +       (c.email ? '<div class="sub">'+esc(c.email)+'</div>' : '')
+      +       (sum.checkin_count ? '<div class="sub">'+sum.checkin_count+' visit'+(sum.checkin_count===1?'':'s')+' on file</div>' : '')
+      + '    </div>'
+      + '  </div>'
+      + '  <div class="qr"><canvas id="myQr"></canvas></div>'
+      + '  <div class="foot">Scan at the front desk for fast Check-In.<br>'+esc(biz)+(bizPhone?' · '+esc(bizPhone):'')+'</div>'
+      + '</div>'
+      + '<div class="no-print"><button onclick="window.print()">🖨 Print or save as PDF</button></div>'
+      + '<script>(function(){function ready(){if(window.QRCode){QRCode.toCanvas(document.getElementById("myQr"),"skateos:'+c.id+'",{width:180,margin:2,color:{dark:"#14161a",light:"#fff"}},function(err){if(err)console.error(err);});}else{setTimeout(ready,50);}}ready();})();<'+'/script>'
+      + '</body></html>';
+
+    function esc(s){
+      return String(s||'').replace(/[&<>"\']/g, function(ch){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[ch];});
+    }
+
+    w.document.open();
+    w.document.write(doc);
+    w.document.close();
+  };
+
+  window.openEditProfile = function(){
+    var sum = window._lastPortalSummary || {};
+    var c = sum.customer || {};
+    var setVal = function(id, v){ var el = document.getElementById(id); if(el) el.value = v || ''; };
+    setVal('epEmail',        c.email);
+    setVal('epPhone',        c.phone);
+    setVal('epAddress',      c.address);
+    setVal('epCity',         c.city);
+    setVal('epState',        c.state);
+    setVal('epZip',          c.zip);
+    setVal('epParentName',   c.parent_name);
+    setVal('epParentPhone',  c.parent_phone);
+    setVal('epParentEmail',  c.parent_email);
+    var statusEl = document.getElementById('epStatus');
+    if(statusEl) statusEl.textContent = '';
+    // Auto-expand guardian section for minors
+    var guardianDetails = document.getElementById('epGuardianDetails');
+    if(guardianDetails && (c.parent_name || c.parent_phone || c.parent_email)){
+      guardianDetails.open = true;
+    }
+    var bd = document.getElementById('editProfileBackdrop');
+    if(bd){ bd.style.display = 'flex'; }
+  };
+
+  window.closeEditProfile = function(){
+    var bd = document.getElementById('editProfileBackdrop');
+    if(bd){ bd.style.display = 'none'; }
+  };
+
+  window.saveProfileEdit = async function(){
+    var sb = window.supabaseClient;
+    var btn = document.getElementById('epSaveBtn');
+    var statusEl = document.getElementById('epStatus');
+    if(btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
+    if(statusEl){ statusEl.style.color = '#6b7280'; statusEl.textContent = 'Saving changes…'; }
+    var args = {
+      p_email:        (document.getElementById('epEmail')||{}).value || '',
+      p_phone:        (document.getElementById('epPhone')||{}).value || '',
+      p_parent_name:  (document.getElementById('epParentName')||{}).value || '',
+      p_parent_phone: (document.getElementById('epParentPhone')||{}).value || '',
+      p_parent_email: (document.getElementById('epParentEmail')||{}).value || '',
+      p_address:      (document.getElementById('epAddress')||{}).value || '',
+      p_city:         (document.getElementById('epCity')||{}).value || '',
+      p_state:        (document.getElementById('epState')||{}).value || '',
+      p_zip:          (document.getElementById('epZip')||{}).value || ''
+    };
+    try {
+      var { data, error } = await sb.rpc('customer_update_self', args);
+      if(error) throw error;
+      if(btn){ btn.disabled = false; btn.textContent = 'Save changes'; }
+      var changed = (data && data.changed) || 0;
+      if(changed === 0){
+        if(statusEl){ statusEl.style.color = '#6b7280'; statusEl.textContent = 'No changes detected.'; }
+        return;
+      }
+      if(statusEl){ statusEl.style.color = '#117a39'; statusEl.textContent = '✓ Saved · '+changed+' field'+(changed===1?'':'s')+' updated'; }
+      // Refresh the portal summary in the background so visible cards reflect new values
+      setTimeout(function(){
+        if(typeof loadDashboard === 'function') loadDashboard();
+        else location.reload();
+      }, 800);
+    } catch(e){
+      if(btn){ btn.disabled = false; btn.textContent = 'Save changes'; }
+      if(statusEl){ statusEl.style.color = '#dc2626'; statusEl.textContent = 'Save failed: ' + (e.message || e); }
+    }
+  };
+
+  // Single-lesson .ics download for "Add to calendar". Generates an RFC 5545
+  // VCALENDAR with one VEVENT for this lesson — imports cleanly to Google /
+  // Apple Calendar / Outlook. Pulls fresh lesson data from the cached portal
+  // summary (already loaded). Pure JS, no library.
+  window.downloadMyLessonIcs = function(lessonId){
+    var sum = window._lastPortalSummary || {};
+    var lessons = sum.upcoming_lessons || [];
+    var l = lessons.find(function(x){return x.id===lessonId;});
+    if(!l){ status('Lesson not found — refresh and try again', 'err'); return; }
+    var biz = (window.APP_CONFIG && window.APP_CONFIG.bizName) || '2nd Nature Park';
+    var bizAddr = (window.APP_CONFIG && window.APP_CONFIG.bizAddress) || '';
+    var start = new Date(l.scheduled_at);
+    var end = new Date(start.getTime() + (Number(l.duration_min)||60)*60000);
+
+    function toIcsDate(d){
+      var dt = new Date(d);
+      return dt.getUTCFullYear()
+        + String(dt.getUTCMonth()+1).padStart(2,'0')
+        + String(dt.getUTCDate()).padStart(2,'0')
+        + 'T'
+        + String(dt.getUTCHours()).padStart(2,'0')
+        + String(dt.getUTCMinutes()).padStart(2,'0')
+        + '00Z';
+    }
+    function ic(text){
+      return String(text||'')
+        .replace(/\\/g,'\\\\')
+        .replace(/,/g,'\\,')
+        .replace(/;/g,'\\;')
+        .replace(/\n/g,'\\n');
+    }
+    function fold(line){
+      if(line.length <= 75) return line;
+      var out = '';
+      while(line.length > 75){ out += line.slice(0,75) + '\r\n '; line = line.slice(75); }
+      return out + line;
+    }
+
+    var typeLabel = l.type ? (l.type.charAt(0).toUpperCase()+l.type.slice(1)) : 'Lesson';
+    var summary = typeLabel + ' at ' + biz + (l.instructor ? ' with ' + l.instructor : '');
+    var descParts = [];
+    if(l.instructor) descParts.push('Instructor: ' + l.instructor);
+    if(l.type) descParts.push('Type: ' + l.type);
+    if(l.duration_min) descParts.push('Duration: ' + l.duration_min + ' min');
+    descParts.push('See you there!');
+
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//skateOS//' + ic(biz) + '//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:' + l.id + '@skateos',
+      'DTSTAMP:' + toIcsDate(new Date()),
+      'DTSTART:' + toIcsDate(start),
+      'DTEND:' + toIcsDate(end),
+      fold('SUMMARY:' + ic(summary))
+    ];
+    if(bizAddr) lines.push(fold('LOCATION:' + ic(bizAddr)));
+    lines.push(fold('DESCRIPTION:' + ic(descParts.join('\n'))));
+    lines.push('STATUS:CONFIRMED');
+    lines.push('END:VEVENT');
+    lines.push('END:VCALENDAR');
+
+    var ics = lines.join('\r\n');
+    var blob = new Blob([ics], { type:'text/calendar' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'lesson-' + start.toISOString().slice(0,10) + '.ics';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    status('✓ Calendar file downloaded — open it to add to your calendar app', 'ok');
+  };
+
+  // late-cancellation fee applies based on the configured policy.
+  // Surfaces a clear confirm with the (probable) fee before firing.
+  window.cancelMyLesson = async function(lessonId, lessonPrice, scheduledAt){
+    var sb = window.supabaseClient;
+    var when = new Date(scheduledAt);
+    var hoursUntil = (when.getTime() - Date.now()) / 3600000;
+    // Pessimistic estimate: probe app_settings for the policy. Best-effort —
+    // the RPC is authoritative; this is just for the confirm message.
+    var probableFee = 0, withinWindow = false, windowH = 24, feePct = 50;
+    try {
+      var { data: cfgRow } = await sb.from('app_settings').select('value').eq('key','all').maybeSingle();
+      var pol = cfgRow && cfgRow.value && cfgRow.value.cancellationPolicy;
+      if (pol && pol.enabled === true){
+        windowH = Number(pol.windowHours) || 24;
+        feePct  = Number(pol.feePercent)  || 50;
+        if (hoursUntil >= 0 && hoursUntil < windowH && lessonPrice > 0){
+          withinWindow = true;
+          probableFee = Math.round((lessonPrice * feePct / 100) * 100) / 100;
+        }
+      }
+    } catch(_e){ /* policy lookup failed — proceed without fee preview */ }
+
+    var msg = 'Cancel your '+when.toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric', minute:'2-digit'})+' lesson?';
+    if (withinWindow && probableFee > 0){
+      msg += '\n\n⚠️  Cancellation policy: a '+feePct+'% late fee ($'+probableFee.toFixed(2)+') will be added to your account because the lesson is in less than '+windowH+' hours.';
+    }
+    if (!confirm(msg)) return;
+
+    try {
+      var { data: result, error } = await sb.rpc('customer_cancel_lesson', { p_lesson_id: lessonId });
+      if (error) throw error;
+      var feeMsg = '';
+      if (result && result.fee_charged){
+        feeMsg = '\n\nA '+result.fee_amount+' late-cancellation fee was added to your account — settle at your next visit.';
+      }
+      alert('Lesson cancelled.' + feeMsg);
+      // Reload portal data so the lesson disappears
+      location.reload();
+    } catch(e){
+      var em = (e && e.message) || String(e);
+      if (/function .* does not exist/i.test(em)){
+        alert('Cancellation isn\'t set up yet — please call the front desk.');
+      } else {
+        alert('Cancellation failed: ' + em);
+      }
+    }
+  };
+
+  // Public: pause one of the customer's own active subscriptions.
+  // Calls customer_pause_subscription RPC (mig 061). Lets customer pause
+  // for up to 90 days; auto-resumes via mig 030's daily cron when the
+  // pause-until date passes.
+  window.pauseMySubscription = async function(subId, planName){
+    var sb = window.supabaseClient;
+    var defaultUntil = new Date(); defaultUntil.setDate(defaultUntil.getDate() + 30);
+    var defaultStr = defaultUntil.toISOString().slice(0,10);
+    var maxUntil = new Date(); maxUntil.setDate(maxUntil.getDate() + 90);
+    var maxStr = maxUntil.toISOString().slice(0,10);
+    var dateStr = prompt(
+      'Pause your "' + planName + '" membership.\n\n' +
+      'Vacation? Injury? Travel? Pause it instead of cancelling — your membership auto-resumes when you\'re back.\n\n' +
+      'Pause until what date? (YYYY-MM-DD format, max ' + maxStr + ' / 90 days from today)',
+      defaultStr
+    );
+    if (!dateStr) return;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr.trim())){
+      alert('Date must be in YYYY-MM-DD format (e.g. ' + defaultStr + ')');
+      return;
+    }
+    var reason = prompt('Optional: tell us why you\'re pausing.') || '';
+    try {
+      var { data: result, error } = await sb.rpc('customer_pause_subscription', {
+        p_subscription_id: subId,
+        p_until: dateStr.trim(),
+        p_reason: reason
+      });
+      if (error) throw error;
+      if (result && result.ok === false){
+        alert('Couldn\'t pause: ' + (result.error || 'unknown error'));
+        return;
+      }
+      alert('Membership paused. Auto-resumes ' + dateStr + '. See you when you\'re back!');
+      location.reload();
+    } catch(e){
+      var em = (e && e.message) || String(e);
+      if (/function .* does not exist/i.test(em)){
+        alert('Self-serve pause isn\'t set up yet — please call the front desk.');
+      } else {
+        alert('Pause failed: ' + em);
+      }
+    }
+  };
+
+  // Public: cancel one of the customer's own active subscriptions.
+  // Calls the customer_cancel_subscription RPC (mig 060). Server-side gates
+  // on customer ownership; this just collects the reason + fires.
+  // No refund is issued — owner-managed decision (most parks: ends at end
+  // of billing period, no refunds).
+  window.cancelMySubscription = async function(subId, planName){
+    var sb = window.supabaseClient;
+    var msg = 'Cancel your "' + planName + '" membership?\n\n' +
+              'Important: cancellation just stops auto-renewal — your existing pass will remain usable until the end of the current billing period.\n\n' +
+              'No refund will be issued. To request a refund or pause instead of cancel, please call the front desk.';
+    if (!confirm(msg)) return;
+    var reason = prompt('Optional: tell us why you\'re cancelling so we can improve. (Leave blank to skip.)') || '';
+    try {
+      var { data: result, error } = await sb.rpc('customer_cancel_subscription', {
+        p_subscription_id: subId,
+        p_reason: reason
+      });
+      if (error) throw error;
+      if (result && result.ok === false){
+        alert('Couldn\'t cancel: ' + (result.error || 'unknown error') + '. Please call the front desk.');
+        return;
+      }
+      alert('Membership cancelled. Thanks for skating with us — we hope to see you back soon!');
+      location.reload();
+    } catch(e){
+      var em = (e && e.message) || String(e);
+      if (/function .* does not exist/i.test(em)){
+        alert('Self-serve cancellation isn\'t set up yet — please call the front desk.');
+      } else {
+        alert('Cancellation failed: ' + em);
+      }
+    }
+  };
+
+  // Public: download a CSV of this year's purchases. Useful for taxes /
+  // reimbursement / personal recordkeeping. Limited to recent_sales returned
+  // by the customer_portal_summary RPC (capped at ~50 by the RPC).
+  window.downloadReceipts = function(){
+    var sales = window._mySales || [];
+    var year = new Date().getFullYear();
+    var thisYear = sales.filter(function(s){
+      return s.created_at && new Date(s.created_at).getFullYear() === year;
+    });
+    if (!thisYear.length){
+      alert('No purchases on file for ' + year + ' yet.');
+      return;
+    }
+    var rows = [['Date','Receipt','Description','Subtotal','Tax','Discount','Total','Payment']];
+    thisYear.forEach(function(s){
+      rows.push([
+        s.created_at ? new Date(s.created_at).toISOString().slice(0,10) : '',
+        s.receipt_number || '',
+        s.product_name || (s.products && s.products.name) || '',
+        (Number(s.subtotal||s.total)||0).toFixed(2),
+        (Number(s.tax)||0).toFixed(2),
+        (Number(s.discount)||0).toFixed(2),
+        (Number(s.total)||0).toFixed(2),
+        s.payment_method || ''
+      ]);
+    });
+    var csv = rows.map(function(r){
+      return r.map(function(v){
+        var sv = String(v == null ? '' : v);
+        return /[",\n]/.test(sv) ? '"' + sv.replace(/"/g,'""') + '"' : sv;
+      }).join(',');
+    }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'my-receipts-' + year + '.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  };
+
+  init();
+</script>
+
+</body>
+</html>

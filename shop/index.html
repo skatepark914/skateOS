@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Skate Shop | 2nd Nature</title>
+<meta name="description" content="Decks, wheels, hardware, helmets + apparel from 2nd Nature Skate. Browse, order online, pickup at the shop or ship.">
+<meta property="og:title" content="2nd Nature · Skate Shop">
+<meta property="og:description" content="Decks, wheels, hardware, helmets + apparel from 2nd Nature Skate Park. Order online — free pickup in Peekskill NY or ships anywhere.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://shop.skateos.com">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="2nd Nature · Skate Shop">
+<meta name="twitter:description" content="Decks, wheels, hardware, helmets + apparel. Free local pickup, ships anywhere.">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="https://2ntr.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Knewave&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  /* Aesthetic mirrors www.2ntr.com (Square Online):
+     • cream background #faf8f3
+     • bold handwritten-marker logo + headings
+     • clean sans body
+     • centered nav · sidebar + product grid layout · gray image squares */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    color:#14161a;background:#faf8f3;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+  .hand{font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;font-weight:400;letter-spacing:.005em;}
+
+  /* Header — matches preorder.skateos.com aesthetic */
+  .site-header{background:#faf8f3;padding:24px 28px 6px;}
+  .site-header .top{
+    max-width:1280px;margin:0 auto;
+    position:relative;display:flex;align-items:center;justify-content:center;
+    min-height:78px;
+  }
+  .site-header .logo{
+    display:inline-block;font-size:clamp(2.6rem,5.5vw,4rem);
+    color:#14161a;line-height:.9;text-align:center;
+  }
+  .site-header .logo .nd{font-size:.42em;vertical-align:.55em;margin:0 .04em 0 .08em;text-transform:uppercase;letter-spacing:.02em;}
+  .site-header .actions{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:10px;
+  }
+  .site-header .actions .pill{
+    background:transparent;color:#14161a;border:2px solid #14161a;
+    padding:9px 22px;border-radius:999px;
+    font-size:.86rem;font-weight:700;letter-spacing:.02em;
+    transition:background .15s,color .15s;
+  }
+  .site-header .actions .pill:hover{background:#14161a;color:#fff;}
+  .site-header .actions .icon-btn{
+    background:transparent;border:none;padding:8px;
+    color:#14161a;font-size:1.1rem;
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;position:relative;
+  }
+  .site-header .actions .icon-btn:hover{background:rgba(20,22,26,.08);}
+  .site-header .actions .badge{
+    position:absolute;top:-2px;right:-2px;
+    background:#14161a;color:#fff;
+    width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.65rem;font-weight:800;border:2px solid #faf8f3;
+  }
+
+  /* Centered nav (links back to 2ntr.com) */
+  .site-nav{
+    max-width:1280px;margin:0 auto;padding:18px 28px 24px;
+    display:flex;justify-content:center;flex-wrap:wrap;gap:36px;
+    border-bottom:1px solid #e6e3da;
+  }
+  .site-nav a{color:#14161a;font-size:.92rem;font-weight:500;padding:6px 0;border-bottom:2px solid transparent;transition:border-color .15s;}
+  .site-nav a:hover,.site-nav a.current{border-color:#14161a;}
+
+  .page-wrap{max-width:1280px;margin:0 auto;padding:34px 28px 60px;}
+  .breadcrumb{font-size:.92rem;color:#14161a;margin-bottom:24px;}
+  .breadcrumb a{font-weight:700;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  .breadcrumb .sep{margin:0 10px;color:#9ca3af;}
+  .breadcrumb .current{color:#4b5563;}
+
+  /* Two-column layout */
+  .layout{
+    display:grid;grid-template-columns:230px 1fr;gap:48px;align-items:flex-start;
+  }
+  .sidebar h4{font-size:1.05rem;font-weight:700;letter-spacing:-.01em;margin-bottom:14px;}
+  .sidebar ul{list-style:none;font-size:.94rem;color:#14161a;}
+  .sidebar li{padding:5px 0;}
+  .sidebar li.parent{font-weight:700;}
+  .sidebar a{transition:color .12s;cursor:pointer;}
+  .sidebar a:hover{color:#e11d48;}
+  .sidebar a.current{font-weight:700;color:#e11d48;}
+  .sidebar hr{border:none;border-top:1px solid #e6e3da;margin:18px 0;}
+
+  .main h1{font-size:clamp(2rem,4vw,2.6rem);color:#14161a;margin-bottom:6px;line-height:1;}
+  .main .results-count{font-size:.94rem;color:#4b5563;margin-bottom:24px;}
+  .main .toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+  .main .toolbar .search{flex:1;min-width:200px;max-width:400px;}
+  .main .toolbar .search input{
+    width:100%;padding:11px 16px;border:1.5px solid #14161a;border-radius:6px;
+    font-size:.92rem;background:#faf8f3;color:#14161a;font-family:inherit;
+  }
+  .main .toolbar .search input:focus{outline:none;background:#fff;}
+  .main .toolbar select{
+    border:1.5px solid #14161a;padding:11px 18px;border-radius:6px;
+    background:#faf8f3;font-size:.88rem;font-weight:500;color:#14161a;
+    cursor:pointer;min-width:160px;
+    -webkit-appearance:none;-moz-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2314161a' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 16px center;padding-right:38px;
+  }
+  .main .toolbar select:hover{background-color:#fff;}
+
+  /* Promo banner — replaces the pre-order banner with a retail-focused message */
+  .promo-banner{
+    background:#fff;border:2px solid #14161a;border-radius:10px;
+    padding:18px 22px;margin-bottom:28px;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+  }
+  .promo-banner h2{
+    font-family:'Knewave','Permanent Marker',cursive;
+    font-size:1.5rem;color:#14161a;line-height:1;margin-bottom:4px;
+  }
+  .promo-banner p{font-size:.88rem;color:#4b5563;}
+  .promo-banner .pills{display:flex;gap:10px;flex-wrap:wrap;}
+  .promo-banner .pills span{
+    background:#faf8f3;border:1px solid #e6e3da;
+    padding:7px 14px;border-radius:999px;
+    font-size:.78rem;font-weight:600;color:#14161a;
+  }
+
+  /* Product grid */
+  .product-grid{
+    display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:36px 28px;
+  }
+  .product-card{
+    cursor:pointer;display:flex;flex-direction:column;
+    transition:transform .2s;position:relative;
+  }
+  .product-card:hover{transform:translateY(-3px);}
+  .product-card .image{
+    aspect-ratio:1/1;background:#ededeb center/contain no-repeat;
+    border-radius:6px;position:relative;overflow:hidden;
+  }
+  .product-card .image::after{
+    content:'';position:absolute;inset:0;
+    background:rgba(0,0,0,0);transition:background .15s;
+  }
+  .product-card:hover .image::after{background:rgba(0,0,0,.04);}
+  .product-card .image .ribbon{
+    position:absolute;top:10px;left:10px;
+    background:#14161a;color:#fff;padding:4px 9px;border-radius:3px;
+    font-size:.6rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;z-index:2;
+  }
+  .product-card .image .ribbon.sale{background:#e11d48;}
+  .product-card .image .ribbon.low{background:#d97706;}
+  .product-card .name{
+    margin-top:14px;font-size:1.1rem;line-height:1.2;color:#14161a;
+    font-family:'Knewave','Permanent Marker',cursive;font-weight:400;
+    display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+    overflow:hidden;min-height:2.6em;
+  }
+  .product-card .brand{font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:6px;}
+  .product-card .price-row{
+    margin-top:6px;display:flex;align-items:baseline;gap:10px;font-size:.96rem;
+  }
+  .product-card .retail{color:#9ca3af;text-decoration:line-through;font-size:.86rem;}
+  .product-card .price{font-weight:600;color:#14161a;}
+  .product-card .price.sale{color:#e11d48;font-weight:700;}
+  .product-card .add-btn{
+    position:absolute;top:10px;right:10px;
+    background:#14161a;color:#fff;border:none;border-radius:999px;
+    width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem;font-weight:700;line-height:1;
+    transition:transform .15s,background .15s,opacity .15s;
+    opacity:0;transform:scale(.85);
+  }
+  .product-card:hover .add-btn{opacity:1;transform:scale(1);}
+  .product-card .add-btn:hover{background:#e11d48;}
+  .product-card.in-cart .add-btn{opacity:1;background:#15803d;transform:scale(1);pointer-events:none;}
+  .product-card.in-cart .add-btn::after{content:'✓';font-size:1rem;}
+
+  /* Empty / loading state */
+  .empty-state{
+    text-align:center;padding:80px 20px;color:#6b7280;
+  }
+  .empty-state .big{font-size:3rem;margin-bottom:14px;}
+
+  /* Footer */
+  footer{
+    background:#fff;border-top:1px solid #e6e3da;
+    padding:34px 28px;text-align:center;
+  }
+  footer .links{
+    display:flex;gap:24px;justify-content:center;flex-wrap:wrap;
+    margin-bottom:14px;font-size:.85rem;font-weight:600;
+  }
+  footer .links a{color:#14161a;}
+  footer .links a:hover{color:#e11d48;}
+  footer .copy{font-size:.74rem;color:#9ca3af;}
+
+  /* Floating cart pill — sticks bottom-right when cart has items.
+     Standard retail UX so customer doesn't lose track of cart while
+     deep-scrolling the catalog. Auto-hides when cart drawer is open. */
+  .cart-pill{
+    position:fixed;bottom:24px;right:24px;
+    background:#14161a;color:white;
+    padding:14px 22px;border-radius:999px;
+    font-size:.96rem;font-weight:700;
+    cursor:pointer;border:none;
+    display:flex;align-items:center;gap:10px;
+    box-shadow:0 6px 24px rgba(20,22,26,.18);
+    z-index:150;opacity:0;transform:translateY(20px) scale(.95);
+    pointer-events:none;
+    transition:opacity .25s,transform .25s,background .12s;
+  }
+  .cart-pill.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+  .cart-pill:hover{background:#e11d48;}
+  .cart-pill .pill-count{
+    background:rgba(255,255,255,.2);
+    padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:800;
+  }
+  .cart-pill .pill-amt{font-weight:800;}
+
+  /* Back-to-top button */
+  .top-btn{
+    position:fixed;bottom:24px;left:24px;
+    background:white;color:#14161a;
+    width:44px;height:44px;border-radius:50%;
+    border:1.5px solid #e6e3da;cursor:pointer;
+    font-size:1.2rem;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.06);
+    z-index:150;opacity:0;transform:translateY(20px);
+    pointer-events:none;
+    transition:opacity .25s,transform .25s,background .12s,color .12s;
+  }
+  .top-btn.visible{opacity:1;transform:translateY(0);pointer-events:auto;}
+  .top-btn:hover{background:#14161a;color:white;border-color:#14161a;}
+
+  @media(max-width:600px){
+    .cart-pill{bottom:16px;right:16px;padding:12px 18px;font-size:.88rem;}
+    .top-btn{bottom:16px;left:16px;width:40px;height:40px;}
+  }
+
+  /* Product detail modal — matches preorder catalog pattern */
+  .pd-backdrop{
+    position:fixed;inset:0;background:rgba(20,22,26,.55);
+    z-index:200;opacity:0;pointer-events:none;transition:opacity .22s;
+  }
+  .pd-backdrop.open{opacity:1;pointer-events:auto;}
+  .pd-modal{
+    position:fixed;top:50%;left:50%;
+    transform:translate(-50%,-50%) scale(.97);
+    background:#faf8f3;border-radius:14px;
+    z-index:201;width:min(900px,calc(100vw - 32px));
+    max-height:calc(100vh - 32px);overflow-y:auto;
+    box-shadow:0 24px 80px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;
+  }
+  .pd-modal.open{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto;}
+  .pd-modal .close{
+    position:absolute;top:14px;right:14px;
+    background:white;border:1px solid #e6e3da;
+    width:36px;height:36px;border-radius:50%;
+    font-size:1.2rem;color:#14161a;cursor:pointer;line-height:1;
+    display:flex;align-items:center;justify-content:center;z-index:2;
+  }
+  .pd-modal .close:hover{background:#14161a;color:white;border-color:#14161a;}
+  .pd-modal .grid{
+    display:grid;grid-template-columns:1.1fr 1fr;gap:0;align-items:stretch;
+  }
+  .pd-modal .imgwrap{
+    background:#ededeb;aspect-ratio:1/1;
+    background-size:contain;background-repeat:no-repeat;background-position:center;
+    border-radius:14px 0 0 14px;position:relative;
+  }
+  .pd-modal .ribbon{
+    position:absolute;top:18px;left:18px;
+    background:#14161a;color:white;
+    padding:5px 12px;border-radius:4px;
+    font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .pd-modal .ribbon.sale{background:#e11d48;}
+  .pd-modal .ribbon.low{background:#d97706;}
+  .pd-modal .crumb{font-size:.84rem;color:#14161a;margin-bottom:14px;}
+  .pd-modal .crumb a{font-weight:700;cursor:pointer;}
+  .pd-modal .crumb a:hover{text-decoration:underline;}
+  .pd-modal .crumb .sep{margin:0 8px;color:#9ca3af;}
+  .pd-modal .info{padding:36px 30px;display:flex;flex-direction:column;gap:14px;}
+  .pd-modal .brand{
+    font-size:.74rem;color:#9ca3af;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:700;
+  }
+  .pd-modal h2{
+    font-family:'Knewave','Permanent Marker',cursive;
+    font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:400;
+    color:#14161a;line-height:1;letter-spacing:.005em;
+  }
+  .pd-modal .price-row{
+    display:flex;align-items:baseline;gap:14px;
+    font-size:1.5rem;font-weight:800;color:#14161a;
+  }
+  .pd-modal .price-row .retail{
+    font-size:1.05rem;font-weight:500;color:#9ca3af;text-decoration:line-through;
+  }
+  .pd-modal .price-row .saved{
+    font-size:.78rem;font-weight:700;color:#15803d;
+    background:#dcfce7;padding:4px 10px;border-radius:999px;
+  }
+  .pd-modal .desc{
+    font-size:.94rem;color:#4b5563;line-height:1.55;
+    padding-bottom:8px;border-bottom:1px solid #e6e3da;
+  }
+  .pd-modal .stock-line{font-size:.82rem;color:#15803d;font-weight:700;}
+  .pd-modal .stock-line.low{color:#d97706;}
+  .pd-modal .stock-line.out{color:#dc2626;}
+  .pd-modal .opt{display:flex;flex-direction:column;gap:6px;}
+  .pd-modal .opt label{
+    font-size:.78rem;font-weight:700;color:#14161a;
+    text-transform:uppercase;letter-spacing:.04em;
+  }
+  .pd-modal .opt .qty{display:flex;align-items:center;gap:0;width:fit-content;border:2px solid #e6e3da;border-radius:6px;overflow:hidden;}
+  .pd-modal .opt .qty button{
+    background:white;border:none;width:42px;height:42px;font-size:1.2rem;font-weight:700;cursor:pointer;color:#14161a;
+  }
+  .pd-modal .opt .qty button:hover{background:#14161a;color:white;}
+  .pd-modal .opt .qty input{
+    border:none;width:60px;text-align:center;font-size:1rem;font-weight:700;background:white;
+    -moz-appearance:textfield;-webkit-appearance:none;outline:none;height:42px;
+  }
+  .pd-modal .opt .qty input::-webkit-outer-spin-button,
+  .pd-modal .opt .qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .pd-modal .add{
+    background:#14161a;color:white;border:none;
+    padding:14px;border-radius:8px;
+    font-size:.95rem;font-weight:800;letter-spacing:.04em;
+    cursor:pointer;transition:background .12s;margin-top:6px;
+  }
+  .pd-modal .add:hover{background:#e11d48;}
+  .pd-modal .add.in-cart{background:#15803d;}
+  .pd-modal .add:disabled{background:#9ca3af;cursor:not-allowed;}
+  .pd-modal .terms{
+    font-size:.78rem;color:#6b7280;line-height:1.5;
+    padding-top:14px;border-top:1px solid #e6e3da;
+  }
+  .pd-modal .sku{font-size:.7rem;color:#9ca3af;font-family:ui-monospace,monospace;}
+  @media(max-width:760px){
+    .pd-modal .grid{grid-template-columns:1fr;}
+    .pd-modal .imgwrap{border-radius:14px 14px 0 0;}
+    .pd-modal .info{padding:24px 20px;}
+  }
+
+  /* Cart drawer (same pattern as preorder catalog) */
+  .cart-drawer-backdrop{
+    position:fixed;inset:0;background:rgba(20,22,26,.5);
+    z-index:200;opacity:0;pointer-events:none;transition:opacity .25s;
+  }
+  .cart-drawer-backdrop.open{opacity:1;pointer-events:auto;}
+  .cart-drawer{
+    position:fixed;top:0;right:0;bottom:0;width:min(440px,100vw);
+    background:#faf8f3;z-index:201;transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;box-shadow:-12px 0 40px rgba(0,0,0,.1);
+  }
+  .cart-drawer.open{transform:translateX(0);}
+  .cart-drawer .head{padding:20px 24px;border-bottom:1px solid #e6e3da;display:flex;align-items:center;justify-content:space-between;}
+  .cart-drawer .head h3{font-family:'Knewave',cursive;font-size:1.4rem;font-weight:400;color:#14161a;}
+  .cart-drawer .close{background:transparent;border:none;font-size:1.5rem;color:#6b7280;width:36px;height:36px;border-radius:50%;}
+  .cart-drawer .close:hover{background:rgba(20,22,26,.08);color:#14161a;}
+  .cart-drawer .items{flex:1;overflow-y:auto;padding:8px 0;}
+  .cart-drawer .item{display:flex;gap:12px;padding:14px 24px;border-bottom:1px solid #e6e3da;}
+  .cart-drawer .item .thumb{width:64px;height:64px;border-radius:4px;background:#ededeb center/cover no-repeat;flex-shrink:0;}
+  .cart-drawer .item .info{flex:1;min-width:0;}
+  .cart-drawer .item .info .b{font-size:.65rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+  .cart-drawer .item .info .n{font-size:.85rem;font-weight:600;line-height:1.3;margin-top:2px;}
+  .cart-drawer .item .info .p{font-size:.85rem;font-weight:700;margin-top:4px;}
+  .cart-drawer .item .info .opts{margin-top:8px;display:flex;gap:6px;align-items:center;font-size:.78rem;}
+  .cart-drawer .item .info .opts label{color:#6b7280;}
+  .cart-drawer .item .info .opts input{
+    padding:3px 6px;border:1px solid #e6e3da;border-radius:4px;
+    font-family:inherit;font-size:.78rem;background:#fff;
+  }
+  .cart-drawer .item .remove{background:transparent;border:none;color:#9ca3af;font-size:1.1rem;align-self:flex-start;}
+  .cart-drawer .item .remove:hover{color:#e11d48;}
+  .cart-drawer .empty{padding:60px 24px;text-align:center;color:#6b7280;font-size:.9rem;}
+  .cart-drawer .empty .big{font-size:3rem;margin-bottom:10px;}
+  .cart-drawer .summary{padding:20px 24px;border-top:1px solid #e6e3da;background:#fff;}
+  .cart-drawer .summary .row{display:flex;justify-content:space-between;align-items:baseline;font-size:.88rem;color:#6b7280;margin-bottom:6px;}
+  .cart-drawer .summary .total{
+    border-top:2px dashed #e6e3da;padding-top:10px;
+    display:flex;justify-content:space-between;align-items:baseline;margin-top:6px;margin-bottom:14px;
+  }
+  .cart-drawer .summary .total .label{font-weight:800;color:#14161a;font-size:.94rem;}
+  .cart-drawer .summary .total .v{font-size:1.5rem;font-weight:800;color:#14161a;letter-spacing:-.01em;}
+  .cart-drawer .summary .checkout{
+    width:100%;background:#14161a;color:#fff;
+    padding:14px;border:none;border-radius:6px;
+    font-size:.95rem;font-weight:700;letter-spacing:.02em;
+  }
+  .cart-drawer .summary .checkout:hover{background:#e11d48;}
+  .cart-drawer .summary .terms-mini{font-size:.72rem;color:#6b7280;text-align:center;margin-top:10px;line-height:1.4;}
+
+  /* Responsive */
+  @media(max-width:980px){.layout{grid-template-columns:1fr;gap:30px;}.sidebar{order:2;}.main{order:1;}}
+  @media(max-width:700px){
+    .site-header{padding:16px 18px 4px;}
+    .site-header .actions .pill{display:none;}
+    .site-nav{gap:18px 22px;padding:14px 18px 18px;}
+    .site-nav a{font-size:.86rem;}
+    .page-wrap{padding:24px 18px 50px;}
+    .product-grid{gap:24px 18px;grid-template-columns:repeat(2,1fr);}
+    .product-card .name{font-size:.95rem;min-height:2.4em;}
+    .product-card .add-btn{opacity:1;transform:scale(1);}
+    .promo-banner{flex-direction:column;align-items:flex-start;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="top">
+      <a href="https://www.2ntr.com" class="logo hand" aria-label="2nd Nature home" id="brandLogo">
+        2<span class="nd">ND</span>nature
+      </a>
+      <script>
+        // Logo image swap — drop a real /2ntr-logo.png to replace the rendered text
+        (function(){
+          var img = new Image();
+          img.onload = function(){
+            var a = document.getElementById('brandLogo');
+            if(!a) return;
+            a.innerHTML = '<img src="2ntr-logo.png" alt="2nd Nature" style="max-height:78px;width:auto;display:block;">';
+            a.classList.remove('hand');
+          };
+          img.src = '2ntr-logo.png';
+        })();
+      </script>
+      <div class="actions">
+        <a href="https://www.2ntr.com/shop" class="pill">Shop All</a>
+        <a href="https://www.2ntr.com/account" class="icon-btn" aria-label="Account">👤</a>
+        <button class="icon-btn" onclick="openCart()" aria-label="Cart">
+          🛒<span class="badge" id="cartBadge" style="display:none;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="site-nav">
+    <a href="https://www.2ntr.com/about-us">About Us</a>
+    <a href="https://www.2ntr.com/skate">Skate</a>
+    <a href="https://www.2ntr.com/membership">Membership</a>
+    <a href="https://www.2ntr.com/lessons">Lessons</a>
+    <a href="https://www.2ntr.com/camps">Camps</a>
+    <a href="https://www.2ntr.com/events">Events</a>
+    <a href="https://www.2ntr.com/parties">Parties</a>
+    <a href="#" class="current">Skate Shop</a>
+    <a href="https://www.2ntr.com/gift-cards">Gift cards</a>
+  </nav>
+
+  <div class="page-wrap">
+    <div class="breadcrumb">
+      <a href="https://www.2ntr.com">Home</a>
+      <span class="sep">&gt;</span>
+      <span class="current">Skate Shop</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <h4>Browse by category</h4>
+        <ul id="sidebarCategories">
+          <li class="parent"><a class="current" data-cat="">All</a></li>
+        </ul>
+        <hr>
+        <div style="font-size:.78rem;color:#6b7280;line-height:1.5;">
+          <strong>Free local pickup</strong> at the shop in Peekskill, NY. Ships anywhere — calculated at checkout.
+        </div>
+      </aside>
+
+      <main class="main">
+        <h1 class="hand">Skate Shop</h1>
+        <div class="results-count" id="resultCount">Loading…</div>
+
+        <div class="promo-banner">
+          <div>
+            <h2>Decks · wheels · trucks · helmets</h2>
+            <p>Stocked at the park · ships anywhere · pickup free in Peekskill, NY.</p>
+          </div>
+          <div class="pills">
+            <span>📦 In-stock items</span>
+            <span>💳 Card or pickup payment</span>
+            <span>🛹 Open box-fresh from suppliers</span>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <div class="search">
+            <input type="search" id="searchInput" placeholder="Search by name, brand, or SKU…" oninput="onSearchInput()">
+          </div>
+          <select id="sortSelect" onchange="setSort(this.value)" aria-label="Sort">
+            <option value="featured">Featured</option>
+            <option value="price-asc">Price: low → high</option>
+            <option value="price-desc">Price: high → low</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </div>
+
+        <div class="product-grid" id="productGrid">
+          <div class="empty-state"><div class="big">⏳</div><div>Loading the catalog…</div></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <footer>
+    <div style="max-width:880px;margin:0 auto 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;text-align:left;">
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Shop</div>
+        <a href="https://shop.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">🛒 Skate Shop</a>
+        <a href="https://preorder.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">🛹 Pre-orders</a>
+        <a href="https://www.2ntr.com/gift-cards" style="display:block;font-size:.86rem;font-weight:600;">🎁 Gift cards</a>
+      </div>
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Park</div>
+        <a href="https://book.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">🎓 Book a lesson</a>
+        <a href="https://www.2ntr.com/membership" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">🪪 Memberships</a>
+        <a href="https://www.2ntr.com/parties" style="display:block;font-size:.86rem;font-weight:600;">🎂 Birthday parties</a>
+      </div>
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Visit + contact</div>
+        <a href="https://www.2ntr.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">2ntr.com</a>
+        <a href="mailto:info@2ntr.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;">✉ info@2ntr.com</a>
+        <a href="tel:+19144024624" style="display:block;font-size:.86rem;font-weight:600;">📞 (914) 402-4624</a>
+      </div>
+    </div>
+    <div class="copy">
+      © 2026 2nd Nature Skate · 1 Highland Industrial Park, Peekskill, NY 10566 · Powered by skateOS
+    </div>
+  </footer>
+
+  <!-- Floating cart pill + back-to-top button (sticky, bottom corners) -->
+  <button class="cart-pill" id="cartPill" onclick="openCart()" aria-label="Open cart">
+    🛒 <span class="pill-count" id="pillCount">0</span> <span class="pill-amt" id="pillAmt">$0</span> · Checkout →
+  </button>
+  <button class="top-btn" id="topBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">↑</button>
+
+  <!-- Product detail modal -->
+  <div class="pd-backdrop" id="pdBackdrop" onclick="closeProductDetail()"></div>
+  <aside class="pd-modal" id="pdModal" role="dialog" aria-label="Product detail"></aside>
+
+  <!-- Cart drawer -->
+  <div class="cart-drawer-backdrop" id="cartBackdrop" onclick="closeCart()"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="head">
+      <h3>Your cart</h3>
+      <button class="close" onclick="closeCart()" aria-label="Close">×</button>
+    </div>
+    <div class="items" id="cartItems">
+      <div class="empty">
+        <div class="big">🛒</div>
+        <div>Your cart is empty.</div>
+        <div style="font-size:.78rem;color:#9ca3af;margin-top:6px;">Tap any product to add.</div>
+      </div>
+    </div>
+    <div class="summary" id="cartSummary" style="display:none;">
+      <div class="row"><span>Subtotal</span><span id="cartSubtotal">$0</span></div>
+      <div class="row" style="font-size:.78rem;color:#9ca3af;"><span>Tax + shipping calculated at checkout</span></div>
+      <div class="total"><span class="label">Estimated total</span><span class="v" id="cartTotal">$0</span></div>
+      <button class="checkout" onclick="checkout()">Checkout →</button>
+      <div class="terms-mini">
+        Free pickup in Peekskill, NY · ships anywhere · cards processed via Helcim · no markup on shipping.
+      </div>
+    </div>
+  </aside>
+
+<script>
+  // ── Supabase config ─────────────────────────────────────────
+  var SUPABASE_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+
+  function escHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function money(n){return '$' + (Number(n)||0).toFixed(2);}
+
+  // ── State ───────────────────────────────────────────────────
+  var products = [];
+  var categories = [];
+  var cart = JSON.parse(localStorage.getItem('shop_cart') || '[]');
+  var currentCat = '';
+  var currentSearch = '';
+  var currentSort = 'featured';
+  var searchDebounce = null;
+
+  function saveCart(){
+    localStorage.setItem('shop_cart', JSON.stringify(cart));
+    renderCart();
+    renderProducts();  // refresh in-cart visuals
+  }
+
+  function addToCart(productId){
+    var p = products.find(function(x){return x.id === productId;});
+    if(!p) return;
+    var existing = cart.find(function(c){return c.id === productId;});
+    if(existing){ existing.qty++; } else { cart.push({id:productId, qty:1}); }
+    saveCart();
+    openCart();
+  }
+  function removeFromCart(productId){ cart = cart.filter(function(c){return c.id !== productId;}); saveCart(); }
+  function updateQty(productId, qty){
+    var it = cart.find(function(c){return c.id === productId;});
+    if(!it) return;
+    it.qty = Math.max(1, parseInt(qty,10) || 1);
+    saveCart();
+  }
+
+  function openCart(){
+    document.getElementById('cartBackdrop').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+    _updatePillVisibility();
+  }
+  function closeCart(){
+    document.getElementById('cartBackdrop').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+    _updatePillVisibility();
+  }
+
+  // ── Product detail modal ─────────────────────────────────────
+  // Click on a product card opens this. Bigger image + description +
+  // qty selector before "Add to cart". Matches 2ntr.com per-product
+  // page UX. The floating "+" button on each card still does direct
+  // quick-add for power users.
+  var _pdProductId = null;
+  var _pdQty = 1;
+
+  function openProductDetail(productId, options){
+    var p = products.find(function(x){return x.id === productId;});
+    if(!p) return;
+    _pdProductId = productId;
+    var existing = cart.find(function(c){return c.id === productId;});
+    _pdQty = existing ? existing.qty : 1;
+    var inCart = !!existing;
+    options = options || {};
+
+    // Push to URL so the product is deep-linkable. Skip when we got here
+    // FROM a URL change (popstate) to avoid infinite history loops.
+    if(!options.fromHistory){
+      try {
+        var newUrl = location.pathname + '?p=' + encodeURIComponent(productId);
+        if(location.search.indexOf('p=') < 0){
+          history.pushState({pdProductId: productId}, '', newUrl);
+        } else {
+          history.replaceState({pdProductId: productId}, '', newUrl);
+        }
+      } catch(e){ /* silent — history API may be blocked */ }
+    }
+    // Update document title for richer share previews
+    try {
+      _pdOriginalTitle = _pdOriginalTitle || document.title;
+      var titleParts = [];
+      if(p.brand) titleParts.push(p.brand);
+      titleParts.push(p.name);
+      titleParts.push('2nd Nature');
+      document.title = titleParts.join(' · ');
+      // Update OG meta tags for social sharing
+      _setMeta('og:title', (p.brand?p.brand+' · ':'') + p.name);
+      _setMeta('og:image', p.image || '');
+      _setMeta('og:url', location.href);
+      _setMeta('og:description', '$' + Number(p.price).toFixed(2) + ' · ' + (p.category||'') + ' · in stock at 2nd Nature Skate Park');
+    } catch(e){ /* silent */ }
+
+    var modal = document.getElementById('pdModal');
+    if(!modal) return;
+
+    var ribbon = '';
+    if(p.retail && p.retail > p.price){
+      var savePct = Math.round((1 - p.price/p.retail) * 100);
+      ribbon = '<div class="ribbon sale">'+savePct+'% off</div>';
+    } else if(p.availability === 'limited'){
+      ribbon = '<div class="ribbon low">Limited stock</div>';
+    } else if(p.availability === 'low_stock'){
+      ribbon = '<div class="ribbon low">Low stock</div>';
+    }
+
+    var savings = (p.retail && p.retail > p.price) ? (Number(p.retail) - Number(p.price)).toFixed(2) : 0;
+    var priceHtml = (p.retail && p.retail > p.price)
+      ? '<span class="retail">$'+Number(p.retail).toFixed(2)+'</span><span style="color:#e11d48;">$'+Number(p.price).toFixed(2)+'</span><span class="saved">save $'+savings+'</span>'
+      : '<span>$'+Number(p.price).toFixed(2)+'</span>';
+
+    // Stock-availability line — friendly banding without leaking exact qty
+    var stockHtml = '';
+    if(p.availability === 'in_stock')      stockHtml = '<div class="stock-line">✓ In stock · ships next business day</div>';
+    else if(p.availability === 'low_stock') stockHtml = '<div class="stock-line low">⚡ Low stock · ships next business day</div>';
+    else if(p.availability === 'limited')   stockHtml = '<div class="stock-line low">⚠ Only a few left</div>';
+    else if(p.availability === 'sold_out')  stockHtml = '<div class="stock-line out">✗ Sold out</div>';
+
+    var img = p.image || 'https://placehold.co/600x600/ededeb/9ca3af?text=No+image';
+    var addLabel = inCart ? '✓ Update cart' : 'Add to cart';
+    var addCls = inCart ? 'add in-cart' : 'add';
+    var soldOut = p.availability === 'sold_out';
+
+    var html = ''
+      + '<button class="close" onclick="closeProductDetail()" aria-label="Close">×</button>'
+      + '<div class="grid">'
+      +   '<div class="imgwrap" style="background-image:url(\''+escHtml(img)+'\');">'+ribbon+'</div>'
+      +   '<div class="info">'
+      +     '<div class="crumb"><a onclick="closeProductDetail()">Skate Shop</a> <span class="sep">›</span> <span style="color:#4b5563;">'+escHtml(p.category||'Product')+'</span></div>'
+      +     (p.brand ? '<div class="brand">'+escHtml(p.brand)+'</div>' : '')
+      +     '<h2>'+escHtml(p.name)+'</h2>'
+      +     '<div class="price-row">'+priceHtml+'</div>'
+      +     stockHtml
+      +     (p.description ? '<div class="desc">'+escHtml(p.description)+'</div>' : '')
+      +     (p.sku ? '<div class="sku">SKU: '+escHtml(p.sku)+'</div>' : '')
+      +     '<div class="opt"><label>Quantity</label><div class="qty">'
+      +       '<button type="button" onclick="_pdAdjQty(-1)" aria-label="Decrease">−</button>'
+      +       '<input type="number" id="pdQtyInput" min="1" max="20" value="'+_pdQty+'" oninput="_pdSetQty(this.value)">'
+      +       '<button type="button" onclick="_pdAdjQty(1)" aria-label="Increase">+</button>'
+      +     '</div></div>'
+      +     '<button class="'+addCls+'"'+(soldOut?' disabled':'')+' onclick="_pdAddToCart()">'+(soldOut?'Sold out':addLabel)+'</button>'
+      +     '<div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">'
+      +       '<button onclick="_pdShare()" style="flex:1;background:transparent;border:1.5px solid #e6e3da;border-radius:6px;padding:9px;font-size:.84rem;font-weight:600;cursor:pointer;color:#14161a;">📤 Share</button>'
+      +       '<button onclick="_pdCopyLink()" style="flex:1;background:transparent;border:1.5px solid #e6e3da;border-radius:6px;padding:9px;font-size:.84rem;font-weight:600;cursor:pointer;color:#14161a;">🔗 Copy link</button>'
+      +     '</div>'
+      +     '<div class="terms"><strong>Free pickup</strong> in Peekskill, NY · ships anywhere · cards processed by Helcim · no markup on shipping.</div>'
+      +   '</div>'
+      + '</div>';
+    modal.innerHTML = html;
+    document.getElementById('pdBackdrop').classList.add('open');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProductDetail(options){
+    var bd = document.getElementById('pdBackdrop');
+    var modal = document.getElementById('pdModal');
+    if(bd) bd.classList.remove('open');
+    if(modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
+    _pdProductId = null;
+    options = options || {};
+    // Restore URL + title on close (skip when we got here FROM popstate)
+    if(!options.fromHistory){
+      try {
+        if(location.search.indexOf('p=') >= 0){
+          history.pushState({}, '', location.pathname);
+        }
+      } catch(e){ /* silent */ }
+    }
+    try {
+      if(_pdOriginalTitle){
+        document.title = _pdOriginalTitle;
+        _setMeta('og:title', _pdOriginalTitle);
+        _setMeta('og:url', location.href);
+      }
+    } catch(e){}
+  }
+
+  // Helper: set or create a meta tag (used for og:title / og:image / etc.)
+  var _pdOriginalTitle = null;
+  function _setMeta(prop, content){
+    var sel = 'meta[property="'+prop+'"]';
+    var el = document.querySelector(sel);
+    if(!el){
+      el = document.createElement('meta');
+      el.setAttribute('property', prop);
+      document.head.appendChild(el);
+    }
+    el.setAttribute('content', content||'');
+  }
+
+  // popstate listener — back/forward should open/close the modal cleanly
+  window.addEventListener('popstate', function(e){
+    var url = new URL(location.href);
+    var p = url.searchParams.get('p');
+    if(p && products.find(function(x){return x.id === p;})){
+      openProductDetail(p, {fromHistory:true});
+    } else if(_pdProductId){
+      closeProductDetail({fromHistory:true});
+    }
+  });
+
+  function _pdAdjQty(delta){
+    var newQty = Math.max(1, Math.min(20, _pdQty + delta));
+    _pdQty = newQty;
+    var input = document.getElementById('pdQtyInput');
+    if(input) input.value = newQty;
+  }
+  function _pdSetQty(val){
+    var n = Math.max(1, Math.min(20, parseInt(val,10) || 1));
+    _pdQty = n;
+  }
+
+  function _pdAddToCart(){
+    if(!_pdProductId) return;
+    var p = products.find(function(x){return x.id === _pdProductId;});
+    if(!p || p.availability === 'sold_out') return;
+    var existing = cart.find(function(c){return c.id === _pdProductId;});
+    if(existing){ existing.qty = _pdQty; }
+    else        { cart.push({id:_pdProductId, qty:_pdQty}); }
+    saveCart();
+    closeProductDetail();
+    openCart();
+  }
+
+  // Esc closes the modal
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && _pdProductId){ closeProductDetail(); }
+  });
+
+  // Native share (mobile) or fallback to copy
+  function _pdShare(){
+    if(!_pdProductId) return;
+    var p = products.find(function(x){return x.id === _pdProductId;});
+    if(!p) return;
+    var shareData = {
+      title: (p.brand?p.brand+' · ':'') + p.name,
+      text: 'Check out this from 2nd Nature Skate Shop · $' + Number(p.price).toFixed(2),
+      url: location.href
+    };
+    if(navigator.share){
+      navigator.share(shareData).catch(function(){});
+    } else {
+      _pdCopyLink();
+    }
+  }
+
+  function _pdCopyLink(){
+    if(!navigator.clipboard){
+      window.prompt('Copy this link:', location.href);
+      return;
+    }
+    navigator.clipboard.writeText(location.href).then(function(){
+      // Brief visual feedback on the button
+      var btns = document.querySelectorAll('.pd-modal button');
+      btns.forEach(function(b){
+        if(b.textContent.indexOf('Copy link') >= 0){
+          var orig = b.textContent;
+          b.textContent = '✓ Link copied';
+          b.style.background = '#dcfce7';
+          b.style.color = '#166534';
+          b.style.borderColor = '#15803d';
+          setTimeout(function(){
+            b.textContent = orig;
+            b.style.background = '';
+            b.style.color = '';
+            b.style.borderColor = '';
+          }, 1500);
+        }
+      });
+    }).catch(function(){
+      window.prompt('Copy this link:', location.href);
+    });
+  }
+
+  // ── Catalog fetch via SECURITY DEFINER RPC (mig 052) ────────
+  async function loadCatalog(){
+    try {
+      var [productsRes, categoriesRes] = await Promise.all([
+        fetch(SUPABASE_URL + '/rest/v1/rpc/public_retail_catalog', {
+          method:'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+          body: JSON.stringify({ p_category: null, p_search: null, p_limit: 200 })
+        }),
+        fetch(SUPABASE_URL + '/rest/v1/rpc/public_retail_categories', {
+          method:'POST',
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+          body: '{}'
+        })
+      ]);
+
+      if(!productsRes.ok){
+        var msg = await productsRes.text();
+        if(/Could not find|does not exist/i.test(msg)){
+          renderEmpty('The shop isn\'t set up yet. Drop us a line at info@2ntr.com and we\'ll get back to you.');
+          return;
+        }
+        throw new Error(msg);
+      }
+
+      var data = await productsRes.json();
+      products = (data && data.products) || [];
+
+      if(categoriesRes.ok){
+        var catData = await categoriesRes.json();
+        categories = Array.isArray(catData) ? catData : [];
+      }
+
+      renderCategories();
+      renderProducts();
+
+      // Honor ?p=<id> deep-link — open the product detail modal directly
+      try {
+        var url = new URL(location.href);
+        var pid = url.searchParams.get('p');
+        if(pid && products.find(function(x){return x.id === pid;})){
+          // Use fromHistory so we don't push a duplicate state
+          openProductDetail(pid, {fromHistory: true});
+        }
+      } catch(e){ /* silent */ }
+    } catch(e){
+      console.error('Catalog load failed:', e);
+      renderEmpty('Something went wrong loading the catalog. Try refreshing — or reach us at info@2ntr.com.');
+    }
+  }
+
+  function renderCategories(){
+    var ul = document.getElementById('sidebarCategories');
+    if(!ul) return;
+    var html = '<li class="parent"><a class="' + (currentCat === '' ? 'current' : '') + '" data-cat="">All ('+products.length+')</a></li>';
+    categories.forEach(function(c){
+      var count = products.filter(function(p){ return (p.category||'').toLowerCase() === c.name.toLowerCase(); }).length;
+      if(count === 0) return;
+      html += '<li class="parent"><a class="' + (currentCat.toLowerCase() === c.name.toLowerCase() ? 'current' : '') + '" data-cat="'+escHtml(c.name)+'">'+escHtml(c.name)+' ('+count+')</a></li>';
+    });
+    ul.innerHTML = html;
+    ul.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click', function(){
+        currentCat = a.getAttribute('data-cat');
+        renderCategories();
+        renderProducts();
+      });
+    });
+  }
+
+  function renderProducts(){
+    var grid = document.getElementById('productGrid');
+    if(!grid) return;
+    var visible = products.filter(function(p){
+      if(currentCat && (p.category||'').toLowerCase() !== currentCat.toLowerCase()) return false;
+      if(currentSearch){
+        var q = currentSearch.toLowerCase();
+        var hay = ((p.name||'')+' '+(p.brand||'')+' '+(p.sku||'')).toLowerCase();
+        if(hay.indexOf(q) < 0) return false;
+      }
+      return true;
+    });
+
+    // Sort
+    if(currentSort === 'price-asc')  visible.sort(function(a,b){return Number(a.price) - Number(b.price);});
+    if(currentSort === 'price-desc') visible.sort(function(a,b){return Number(b.price) - Number(a.price);});
+    if(currentSort === 'name')       visible.sort(function(a,b){return (a.name||'').localeCompare(b.name||'');});
+
+    document.getElementById('resultCount').textContent = visible.length + ' result' + (visible.length===1?'':'s');
+
+    if(visible.length === 0){
+      grid.innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="big">🛹</div><div>No matching products.</div><div style="margin-top:8px;font-size:.86rem;">Looking for something specific? <a href="mailto:info@2ntr.com" style="color:#e11d48;text-decoration:underline;">Email us</a> — we can probably get it.</div></div>';
+      return;
+    }
+
+    grid.innerHTML = visible.map(function(p){
+      var inCart = cart.some(function(c){return c.id === p.id;});
+      var ribbon = '';
+      if(p.retail && p.retail > p.price){
+        var savePct = Math.round((1 - p.price/p.retail) * 100);
+        ribbon = '<div class="ribbon sale">'+savePct+'% off</div>';
+      } else if(p.availability === 'limited'){
+        ribbon = '<div class="ribbon low">Limited</div>';
+      } else if(p.availability === 'low_stock'){
+        ribbon = '<div class="ribbon low">Low stock</div>';
+      }
+      var priceHtml = (p.retail && p.retail > p.price)
+        ? '<span class="retail">$'+Number(p.retail).toFixed(2)+'</span><span class="price sale">$'+Number(p.price).toFixed(2)+'</span>'
+        : '<span class="price">$'+Number(p.price).toFixed(2)+'</span>';
+      var img = p.image || 'https://placehold.co/400x400/ededeb/9ca3af?text=No+image';
+      // Click → product detail modal. The "+" floating button still
+      // bypasses the modal for power-users who know what they want.
+      return '<div class="product-card '+(inCart?'in-cart':'')+'" onclick="openProductDetail(\''+escHtml(p.id)+'\')">'
+        + '<div class="image" style="background-image:url(\''+escHtml(img)+'\');">'+ribbon+'</div>'
+        + '<button class="add-btn" onclick="event.stopPropagation();addToCart(\''+escHtml(p.id)+'\');" aria-label="Quick add to cart">+</button>'
+        + (p.brand ? '<div class="brand">'+escHtml(p.brand)+'</div>' : '')
+        + '<div class="name">'+escHtml(p.name)+'</div>'
+        + '<div class="price-row">'+priceHtml+'</div>'
+        + '</div>';
+    }).join('');
+  }
+
+  function renderEmpty(msg){
+    document.getElementById('productGrid').innerHTML = '<div class="empty-state" style="grid-column:1/-1;"><div class="big">📦</div><div>'+escHtml(msg)+'</div></div>';
+    document.getElementById('resultCount').textContent = '';
+  }
+
+  function renderCart(){
+    var badge = document.getElementById('cartBadge');
+    var itemsEl = document.getElementById('cartItems');
+    var summaryEl = document.getElementById('cartSummary');
+    var subtotalEl = document.getElementById('cartSubtotal');
+    var totalEl = document.getElementById('cartTotal');
+    var totalQty = cart.reduce(function(a,c){return a+c.qty;}, 0);
+    badge.textContent = totalQty;
+    badge.style.display = totalQty > 0 ? '' : 'none';
+    if(!cart.length){
+      itemsEl.innerHTML = '<div class="empty"><div class="big">🛒</div><div>Your cart is empty.</div><div style="font-size:.78rem;color:#9ca3af;margin-top:6px;">Tap any product to add.</div></div>';
+      summaryEl.style.display = 'none';
+      return;
+    }
+    var subtotal = 0;
+    itemsEl.innerHTML = cart.map(function(c){
+      var p = products.find(function(x){return x.id === c.id;});
+      if(!p) return '';
+      var line = Number(p.price) * c.qty;
+      subtotal += line;
+      var img = p.image || '';
+      return '<div class="item">'
+        + '<div class="thumb" style="background-image:url(\''+escHtml(img)+'\');"></div>'
+        + '<div class="info">'
+        +   (p.brand ? '<div class="b">'+escHtml(p.brand)+'</div>' : '')
+        +   '<div class="n">'+escHtml(p.name)+'</div>'
+        +   '<div class="p">$'+Number(p.price).toFixed(2)+' × '+c.qty+'</div>'
+        +   '<div class="opts"><label>Qty</label><input type="number" min="1" max="20" value="'+c.qty+'" onchange="updateQty(\''+escHtml(p.id)+'\',this.value)" style="width:54px;"></div>'
+        + '</div>'
+        + '<button class="remove" onclick="removeFromCart(\''+escHtml(p.id)+'\')" aria-label="Remove">×</button>'
+        + '</div>';
+    }).join('');
+    if(subtotalEl) subtotalEl.textContent = '$' + subtotal.toFixed(2);
+    if(totalEl)    totalEl.textContent    = '$' + subtotal.toFixed(2);  // tax/ship at checkout
+    summaryEl.style.display = '';
+    // Update floating cart pill (visible when cart has items + scrolled past header)
+    var pillCount = document.getElementById('pillCount');
+    var pillAmt   = document.getElementById('pillAmt');
+    if(pillCount) pillCount.textContent = totalQty;
+    if(pillAmt)   pillAmt.textContent   = '$' + Math.round(subtotal);
+    _updatePillVisibility();
+  }
+
+  // ── Floating pill / top button visibility ─────────────────────────
+  // Cart pill: visible when (a) cart has items + (b) scrolled past 200px
+  //            + (c) cart drawer not currently open
+  // Back-to-top: visible when scrolled past 600px
+  function _updatePillVisibility(){
+    var pill = document.getElementById('cartPill');
+    var topBtn = document.getElementById('topBtn');
+    var drawerOpen = document.getElementById('cartDrawer').classList.contains('open');
+    var modalOpen = document.getElementById('pdModal').classList.contains('open');
+    var totalQty = cart.reduce(function(a,c){return a+c.qty;}, 0);
+    var scrolled = (window.scrollY || window.pageYOffset || 0);
+    if(pill){
+      var show = totalQty > 0 && scrolled > 200 && !drawerOpen && !modalOpen;
+      pill.classList.toggle('visible', show);
+    }
+    if(topBtn){
+      var showTop = scrolled > 600 && !drawerOpen && !modalOpen;
+      topBtn.classList.toggle('visible', showTop);
+    }
+  }
+  window.addEventListener('scroll', _updatePillVisibility, { passive: true });
+
+  // Search debounce
+  function onSearchInput(){
+    var q = (document.getElementById('searchInput')||{}).value || '';
+    clearTimeout(searchDebounce);
+    searchDebounce = setTimeout(function(){
+      currentSearch = q;
+      renderProducts();
+    }, 200);
+  }
+
+  function setSort(value){ currentSort = value; renderProducts(); }
+
+  // ── Checkout flow ─────────────────────────────────────────────
+  // 3-step inline flow that fits inside the existing cart drawer:
+  //   1. Cart summary (existing) → click "Checkout →" replaces drawer
+  //      contents with the contact form
+  //   2. Contact + fulfillment + shipping address
+  //   3. Submit → persist to Supabase form_submissions (mig 053 'retail-order')
+  //      → call helcim-invoice Edge Function → redirect to hostedPaymentUrl
+  //      OR fall back to mailto when Helcim isn't live
+  //
+  // Persistence runs FIRST so the order is captured even if Helcim is down.
+  // Helcim-paid status auto-flips via webhook (next ship) — for now Doug
+  // manually marks paid on the admin Forms page when he sees Helcim's email.
+  var _retailFormId = null;
+  async function _getRetailFormId(){
+    if(_retailFormId) return _retailFormId;
+    try {
+      var url = SUPABASE_URL + '/rest/v1/forms?slug=eq.retail-order&select=id&limit=1';
+      var res = await fetch(url, { headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY } });
+      if(!res.ok) return null;
+      var rows = await res.json();
+      if(rows && rows.length > 0){ _retailFormId = rows[0].id; return _retailFormId; }
+    } catch(e){ console.warn('Retail form lookup failed:', e); }
+    return null;
+  }
+
+  async function _persistRetailOrder(formId, payload){
+    try {
+      var url = SUPABASE_URL + '/rest/v1/form_submissions';
+      var res = await fetch(url, {
+        method:'POST',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json', 'Prefer':'return=representation' },
+        body: JSON.stringify({ form_id: formId, data: payload, status: 'new' })
+      });
+      if(!res.ok) return null;
+      var rows = await res.json().catch(function(){return null;});
+      return rows && rows.length > 0 ? { id: rows[0].id } : { id: null };
+    } catch(e){ console.warn('Retail order persist failed:', e); return null; }
+  }
+
+  // Fire-and-forget confirmation emails on order submit. Two channels:
+  //   1. Customer receipt via Resend Edge Function (HTML formatted)
+  //   2. Owner notification via Resend (rose banner, action items)
+  // Non-blocking — silent failures don't break the checkout flow.
+  async function _sendOrderConfirmationEmails(ctx){
+    var bizName = '2nd Nature Park';
+    var bizEmail = 'info@2ntr.com';
+    var bizPhone = '(914) 402-4624';
+    var bizAddr = '1 Highland Industrial Park, Peekskill, NY 10566';
+
+    var c = ctx.customer || {};
+    var subtotal = ctx.subtotal || 0;
+    var orderId = ctx.submissionId ? ctx.submissionId.slice(0,8).toUpperCase() : 'NEW';
+    var trackingUrl = ctx.submissionId ? ('https://shop.skateos.com/order.html?id=' + ctx.submissionId) : '';
+
+    // Build line-item HTML rows
+    var rowsHtml = (ctx.items || []).map(function(it){
+      return '<tr>'
+        + '<td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;">'
+        +   '<strong>'+escHtml(it.brand||'')+'</strong> '+escHtml(it.name||'')
+        + '</td>'
+        + '<td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:center;">'+(it.qty||1)+'</td>'
+        + '<td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:right;">$'+Number(it.unit_price||0).toFixed(2)+'</td>'
+        + '<td style="padding:8px 10px;border-bottom:1px solid #f3f4f6;text-align:right;font-weight:700;">$'+Number(it.line_total||0).toFixed(2)+'</td>'
+        + '</tr>';
+    }).join('');
+
+    // ─── Customer receipt ────────────────────────────────────────
+    if(c.email){
+      var custSubject = bizName + ' · order received · #' + orderId;
+      var custIntro = ctx.helcimUrl
+        ? 'Thanks for your order! Tap the button below to enter your card and lock it in:'
+        : 'Thanks for your order! We\'ll text you a card link shortly + a final shipping quote if you chose shipping.';
+      var custCta = ctx.helcimUrl
+        ? '<div style="margin:24px 0;text-align:center;"><a href="'+escHtml(ctx.helcimUrl)+'" style="display:inline-block;background:#e11d48;color:white;text-decoration:none;padding:14px 32px;border-radius:8px;font-weight:700;font-size:16px;">💳 Pay $'+subtotal.toFixed(2)+' now</a></div>'
+        : '<div style="background:#fef3c7;border-left:4px solid #d97706;padding:14px 18px;border-radius:6px;margin:18px 0;color:#92400e;font-size:14px;"><strong>Next steps:</strong> we\'ll text you '+escHtml(c.phone||'')+' within a few hours with a payment link + final shipping quote (if shipping).</div>';
+
+      var custHtml = '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:560px;margin:0 auto;color:#14161a;line-height:1.55;">'
+        + '<div style="background:#e11d48;color:white;padding:20px 24px;border-radius:10px 10px 0 0;text-align:center;">'
+        +   '<div style="font-size:.86rem;text-transform:uppercase;letter-spacing:.06em;opacity:.92;">Order received</div>'
+        +   '<div style="font-size:1.4rem;font-weight:800;margin-top:4px;">'+escHtml(bizName)+' · #'+orderId+'</div>'
+        + '</div>'
+        + '<div style="padding:24px;background:white;border:1px solid #e6e3da;border-top:none;border-radius:0 0 10px 10px;">'
+        +   '<p style="margin:0 0 14px;">Hey '+escHtml((c.name||'there').split(' ')[0])+',</p>'
+        +   '<p style="margin:0 0 14px;">'+custIntro+'</p>'
+        +   custCta
+        +   '<table style="width:100%;border-collapse:collapse;font-size:14px;margin:18px 0;">'
+        +     '<thead><tr style="background:#faf8f3;">'
+        +       '<th style="text-align:left;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Item</th>'
+        +       '<th style="text-align:center;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Qty</th>'
+        +       '<th style="text-align:right;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Unit</th>'
+        +       '<th style="text-align:right;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Line</th>'
+        +     '</tr></thead>'
+        +     '<tbody>'+rowsHtml+'</tbody>'
+        +     '<tfoot><tr><td colspan="3" style="padding:10px;text-align:right;font-weight:700;border-top:2px dashed #e6e3da;">Subtotal</td><td style="padding:10px;text-align:right;font-weight:800;font-size:18px;border-top:2px dashed #e6e3da;">$'+subtotal.toFixed(2)+'</td></tr></tfoot>'
+        +   '</table>'
+        +   '<div style="background:#faf8f3;padding:14px 16px;border-radius:8px;margin:14px 0;font-size:14px;">'
+        +     '<div style="font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:#6b7280;font-weight:700;margin-bottom:4px;">Fulfillment</div>'
+        +     '<div><strong>'+(ctx.fulfillment === 'ship' ? '📦 Ship' : '🛹 Pickup at the shop')+'</strong></div>'
+        +     (ctx.fulfillment === 'ship' && ctx.shippingAddr ? '<div style="margin-top:6px;font-family:ui-monospace,monospace;font-size:13px;color:#374151;">'+escHtml(ctx.shippingAddr).replace(/\n/g,'<br>')+'</div>' : '')
+        +     (ctx.fulfillment !== 'ship' ? '<div style="margin-top:4px;font-size:13px;color:#6b7280;">'+escHtml(bizAddr)+'</div>' : '')
+        +   '</div>'
+        +   (trackingUrl ? '<div style="margin:18px 0;text-align:center;"><a href="'+escHtml(trackingUrl)+'" style="display:inline-block;padding:10px 22px;background:#14161a;color:white;text-decoration:none;border-radius:6px;font-weight:700;font-size:13px;">📋 Track your order</a></div>' : '')
+        +   '<hr style="border:none;border-top:1px solid #e6e3da;margin:18px 0;">'
+        +   '<p style="font-size:13px;color:#6b7280;">Questions? Reply to this email or call '+escHtml(bizPhone)+'.</p>'
+        +   '<p style="font-size:13px;color:#6b7280;">Thanks for shopping with us 🛹<br>— '+escHtml(bizName)+'</p>'
+        + '</div>'
+        + '</div>';
+
+      var custText = 'Order #' + orderId + ' received — thanks!\n\n'
+        + 'Items:\n'
+        + (ctx.items||[]).map(function(it){ return '  • ' + (it.brand?it.brand+' · ':'') + it.name + ' × ' + (it.qty||1) + ' = $' + Number(it.line_total||0).toFixed(2); }).join('\n')
+        + '\n\nSubtotal: $' + subtotal.toFixed(2)
+        + (ctx.helcimUrl ? '\n\nPay now: ' + ctx.helcimUrl : '\n\nWe\'ll text you a payment link shortly.')
+        + (trackingUrl ? '\n\nTrack your order anytime: ' + trackingUrl : '')
+        + '\n\n— ' + bizName;
+
+      _shopSendEmail(c.email, custSubject, custHtml, custText, [{name:'type',value:'order_confirmation'}, {name:'role',value:'customer'}]);
+    }
+
+    // ─── Owner notification ─────────────────────────────────────
+    var ownerSubject = '🛒 New online order · ' + (c.name||'(unknown)') + ' · $' + subtotal.toFixed(2);
+    var ownerActionLine = ctx.helcimUrl
+      ? '<div style="background:#dcfce7;color:#166534;padding:10px 14px;border-radius:6px;margin:14px 0;font-size:14px;">✓ Helcim invoice <strong>#'+escHtml(String(ctx.helcimInvoice||'?'))+'</strong> created automatically. Customer was redirected to pay. Webhook will auto-flip status when card lands.</div>'
+      : '<div style="background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:6px;margin:14px 0;font-size:14px;">⚠ Helcim not wired yet — text the customer a payment link manually.<br><strong>Action:</strong> open the order in admin → Online Orders → "Send payment link". Helcim error: '+escHtml(ctx.helcimError||'unknown')+'</div>';
+
+    var ownerHtml = '<div style="font-family:-apple-system,BlinkMacSystemFont,sans-serif;max-width:560px;margin:0 auto;color:#14161a;line-height:1.55;">'
+      + '<div style="background:#14161a;color:white;padding:20px 24px;border-radius:10px 10px 0 0;">'
+      +   '<div style="font-size:.86rem;text-transform:uppercase;letter-spacing:.06em;opacity:.85;">New online order</div>'
+      +   '<div style="font-size:1.3rem;font-weight:800;margin-top:4px;">#'+orderId+' · '+escHtml(c.name||'(no name)')+'</div>'
+      + '</div>'
+      + '<div style="padding:24px;background:white;border:1px solid #e6e3da;border-top:none;border-radius:0 0 10px 10px;">'
+      +   ownerActionLine
+      +   '<div style="background:#faf8f3;padding:12px 14px;border-radius:8px;margin:14px 0;">'
+      +     '<div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:#6b7280;font-weight:700;margin-bottom:6px;">Customer</div>'
+      +     '<div><strong>'+escHtml(c.name||'(unknown)')+'</strong></div>'
+      +     '<div style="font-size:13px;color:#374151;margin-top:4px;">'
+      +       (c.email ? '<a href="mailto:'+escHtml(c.email)+'">'+escHtml(c.email)+'</a> · ' : '')
+      +       (c.phone ? '<a href="tel:'+escHtml(c.phone)+'">'+escHtml(c.phone)+'</a> · <a href="sms:'+escHtml(c.phone)+'">[text]</a>' : '')
+      +     '</div>'
+      +     '<div style="margin-top:8px;font-size:13px;"><strong>Fulfillment:</strong> '+(ctx.fulfillment === 'ship' ? '📦 Ship' : '🛹 Pickup')+'</div>'
+      +     (ctx.fulfillment === 'ship' && ctx.shippingAddr ? '<div style="margin-top:6px;padding:8px 10px;background:white;border-left:3px solid #0891b2;border-radius:4px;font-family:ui-monospace,monospace;font-size:13px;color:#374151;">'+escHtml(ctx.shippingAddr).replace(/\n/g,'<br>')+'</div>' : '')
+      +     (ctx.notes ? '<div style="margin-top:8px;font-size:13px;color:#6b7280;font-style:italic;">"'+escHtml(ctx.notes)+'"</div>' : '')
+      +   '</div>'
+      +   '<table style="width:100%;border-collapse:collapse;font-size:14px;margin:14px 0;">'
+      +     '<thead><tr style="background:#faf8f3;">'
+      +       '<th style="text-align:left;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Item</th>'
+      +       '<th style="text-align:center;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Qty</th>'
+      +       '<th style="text-align:right;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Unit</th>'
+      +       '<th style="text-align:right;padding:8px 10px;font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;">Line</th>'
+      +     '</tr></thead>'
+      +     '<tbody>'+rowsHtml+'</tbody>'
+      +     '<tfoot><tr><td colspan="3" style="padding:10px;text-align:right;font-weight:700;border-top:2px dashed #e6e3da;">Subtotal</td><td style="padding:10px;text-align:right;font-weight:800;font-size:18px;border-top:2px dashed #e6e3da;color:#15803d;">$'+subtotal.toFixed(2)+'</td></tr></tfoot>'
+      +   '</table>'
+      +   '<div style="text-align:center;margin:18px 0;">'
+      +     '<a href="https://app.skateos.com" style="display:inline-block;background:#e11d48;color:white;text-decoration:none;padding:11px 24px;border-radius:6px;font-weight:700;font-size:14px;">Open in admin →</a>'
+      +   '</div>'
+      + '</div>'
+      + '</div>';
+
+    var ownerText = 'New online order #' + orderId + '\n\n'
+      + 'Customer: ' + (c.name||'(no name)') + '\n'
+      + 'Email: ' + (c.email||'') + '\n'
+      + 'Phone: ' + (c.phone||'') + '\n'
+      + 'Fulfillment: ' + (ctx.fulfillment === 'ship' ? 'SHIP' : 'PICKUP') + '\n'
+      + (ctx.fulfillment === 'ship' && ctx.shippingAddr ? 'Ship to:\n' + ctx.shippingAddr + '\n' : '')
+      + (ctx.notes ? 'Notes: ' + ctx.notes + '\n' : '')
+      + '\nItems:\n'
+      + (ctx.items||[]).map(function(it){ return '  • ' + (it.brand?it.brand+' · ':'') + it.name + ' × ' + (it.qty||1) + ' = $' + Number(it.line_total||0).toFixed(2); }).join('\n')
+      + '\n\nSubtotal: $' + subtotal.toFixed(2)
+      + (ctx.helcimUrl ? '\n\n✓ Helcim invoice #' + (ctx.helcimInvoice||'?') + ' created. Customer redirected to pay.' : '\n\n⚠ Helcim not wired — text customer a payment link manually.');
+
+    _shopSendEmail(bizEmail, ownerSubject, ownerHtml, ownerText, [{name:'type',value:'order_notification'}, {name:'role',value:'owner'}]);
+  }
+
+  async function _shopSendEmail(to, subject, html, text, tags){
+    try {
+      await fetch(SUPABASE_URL + '/functions/v1/send-email', {
+        method:'POST',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+        body: JSON.stringify({ to: to, subject: subject, html: html, text: text, tags: tags || [] })
+      });
+    } catch(e){
+      // Silent — emails are best-effort. Order is already persisted.
+      console.warn('Order email failed:', e);
+    }
+  }
+
+  async function _helcimCreateInvoice(payload){
+    try {
+      var url = SUPABASE_URL + '/functions/v1/helcim-invoice';
+      var res = await fetch(url, {
+        method:'POST',
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json().catch(function(){return {};});
+      if(res.ok && data.ok && data.hostedPaymentUrl){
+        return { ok: true, url: data.hostedPaymentUrl, invoiceNumber: data.helcimInvoiceNumber };
+      }
+      return { ok: false, error: (data && (data.error || data.message)) || ('HTTP '+res.status) };
+    } catch(e){
+      return { ok: false, error: e.message || String(e) };
+    }
+  }
+
+  // Replaces the cart drawer body with the contact + fulfillment form.
+  // Cart preview stays at top so customers see what they're paying for.
+  function checkout(){
+    if(!cart.length) return;
+    var subtotal = 0;
+    cart.forEach(function(c){
+      var p = products.find(function(x){return x.id === c.id;});
+      if(p) subtotal += Number(p.price) * c.qty;
+    });
+
+    var itemsEl = document.getElementById('cartItems');
+    var summaryEl = document.getElementById('cartSummary');
+    if(!itemsEl || !summaryEl) return;
+
+    var itemPreviews = cart.map(function(c){
+      var p = products.find(function(x){return x.id === c.id;});
+      if(!p) return '';
+      return '<div style="display:flex;justify-content:space-between;font-size:.84rem;padding:4px 0;color:#374151;">'
+        + '<span>'+(p.brand?escHtml(p.brand)+' · ':'')+escHtml(p.name)+' × '+c.qty+'</span>'
+        + '<span style="font-weight:700;">$'+(Number(p.price)*c.qty).toFixed(2)+'</span>'
+        + '</div>';
+    }).join('');
+
+    itemsEl.innerHTML = '<div style="padding:18px 24px;">'
+      + '<button onclick="renderCart();document.getElementById(\'cartSummary\').style.display=\'\';" style="background:transparent;border:none;color:#6b7280;font-size:.82rem;cursor:pointer;margin-bottom:10px;padding:0;">&larr; back to cart</button>'
+      + '<div style="font-size:.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:8px;">Order summary</div>'
+      + '<div style="background:white;border:1px solid #e6e3da;border-radius:8px;padding:12px 14px;margin-bottom:18px;">'
+      +   itemPreviews
+      +   '<div style="display:flex;justify-content:space-between;border-top:2px dashed #e6e3da;margin-top:8px;padding-top:8px;font-weight:800;"><span>Subtotal</span><span>$'+subtotal.toFixed(2)+'</span></div>'
+      +   '<div style="font-size:.7rem;color:#9ca3af;margin-top:4px;">Tax + shipping calculated below.</div>'
+      + '</div>'
+
+      + '<div style="font-size:.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:8px;">Your info</div>'
+      + '<div style="display:grid;gap:10px;margin-bottom:18px;">'
+      +   '<input type="text" id="coName"  placeholder="Full name *"        style="padding:11px 14px;border:1.5px solid #14161a;border-radius:6px;font-size:.92rem;font-family:inherit;background:white;">'
+      +   '<input type="email" id="coEmail" placeholder="Email *"           style="padding:11px 14px;border:1.5px solid #14161a;border-radius:6px;font-size:.92rem;font-family:inherit;background:white;">'
+      +   '<input type="tel"   id="coPhone" placeholder="Phone *"           style="padding:11px 14px;border:1.5px solid #14161a;border-radius:6px;font-size:.92rem;font-family:inherit;background:white;">'
+      + '</div>'
+
+      + '<div style="font-size:.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:8px;">How to get it</div>'
+      + '<div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">'
+      +   '<label style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid #14161a;border-radius:6px;cursor:pointer;background:white;font-size:.92rem;"><input type="radio" name="coFulfill" value="pickup" checked onchange="_coOnFulfillChange()" style="margin:0;"><span><strong>🛹 Pickup</strong> at the shop · free · 1 Highland Industrial Park, Peekskill, NY</span></label>'
+      +   '<label style="display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid #e6e3da;border-radius:6px;cursor:pointer;background:#faf8f3;font-size:.92rem;"><input type="radio" name="coFulfill" value="ship" onchange="_coOnFulfillChange()" style="margin:0;"><span><strong>📦 Ship</strong> to my address · actual cost added to balance, no markup</span></label>'
+      + '</div>'
+
+      + '<div id="coShipBlock" style="display:none;margin-bottom:14px;">'
+      +   '<div style="font-size:.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:8px;">Shipping address</div>'
+      +   '<textarea id="coAddress" placeholder="Street, city, state, zip&#10;e.g. 123 Main St, Peekskill NY 10566" rows="3" style="width:100%;padding:11px 14px;border:1.5px solid #14161a;border-radius:6px;font-size:.92rem;font-family:inherit;background:white;resize:vertical;"></textarea>'
+      + '</div>'
+
+      + '<div style="margin-bottom:14px;">'
+      +   '<div style="font-size:.78rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin-bottom:8px;">Notes (optional)</div>'
+      +   '<input type="text" id="coNotes" placeholder="Anything we should know?" style="width:100%;padding:11px 14px;border:1.5px solid #e6e3da;border-radius:6px;font-size:.92rem;font-family:inherit;background:white;">'
+      + '</div>'
+
+      + '<div id="coError" style="display:none;background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:6px;font-size:.86rem;margin-bottom:14px;"></div>'
+
+      + '<button id="coSubmitBtn" onclick="_coSubmit()" style="width:100%;background:#14161a;color:white;border:none;padding:14px;border-radius:6px;font-size:.95rem;font-weight:700;letter-spacing:.02em;cursor:pointer;">Place order →</button>'
+
+      + '<div style="font-size:.7rem;color:#9ca3af;text-align:center;margin-top:10px;line-height:1.4;">Card processed securely by Helcim · we never see your card details · cancel anytime before pickup / ship.</div>'
+      + '</div>';
+
+    summaryEl.style.display = 'none';
+  }
+
+  function _coOnFulfillChange(){
+    var fulfill = (document.querySelector('input[name="coFulfill"]:checked')||{}).value;
+    var block = document.getElementById('coShipBlock');
+    if(block) block.style.display = fulfill === 'ship' ? '' : 'none';
+    // Visual highlight on the selected radio's label
+    document.querySelectorAll('input[name="coFulfill"]').forEach(function(r){
+      var lbl = r.closest('label');
+      if(!lbl) return;
+      if(r.checked){ lbl.style.borderColor = '#14161a'; lbl.style.background = 'white'; }
+      else         { lbl.style.borderColor = '#e6e3da'; lbl.style.background = '#faf8f3'; }
+    });
+  }
+
+  async function _coSubmit(){
+    var nameEl   = document.getElementById('coName');
+    var emailEl  = document.getElementById('coEmail');
+    var phoneEl  = document.getElementById('coPhone');
+    var addrEl   = document.getElementById('coAddress');
+    var notesEl  = document.getElementById('coNotes');
+    var errEl    = document.getElementById('coError');
+    var btnEl    = document.getElementById('coSubmitBtn');
+
+    function fail(msg){
+      if(errEl){ errEl.textContent = msg; errEl.style.display = ''; }
+      if(btnEl){ btnEl.disabled = false; btnEl.textContent = 'Place order →'; }
+    }
+
+    if(errEl) errEl.style.display = 'none';
+    if(btnEl){ btnEl.disabled = true; btnEl.textContent = 'Submitting…'; }
+
+    var name  = (nameEl  && nameEl.value || '').trim();
+    var email = (emailEl && emailEl.value || '').trim();
+    var phone = (phoneEl && phoneEl.value || '').trim();
+    var notes = (notesEl && notesEl.value || '').trim();
+    var fulfill = (document.querySelector('input[name="coFulfill"]:checked')||{}).value || 'pickup';
+    var addr  = (addrEl && addrEl.value || '').trim();
+
+    if(!name)  return fail('Please enter your full name.');
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email.');
+    if(!phone) return fail('Please enter a phone number — we may need to text you about your order.');
+    if(fulfill === 'ship' && !addr) return fail('Please enter your shipping address.');
+
+    var subtotal = 0;
+    var structuredItems = [];
+    cart.forEach(function(c){
+      var p = products.find(function(x){return x.id === c.id;});
+      if(!p) return;
+      var unit = Number(p.price);
+      var line = unit * c.qty;
+      subtotal += line;
+      structuredItems.push({
+        product_id: p.id, brand: p.brand, name: p.name, sku: p.sku,
+        qty: c.qty, unit_price: unit, line_total: +line.toFixed(2),
+        retail_price: p.retail || null
+      });
+    });
+
+    if(structuredItems.length === 0) return fail('Your cart is empty.');
+
+    // Step 1: persist to Supabase form_submissions (best-effort)
+    var formId = await _getRetailFormId();
+    var submissionId = null;
+    if(formId){
+      var persisted = await _persistRetailOrder(formId, {
+        submitted_at: new Date().toISOString(),
+        contact: { name: name, email: email, phone: phone },
+        fulfillment: fulfill,
+        shipping_address: fulfill === 'ship' ? addr : null,
+        items: structuredItems,
+        totals: { subtotal: +subtotal.toFixed(2) },
+        notes: notes || null,
+        payment_status: 'pending',  // flips to 'paid' via Helcim webhook
+        source: 'shop.skateos.com'
+      });
+      if(persisted) submissionId = persisted.id;
+    }
+
+    // Step 2: try Helcim hosted invoice. Fall back to mailto on any failure.
+    var helcimAttempt = await _helcimCreateInvoice({
+      currency: 'USD',
+      customer: { name: name, email: email },
+      lineItems: structuredItems.map(function(it){
+        return {
+          sku: it.sku || it.product_id,
+          description: (it.brand?it.brand+' · ':'') + it.name + ' (qty '+it.qty+')',
+          quantity: it.qty,
+          price: it.unit_price
+        };
+      }),
+      notes: 'Online order ' + (submissionId?submissionId.slice(0,8):'') + ' · ' + name + (fulfill==='ship'?' · ship to '+addr.replace(/\n/g,', '):' · pickup'),
+      // Backref so helcim-webhook can flip the right form_submission
+      skateos_order_submission_id: submissionId
+    });
+
+    if(helcimAttempt.ok && helcimAttempt.url){
+      // Cache + redirect to Helcim hosted page
+      try {
+        if(submissionId){
+          await fetch(SUPABASE_URL + '/rest/v1/form_submissions?id=eq.'+submissionId, {
+            method:'PATCH',
+            headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+            body: JSON.stringify({ data: { /* merge in helcim refs — naive overwrite intentionally to surface them */
+              submitted_at: new Date().toISOString(),
+              contact: { name: name, email: email, phone: phone },
+              fulfillment: fulfill,
+              shipping_address: fulfill === 'ship' ? addr : null,
+              items: structuredItems,
+              totals: { subtotal: +subtotal.toFixed(2) },
+              notes: notes || null,
+              payment_status: 'pending',
+              source: 'shop.skateos.com',
+              helcim_invoice_number: helcimAttempt.invoiceNumber || null,
+              helcim_payment_url:    helcimAttempt.url
+            }})
+          });
+        }
+      } catch(e){ /* silent — redirect is the priority */ }
+
+      // Fire confirmation emails (best-effort, async, non-blocking)
+      _sendOrderConfirmationEmails({
+        customer: { name: name, email: email, phone: phone },
+        items: structuredItems, subtotal: subtotal,
+        fulfillment: fulfill, shippingAddr: addr, notes: notes,
+        helcimUrl: helcimAttempt.url, helcimInvoice: helcimAttempt.invoiceNumber,
+        submissionId: submissionId
+      });
+
+      cart = [];
+      saveCart();
+      // Redirect customer to pay
+      window.location.href = helcimAttempt.url;
+      return;
+    }
+
+    // Even on Helcim-fallback path, fire the customer + admin emails so
+    // they're not relying on Doug remembering to forward the mailto.
+    _sendOrderConfirmationEmails({
+      customer: { name: name, email: email, phone: phone },
+      items: structuredItems, subtotal: subtotal,
+      fulfillment: fulfill, shippingAddr: addr, notes: notes,
+      helcimUrl: null, helcimInvoice: null,
+      submissionId: submissionId, helcimError: helcimAttempt.error
+    });
+
+    // Helcim wasn't live — fall back to mailto + show "we'll text you a link"
+    var lines = ['Online order — Helcim not yet wired, follow up manually'];
+    lines.push('═══════════════════════════════════════');
+    lines.push('Submitted: ' + new Date().toLocaleString());
+    if(submissionId) lines.push('skateOS submission: ' + submissionId);
+    lines.push('');
+    lines.push('Customer:');
+    lines.push('  Name:     ' + name);
+    lines.push('  Email:    ' + email);
+    lines.push('  Phone:    ' + phone);
+    lines.push('  Fulfill:  ' + fulfill + (fulfill==='ship' ? ' (collect shipping in addition to subtotal)' : ' (pickup at the shop)'));
+    if(fulfill === 'ship'){
+      lines.push('  Ship to:');
+      addr.split('\n').forEach(function(l){ lines.push('    ' + l); });
+    }
+    if(notes) lines.push('  Notes:    ' + notes);
+    lines.push('');
+    lines.push('Items:');
+    structuredItems.forEach(function(it){
+      lines.push('  • '+(it.brand?it.brand+' · ':'')+it.name+' · qty '+it.qty+' · $'+it.unit_price.toFixed(2)+' ea = $'+it.line_total.toFixed(2));
+    });
+    lines.push('');
+    lines.push('Subtotal: $'+subtotal.toFixed(2));
+    lines.push('');
+    lines.push('Action: send Helcim payment link · Helcim error: ' + (helcimAttempt.error||'unknown'));
+    lines.push('');
+    lines.push('— Submitted via shop.skateos.com');
+
+    var subject = '2nd Nature · online order $'+subtotal.toFixed(2)+' · '+name;
+    var mailto = 'mailto:info@2ntr.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(lines.join('\n'));
+    window.open(mailto, '_blank');
+
+    cart = [];
+    saveCart();
+    var itemsEl = document.getElementById('cartItems');
+    var summaryEl = document.getElementById('cartSummary');
+    itemsEl.innerHTML = '<div class="empty">'
+      + '<div class="big">📨</div>'
+      + '<div style="font-weight:700;color:#14161a;">Order received!</div>'
+      + '<div style="margin-top:10px;font-size:.86rem;color:#374151;">'
+      +   'We\'ll text you a card link + final total within a few hours.'
+      +   '<br><br>Thanks for shopping with us 🛹'
+      + '</div>'
+      + '</div>';
+    if(summaryEl) summaryEl.style.display = 'none';
+  }
+
+  // ── Init ────────────────────────────────────────────────────
+  renderCart();
+  loadCatalog();
+</script>
+</body>
+</html>

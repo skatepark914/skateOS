@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Products you can deploy — Hudson Valley AI</title>
+<meta name="description" content="White-label software products by Hudson Valley AI. License skateOS, Branch Manager, and more for your own business.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta property="og:title" content="Products you can deploy — Hudson Valley AI">
+<meta property="og:description" content="White-label software products you can license + deploy for your business.">
+<meta property="og:image" content="https://consult.skateos.com/og.png">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;}
+  h1{font-size:clamp(2rem,4.4vw,3.2rem);font-weight:900;letter-spacing:-0.024em;line-height:1.05;margin-bottom:14px;}
+  .subtitle{font-size:1.15rem;color:#404040;max-width:740px;margin-bottom:40px;}
+
+  .product{
+    background:#fff;border:1px solid #e5e5e0;border-radius:16px;padding:36px;margin-bottom:18px;
+    transition:border-color .12s,transform .12s,box-shadow .12s;
+    scroll-margin-top:80px;
+  }
+  .product:hover{border-color:#0a0a0a;transform:translateY(-2px);box-shadow:0 12px 30px -10px rgba(0,0,0,.08);}
+  .product-row{display:grid;grid-template-columns:1.6fr 1fr;gap:36px;align-items:start;}
+  @media(max-width:880px){.product-row{grid-template-columns:1fr;gap:24px;}}
+
+  .product-status{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:14px;}
+  .product-status.live{background:#dcfce7;color:#15803d;}
+  .product-status.live::before{content:'●';}
+  .product-status.dev{background:#fef3c7;color:#92400e;}
+  .product-status.alpha{background:#fce7f3;color:#9f1239;}
+
+  .product h2{font-size:2rem;font-weight:900;letter-spacing:-0.024em;margin-bottom:6px;line-height:1;}
+  .product .tagline{font-size:1.05rem;color:#404040;margin-bottom:16px;}
+  .product .summary{font-size:.96rem;color:#404040;line-height:1.65;margin-bottom:18px;}
+  .product .summary strong{color:#0a0a0a;}
+
+  .product .for-who{
+    background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;
+    margin-bottom:18px;font-size:.92rem;
+  }
+  .product .for-who strong{color:#e11d48;display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px;}
+
+  .feature-list{list-style:none;padding:0;margin:0 0 18px;}
+  .feature-list li{padding:5px 0 5px 22px;font-size:.9rem;color:#404040;position:relative;line-height:1.55;}
+  .feature-list li::before{content:'✓';position:absolute;left:0;color:#15803d;font-weight:800;}
+
+  .product-pricing{
+    background:#0a0a0a;color:#fafaf9;border-radius:12px;padding:24px;
+  }
+  .product-pricing h3{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:#a3a3a3;font-weight:700;margin-bottom:14px;}
+  .price-tier{padding:14px 0;border-top:1px solid #262626;}
+  .price-tier:first-of-type{border-top:none;padding-top:0;}
+  .tier-name{font-size:.84rem;font-weight:700;color:#fb7185;margin-bottom:4px;}
+  .tier-price{font-size:1.5rem;font-weight:900;color:#fafaf9;letter-spacing:-0.02em;line-height:1;}
+  .tier-price .unit{font-size:.78rem;color:#a3a3a3;font-weight:600;margin-left:6px;}
+  .tier-desc{font-size:.78rem;color:#a3a3a3;margin-top:6px;line-height:1.5;}
+
+  .cta-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px;}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:8px;font-size:.9rem;font-weight:700;letter-spacing:-0.005em;cursor:pointer;border:none;font-family:inherit;}
+  .btn-primary{background:#0a0a0a;color:#fafaf9;}
+  .btn-primary:hover{background:#e11d48;}
+  .btn-outline{background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;}
+  .btn-outline:hover{background:#0a0a0a;color:#fafaf9;}
+  .btn-link{color:#737373;font-size:.86rem;font-weight:600;align-self:center;text-decoration:underline;text-underline-offset:3px;}
+
+  .stack-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .stack-pill{background:#f3f4f6;color:#0a0a0a;font-size:.74rem;padding:4px 10px;border-radius:5px;font-weight:600;}
+
+  .anchor-nav{
+    background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:18px 22px;margin-bottom:30px;
+  }
+  .anchor-nav h3{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:#737373;font-weight:700;margin-bottom:10px;}
+  .anchor-nav .links{display:flex;flex-wrap:wrap;gap:8px;}
+  .anchor-nav a{
+    background:#fafaf9;border:1px solid #e5e5e0;padding:8px 14px;border-radius:8px;
+    font-size:.86rem;font-weight:600;color:#0a0a0a;
+  }
+  .anchor-nav a:hover{border-color:#0a0a0a;}
+
+  .cta-bottom{background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:36px;margin-top:40px;text-align:center;}
+  .cta-bottom h2{color:#fafaf9;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;max-width:500px;margin-left:auto;margin-right:auto;}
+  .cta-bottom .btn-primary{background:#fb7185;color:#fafaf9;}
+  .cta-bottom .btn-primary:hover{background:#be123c;}
+  .cta-bottom .btn-outline{border-color:#525252;color:#a3a3a3;}
+  .cta-bottom .btn-outline:hover{background:#262626;color:#fafaf9;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Principal-led software + security consultancy · <a href="security.html">How we handle security →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="work.html">Work</a>
+    <a href="products.html" class="active">Products</a>
+    <a href="security.html">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html">Compare</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Products you can deploy</div>
+  <h1>License our software. <span style="color:#e11d48;">Skip the build.</span></h1>
+  <p class="subtitle">We don't just build custom software — we also license production-ready products we've already shipped. If your business looks like one of these, you can be up and running in days, not months.</p>
+
+  <div class="anchor-nav">
+    <h3>Jump to a product</h3>
+    <div class="links">
+      <a href="#skateos">🛹 skateOS</a>
+      <a href="#branch-manager">🌳 Branch Manager</a>
+      <a href="#murray">🤖 Murray</a>
+      <a href="#popcut">🎬 PopCut</a>
+      <a href="#custom">🛠 Custom build</a>
+    </div>
+  </div>
+
+  <!-- ─── skateOS ─────────────────────────────────────────────── -->
+  <div class="product" id="skateos">
+    <span class="product-status live">Live · serving real customers</span>
+    <div class="product-row">
+      <div>
+        <h2>🛹 skateOS</h2>
+        <div class="tagline">The operating system for skateparks &amp; skateshops.</div>
+        <p class="summary">White-label SaaS replacing Square POS, Mindbody, Smartwaiver, and a half-dozen single-purpose tools with one accountable platform. <strong>Currently deployed at 2nd Nature Skate Park (Peekskill, NY).</strong> Designed multi-tenant — your park can be live in days.</p>
+
+        <div class="for-who">
+          <strong>Best for</strong>
+          Independent skateparks, indoor / outdoor skate facilities, BMX parks, action-sports venues. Anywhere kids show up, sign waivers, pay for sessions, take lessons, and the front desk juggles too many tools.
+        </div>
+
+        <ul class="feature-list">
+          <li>Front-desk check-in (QR scan, capacity tracking, waiver enforcement)</li>
+          <li>Point of sale + tip allocation + cash reconciliation + receipt printing</li>
+          <li>Lessons + bookings + automated reminders + post-lesson follow-ups</li>
+          <li>Customer self-serve portal (cancel lessons, manage memberships, print member card)</li>
+          <li>Online retail shop + lesson booking with Helcim payments</li>
+          <li>Affiliate / team rider program with commission tracking</li>
+          <li>Mobile bus shop for off-site events</li>
+          <li>iPad-native app + 30+ analytical reports</li>
+          <li>Custom domain · branded for your park</li>
+        </ul>
+
+        <div class="stack-row">
+          <span class="stack-pill">Multi-tenant SaaS</span>
+          <span class="stack-pill">iPad + web</span>
+          <span class="stack-pill">Helcim payments</span>
+          <span class="stack-pill">Source-available license</span>
+        </div>
+
+        <div class="cta-row">
+          <a href="mailto:doug@2ntr.com?subject=skateOS%20walkthrough%20request" class="btn btn-outline">📺 Request a walkthrough</a>
+          <a href="https://skateos.com" target="_blank" class="btn-link">↗ skateos.com</a>
+          <a href="case-skateos.html" class="btn-link">Read the case study →</a>
+        </div>
+      </div>
+
+      <div class="product-pricing">
+        <h3>Try it first</h3>
+        <div style="background:linear-gradient(135deg,#fff5f7,#ffe4e6);border:1.5px solid #fda4af;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+            <span style="font-size:1.25rem;">🎁</span>
+            <span style="font-size:.96rem;font-weight:800;color:#9f1239;letter-spacing:-0.012em;">30-day free trial</span>
+          </div>
+          <div style="font-size:.82rem;color:#7c2d12;line-height:1.5;">Real tenant on our hosted instance. Your real data. Full feature set. We set you up on a 30-min call. No card required. Convert to deploy-your-own or stay hosted on day 30.</div>
+          <a href="mailto:doug@2ntr.com?subject=skateOS%20%E2%80%94%2030-day%20free%20trial&amp;body=Hi%20Doug%20%E2%80%94%20I'd%20like%20to%20start%20a%2030-day%20free%20trial%20of%20skateOS.%0A%0APark%20name%2Flocation%3A%0AApproximate%20daily%20visits%3A%0ACurrent%20software%3A%0AAvailability%20for%20a%2030-min%20setup%20call%3A" style="display:inline-block;margin-top:10px;padding:7px 14px;background:#9f1239;color:#fff;border-radius:6px;font-size:.84rem;font-weight:700;text-decoration:none;">Start trial →</a>
+        </div>
+
+        <h3 style="margin-top:22px;">Convert to paid</h3>
+
+        <div class="price-tier" style="background:linear-gradient(135deg,#1a1a1a,#0a0a0a);margin:8px -10px;padding:18px 24px 18px 22px;border-radius:10px;border:1.5px solid #fb7185;position:relative;">
+          <div style="position:absolute;top:-10px;right:14px;background:#fb7185;color:#0a0a0a;font-size:.62rem;letter-spacing:.1em;padding:3px 8px;border-radius:4px;font-weight:900;text-transform:uppercase;">⭐ Recommended</div>
+          <div class="tier-name" style="color:#fb7185;font-size:.92rem;">🏰 Deploy your own</div>
+          <div class="tier-price">$15k–$25k<span class="unit">one-time</span></div>
+          <div class="tier-desc" style="color:#d4d4d4;">Source code transferred to you. Deployed on YOUR Supabase + Cloudflare + Stripe accounts (we walk you through setup). Customizations specific to your park (waiver flow, custom reports, payment processor, branding). <strong style="color:#fb7185;">You own everything. Pay once. No subscription you can't escape.</strong></div>
+          <div style="margin-top:8px;font-size:.74rem;color:#a3a3a3;">Optional maintenance retainer: $1-3k/yr for updates + occasional support.</div>
+        </div>
+
+        <div class="price-tier" style="margin-top:14px;">
+          <div class="tier-name">📅 Stay hosted (starter)</div>
+          <div class="tier-price" style="font-size:1.2rem;">$8,000<span class="unit">setup</span> + $299<span class="unit">/ mo</span></div>
+          <div class="tier-desc">For operators who'd rather not run their own infra. We host your tenant on our Supabase. Single-location, non-technical owners. Convert to deploy-your-own anytime — your data stays yours.</div>
+        </div>
+
+        <div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:12px 14px;margin-top:14px;font-size:.84rem;color:#1e3a8a;">
+          <strong style="color:#1e40af;">🤝 Bundled in:</strong> Every skateOS deploy ships with the <a href="https://decisionlayer.ai" target="_blank" rel="noopener" style="color:#1e40af;font-weight:700;">DecisionLayer</a> AI-arbitration clause wired into your customer-facing liability waivers. Disputes resolved in ~45-90 days for ~$500 instead of $100k+ litigation. <a href="work.html#decisionlayer" style="color:#1e40af;font-weight:700;">More →</a>
+        </div>
+        <a href="intake.html?pkg=skateos" class="btn btn-primary" style="display:block;text-align:center;margin-top:14px;background:#fb7185;color:#0a0a0a;">Deploy skateOS →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Branch Manager ─────────────────────────────────────── -->
+  <div class="product" id="branch-manager">
+    <span class="product-status live">Live · 2nd Nature Tree</span>
+    <div class="product-row">
+      <div>
+        <h2>🌳 Branch Manager</h2>
+        <div class="tagline">Operations platform for tree-care &amp; outdoor-service crews.</div>
+        <p class="summary">Replaces the Jobber / QuickBooks / ServiceTitan stack with one platform built specifically for arborist crews. <strong>Currently running in production at 2nd Nature Tree (Hudson Valley, NY).</strong> Mobile-first for field crews, web-first for the office. Quote-to-invoice, dispatch, customer management, all integrated. Multi-tenant — your business can be live in days.</p>
+
+        <div class="for-who">
+          <strong>Best for</strong>
+          Tree care, landscaping, arborist crews, lawn care companies, pest control. Any business that quotes outdoor jobs, dispatches crews, captures field data, and bills via Stripe.
+        </div>
+
+        <ul class="feature-list">
+          <li>Quote-to-invoice flow with photo + sketch + crew time tracking</li>
+          <li>Stripe-powered customer portal (pay-online, autopay, subscription billing)</li>
+          <li>Crew dispatch + route optimization + real-time job status</li>
+          <li>Customer relationship management with property-history tracking</li>
+          <li>Mobile crew app with offline-first capture</li>
+          <li>Vehicle inspection logs + safety compliance</li>
+          <li>Automated email/SMS reminders for upcoming jobs + overdue invoices</li>
+        </ul>
+
+        <div class="stack-row">
+          <span class="stack-pill">Multi-tenant SaaS</span>
+          <span class="stack-pill">Stripe payments</span>
+          <span class="stack-pill">Mobile + web</span>
+          <span class="stack-pill">Source-available license</span>
+        </div>
+
+        <div class="cta-row">
+          <a href="mailto:doug@2ntr.com?subject=Branch%20Manager%20walkthrough%20request" class="btn btn-outline">📺 Request a walkthrough</a>
+          <a href="https://branchmanager.app" target="_blank" class="btn-link">↗ branchmanager.app</a>
+        </div>
+      </div>
+
+      <div class="product-pricing">
+        <h3>Try it first</h3>
+        <div style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1.5px solid #86efac;border-radius:10px;padding:14px 16px;margin-bottom:14px;">
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:4px;">
+            <span style="font-size:1.25rem;">🎁</span>
+            <span style="font-size:.96rem;font-weight:800;color:#14532d;letter-spacing:-0.012em;">30-day free trial</span>
+          </div>
+          <div style="font-size:.82rem;color:#14532d;line-height:1.5;">Real tenant on our hosted instance. Your real customer + crew data. Full feature set. We set you up on a 30-min call. No card required. Convert to deploy-your-own or stay hosted on day 30.</div>
+          <a href="mailto:doug@2ntr.com?subject=Branch%20Manager%20%E2%80%94%2030-day%20free%20trial&amp;body=Hi%20Doug%20%E2%80%94%20I'd%20like%20to%20start%20a%2030-day%20free%20trial%20of%20Branch%20Manager.%0A%0ACompany%20name%2Flocation%3A%0ACrew%20size%3A%0ACurrent%20software%3A%0AAvailability%20for%20a%2030-min%20setup%20call%3A" style="display:inline-block;margin-top:10px;padding:7px 14px;background:#14532d;color:#fff;border-radius:6px;font-size:.84rem;font-weight:700;text-decoration:none;">Start trial →</a>
+        </div>
+
+        <h3 style="margin-top:22px;">Convert to paid</h3>
+
+        <div class="price-tier" style="background:linear-gradient(135deg,#0f1f15,#0a0a0a);margin:8px -10px;padding:18px 24px 18px 22px;border-radius:10px;border:1.5px solid #86efac;position:relative;">
+          <div style="position:absolute;top:-10px;right:14px;background:#86efac;color:#14532d;font-size:.62rem;letter-spacing:.1em;padding:3px 8px;border-radius:4px;font-weight:900;text-transform:uppercase;">⭐ Recommended</div>
+          <div class="tier-name" style="color:#86efac;font-size:.92rem;">🏰 Deploy your own</div>
+          <div class="tier-price">$20k–$35k<span class="unit">one-time</span></div>
+          <div class="tier-desc" style="color:#d4d4d4;">Source code transferred to you. Deployed on YOUR Supabase + Cloudflare + Stripe Connect (we walk you through setup). Industry-specific customizations (chemical applicator licenses, ISA cert tracking, equipment rental flows, route optimization). <strong style="color:#86efac;">You own everything. Pay once. No subscription you can't escape.</strong></div>
+          <div style="margin-top:8px;font-size:.74rem;color:#a3a3a3;">Optional maintenance retainer: $1-3k/yr for updates + occasional support.</div>
+        </div>
+
+        <div class="price-tier" style="margin-top:14px;">
+          <div class="tier-name">📅 Stay hosted (starter)</div>
+          <div class="tier-price" style="font-size:1.2rem;">$10,000<span class="unit">setup</span> + $399<span class="unit">/ mo</span></div>
+          <div class="tier-desc">For operators who'd rather not run their own infra. We host your tenant + manage crew-app distribution + Stripe Connect. Convert to deploy-your-own anytime — your data stays yours.</div>
+        </div>
+
+        <a href="intake.html?pkg=branch-manager" class="btn btn-primary" style="display:block;text-align:center;margin-top:14px;background:#fb7185;color:#0a0a0a;">Deploy Branch Manager →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Murray ──────────────────────────────────────────────── -->
+  <div class="product" id="murray">
+    <span class="product-status dev">In development · early access</span>
+    <div class="product-row">
+      <div>
+        <h2>🤖 Murray</h2>
+        <div class="tagline">AI character consultation, white-label.</div>
+        <p class="summary">Conversational AI character consultation as a white-label PWA. <strong>Use case: any business that wants an "always-on expert" experience for customers.</strong> Skin it as your industry's specialist, your brand's voice, your subject-matter authority.</p>
+
+        <div class="for-who">
+          <strong>Best for</strong>
+          Coaches, consultants, content creators, B2C subscription brands, niche-domain experts. Anyone whose business depends on "ask the expert" experiences but can't be available 24/7.
+        </div>
+
+        <ul class="feature-list">
+          <li>Custom character persona with persistent memory across sessions</li>
+          <li>Anthropic Claude API integration (your own API key, your own data)</li>
+          <li>PWA installable on iOS / Android / desktop</li>
+          <li>Conversation history with semantic search</li>
+          <li>Subscription billing + usage limits</li>
+          <li>Custom domain + branding</li>
+        </ul>
+
+        <div class="stack-row">
+          <span class="stack-pill">Anthropic Claude API</span>
+          <span class="stack-pill">PWA</span>
+          <span class="stack-pill">Custom branding</span>
+          <span class="stack-pill">Source-available license</span>
+        </div>
+      </div>
+
+      <div class="product-pricing">
+        <h3>Deploy options</h3>
+        <div class="price-tier">
+          <div class="tier-name">🚀 Custom build</div>
+          <div class="tier-price">$15k–$30k<span class="unit">setup</span></div>
+          <div class="tier-desc">Custom character training, persona design, subscription model, branded launch. Includes 30-day post-launch support.</div>
+        </div>
+        <div class="price-tier">
+          <div class="tier-name">📅 Hosting + AI passthrough</div>
+          <div class="tier-price">$199<span class="unit">/ mo + AI</span></div>
+          <div class="tier-desc">Hosting + updates + auth. Anthropic API costs pass through at cost.</div>
+        </div>
+        <a href="intake.html?pkg=murray" class="btn btn-primary" style="display:block;text-align:center;margin-top:14px;background:#fb7185;color:#0a0a0a;">Build a Murray →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PopCut ──────────────────────────────────────────────── -->
+  <div class="product" id="popcut">
+    <span class="product-status alpha">Alpha · v0 shipping</span>
+    <div class="product-row">
+      <div>
+        <h2>🎬 PopCut</h2>
+        <div class="tagline">Skateboarding-specific video editor.</div>
+        <p class="summary">Mobile-first clip-trim + share workflow built for the "I just landed it, post it now" moment. <strong>Currently shipping in alpha.</strong> Available for licensing as the foundation of any niche-sport video editor (surf, BMX, climbing, skiing — anywhere creators are mobile-first).</p>
+
+        <div class="for-who">
+          <strong>Best for</strong>
+          Niche-sport content platforms, skatepark + creator brands, action-sports media companies. Any business that wants a branded video editor for their community without building one from scratch.
+        </div>
+
+        <ul class="feature-list">
+          <li>Multi-clip trim + reorder with finger-drag UX</li>
+          <li>Sport-specific edit presets (slow-mo on landing, beat-sync to music)</li>
+          <li>One-tap publish to Instagram Reels / TikTok / YouTube Shorts</li>
+          <li>Cloud backup of source clips</li>
+          <li>White-label rebrandable for your community</li>
+        </ul>
+
+        <div class="stack-row">
+          <span class="stack-pill">Native iOS</span>
+          <span class="stack-pill">Mobile-first</span>
+          <span class="stack-pill">White-label</span>
+          <span class="stack-pill">Coming Android</span>
+        </div>
+      </div>
+
+      <div class="product-pricing">
+        <h3>Deploy options</h3>
+        <div class="price-tier">
+          <div class="tier-name">🤝 Partnership</div>
+          <div class="tier-price">Custom<span class="unit">talk to us</span></div>
+          <div class="tier-desc">PopCut is alpha — not a productized SKU yet. We're open to white-label partnerships for niche-sport platforms. Email if interested.</div>
+        </div>
+        <a href="intake.html?pkg=popcut" class="btn btn-primary" style="display:block;text-align:center;margin-top:14px;background:#fb7185;color:#0a0a0a;">Partner on PopCut →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Custom build ────────────────────────────────────────── -->
+  <div class="product" id="custom">
+    <span class="product-status dev">Always available</span>
+    <div class="product-row">
+      <div>
+        <h2>🛠 Custom build</h2>
+        <div class="tagline">None of these fit? We build from scratch.</div>
+        <p class="summary">If our existing products aren't a fit, we'll build you a new one. <strong>Same velocity (days, not quarters), same security posture, same source-code-yours model.</strong> The advantage: we've already built and operated 4+ multi-tenant SaaS products — we know the patterns that actually work in production.</p>
+
+        <div class="for-who">
+          <strong>Best for</strong>
+          Industries we don't have a product for yet. Niche workflows that need real customization. Migrations off Square / Mindbody / Shopify into your own white-label platform.
+        </div>
+
+        <ul class="feature-list">
+          <li>Discovery call → written proposal in 48 hours</li>
+          <li>Spike package validates the idea in 1 week ($5k)</li>
+          <li>Production Sprint ships the MVP in 4 weeks ($20k)</li>
+          <li>Source code yours · zero lock-in</li>
+          <li>Security audit included on Production Sprints</li>
+        </ul>
+      </div>
+
+      <div class="product-pricing">
+        <h3>Custom build options</h3>
+        <div class="price-tier">
+          <div class="tier-name">⚡ Spike</div>
+          <div class="tier-price">$5,000<span class="unit">1 week</span></div>
+          <div class="tier-desc">Validate the idea with a live URL by day 1.</div>
+        </div>
+        <div class="price-tier">
+          <div class="tier-name">🚀 Production Sprint</div>
+          <div class="tier-price">$20,000<span class="unit">4 weeks</span></div>
+          <div class="tier-desc">Production MVP + security audit.</div>
+        </div>
+        <a href="intake.html" class="btn btn-primary" style="display:block;text-align:center;margin-top:14px;background:#fb7185;color:#0a0a0a;">Start a custom build →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bottom">
+    <h2>Not sure which fits?</h2>
+    <p>30-min call, free, no pressure. We'll listen to what you're trying to do and either point you at one of these or recommend you go elsewhere.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+      <a href="intake.html" class="btn btn-primary">⚡ Start the intake</a>
+      <a href="mailto:doug@2ntr.com?subject=Product%20question" class="btn btn-outline">📧 Email instead</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="security.html">Security</a> · <a href="work.html">Work</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></footer>
+
+</body>
+</html>

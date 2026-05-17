@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Garage mode · Doug + Jon · software, on the side</title>
+<meta name="description" content="Two friends. A few projects. No insurance. No SOC 2. Pay friend-rate to skip the agency machine.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a; --ink-soft:#404040; --muted:#737373;
+    --bg:#fafaf9; --card:#fff; --line:#e5e5e0; --accent:#e11d48;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:8px 28px;font-size:.76rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.05rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-logo .badge{font-size:.62rem;background:#fef3c7;color:#92400e;padding:3px 8px;border-radius:4px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-left:6px;}
+  .nav-back{font-size:.84rem;color:#404040;font-weight:600;text-decoration:none;}
+  .nav-back:hover{color:#e11d48;}
+
+  section{padding:50px 28px;max-width:920px;margin:0 auto;}
+
+  /* Hero */
+  .hero{padding-top:60px;padding-bottom:30px;}
+  .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;}
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:#fef3c7;color:#92400e;border-radius:6px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  .badge.live{background:#dcfce7;color:#15803d;}
+  .badge.live::before{content:'●';color:#15803d;}
+  h1{font-size:clamp(2.2rem,5.5vw,3.6rem);font-weight:900;letter-spacing:-0.028em;line-height:1.02;margin-bottom:14px;}
+  h1 .accent{color:var(--accent);}
+  .hero-sub{font-size:1.1rem;color:var(--ink-soft);max-width:680px;margin-bottom:24px;line-height:1.55;}
+  .who-line{display:flex;flex-wrap:wrap;gap:18px;font-size:.9rem;color:var(--muted);margin-bottom:18px;}
+  .who-line strong{color:var(--ink);}
+
+  /* Honest box */
+  .honest{
+    background:linear-gradient(135deg,#fffbeb,#fef3c7);border:1px solid #fde68a;border-radius:14px;padding:26px 28px;margin:24px 0;
+  }
+  .honest h2{font-size:1.05rem;font-weight:800;color:#7c2d12;margin-bottom:8px;letter-spacing:-0.012em;}
+  .honest p{color:#7c2d12;font-size:.94rem;margin-bottom:8px;}
+  .honest p:last-child{margin-bottom:0;}
+  .honest strong{color:#7c2d12;}
+
+  /* Service tiles */
+  .label{font-size:.74rem;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-bottom:10px;}
+  h2.sec{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:10px;}
+  .sec-lede{font-size:1rem;color:var(--ink-soft);max-width:640px;margin-bottom:24px;}
+
+  .services{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:18px;}
+  .svc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px;}
+  .svc .ic{width:38px;height:38px;background:#fef2f2;color:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:12px;}
+  .svc h3{font-size:1.05rem;font-weight:800;letter-spacing:-0.015em;margin-bottom:6px;}
+  .svc .price{font-size:1rem;font-weight:900;color:var(--accent);letter-spacing:-0.015em;margin-bottom:8px;}
+  .svc p{font-size:.86rem;color:var(--ink-soft);line-height:1.55;margin-bottom:10px;}
+  .svc ul{margin:4px 0 0 18px;list-style:none;padding:0;}
+  .svc li{padding:2px 0 2px 18px;font-size:.8rem;color:var(--ink-soft);position:relative;}
+  .svc li::before{content:'→';position:absolute;left:0;color:var(--accent);font-weight:800;}
+
+  /* Two-col layout for "what we have / what we don't" */
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;}
+  @media(max-width:680px){.twocol{grid-template-columns:1fr;}}
+  .col{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:22px 24px;}
+  .col h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin-bottom:12px;}
+  .col.yes h3{color:#15803d;}
+  .col.no h3{color:#9f1239;}
+  .col ul{list-style:none;padding:0;margin:0;}
+  .col li{padding:7px 0 7px 22px;font-size:.9rem;color:var(--ink-soft);position:relative;border-bottom:1px dotted var(--line);}
+  .col li:last-child{border-bottom:none;}
+  .col.yes li::before{content:'✓';position:absolute;left:0;color:#15803d;font-weight:900;}
+  .col.no li::before{content:'✗';position:absolute;left:0;color:#9f1239;font-weight:900;}
+
+  /* Legal minimum table */
+  .legal-card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:24px 28px;margin-top:20px;}
+  .legal-card h3{font-size:.86rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#0a0a0a;margin-bottom:14px;}
+  .legal-table{width:100%;border-collapse:collapse;font-size:.86rem;}
+  .legal-table th{text-align:left;padding:8px 10px;font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;border-bottom:2px solid #0a0a0a;}
+  .legal-table th.c{text-align:center;}
+  .legal-table th.r{text-align:right;}
+  .legal-table td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top;color:var(--ink-soft);}
+  .legal-table td.c{text-align:center;font-weight:700;}
+  .legal-table td.r{text-align:right;font-family:ui-monospace,monospace;font-weight:700;color:var(--ink);}
+  .legal-table td strong{color:var(--ink);}
+  .legal-table .req-yes{color:#15803d;}
+  .legal-table .req-no{color:#9f1239;}
+  .legal-table .req-opt{color:#d97706;}
+  .legal-card .total{margin-top:14px;padding-top:14px;border-top:2px solid #0a0a0a;display:flex;align-items:baseline;justify-content:space-between;}
+  .legal-card .total .label{font-size:.78rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink);}
+  .legal-card .total .num{font-size:1.5rem;font-weight:900;color:var(--accent);letter-spacing:-0.02em;font-family:ui-monospace,monospace;}
+
+  /* Contact strip */
+  .contact{background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:32px;margin:30px auto;text-align:center;max-width:920px;}
+  .contact h2{color:#fafaf9;font-size:1.5rem;font-weight:800;margin-bottom:8px;letter-spacing:-0.02em;}
+  .contact p{color:#a3a3a3;margin-bottom:18px;font-size:.95rem;}
+  .contact .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .contact a{padding:11px 22px;border-radius:8px;font-weight:700;text-decoration:none;font-size:.92rem;display:inline-flex;align-items:center;gap:6px;}
+  .contact a.primary{background:#fb7185;color:#0a0a0a;}
+  .contact a.primary:hover{background:#fff;}
+  .contact a.alt{background:transparent;color:#fafaf9;border:1.5px solid #525252;}
+  .contact a.alt:hover{background:#262626;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+
+  /* Mobile tweaks */
+  @media(max-width:640px){
+    section{padding:36px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">🛖 Garage mode · the tiniest possible version of this · <a href="/">see the full site →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="/garage/">
+    <span class="mark">HV</span>
+    <span>Hudson Valley AI</span>
+    <span class="badge">Garage</span>
+  </a>
+  <a href="/" class="nav-back">Full site →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge-row">
+    <span class="badge live">Taking warm leads + referrals</span>
+    <span class="badge">🏚 Garage mode</span>
+    <span class="badge">🌙 Nights + weekends</span>
+  </div>
+  <h1>Two friends. A few projects. <span class="accent">Tiny.</span></h1>
+  <p class="hero-sub">This is the bare-bones version of Hudson Valley AI — Doug and Jon doing a handful of software + security projects on the side. No insurance, no SOC 2, no LLC yet, no Slack-channel-of-account-execs. Just two skilled people, a one-page engagement letter, and work shipped daily. Hire us this way and your dollar goes farther because there's no overhead between you and the work.</p>
+  <div class="who-line">
+    <span>👤 <strong>Doug Brown</strong> — software (skateOS, Branch Manager)</span>
+    <span>🛡 <strong>Jon Marchand</strong> — security (CISSP/OSCP, his day job)</span>
+  </div>
+
+  <div class="honest">
+    <h2>👋 What this version of the offer is (and isn't)</h2>
+    <p><strong>Is:</strong> Owner-led + friend-priced. You email Doug, you talk to Doug. You hire us, we ship for you in 1-4 weeks. You own the source code on day one. We bring the work; you bring the problem. Pay 50% up front, 50% on delivery.</p>
+    <p><strong>Isn't:</strong> A managed-services firm. No formal contracts beyond a one-pager. No E&amp;O insurance backstop. No 24/7 on-call. No SOC 2 attestation. If your project needs any of those, we'll tell you upfront and point you to a vendor who fits — no hard feelings.</p>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section>
+  <div class="label">What we do, fixed prices</div>
+  <h2 class="sec">Four things. No mystery on price.</h2>
+  <p class="sec-lede">Pick the one that matches the shape of your problem. If it doesn't fit one of these, email us and we'll figure out a number on a 15-minute call.</p>
+
+  <div class="services">
+    <div class="svc">
+      <div class="ic">⚡</div>
+      <h3>Spike</h3>
+      <div class="price">$5,000 · 1 week</div>
+      <p>Prototype to find out if your idea works. Live URL by end of day 1.</p>
+      <ul>
+        <li>Live URL by day 1</li>
+        <li>3–5 core features</li>
+        <li>Source code yours</li>
+        <li>Walk away by day 3 with full refund</li>
+      </ul>
+    </div>
+
+    <div class="svc">
+      <div class="ic">🚀</div>
+      <h3>Production Sprint</h3>
+      <div class="price">$20,000 · 4 weeks</div>
+      <p>An MVP your customers can actually use. Payments, email, admin.</p>
+      <ul>
+        <li>Production MVP</li>
+        <li>Payments + email/SMS</li>
+        <li>Jon's security look-over included</li>
+        <li>30 days of post-ship support</li>
+      </ul>
+    </div>
+
+    <div class="svc">
+      <div class="ic">🛡</div>
+      <h3>Security Look-Over</h3>
+      <div class="price">$5,000 · 1 week</div>
+      <p>Jon takes your existing code, prods it, writes you a prioritized list.</p>
+      <ul>
+        <li>Code + architecture review</li>
+        <li>Common-pattern security check</li>
+        <li>Written report</li>
+        <li>Remediation recommendations</li>
+      </ul>
+    </div>
+
+    <div class="svc">
+      <div class="ic">🔧</div>
+      <h3>Fix-it Sprint</h3>
+      <div class="price">$3,000 · 1 week</div>
+      <p>Something broken or stalled? Bring us the repo and we'll either fix it or tell you straight what it'd take.</p>
+      <ul>
+        <li>Small project triage + fix</li>
+        <li>Bug fixes, feature rescues</li>
+        <li>Honest "rebuild or save it" take</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE HAVE / WHAT WE DON'T -->
+<section>
+  <div class="label">Transparency</div>
+  <h2 class="sec">What you get + what you don't.</h2>
+  <p class="sec-lede">In garage mode the trade is: lower price + direct access in exchange for less institutional overhead. Here's the unfiltered version.</p>
+
+  <div class="twocol">
+    <div class="col yes">
+      <h3>What you DO get</h3>
+      <ul>
+        <li>Doug + Jon working on your project personally — not a junior offshore dev</li>
+        <li>Live URL on day 1 (Spike + Sprint)</li>
+        <li>Source code transferred to you on completion</li>
+        <li>One-page engagement letter signed before money changes hands</li>
+        <li>NDA if you want one — mutual, standard form</li>
+        <li>Daily updates on what shipped, what's blocked</li>
+        <li>30 days of post-ship support on Production Sprint</li>
+        <li>Honest "we're not the right fit" if we're not</li>
+      </ul>
+    </div>
+    <div class="col no">
+      <h3>What you DON'T get</h3>
+      <ul>
+        <li>An LLC backstop — we're sole proprietors right now</li>
+        <li>E&amp;O / professional liability insurance</li>
+        <li>SOC 2 / HIPAA / ISO attestation</li>
+        <li>24/7 on-call or managed-IT retainers</li>
+        <li>A multi-page MSA with carve-outs and addenda</li>
+        <li>A project manager between you and the work</li>
+        <li>Office to visit (we work from home; happy to meet at a coffee shop)</li>
+        <li>Big-firm name recognition</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- LEGAL MINIMUM SECTION -->
+<section>
+  <div class="label">For the curious</div>
+  <h2 class="sec">The bare-minimum legal stack <span class="accent">to run this.</span></h2>
+  <p class="sec-lede">A question we get asked: what's the actual paperwork to start a software side-hustle in NY? Here's the floor. Most of it is $0.</p>
+
+  <div class="legal-card">
+    <h3>Legal floor · NY sole proprietor</h3>
+    <table class="legal-table">
+      <thead>
+        <tr>
+          <th>What</th>
+          <th class="c">Required?</th>
+          <th class="r">Cost</th>
+          <th class="r">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Use your legal name</strong><br><span style="font-size:.78rem;color:#737373;">e.g. "Doug Brown, software consulting" — no registration needed</span></td>
+          <td class="c req-yes">Default</td>
+          <td class="r">$0</td>
+          <td class="r">0 min</td>
+        </tr>
+        <tr>
+          <td><strong>DBA / Assumed Name filing</strong><br><span style="font-size:.78rem;color:#737373;">only if invoicing as "Hudson Valley AI" instead of your own name · Westchester County Clerk</span></td>
+          <td class="c req-opt">Only for DBA</td>
+          <td class="r">$25-35</td>
+          <td class="r">30 min</td>
+        </tr>
+        <tr>
+          <td><strong>EIN from IRS</strong><br><span style="font-size:.78rem;color:#737373;">optional · saves giving out SSN on W-9s</span></td>
+          <td class="c req-opt">Optional</td>
+          <td class="r">$0</td>
+          <td class="r">5 min</td>
+        </tr>
+        <tr>
+          <td><strong>Business bank account</strong><br><span style="font-size:.78rem;color:#737373;">not required, but cleans up bookkeeping + audit trail</span></td>
+          <td class="c req-opt">Optional</td>
+          <td class="r">$0</td>
+          <td class="r">30 min</td>
+        </tr>
+        <tr>
+          <td><strong>Engagement letter</strong><br><span style="font-size:.78rem;color:#737373;">not legally mandatory, but always do it — one page is enough</span></td>
+          <td class="c req-opt">Strongly</td>
+          <td class="r">$0</td>
+          <td class="r">10 min/template</td>
+        </tr>
+        <tr>
+          <td><strong>E&amp;O / professional liability</strong><br><span style="font-size:.78rem;color:#737373;">smart once dealing with stranger contracts, NOT required by law</span></td>
+          <td class="c req-no">No</td>
+          <td class="r">$1.5-3k/yr</td>
+          <td class="r">Skip</td>
+        </tr>
+        <tr>
+          <td><strong>NY sales tax registration</strong><br><span style="font-size:.78rem;color:#737373;">software consulting services aren't sales-tax-able in NY</span></td>
+          <td class="c req-no">No</td>
+          <td class="r">$0</td>
+          <td class="r">Skip</td>
+        </tr>
+        <tr>
+          <td><strong>Workers comp</strong><br><span style="font-size:.78rem;color:#737373;">only if you have W-2 employees · 1099 contractors don't count</span></td>
+          <td class="c req-no">No</td>
+          <td class="r">$0</td>
+          <td class="r">Skip</td>
+        </tr>
+        <tr>
+          <td><strong>Local business permit</strong><br><span style="font-size:.78rem;color:#737373;">Peekskill / most Westchester towns don't require one for home-based consulting</span></td>
+          <td class="c req-no">No</td>
+          <td class="r">$0</td>
+          <td class="r">Skip</td>
+        </tr>
+        <tr>
+          <td><strong>Quarterly estimated tax</strong><br><span style="font-size:.78rem;color:#737373;">if you expect to owe ≥$1k in federal/state income tax · IRS Form 1040-ES</span></td>
+          <td class="c req-yes">Yes if owing</td>
+          <td class="r">$0</td>
+          <td class="r">5 min/quarter</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="total">
+      <div class="label">Total to start taking money this week</div>
+      <div class="num">$0 - $35</div>
+    </div>
+  </div>
+
+  <div class="honest" style="margin-top:18px;">
+    <h2>The honest read</h2>
+    <p>If you operate as "Doug Brown, doing software consulting on the side" and write up a one-page engagement letter, you can <strong>legally take money for a Spike package tomorrow morning for $0 out of pocket</strong>. Add $25-35 if you want the invoice to say "Hudson Valley AI" instead of "Doug Brown."</p>
+    <p>Everything else on most consulting-blog checklists (LLC, E&amp;O, lawyer-drafted MSA, bookkeeping software, business address, etc.) is <em>useful</em> at a certain volume but not <em>legally required</em> to start. Don't let the checklist scare you out of starting.</p>
+  </div>
+</section>
+
+<!-- WHAT IF SaaS — RECURRING -->
+<section>
+  <div class="label">If you're also charging recurring SaaS</div>
+  <h2 class="sec">What changes if you charge <span class="accent">$299/month</span> instead of $5k one-time?</h2>
+  <p class="sec-lede">Different question entirely. One-time consulting and recurring SaaS hosting have different legal floors. Here's what actually changes — and what's just <em>recommended</em>, not required.</p>
+
+  <div class="legal-card">
+    <h3>SaaS-specific legal floor · NY</h3>
+    <table class="legal-table">
+      <thead>
+        <tr>
+          <th>What</th>
+          <th class="c">Required?</th>
+          <th class="r">Cost</th>
+          <th class="r">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>NY Certificate of Authority</strong><br><span style="font-size:.78rem;color:#737373;">register with NYS Tax Dept to collect sales tax · <a href="https://www.tax.ny.gov/bus/st/registration_authority.htm" target="_blank" style="color:#0369a1;">tax.ny.gov ↗</a></span></td>
+          <td class="c req-yes">YES</td>
+          <td class="r">$0</td>
+          <td class="r">30 min</td>
+        </tr>
+        <tr>
+          <td><strong>Collect &amp; remit sales tax</strong><br><span style="font-size:.78rem;color:#737373;">NY taxes SaaS as "prewritten software" — 8.375% in Westchester · charged on top of your fee · remit quarterly via Sales Tax Web File</span></td>
+          <td class="c req-yes">YES</td>
+          <td class="r">$0</td>
+          <td class="r">5 min/quarter</td>
+        </tr>
+        <tr>
+          <td><strong>Terms of Service</strong><br><span style="font-size:.78rem;color:#737373;">customer click-accepts before first charge · NY auto-renewal law (2023) requires clear renewal disclosure + cancel mechanism</span></td>
+          <td class="c req-opt">Strongly</td>
+          <td class="r">$0 (DIY)</td>
+          <td class="r">2 hr (template)</td>
+        </tr>
+        <tr>
+          <td><strong>Privacy Policy</strong><br><span style="font-size:.78rem;color:#737373;">NY SHIELD Act applies to anyone holding NY residents' personal data · SaaS = you hold customer's customer data</span></td>
+          <td class="c req-opt">Strongly</td>
+          <td class="r">$0 (DIY)</td>
+          <td class="r">1 hr (template)</td>
+        </tr>
+        <tr>
+          <td><strong>LLC formation</strong><br><span style="font-size:.78rem;color:#737373;">limits personal liability if a SaaS outage costs customer revenue · still not legally required but the asymmetric protection becomes meaningful for recurring contracts</span></td>
+          <td class="c req-no">No (rec'd)</td>
+          <td class="r">$200-1,700</td>
+          <td class="r">2-6 wks</td>
+        </tr>
+        <tr>
+          <td><strong>E&amp;O + Cyber liability insurance</strong><br><span style="font-size:.78rem;color:#737373;">recurring SaaS = recurring exposure · still not required by law · gets recommended once you have any production customer</span></td>
+          <td class="c req-no">No (rec'd)</td>
+          <td class="r">$2-3k/yr</td>
+          <td class="r">1-2 days</td>
+        </tr>
+        <tr>
+          <td><strong>Data Processing Addendum (DPA)</strong><br><span style="font-size:.78rem;color:#737373;">only if any customer is in EU/UK · GDPR data-processor obligations</span></td>
+          <td class="c req-opt">Only EU/UK</td>
+          <td class="r">$0 (DIY)</td>
+          <td class="r">1 hr (template)</td>
+        </tr>
+        <tr>
+          <td><strong>PCI compliance</strong><br><span style="font-size:.78rem;color:#737373;">handled automatically by Stripe / Helcim iframes · YOU never touch card data · zero work required if you use their hosted forms correctly</span></td>
+          <td class="c req-no">Automatic</td>
+          <td class="r">$0</td>
+          <td class="r">0 min</td>
+        </tr>
+        <tr>
+          <td><strong>BAA for healthcare-adjacent customers</strong><br><span style="font-size:.78rem;color:#737373;">only if storing PHI · sign one with each healthcare customer + each of your sub-processors</span></td>
+          <td class="c req-opt">Only if PHI</td>
+          <td class="r">$0 (DIY)</td>
+          <td class="r">1 hr/contract</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="total">
+      <div class="label">SaaS-specific NEW out-of-pocket (Garage tier)</div>
+      <div class="num">$0</div>
+    </div>
+  </div>
+
+  <div class="honest" style="margin-top:18px;">
+    <h2>The SaaS read</h2>
+    <p><strong>The only legally-required thing that changes is sales tax.</strong> NY started taxing SaaS as "prewritten software" in 2018, so a NY-based business charging $299/month to a NY customer must register for a Certificate of Authority, collect 8.375% sales tax on top of the fee, and remit it quarterly. Total cost: $0 plus ~5 minutes of paperwork every 90 days.</p>
+    <p><strong>Where SaaS actually gets risky is liability, not paperwork.</strong> If your hosted system goes down and a customer loses revenue, or if you leak customer data, that's when sole-proprietor mode stops being smart. The day you sign your first $299/mo recurring contract is the right day to file an LLC ($200 + ~$200-1500 NY publication) and start looking at E&amp;O + cyber liability insurance ($2-3k/yr combined). Not required by law — but the asymmetric protection is the right price at recurring revenue.</p>
+    <p><strong>Practical sequence we'd actually follow:</strong></p>
+    <ul style="margin-top:8px;list-style:none;padding:0;">
+      <li style="padding:6px 0 6px 24px;position:relative;color:#7c2d12;"><span style="position:absolute;left:0;font-weight:900;color:#7c2d12;">1.</span> First SaaS customer signed → register NY Cert of Authority that week (30 min), start collecting sales tax</li>
+      <li style="padding:6px 0 6px 24px;position:relative;color:#7c2d12;"><span style="position:absolute;left:0;font-weight:900;color:#7c2d12;">2.</span> Same week → write a one-page ToS + Privacy Policy (we already have templates; takes an evening)</li>
+      <li style="padding:6px 0 6px 24px;position:relative;color:#7c2d12;"><span style="position:absolute;left:0;font-weight:900;color:#7c2d12;">3.</span> Second SaaS customer signed → file LLC, get E&amp;O + cyber quote. Don't wait — at 2+ customers the exposure-vs-cost math flips.</li>
+      <li style="padding:6px 0 6px 24px;position:relative;color:#7c2d12;"><span style="position:absolute;left:0;font-weight:900;color:#7c2d12;">4.</span> Any healthcare-adjacent customer → BAA before they get production access.</li>
+      <li style="padding:6px 0 6px 24px;position:relative;color:#7c2d12;"><span style="position:absolute;left:0;font-weight:900;color:#7c2d12;">5.</span> Any EU customer → add a DPA addendum to their ToS.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<div class="contact">
+  <h2>Want to talk?</h2>
+  <p>Email or text. Reply within a day or two — we both have day jobs.</p>
+  <div class="btns">
+    <a href="mailto:doug@2ntr.com?subject=Garage-mode%20project" class="primary">📧 doug@2ntr.com</a>
+    <a href="tel:+19144024624" class="alt">☎ (914) 402-4624</a>
+    <a href="/intake.html?pkg=spike" class="alt">📝 Intake form</a>
+  </div>
+</div>
+
+<footer>
+  © 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project (garage mode) ·
+  <a href="/">Full site</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a>
+</footer>
+
+</body>
+</html>

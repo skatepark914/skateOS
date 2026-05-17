@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Media Graphics Kit</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <script src="../config.js"></script>
+  <style>
+    :root {
+      --rose:       #e11d48;
+      --rose-pink:  #fb7185;
+      --rose-light: #ffe4e6;
+      --purple:     #9333ea;
+      --ink:        #0a0a0a;
+      --ink-soft:   #1f1f23;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #faf9f6; padding: 40px; color: #14161a; }
+    h1 { text-align: center; font-size: 1.8rem; margin-bottom: 6px; letter-spacing: -0.02em; }
+    h1 .accent { color: var(--rose); }
+    .subtitle { text-align: center; color: #555a63; margin-bottom: 24px; font-size: .95rem; }
+    .platform-nav { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 48px; }
+    .platform-nav a { padding: 8px 18px; background: #fff; border-radius: 50px; font-size: .85rem; font-weight: 600; color: #374151; border: 1px solid #e6e6e1; transition: all .2s; text-decoration: none; }
+    .platform-nav a:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+    .section { margin-bottom: 60px; }
+    .section h2 { font-size: 1.4rem; font-weight: 800; margin-bottom: 4px; padding-top: 20px; letter-spacing: -0.01em; }
+    .dim { color: #555a63; font-size: .85rem; margin-bottom: 12px; }
+    .row { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+    .item { margin-bottom: 24px; }
+    .item .label { font-size: .85rem; color: #555a63; margin-top: 8px; font-weight: 600; }
+    .scroll-wrap { overflow: auto; max-width: 100%; max-height: 700px; border: 1px solid #e6e6e1; border-radius: 4px; }
+    .dl { display: inline-block; margin-top: 10px; padding: 8px 22px; background: var(--rose); color: #fff; border: none; border-radius: 50px; font-weight: 700; font-size: .82rem; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .dl:hover { background: var(--rose-pink); }
+    hr { border: none; border-top: 1px solid #e6e6e1; margin: 48px 0 0; }
+    .top-back { position: fixed; top: 16px; left: 16px; padding: 8px 18px; background: #fff; border: 1px solid #e6e6e1; border-radius: 50px; font-size: .85rem; font-weight: 600; color: #374151; text-decoration: none; box-shadow: 0 1px 3px rgba(0,0,0,.06); z-index:100; }
+    .top-back:hover { background: var(--rose); color: #fff; border-color: var(--rose); }
+  </style>
+</head>
+<body style="visibility:hidden">
+
+<a href="../index.html" class="top-back">← Back to admin</a>
+
+<h1><span data-biz-short>2nd Nature</span> <span class="accent" data-biz-accent>Park</span> — Social Media Graphics Kit</h1>
+<p class="subtitle">Profile pictures, cover photos &amp; banners for every platform. Click any rose button to save as PNG.</p>
+
+<nav class="platform-nav">
+  <a href="#facebook">Facebook</a>
+  <a href="#instagram">Instagram</a>
+  <a href="#story">Story</a>
+  <a href="#tiktok">TikTok</a>
+  <a href="#google">Google Business</a>
+  <a href="#youtube">YouTube</a>
+  <a href="#linkedin">LinkedIn</a>
+  <a href="#nextdoor">Nextdoor</a>
+  <a href="#og">OG Share Image</a>
+  <a href="#print">Print (Cards &amp; Flyers)</a>
+</nav>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- FACEBOOK -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="facebook">
+  <h2>Facebook</h2>
+  <div class="row">
+
+    <!-- FB Cover Photo -->
+    <div class="item">
+      <p class="dim">Cover Photo — 820 × 312 px</p>
+      <div class="scroll-wrap">
+        <div id="fb-cover" style="width:820px;height:312px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:80px 80px;"></div>
+          <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(225,29,72,.18),transparent 70%);border-radius:50%;top:-120px;right:-80px;"></div>
+          <div style="position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(147,51,234,.12),transparent 70%);border-radius:50%;bottom:-100px;left:-60px;"></div>
+          <div style="position:relative;z-index:2;display:flex;align-items:center;height:100%;padding:0 50px;gap:32px;">
+            <div data-icon style="font-size:120px;line-height:1;filter:drop-shadow(0 4px 16px rgba(225,29,72,.4));">🛹</div>
+            <div>
+              <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:38px;color:#fff;line-height:1.05;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span></div>
+              <div data-tagline style="font-family:'Inter',sans-serif;font-weight:700;font-size:13px;color:#fb7185;text-transform:uppercase;letter-spacing:.12em;margin-top:6px;">Indoor Skatepark · Shop · Lessons</div>
+              <div data-sub-line style="font-family:'Inter',sans-serif;font-weight:600;font-size:10.5px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;margin-top:8px;">Hudson Valley · Open daily</div>
+              <div style="margin-top:14px;display:flex;gap:14px;align-items:center;">
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.7);">📍 <span data-location>Peekskill, NY</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.7);">📞 <span data-phone>(914) 402-4624</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.7);">🌐 <span data-web>2ntr.com</span></span>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="fb-cover" data-dl-name="fb-cover">Download Cover Photo</button>
+    </div>
+
+    <!-- FB Profile Pic -->
+    <div class="item">
+      <p class="dim">Profile Picture — 170 × 170 px</p>
+      <div id="fb-profile" style="width:170px;height:170px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;border:2px solid #e6e6e1;">
+        <div data-icon style="font-size:60px;line-height:1;margin-bottom:4px;">🛹</div>
+        <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:14px;color:#0a0a0a;line-height:1.1;letter-spacing:-0.02em;text-align:center;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+        <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:5.5px;color:#555a63;text-transform:uppercase;letter-spacing:.12em;margin-top:2px;">Indoor Skatepark</div>
+      </div>
+      <button class="dl" data-dl="fb-profile" data-dl-name="fb-profile">Download Profile Pic</button>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- INSTAGRAM -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="instagram">
+  <h2>Instagram</h2>
+  <div class="row">
+
+    <div class="item">
+      <p class="dim">Profile Picture — 320 × 320 px</p>
+      <div id="ig-profile" style="width:320px;height:320px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+        <div data-icon style="font-size:120px;line-height:1;margin-bottom:8px;">🛹</div>
+        <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:28px;color:#0a0a0a;line-height:1.1;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+        <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#555a63;text-transform:uppercase;letter-spacing:.12em;margin-top:3px;">Indoor Skatepark</div>
+      </div>
+      <button class="dl" data-dl="ig-profile" data-dl-name="ig-profile">Download Profile Pic</button>
+    </div>
+
+    <div class="item">
+      <p class="dim">Square Post Template — 1080 × 1080 px (scaled 30% preview)</p>
+      <div class="scroll-wrap" style="max-height:380px;">
+        <div id="ig-post" style="width:1080px;height:1080px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);transform:scale(0.3);transform-origin:top left;">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:100px 100px;"></div>
+          <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(225,29,72,.2),transparent 70%);border-radius:50%;top:-200px;right:-150px;"></div>
+          <div style="position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(147,51,234,.15),transparent 70%);border-radius:50%;bottom:-180px;left:-120px;"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;width:80%;">
+            <div data-icon style="font-size:240px;line-height:1;margin-bottom:24px;">🛹</div>
+            <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:96px;color:#fff;line-height:1.05;letter-spacing:-0.03em;"><span data-biz-short>2nd Nature</span></div>
+            <div data-biz-accent style="font-family:'Inter',sans-serif;font-weight:800;font-size:56px;color:#fb7185;line-height:1.05;letter-spacing:-0.02em;margin-top:8px;">Park</div>
+            <div data-tagline-long style="font-family:'Inter',sans-serif;font-weight:700;font-size:24px;color:#fb7185;text-transform:uppercase;letter-spacing:.18em;margin-top:32px;">Indoor Skatepark · Peekskill NY</div>
+            <div data-tagline-extra style="font-family:'Inter',sans-serif;font-weight:600;font-size:18px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.1em;margin-top:14px;">Skate · Shop · Lessons · Camps</div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="ig-post" data-dl-name="ig-post" data-dl-scale="1">Download IG Post (full-size)</button>
+      <p style="font-size:.75rem;color:#9ca3af;margin-top:4px;">Downloads at full 1080×1080 — preview is scaled 30%.</p>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- STORY (9:16) — IG / TikTok / FB stories -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="story">
+  <h2>Story Template <span style="font-size:.75rem;color:#9ca3af;font-weight:600;">— Instagram · TikTok · Facebook (9:16)</span></h2>
+  <p style="font-size:.8rem;color:#555a63;margin-top:-2px;margin-bottom:14px;">Click any text in the preview to edit it. Change the headline / sub / CTA per post, then download. Story-safe zones respected.</p>
+  <div class="row">
+
+    <div class="item">
+      <p class="dim">Story — 1080 × 1920 px (scaled 30% preview · click text to edit)</p>
+      <div class="scroll-wrap" style="max-height:640px;">
+        <div id="story-tpl" style="width:1080px;height:1920px;position:relative;overflow:hidden;background:linear-gradient(180deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);transform:scale(0.3);transform-origin:top left;">
+          <!-- subtle grid pattern -->
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:120px 120px;"></div>
+          <!-- accent glows -->
+          <div style="position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(225,29,72,.25),transparent 70%);border-radius:50%;top:-300px;right:-200px;"></div>
+          <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(147,51,234,.18),transparent 70%);border-radius:50%;bottom:-200px;left:-200px;"></div>
+
+          <!-- top header (safe zone starts at 250px from top) -->
+          <div style="position:absolute;top:260px;left:0;right:0;text-align:center;z-index:2;padding:0 60px;">
+            <div data-icon style="font-size:140px;line-height:1;filter:drop-shadow(0 6px 20px rgba(225,29,72,.4));">🛹</div>
+            <div style="margin-top:18px;font-family:'Inter',sans-serif;font-weight:900;font-size:64px;color:#fff;letter-spacing:-0.02em;line-height:1.05;">
+              <span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span>
+            </div>
+          </div>
+
+          <!-- center: editable headline -->
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;width:880px;">
+            <div data-edit="story-headline" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:900;font-size:160px;line-height:.95;color:#fff;letter-spacing:-0.03em;cursor:text;outline:none;text-transform:uppercase;">OPEN<br>TODAY</div>
+            <div data-edit="story-pill" contenteditable="true" spellcheck="false" style="display:inline-block;margin-top:40px;padding:18px 44px;background:#e11d48;color:#fff;font-family:'Inter',sans-serif;font-weight:800;font-size:54px;letter-spacing:.02em;border-radius:80px;cursor:text;outline:none;">3PM – 9PM</div>
+            <div data-edit="story-sub" contenteditable="true" spellcheck="false" style="margin-top:36px;font-family:'Inter',sans-serif;font-weight:700;font-size:42px;color:rgba(255,255,255,.8);letter-spacing:.04em;text-transform:uppercase;cursor:text;outline:none;">$25 Day Pass · Helmets Provided</div>
+          </div>
+
+          <!-- bottom: contact CTA (safe zone ends ~250px from bottom) -->
+          <div style="position:absolute;bottom:280px;left:0;right:0;text-align:center;z-index:2;padding:0 60px;">
+            <div data-edit="story-cta" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:800;font-size:48px;color:#fff;letter-spacing:.04em;text-transform:uppercase;cursor:text;outline:none;">Drop in or book ahead</div>
+            <div style="margin-top:24px;display:flex;gap:42px;justify-content:center;align-items:center;flex-wrap:wrap;">
+              <span style="font-family:'Inter',sans-serif;font-size:30px;color:rgba(255,255,255,.6);">📍 <span data-location>Peekskill, NY</span></span>
+              <span style="font-family:'Inter',sans-serif;font-size:30px;color:rgba(255,255,255,.6);">🌐 <span data-web>2ntr.com</span></span>
+            </div>
+          </div>
+
+          <!-- bottom accent bar -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:14px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="story-tpl" data-dl-name="story" data-dl-scale="1">Download Story (1080 × 1920)</button>
+      <p style="font-size:.75rem;color:#9ca3af;margin-top:4px;">Top &amp; bottom 250 px are safe zones — text stays away from platform UI.</p>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- TIKTOK -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="tiktok">
+  <h2>TikTok</h2>
+  <div class="row">
+    <div class="item">
+      <p class="dim">Profile Picture — 200 × 200 px</p>
+      <div id="tt-profile" style="width:200px;height:200px;background:#0a0a0a;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+        <div style="position:absolute;width:180px;height:180px;background:radial-gradient(circle,rgba(225,29,72,.25),transparent 70%);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+          <div data-icon style="font-size:74px;line-height:1;margin-bottom:4px;">🛹</div>
+          <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:18px;color:#fff;line-height:1.05;letter-spacing:-0.02em;text-align:center;"><span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span></div>
+          <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:6.5px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:.12em;margin-top:2px;">Indoor Skatepark</div>
+        </div>
+      </div>
+      <button class="dl" data-dl="tt-profile" data-dl-name="tiktok-profile">Download Profile Pic</button>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- GOOGLE BUSINESS -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="google">
+  <h2>Google Business Profile</h2>
+  <div class="row">
+    <div class="item">
+      <p class="dim">Profile Photo — 720 × 720 px</p>
+      <div class="scroll-wrap" style="max-height:500px;">
+        <div id="gbp-profile" style="width:720px;height:720px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+          <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(225,29,72,.08),transparent 70%);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+            <div data-icon style="font-size:280px;line-height:1;margin-bottom:16px;">🛹</div>
+            <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:60px;color:#0a0a0a;line-height:1.05;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+            <div data-tagline style="font-family:'Inter',sans-serif;font-weight:700;font-size:20px;color:#555a63;text-transform:uppercase;letter-spacing:.14em;margin-top:8px;">Indoor Skatepark · Shop · Lessons</div>
+            <div data-sub-line style="font-family:'Inter',sans-serif;font-weight:600;font-size:14px;color:#e11d48;text-transform:uppercase;letter-spacing:.08em;margin-top:10px;">Peekskill, NY · Hudson Valley</div>
+          </div>
+        </div>
+      </div>
+      <button class="dl" data-dl="gbp-profile" data-dl-name="gbp-profile">Download GBP Profile</button>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- YOUTUBE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="youtube">
+  <h2>YouTube</h2>
+  <div class="row">
+    <div class="item">
+      <p class="dim">Channel Banner — 2560 × 1440 px (scaled 50% preview)</p>
+      <div class="scroll-wrap" style="max-height:500px;">
+        <div id="yt-banner" style="width:2560px;height:1440px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);transform:scale(0.5);transform-origin:top left;">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:160px 160px;"></div>
+          <div style="position:absolute;width:1000px;height:1000px;background:radial-gradient(circle,rgba(225,29,72,.18),transparent 70%);border-radius:50%;top:-300px;right:-150px;"></div>
+          <div style="position:absolute;width:800px;height:800px;background:radial-gradient(circle,rgba(147,51,234,.12),transparent 70%);border-radius:50%;bottom:-300px;left:-150px;"></div>
+          <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:60px;z-index:2;">
+            <div data-icon style="font-size:340px;line-height:1;filter:drop-shadow(0 12px 32px rgba(225,29,72,.4));">🛹</div>
+            <div>
+              <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:96px;color:#fff;line-height:1.05;letter-spacing:-0.03em;"><span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span></div>
+              <div data-tagline style="font-family:'Inter',sans-serif;font-weight:700;font-size:32px;color:#fb7185;text-transform:uppercase;letter-spacing:.14em;margin-top:10px;">Indoor Skatepark · Shop · Lessons</div>
+              <div data-sub-line style="font-family:'Inter',sans-serif;font-weight:600;font-size:22px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-top:14px;">Hudson Valley · Peekskill, NY</div>
+              <div style="margin-top:28px;display:flex;gap:32px;">
+                <span style="font-family:'Inter',sans-serif;font-size:24px;color:rgba(255,255,255,.6);">📍 <span data-location>Peekskill, NY</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:24px;color:rgba(255,255,255,.6);">🌐 <span data-web>2ntr.com</span></span>
+              </div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:8px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="yt-banner" data-dl-name="yt-banner" data-dl-scale="1">Download YT Banner (full-size)</button>
+      <p style="font-size:.75rem;color:#9ca3af;margin-top:4px;">Downloads at full 2560×1440 — preview is scaled 50%.</p>
+    </div>
+
+    <div class="item">
+      <p class="dim">Profile Picture — 800 × 800 px</p>
+      <div class="scroll-wrap" style="max-height:450px;">
+        <div id="yt-profile" style="width:800px;height:800px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+          <div style="position:absolute;width:650px;height:650px;background:radial-gradient(circle,rgba(225,29,72,.08),transparent 70%);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+          <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+            <div data-icon style="font-size:320px;line-height:1;margin-bottom:16px;">🛹</div>
+            <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:68px;color:#0a0a0a;line-height:1.05;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+            <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:#555a63;text-transform:uppercase;letter-spacing:.14em;margin-top:8px;">Indoor Skatepark</div>
+          </div>
+        </div>
+      </div>
+      <button class="dl" data-dl="yt-profile" data-dl-name="yt-profile">Download YT Profile Pic</button>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- LINKEDIN -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="linkedin">
+  <h2>LinkedIn</h2>
+  <div class="row">
+
+    <div class="item">
+      <p class="dim">Company Cover — 1128 × 191 px</p>
+      <div class="scroll-wrap">
+        <div id="li-cover" style="width:1128px;height:191px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:60px 60px;"></div>
+          <div style="position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(225,29,72,.18),transparent 70%);border-radius:50%;top:-100px;right:-40px;"></div>
+          <div style="position:relative;z-index:2;display:flex;align-items:center;height:100%;padding:0 40px;gap:24px;">
+            <div data-icon style="font-size:80px;line-height:1;filter:drop-shadow(0 4px 12px rgba(225,29,72,.4));">🛹</div>
+            <div>
+              <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:30px;color:#fff;line-height:1.05;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span></div>
+              <div data-tagline style="font-family:'Inter',sans-serif;font-weight:700;font-size:10px;color:#fb7185;text-transform:uppercase;letter-spacing:.14em;margin-top:4px;">Indoor Skatepark · Shop · Lessons</div>
+            </div>
+            <div style="margin-left:auto;text-align:right;">
+              <div data-sub-line style="font-family:'Inter',sans-serif;font-size:11px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;font-weight:600;">Hudson Valley · Peekskill, NY</div>
+              <div style="font-family:'Inter',sans-serif;font-size:12px;color:rgba(255,255,255,.65);margin-top:6px;"><span data-web>2ntr.com</span> · <span data-phone>(914) 402-4624</span></div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="li-cover" data-dl-name="linkedin-cover">Download LinkedIn Cover</button>
+    </div>
+
+    <div class="item">
+      <p class="dim">Company Logo — 300 × 300 px</p>
+      <div id="li-logo" style="width:300px;height:300px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;">
+        <div data-icon style="font-size:115px;line-height:1;margin-bottom:6px;">🛹</div>
+        <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:26px;color:#0a0a0a;line-height:1.1;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+        <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:9px;color:#555a63;text-transform:uppercase;letter-spacing:.14em;margin-top:3px;">Indoor Skatepark</div>
+      </div>
+      <button class="dl" data-dl="li-logo" data-dl-name="linkedin-logo">Download LinkedIn Logo</button>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- NEXTDOOR -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="nextdoor">
+  <h2>Nextdoor</h2>
+  <div class="row">
+    <div class="item">
+      <p class="dim">Business Profile — 400 × 400 px</p>
+      <div id="nd-profile" style="width:400px;height:400px;background:#ffffff;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;position:relative;">
+        <div style="position:absolute;width:350px;height:350px;background:radial-gradient(circle,rgba(225,29,72,.06),transparent 70%);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+        <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;">
+          <div data-icon style="font-size:160px;line-height:1;margin-bottom:10px;">🛹</div>
+          <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:34px;color:#0a0a0a;line-height:1.05;letter-spacing:-0.02em;"><span data-biz-short>2nd Nature</span> <span style="color:#e11d48;" data-biz-accent>Park</span></div>
+          <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:11px;color:#555a63;text-transform:uppercase;letter-spacing:.14em;margin-top:3px;">Indoor Skatepark</div>
+          <div data-location style="font-family:'Inter',sans-serif;font-weight:600;font-size:9px;color:#e11d48;text-transform:uppercase;letter-spacing:.08em;margin-top:6px;">Peekskill, NY</div>
+        </div>
+      </div>
+      <button class="dl" data-dl="nd-profile" data-dl-name="nextdoor-profile">Download Nextdoor Profile</button>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- OG SHARE IMAGE -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="og">
+  <h2>Open Graph / Link Share Preview</h2>
+  <div class="row">
+    <div class="item">
+      <p class="dim">OG Image — 1200 × 630 px</p>
+      <div class="scroll-wrap">
+        <div id="og-image" style="width:1200px;height:630px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:100px 100px;"></div>
+          <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(225,29,72,.18),transparent 70%);border-radius:50%;top:-180px;right:-100px;"></div>
+          <div style="position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(147,51,234,.12),transparent 70%);border-radius:50%;bottom:-180px;left:-80px;"></div>
+          <div style="position:relative;z-index:2;display:flex;align-items:center;height:100%;padding:0 70px;gap:48px;">
+            <div data-icon style="font-size:260px;line-height:1;filter:drop-shadow(0 8px 24px rgba(225,29,72,.4));">🛹</div>
+            <div>
+              <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:72px;color:#fff;line-height:1.05;letter-spacing:-0.03em;"><span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span></div>
+              <div data-tagline style="font-family:'Inter',sans-serif;font-weight:700;font-size:22px;color:#fb7185;text-transform:uppercase;letter-spacing:.14em;margin-top:8px;">Indoor Skatepark · Shop · Lessons</div>
+              <div data-sub-line style="font-family:'Inter',sans-serif;font-weight:600;font-size:16px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.08em;margin-top:12px;">Hudson Valley · Peekskill, NY</div>
+              <div style="margin-top:22px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12);display:flex;gap:24px;">
+                <span style="font-family:'Inter',sans-serif;font-size:16px;color:rgba(255,255,255,.6);">📍 <span data-location>Peekskill, NY</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:16px;color:rgba(255,255,255,.6);">📞 <span data-phone>(914) 402-4624</span></span>
+                <span style="font-family:'Inter',sans-serif;font-size:16px;color:rgba(255,255,255,.6);">🌐 <span data-web>2ntr.com</span></span>
+              </div>
+              <div data-pitch-long style="font-family:'Inter',sans-serif;font-size:14px;color:rgba(255,255,255,.4);margin-top:14px;">First indoor skatepark in the Hudson Valley</div>
+            </div>
+          </div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="og-image" data-dl-name="og-share">Download OG Image</button>
+    </div>
+  </div>
+</div>
+<hr>
+
+
+<!-- ═══════════════════════════════════════ -->
+<!-- PRINT — Business Card & Flyer -->
+<!-- ═══════════════════════════════════════ -->
+<div class="section" id="print">
+  <h2>Print — Cards &amp; Flyers</h2>
+  <p style="font-size:.8rem;color:#555a63;margin-top:-2px;margin-bottom:14px;">Click any text in the preview to edit. Business card downloads at 300dpi print-ready; flyer at 150dpi (still print-clean for 8.5×11). For pro-print runs, hand the PNG to your local print shop or upload to VistaPrint / MOO.</p>
+  <div class="row">
+
+    <!-- Business Card -->
+    <div class="item">
+      <p class="dim">Business Card — 3.5 × 2 in (1050 × 600 px @ 300dpi · click text to edit)</p>
+      <div class="scroll-wrap" style="max-height:380px;">
+        <div id="bc-front" style="width:1050px;height:600px;position:relative;overflow:hidden;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);transform:scale(0.6);transform-origin:top left;border-radius:24px;">
+          <div style="position:absolute;inset:0;opacity:.06;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:80px 80px;"></div>
+          <div style="position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(225,29,72,.22),transparent 70%);border-radius:50%;top:-150px;right:-100px;"></div>
+          <div style="position:absolute;width:300px;height:300px;background:radial-gradient(circle,rgba(147,51,234,.15),transparent 70%);border-radius:50%;bottom:-100px;left:-80px;"></div>
+          <!-- Left side: mark + brand -->
+          <div style="position:absolute;top:0;left:0;bottom:0;width:420px;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:0 30px;z-index:2;">
+            <div data-icon style="font-size:140px;line-height:1;margin-bottom:18px;filter:drop-shadow(0 6px 16px rgba(225,29,72,.4));">🛹</div>
+            <div style="font-family:'Inter',sans-serif;font-weight:900;font-size:42px;color:#fff;letter-spacing:-0.02em;line-height:1.05;text-align:center;">
+              <span data-biz-short>2nd Nature</span><br><span style="color:#fb7185;" data-biz-accent>Park</span>
+            </div>
+            <div data-tagline-short style="font-family:'Inter',sans-serif;font-weight:700;font-size:12px;color:#fb7185;text-transform:uppercase;letter-spacing:.16em;margin-top:10px;text-align:center;">Indoor Skatepark</div>
+          </div>
+          <!-- Right side: contact -->
+          <div style="position:absolute;top:0;right:0;bottom:0;left:420px;display:flex;flex-direction:column;justify-content:center;padding:0 44px;z-index:2;">
+            <div data-edit="bc-name" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:800;font-size:38px;color:#fff;letter-spacing:-0.02em;line-height:1.1;cursor:text;outline:none;">Doug Brown</div>
+            <div data-edit="bc-role" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:700;font-size:15px;color:#fb7185;text-transform:uppercase;letter-spacing:.12em;margin-top:6px;cursor:text;outline:none;">Owner · Head Coach</div>
+            <div style="margin-top:30px;border-top:1px solid rgba(255,255,255,.15);padding-top:22px;display:flex;flex-direction:column;gap:11px;">
+              <div style="font-family:'Inter',sans-serif;font-size:17px;color:rgba(255,255,255,.85);">📞 <span data-phone>(914) 402-4624</span></div>
+              <div style="font-family:'Inter',sans-serif;font-size:17px;color:rgba(255,255,255,.85);">✉ <span data-edit="bc-email" contenteditable="true" spellcheck="false" style="cursor:text;outline:none;">info@2ntr.com</span></div>
+              <div style="font-family:'Inter',sans-serif;font-size:17px;color:rgba(255,255,255,.85);">🌐 <span data-web>2ntr.com</span></div>
+              <div style="font-family:'Inter',sans-serif;font-size:17px;color:rgba(255,255,255,.85);">📍 <span data-edit="bc-addr" contenteditable="true" spellcheck="false" style="cursor:text;outline:none;">Peekskill, NY</span></div>
+            </div>
+          </div>
+          <!-- bottom accent bar -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="bc-front" data-dl-name="business-card" data-dl-scale="2">Download Business Card</button>
+      <p style="font-size:.75rem;color:#9ca3af;margin-top:4px;">2× scale = 2100 × 1200 px output. Standard US biz-card size.</p>
+    </div>
+
+    <!-- Flyer -->
+    <div class="item">
+      <p class="dim">Flyer — 8.5 × 11 in (1275 × 1650 px @ 150dpi · click text to edit)</p>
+      <div class="scroll-wrap" style="max-height:680px;">
+        <div id="flyer" style="width:1275px;height:1650px;position:relative;overflow:hidden;background:#0a0a0a;transform:scale(0.4);transform-origin:top left;">
+          <!-- top half: hero -->
+          <div style="position:relative;height:760px;background:linear-gradient(135deg,#0a0a0a 0%,#1f1f23 50%,#0a0a0a 100%);overflow:hidden;">
+            <div style="position:absolute;inset:0;opacity:.07;background-image:linear-gradient(rgba(251,113,133,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(251,113,133,.5) 1px,transparent 1px);background-size:120px 120px;"></div>
+            <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(225,29,72,.22),transparent 70%);border-radius:50%;top:-200px;right:-150px;"></div>
+            <div style="position:absolute;width:600px;height:600px;background:radial-gradient(circle,rgba(147,51,234,.15),transparent 70%);border-radius:50%;bottom:-180px;left:-150px;"></div>
+            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;z-index:2;width:90%;">
+              <div data-icon style="font-size:200px;line-height:1;filter:drop-shadow(0 8px 24px rgba(225,29,72,.4));">🛹</div>
+              <div style="margin-top:30px;font-family:'Inter',sans-serif;font-weight:900;font-size:120px;color:#fff;letter-spacing:-0.03em;line-height:1;">
+                <span data-biz-short>2nd Nature</span> <span style="color:#fb7185;" data-biz-accent>Park</span>
+              </div>
+              <div data-tagline style="margin-top:18px;font-family:'Inter',sans-serif;font-weight:800;font-size:36px;color:#fb7185;text-transform:uppercase;letter-spacing:.14em;">Indoor Skatepark · Shop · Lessons</div>
+              <div data-edit="flyer-hero-sub" contenteditable="true" spellcheck="false" style="margin-top:20px;font-family:'Inter',sans-serif;font-weight:700;font-size:24px;color:rgba(255,255,255,.7);letter-spacing:.04em;cursor:text;outline:none;">Hudson Valley's first indoor skatepark · Peekskill, NY</div>
+            </div>
+          </div>
+
+          <!-- bottom half: white info panel -->
+          <div style="position:relative;height:890px;background:#faf9f6;padding:60px 80px;display:flex;flex-direction:column;">
+            <!-- offerings -->
+            <div style="display:flex;flex-direction:column;gap:18px;">
+              <div data-edit="flyer-section1-title" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:800;font-size:36px;color:#0a0a0a;letter-spacing:-0.02em;cursor:text;outline:none;">What we offer</div>
+              <div data-edit="flyer-offerings" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:600;font-size:24px;color:#1f1f23;line-height:1.55;cursor:text;outline:none;">
+                <div>🛹  Open skate sessions · all ages, all levels</div>
+                <div>🎓  Private &amp; group lessons</div>
+                <div>🌞  Camps &amp; clinics — school breaks &amp; summer</div>
+                <div>🎂  Birthday parties &amp; private rentals</div>
+                <div>🛒  Pro shop · boards, wheels, helmets, pads</div>
+              </div>
+            </div>
+
+            <!-- hours -->
+            <div style="margin-top:36px;display:flex;gap:50px;">
+              <div style="flex:1;">
+                <div style="font-family:'Inter',sans-serif;font-weight:800;font-size:24px;color:#0a0a0a;letter-spacing:-0.01em;margin-bottom:8px;">Hours</div>
+                <div data-edit="flyer-hours" contenteditable="true" spellcheck="false" style="font-family:'Inter',sans-serif;font-weight:600;font-size:18px;color:#1f1f23;line-height:1.5;cursor:text;outline:none;">
+                  <div>Mon–Fri · 3 – 9 PM</div>
+                  <div>Sat &amp; Sun · 10 AM – 9 PM</div>
+                </div>
+              </div>
+              <div style="flex:1;">
+                <div style="font-family:'Inter',sans-serif;font-weight:800;font-size:24px;color:#0a0a0a;letter-spacing:-0.01em;margin-bottom:8px;">Contact</div>
+                <div style="font-family:'Inter',sans-serif;font-weight:600;font-size:18px;color:#1f1f23;line-height:1.6;">
+                  <div>📞 <span data-phone>(914) 402-4624</span></div>
+                  <div>🌐 <span data-web>2ntr.com</span></div>
+                  <div>📍 <span data-edit="flyer-addr" contenteditable="true" spellcheck="false" style="cursor:text;outline:none;">1 Highland Industrial Park, Peekskill NY</span></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- bottom CTA -->
+            <div data-edit="flyer-cta" contenteditable="true" spellcheck="false" style="margin-top:auto;padding-top:30px;text-align:center;font-family:'Inter',sans-serif;font-weight:900;font-size:38px;color:#e11d48;letter-spacing:-0.01em;cursor:text;outline:none;">Drop in. Try a lesson. Buy a board.</div>
+          </div>
+
+          <!-- bottom accent bar -->
+          <div style="position:absolute;bottom:0;left:0;right:0;height:10px;background:linear-gradient(90deg,#fb7185,#e11d48,#9333ea);"></div>
+        </div>
+      </div>
+      <button class="dl" data-dl="flyer" data-dl-name="flyer-8.5x11" data-dl-scale="2">Download Flyer (8.5 × 11)</button>
+      <p style="font-size:.75rem;color:#9ca3af;margin-top:4px;">2× scale = 2550 × 3300 px output (300dpi print-ready). Edit hours / offerings to match your park.</p>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+(function(){
+  var CFG = window.APP_CONFIG || {};
+  var bizShort   = CFG.bizShortName   || '2nd Nature';
+  var bizAccent  = CFG.bizShortAccent || 'Park';
+  var icon       = CFG.logoEmoji      || '🛹';
+  var phone      = CFG.bizPhone       || '';
+  var website    = CFG.bizWebsite     || '';
+  // Pull "City, ST" out of bizAddr — supports "1 Highland Industrial Park, Peekskill, NY 10566"
+  function deriveLocation(addr){
+    if (!addr) return 'Peekskill, NY';
+    var parts = addr.split(',').map(function(p){ return p.trim(); }).filter(Boolean);
+    if (parts.length < 2) return addr;
+    // Last 2 parts: usually "City" + "ST 10566" — strip the zip from the last
+    var city  = parts[parts.length - 2];
+    var stZip = parts[parts.length - 1];
+    var st    = stZip.split(/\s+/)[0];
+    return city + ', ' + st;
+  }
+  var location   = CFG.bizLocation || deriveLocation(CFG.bizAddr);
+  var region     = CFG.bizRegion   || 'Hudson Valley';
+  var tagline    = CFG.bizPitch    || 'Indoor Skatepark · Shop · Lessons';
+  var taglineSh  = CFG.bizPitchShort || (tagline.split('·')[0] || 'Indoor Skatepark').trim();
+  var pitchLong  = CFG.bizPitchLong  || 'First indoor skatepark in the Hudson Valley';
+  var subLine    = CFG.bizSubLine    || (region + ' · Open daily');
+  var bizName    = CFG.bizName     || (bizShort + ' ' + bizAccent);
+  var slug       = CFG.bizFilenameSlug
+                   || bizName.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')
+                   || 'skateos';
+
+  // Custom sub-line per platform
+  var subLineMap = {
+    'fb-cover':   region + ' · Open daily',
+    'gbp-profile':location + ' · ' + region,
+    'yt-banner':  region + ' · ' + location,
+    'li-cover':   region + ' · ' + location,
+    'og-image':   region + ' · ' + location
+  };
+
+  // Per-section overrides where the tagline embeds the location ("Indoor Skatepark · Peekskill NY")
+  // applies to the IG square post
+  document.querySelectorAll('[data-tagline-long]').forEach(function(el){
+    el.textContent = taglineSh + ' · ' + location.replace(',', '');
+  });
+
+  // Fill in every named slot
+  document.querySelectorAll('[data-biz-short]').forEach(function(el){ el.textContent = bizShort; });
+  document.querySelectorAll('[data-biz-accent]').forEach(function(el){ el.textContent = bizAccent; });
+  document.querySelectorAll('[data-icon]').forEach(function(el){ el.textContent = icon; });
+  document.querySelectorAll('[data-phone]').forEach(function(el){ el.textContent = phone; });
+  document.querySelectorAll('[data-web]').forEach(function(el){ el.textContent = website; });
+  document.querySelectorAll('[data-location]').forEach(function(el){ el.textContent = location; });
+  document.querySelectorAll('[data-tagline]').forEach(function(el){ el.textContent = tagline; });
+  document.querySelectorAll('[data-tagline-short]').forEach(function(el){ el.textContent = taglineSh; });
+  document.querySelectorAll('[data-tagline-extra]').forEach(function(el){
+    // Keep "Skate · Shop · Lessons · Camps" as a default extra line; owner can override via bizPitchExtra
+    el.textContent = CFG.bizPitchExtra || 'Skate · Shop · Lessons · Camps';
+  });
+  document.querySelectorAll('[data-pitch-long]').forEach(function(el){ el.textContent = pitchLong; });
+
+  // Per-platform sub-line population
+  Object.keys(subLineMap).forEach(function(cardId){
+    var card = document.getElementById(cardId);
+    if (!card) return;
+    var slot = card.querySelector('[data-sub-line]');
+    if (slot) slot.textContent = subLineMap[cardId];
+  });
+
+  // If the card has its own sub-line slot but it's not in the map, fall back to the default
+  document.querySelectorAll('[data-sub-line]').forEach(function(el){
+    if (!el.textContent || el.textContent === 'Hudson Valley · Open daily') el.textContent = subLine;
+  });
+
+  // Title
+  document.title = bizName + ' — Social Media Graphics Kit';
+
+  // Hide contact spans whose values are blank (some white-label deploys may not have phone yet)
+  if (!phone) document.querySelectorAll('[data-phone]').forEach(function(el){ var p=el.parentElement; if(p) p.style.display='none'; });
+  if (!website) document.querySelectorAll('[data-web]').forEach(function(el){ var p=el.parentElement; if(p) p.style.display='none'; });
+
+  // Wire download buttons
+  document.querySelectorAll('[data-dl]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id    = btn.getAttribute('data-dl');
+      var name  = btn.getAttribute('data-dl-name') || id;
+      var scale = parseFloat(btn.getAttribute('data-dl-scale')) || 2;
+      var filename = slug + '-' + name;
+      dl(id, filename, scale);
+    });
+  });
+
+  document.body.style.visibility = 'visible';
+})();
+
+function dl(id, filename, scaleOverride) {
+  var el = document.getElementById(id);
+  var origTransform = el.style.transform;
+  var origOrigin = el.style.transformOrigin;
+  el.style.transform = 'none';
+  el.style.transformOrigin = 'top left';
+
+  html2canvas(el, {
+    scale: scaleOverride || 2,
+    useCORS: true,
+    backgroundColor: null,
+    allowTaint: true
+  }).then(function(canvas) {
+    el.style.transform = origTransform;
+    el.style.transformOrigin = origOrigin;
+    var link = document.createElement('a');
+    link.download = filename + '.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  }).catch(function(err) {
+    el.style.transform = origTransform;
+    el.style.transformOrigin = origOrigin;
+    alert('Download failed. Try right-clicking the graphic and choosing "Save image as..."');
+    console.error(err);
+  });
+}
+</script>
+
+</body>
+</html>

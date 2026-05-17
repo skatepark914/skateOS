@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skateOS @ 2nd Nature — full handoff</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Private handoff doc for Doug + Nick. Full tutorial, recap, runbooks, and email drafts for the 2026-05-15/16 marathon build.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔓</text></svg>">
+<style>
+  :root {
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --purple:      #7c3aed;
+    --purple-light:#f3e8ff;
+    --green:       #16a34a;
+    --green-light: #dcfce7;
+    --amber:       #f59e0b;
+    --amber-light: #fef3c7;
+    --red-light:   #fee2e2;
+    --ink:         #14161a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #faf9f6;
+    --code-bg:     #f3f3ef;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; scroll-padding-top: 70px; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* === Nav === */
+  nav.top {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250,249,246,0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 12px 24px;
+  }
+  nav.top .inner { max-width: 1280px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { font-weight: 900; font-size: 18px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
+  .logo .emoji { font-size: 22px; }
+  .logo .accent { color: var(--rose); }
+  .nav-meta { font-size: 12px; color: var(--ink-soft); }
+  .nav-meta strong { color: var(--rose); }
+
+  /* === Layout: sidebar TOC + main content === */
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: 240px 1fr; gap: 32px; }
+  @media (max-width: 900px) { .wrap { grid-template-columns: 1fr; } aside.toc { display: none; } }
+  aside.toc { position: sticky; top: 70px; height: calc(100vh - 70px); overflow-y: auto; padding: 24px 0; font-size: 13px; }
+  aside.toc h4 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--rose); margin: 18px 0 8px; }
+  aside.toc h4:first-child { margin-top: 0; }
+  aside.toc a { display: block; color: var(--ink-soft); text-decoration: none; padding: 4px 0; line-height: 1.4; }
+  aside.toc a:hover { color: var(--rose); }
+  aside.toc a.active { color: var(--rose); font-weight: 700; }
+  main { padding: 24px 0 80px; min-width: 0; }
+
+  /* === Hero === */
+  header.hero { padding: 32px 0 28px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+  header.hero .badge { display: inline-flex; align-items: center; gap: 6px; background: var(--rose-light); color: var(--rose); padding: 5px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 12px; }
+  header.hero h1 { font-weight: 900; font-size: clamp(32px, 5vw, 48px); letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 10px; background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  header.hero p { font-size: 16px; color: var(--ink-soft); max-width: 720px; }
+
+  /* === Section headers === */
+  section { margin-bottom: 48px; scroll-margin-top: 80px; }
+  h2 { font-size: 28px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--rose); display: inline-block; }
+  h3 { font-size: 18px; font-weight: 800; margin: 22px 0 10px; }
+  h4 { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); margin: 18px 0 8px; }
+  p { margin-bottom: 12px; }
+  ul, ol { margin: 0 0 12px 22px; }
+  ul li, ol li { margin-bottom: 4px; }
+  strong { color: var(--ink); font-weight: 700; }
+  code { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; background: var(--code-bg); padding: 1px 6px; border-radius: 4px; }
+  pre { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 13px; overflow-x: auto; margin: 12px 0; line-height: 1.5; }
+  a { color: var(--rose); }
+
+  /* === Callouts === */
+  .callout { padding: 14px 18px; border-radius: 10px; margin: 14px 0; font-size: 14px; line-height: 1.6; }
+  .callout strong { color: inherit; }
+  .callout.green  { background: var(--green-light); border-left: 4px solid var(--green); color: #166534; }
+  .callout.amber  { background: var(--amber-light); border-left: 4px solid var(--amber); color: #92400e; }
+  .callout.red    { background: var(--red-light);   border-left: 4px solid var(--rose); color: #991b1b; }
+  .callout.purple { background: var(--purple-light); border-left: 4px solid var(--purple); color: #6b21a8; }
+  .callout.blue   { background: #dbeafe; border-left: 4px solid #2563eb; color: #1e40af; }
+
+  /* === Tables === */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 14px; }
+  th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-soft); background: var(--bg); }
+  tbody tr:hover { background: var(--bg); }
+  table.compact th, table.compact td { padding: 6px 10px; font-size: 13px; }
+
+  /* === Cards === */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 20px; margin: 14px 0; }
+  .card-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  .card-head .icon { font-size: 22px; }
+
+  /* === Checklist === */
+  ol.checklist { list-style: none; margin-left: 0; counter-reset: step; }
+  ol.checklist li { padding: 8px 0 8px 36px; border-bottom: 1px solid var(--line); position: relative; counter-increment: step; }
+  ol.checklist li:last-child { border-bottom: 0; }
+  ol.checklist li::before { content: counter(step); position: absolute; left: 0; top: 8px; width: 24px; height: 24px; background: var(--rose); color: #fff; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px; }
+
+  /* === Stat strip === */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 10px; margin: 18px 0; }
+  .stats .stat { background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center; }
+  .stats .stat .num { font-size: 24px; font-weight: 900; color: var(--rose); line-height: 1; margin-bottom: 4px; }
+  .stats .stat .lbl { font-size: 11px; color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+
+  /* === Email draft block === */
+  .email-draft { background: #fff; border: 2px dashed var(--rose); border-radius: 10px; padding: 20px; margin: 14px 0; position: relative; }
+  .email-draft::before { content: 'EMAIL DRAFT'; position: absolute; top: -10px; left: 16px; background: var(--bg); color: var(--rose); padding: 0 8px; font-size: 11px; font-weight: 800; letter-spacing: 0.06em; }
+  .email-draft .subj { font-weight: 800; font-size: 15px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+  .email-draft .body { font-size: 14px; line-height: 1.6; white-space: pre-wrap; }
+  .copy-btn { position: absolute; top: 12px; right: 12px; background: var(--rose); color: #fff; border: none; padding: 5px 12px; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; }
+  .copy-btn:hover { background: var(--rose-dark); }
+
+  details { background: var(--code-bg); border: 1px solid var(--line); border-radius: 8px; padding: 14px 18px; margin: 12px 0; }
+  details summary { cursor: pointer; font-weight: 700; font-size: 14px; user-select: none; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: '▶ '; color: var(--rose); display: inline-block; margin-right: 4px; transition: transform 0.15s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  details > *:not(summary) { margin-top: 12px; }
+
+  footer { padding: 32px 0; text-align: center; font-size: 13px; color: var(--ink-soft); border-top: 1px solid var(--line); margin-top: 40px; }
+  @media print { aside.toc, nav.top { display: none; } .wrap { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="inner">
+    <a href="/" class="logo"><span class="emoji">🔓</span> skate<span class="accent">OS</span> · 2nd Nature handoff</a>
+    <div class="nav-meta">private · <strong>noindex</strong> · for Doug + Nick</div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+<!-- ============ TOC SIDEBAR ============ -->
+<aside class="toc">
+  <h4>Get started</h4>
+  <a href="#recap">Marathon recap</a>
+  <a href="#tomorrow">First thing tomorrow</a>
+  <a href="#urls">Quick-reference URLs</a>
+  <a href="#emails">Email drafts</a>
+
+  <h4>Tutorial</h4>
+  <a href="#daily-frontdesk">Daily ops · front desk</a>
+  <a href="#daily-members">Daily ops · members</a>
+  <a href="#parties">Birthday parties</a>
+  <a href="#emergency">Emergency procedures</a>
+  <a href="#marketing">Marketing + signup</a>
+  <a href="#whitelabel">White-label · new park</a>
+  <a href="#reports">Reports + BI</a>
+  <a href="#vision">Vision Box</a>
+
+  <h4>Reference</h4>
+  <a href="#brivo-runbook">Brivo runbook</a>
+  <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#audit-trails">Audit trails</a>
+</aside>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="badge">🛹 BUILT 2026-05-15/16 · MARATHON</div>
+  <h1>skateOS @ 2nd Nature — full handoff</h1>
+  <p>
+    Everything we shipped in the two-day Brivo marathon: door integration, member self-serve, event passes,
+    emergency lockdown, party auto-pass, Vision Box scaffold, per-tenant white-label, and the public sites at
+    <a href="/2ntr">/2ntr</a> + <a href="/sales">/sales</a>. Use this as your reference doc.
+  </p>
+</header>
+
+<!-- ============ RECAP ============ -->
+<section id="recap">
+  <h2>Marathon recap</h2>
+  <p>You + Nick installed Brivo hardware on 2026-05-15. From there: full door integration → welcome email →
+  emergency lockdown → event passes → sales kit → activity filters → reports trend → hours sync → Vision Box
+  scaffold → tailgater alerts → customer vision history → per-tenant Brivo (Phase 1 → closeout → URL routing
+  → drift) → Setup Status wizard → vision events CSV.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="num">6</div><div class="lbl">Migrations</div></div>
+    <div class="stat"><div class="num">11</div><div class="lbl">Edge Functions</div></div>
+    <div class="stat"><div class="num">9</div><div class="lbl">New admin cards</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Public pages</div></div>
+    <div class="stat"><div class="num">3</div><div class="lbl">Runbook docs</div></div>
+  </div>
+
+  <h3>The big-ticket features</h3>
+  <table>
+    <thead><tr><th>Capability</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><strong>24/7 member door access</strong></td><td>Monthly + annual members get Brivo Mobile Pass auto-provisioned. Lapsed / banned / paused / expired-waiver all auto-revoke.</td></tr>
+      <tr><td><strong>Branded welcome email</strong></td><td>"🔓 You're in" email fires after first provision. Owner-tunable subject + body with <code>&#123;&#123;first&#125;&#125;</code> variables.</td></tr>
+      <tr><td><strong>Emergency lockdown</strong></td><td>One owner-only button revokes every member's credential in seconds. Tenant-scoped. Sticky red banner across all admin pages while active.</td></tr>
+      <tr><td><strong>Birthday party auto-pass</strong></td><td>When a party invoice flips to paid, Brivo Mobile Pass auto-issues for the party window ± 30 min buffer. Auto-revokes after.</td></tr>
+      <tr><td><strong>Failed-access / tailgater alerts</strong></td><td>3+ denials in 5 min → Team Chat. 3+ unmatched person-events at park door → Team Chat. Idempotent per 30 min.</td></tr>
+      <tr><td><strong>Park capacity guard</strong></td><td>Brivo grant fires while at <code>maxCapacity</code> → Team Chat reminder so front desk can manage.</td></tr>
+      <tr><td><strong>Face recognition + video clip surfaces</strong></td><td>Brivo's face match events + video clips render in Activity Log + customer detail + Dashboard widget with clickable thumbnails.</td></tr>
+      <tr><td><strong>Park hours → Brivo schedule sync</strong></td><td>Manual button in Settings pushes <code>settings.hours</code> into the Brivo schedule. Dry-run preview supported.</td></tr>
+      <tr><td><strong>Vision Box scaffold</strong></td><td>Frigate webhook + DB tables + Dashboard widget ready. Hardware deploy is Phase 9.5 ($300-500/park).</td></tr>
+      <tr><td><strong>Per-tenant Brivo (white-label)</strong></td><td>Each park stores its own Brivo credentials in <code>tenant_brivo_config</code>. Every Edge Function tenant-aware. Per-tenant webhook URLs.</td></tr>
+      <tr><td><strong>Customer signup flow</strong></td><td><code>/admin/join.html</code> with minor auto-detection, plan picker, waiver ack, success-card flow.</td></tr>
+      <tr><td><strong>Two new public sites</strong></td><td><code>/2ntr</code> (2nd Nature public landing) + <code>/sales</code> (white-label kit for other operators).</td></tr>
+      <tr><td><strong>Setup Status wizard</strong></td><td>Dashboard onboarding card with progress bar + per-item "Configure →" jump buttons.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ FIRST THING TOMORROW ============ -->
+<section id="tomorrow">
+  <h2>First thing tomorrow morning</h2>
+  <ol class="checklist">
+    <li><strong>Apply pending migrations</strong> in Supabase SQL editor:
+      <ul>
+        <li>Bundle file: <code>admin/migrations/_apply_pending_062_to_065.sql</code> (one paste, 10 verification probes)</li>
+        <li>Then individually: <code>066_member_signup_form.sql</code>, <code>067_brivo_event_passes.sql</code>, <code>068_frigate_events.sql</code>, <code>069_tenant_brivo_config.sql</code></li>
+      </ul>
+    </li>
+    <li><strong>Deploy Edge Functions</strong>:<br><code>bash admin/deploy-functions.sh</code></li>
+    <li><strong>Smoke test the door cascade</strong>: walk to park door → tap → confirm Activity Log shows the <code>access_granted</code> row + Dashboard "Park access" widget shows you in the park + Check-In page shows your auto-checkin row.</li>
+    <li><strong>Deploy the new marketing pages</strong>:<br><code>cd marketing &amp;&amp; netlify deploy --prod --dir . --site 2c6535a3-70a5-47fd-91e2-f875306aee01</code></li>
+    <li><strong>Wire the Supabase anon key</strong> into <code>marketing/2ntr/index.html</code> (search for <code>SB_KEY</code> placeholder) — makes the live park-status pill work.</li>
+    <li><strong>Set <code>settings.maxCapacity</code></strong> in admin Settings → Business so capacity alerts can fire.</li>
+    <li><strong>Open Setup Status card</strong> on Dashboard — progress bar walks you through anything still pending with one-click Configure buttons.</li>
+  </ol>
+
+  <div class="callout green">
+    <strong>✓ Already verified working live:</strong> Brivo OAuth + create user + add to group + Mobile Pass invite. Door physically opened on your phone on 2026-05-15. The integration is genuinely live for 2nd Nature.
+  </div>
+</section>
+
+<!-- ============ QUICK URLS ============ -->
+<section id="urls">
+  <h2>Quick-reference URLs</h2>
+  <table class="compact">
+    <thead><tr><th>URL</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>https://app.skateos.com</code></td><td>Admin SPA (you + staff)</td></tr>
+      <tr><td><code>https://skateos.com</code></td><td>Marketing root</td></tr>
+      <tr><td><code>https://skateos.com/2ntr</code></td><td>2nd Nature public landing</td></tr>
+      <tr><td><code>https://skateos.com/sales</code></td><td>skateOS sales kit (other operators)</td></tr>
+      <tr><td><code>https://skateos.com/locked</code></td><td><strong>This page</strong> — private handoff doc</td></tr>
+      <tr><td><code>https://app.skateos.com/admin/join.html</code></td><td>Member signup form</td></tr>
+      <tr><td><code>https://app.skateos.com/admin/me.html</code></td><td>Customer self-serve portal</td></tr>
+      <tr><td><code>https://app.skateos.com/admin/park-status.html</code></td><td>Public "Are we open?" page</td></tr>
+      <tr><td><code>https://app.skateos.com/admin/booking.html?form=lesson-request</code></td><td>Lesson booking form</td></tr>
+      <tr><td><code>https://account.brivo.com</code></td><td>Brivo dashboard</td></tr>
+      <tr><td><code>https://supabase.com/dashboard/project/zecurmlenxyxanqucrga</code></td><td>Supabase dashboard</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ EMAIL DRAFTS ============ -->
+<section id="emails">
+  <h2>Email drafts</h2>
+  <p>Two emails ready to copy-paste into your mail client. Send <code>TUTORIAL.md</code> as an attachment OR link to this page (<code>skateos.com/locked</code>) for the full reference.</p>
+
+  <h3>Draft 1: Email to Doug (you)</h3>
+  <div class="email-draft">
+    <button class="copy-btn" onclick="copyEmail('email-doug')">Copy</button>
+    <div class="subj">Subject: skateOS @ 2nd Nature — full handoff doc + tomorrow's checklist</div>
+    <div class="body" id="email-doug">Hey Doug,
+
+Saving the recap of yesterday's marathon to your inbox so it's findable.
+
+What got shipped (2026-05-15/16):
+  • Brivo door integration end-to-end (live + tested on your phone)
+  • Welcome email + emergency lockdown + birthday party auto-pass
+  • Vision Box scaffold (Frigate + Coral, hardware deploy when ready)
+  • Per-tenant white-label so future parks can sign up isolated
+  • Customer signup at app.skateos.com/admin/join.html
+  • Two new public sites: skateos.com/2ntr + skateos.com/sales
+  • Full BI: Reports → Brivo door activity card + cohort retention + at-risk customer queue
+
+Full reference (this page): https://skateos.com/locked
+
+Tomorrow morning, in order:
+  1. Apply migrations 062-069 in Supabase SQL editor (bundle file in admin/migrations/)
+  2. bash admin/deploy-functions.sh
+  3. Walk to door, smoke-test the cascade
+  4. cd marketing && netlify deploy --prod
+  5. Wire anon key into marketing/2ntr/index.html for live park-status pill
+  6. Set settings.maxCapacity in Settings → Business
+  7. Setup Status card on Dashboard walks you through anything still pending
+
+Files at the project root:
+  • TUTORIAL.md — full walkthrough (this page is the HTML version)
+  • BRIVO.md — door runbook + troubleshooting flowchart
+  • VISION.md — Vision Box hardware spec
+  • CLAUDE.md — technical session logs
+
+— Doug</div>
+  </div>
+
+  <h3>Draft 2: Email to Nick</h3>
+  <div class="email-draft">
+    <button class="copy-btn" onclick="copyEmail('email-nick')">Copy</button>
+    <div class="subj">Subject: 🛹 Brivo at 2nd Nature — runbook + your ongoing role</div>
+    <div class="body" id="email-nick">Hey Nick,
+
+Wanted to write up what we built on the skateOS side so you've got it for reference — and so you know exactly what you own vs what's automated.
+
+WHAT'S LIVE:
+  • Door opens on phone tap (tested 2026-05-15)
+  • Members auto-provision when their subscription kicks in
+  • Lapsed / banned / waiver-expired all auto-revoke within 5 min
+  • Welcome email goes out automatically with how-to-unlock instructions
+  • Emergency lockdown button revokes everyone in seconds (active-incident response)
+  • Birthday parties get a time-bounded pass that auto-expires when the party ends
+  • Failed-access alerts fire to our team chat when someone gets denied 3+ times in 5 min
+
+WHAT YOU OWN (still):
+  • Staff credentials in Brivo dashboard. The shop door + staff group are 100% yours — skateOS never touches them.
+  • Physical hardware: BDS, 9600 strike, Mullion reader.
+  • Any future hardware additions / replacements.
+
+WHAT'S AUTOMATED (skateOS owns):
+  • Member roster in the "skateOS Active Members" group — DON'T add/remove members manually in Brivo dashboard, the cron will undo your changes within 5 min.
+  • Webhook → access event log → auto-checkin flow.
+
+CONTACT ON FILE:
+We're listing you as the locksmith contact for the door integration. If anything physical breaks (strike sticks, reader hangs), we'll call/text. Cool?
+
+If a member ever can't get in:
+  1. Member tries the BDS intercom — we buzz them in during staffed hours
+  2. We check admin → customer detail → Brivo panel → see why their state is revoked
+  3. If it's something hardware-side (strike, reader, BDS power), we call you
+  4. If it's a software/membership thing, we handle it
+
+Full doc + troubleshooting guide: https://skateos.com/locked
+
+Coffee on me at the park whenever you're around.
+
+— Doug</div>
+  </div>
+</section>
+
+<!-- ============ TUTORIAL: FRONT DESK ============ -->
+<section id="daily-frontdesk">
+  <h2>Daily operations · front desk</h2>
+
+  <h3>Selling a membership to a new walk-in</h3>
+  <ol>
+    <li>POS → click <strong>+</strong> next to customer dropdown → quick-add modal</li>
+    <li>Name + DOB + email + phone + optional address. Guardian fields auto-appear if DOB &lt; 18.</li>
+    <li>Save → customer created</li>
+    <li>Search for "Monthly Unlimited" (or chosen plan) → click to add to cart</li>
+    <li>Helcim charge button → customer taps card → sale completes</li>
+  </ol>
+  <div class="callout blue">
+    <strong>What happens automatically next:</strong>
+    <ul>
+      <li>Subscription row inserts with <code>status='active'</code></li>
+      <li>Trigger flags the customer for Brivo sync</li>
+      <li>Within 5 min the cron creates a Brivo user → adds to active-members group → sends Mobile Pass invite</li>
+      <li>skateOS sends the branded "🔓 You're in" welcome email</li>
+      <li>Customer installs Brivo app → walks to door → taps → 24/7 access from that moment</li>
+    </ul>
+  </div>
+
+  <h3>Selling a day pass</h3>
+  <p>Same flow but pick "Day Pass — Adult" or "Day Pass — Under 12". <strong>No Brivo provisioning</strong> — day passes don't grant 24/7 access. Customer checks in at the front desk on each visit.</p>
+
+  <h3>Selling a punch card</h3>
+  <p>"10-Pack Punch Card" → ring up like any product. Punches decrement on each check-in. When count hits ≤2, Check-In auto-prompts the cashier with a renewal modal. <strong>No Brivo access</strong> (punch cards are session-based, not time-based).</p>
+
+  <h3>Resending a Brivo invite</h3>
+  <p>Customer detail → Brivo panel → "Resend mobile pass" button. Brivo re-fires the invite email.</p>
+
+  <h3>Resending the welcome email (the skateOS branded one)</h3>
+  <p>Customer detail → Brivo panel → "Resend welcome email" button. skateOS fires the rose-themed how-it-works email.</p>
+
+  <h3>Banning a customer</h3>
+  <ol>
+    <li>Customer detail → red "Ban" button at the bottom</li>
+    <li>Type reason → confirm</li>
+  </ol>
+  <div class="callout red">
+    <strong>What happens automatically:</strong> Tags get <code>banned</code> → trigger flags for Brivo sync → within 5 min credential is revoked → next phone tap returns <code>access_denied</code> → customer panel flips to <code>🔴 REVOKED</code> with reason "banned".
+  </div>
+</section>
+
+<!-- ============ TUTORIAL: MEMBERS ============ -->
+<section id="daily-members">
+  <h2>Daily operations · members</h2>
+
+  <h3>A new member's first 24 hours</h3>
+  <ol class="checklist">
+    <li>Sign up at <code>skateos.com/2ntr</code> → "Become a member" → fills form at <code>/admin/join.html</code></li>
+    <li>Cashier rings up membership at POS → payment → auto-provision triggers</li>
+    <li>Within 5 minutes: receives Brivo Mobile Pass invite (from Brivo) + skateOS welcome email "🔓 You're in"</li>
+    <li>Installs Brivo Mobile app → accepts the pass</li>
+    <li>Walks to park door → taps phone → door clicks open</li>
+    <li>skateOS auto-creates a <code>checkins</code> row → appears in "in the park" list</li>
+  </ol>
+
+  <h3>Member self-serve portal · <code>me.html</code></h3>
+  <ol>
+    <li>Customer goes to <code>app.skateos.com/admin/me.html</code></li>
+    <li>Enters email → gets a magic-link email</li>
+    <li>Clicks link → sees their portal:
+      <ul>
+        <li>Active passes + punches remaining</li>
+        <li>Loyalty points + tier badge</li>
+        <li>Recent purchases + receipt CSV download (year-end taxes)</li>
+        <li>Upcoming lessons + Add-to-Calendar buttons</li>
+        <li>Achievement badges</li>
+        <li>"✏️ Edit my profile" — update email/phone/guardian</li>
+        <li>"Pause membership" / "Cancel" (self-serve)</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h3>Phone dead at the door</h3>
+  <ol>
+    <li>Press the intercom button on the BDS reader</li>
+    <li>Front desk gets a buzz during staffed hours → buzzes them in</li>
+    <li>Outside staffed hours, phone is the only way in (intentional — encourages members to keep phones charged)</li>
+  </ol>
+</section>
+
+<!-- ============ TUTORIAL: PARTIES ============ -->
+<section id="parties">
+  <h2>Birthday parties + event passes</h2>
+
+  <h3>Quoting + booking a party</h3>
+  <ol>
+    <li>Admin → Tools → "Party Quote" (opens <code>admin/tools/party-quote.html</code>)</li>
+    <li>Fill: parent name/phone/email + skater name + DOB + party date+time + package + add-ons</li>
+    <li>Quote shows total + 50% deposit</li>
+    <li>Submit → creates customer + lesson row (type=birthday) + deposit invoice</li>
+    <li>Click "Send deposit payment link" → Helcim hosted payment URL → text/email parent</li>
+  </ol>
+
+  <div class="callout purple">
+    <strong>When the parent pays the deposit:</strong>
+    <ul>
+      <li>Helcim webhook fires → flips invoice to <code>paid</code></li>
+      <li><strong>helcim-webhook auto-fires <code>brivo-issue-event-pass</code></strong> for the party window (scheduled_at − 30 min to scheduled_at + duration + 30 min)</li>
+      <li>Parent gets Brivo Mobile Pass for the party time window only</li>
+      <li>Door auto-revokes after the party ends (cron sweeps every 5 min)</li>
+      <li>Buffer covers early setup + late cleanup</li>
+    </ul>
+  </div>
+
+  <h3>Manual event pass (industry comp / press visit / etc.)</h3>
+  <ol>
+    <li>Customer detail → Brivo panel → "🎟️ Issue event pass" button (owner-only)</li>
+    <li>Set window (default: next Saturday 2pm–6pm) + reason</li>
+    <li>Save → pass appears as 🟢 LIVE NOW or ⏰ SCHEDULED</li>
+    <li>Customer gets Brivo Mobile Pass for that window</li>
+  </ol>
+
+  <h3>Revoking an event pass early</h3>
+  <p>Customer detail → Brivo panel → find the pass row → click "Revoke". Pass flips to <code>revoked</code>; access removed within 5 min (or instant via "Sync now").</p>
+</section>
+
+<!-- ============ EMERGENCY ============ -->
+<section id="emergency">
+  <h2>Emergency procedures</h2>
+
+  <h3>Active incident (serious injury / fight / fire / intruder)</h3>
+  <ol class="checklist">
+    <li>Settings → Integrations → "🚨 Emergency lockdown" card</li>
+    <li>Click "🔒 ENGAGE LOCKDOWN"</li>
+    <li>Type reason ("active medical emergency" / "altercation at front desk")</li>
+    <li>Type <strong>LOCKDOWN</strong> in all caps to confirm</li>
+  </ol>
+  <div class="callout red">
+    <strong>What happens:</strong>
+    <ul>
+      <li>Every member's Brivo credential removed from active-members group in &lt;30 seconds</li>
+      <li>Next phone tap returns <code>access_denied</code></li>
+      <li>Sticky red banner across every admin page showing reason + actor + revoke count</li>
+      <li>Every customer's Brivo state shows <code>🟠 SUSPENDED</code></li>
+    </ul>
+  </div>
+
+  <h3>Ending lockdown</h3>
+  <ol>
+    <li>Click "End lockdown · restore member access" (banner OR Settings card)</li>
+    <li>Every customer with a Brivo credential re-flagged for sync</li>
+    <li>Within 5 min cron re-evaluates each (eligible members restored; lapsed/banned stay revoked)</li>
+  </ol>
+
+  <h3>Suspected tailgater</h3>
+  <ol>
+    <li>You'll get a Team Chat reminder when 3+ person events at park door happen without matching Brivo grants</li>
+    <li>Investigate: Activity Log → Brivo events → filter by "Access denied"</li>
+    <li>Check Dashboard → Park vision widget → "Latest detections" should show person events with snapshot links</li>
+    <li>If known customer with lapsed credential, they need to renew</li>
+    <li>If unknown, consider raising door capacity threshold OR adding guest-pass workflow</li>
+  </ol>
+
+  <h3>Park-at-capacity warning</h3>
+  <p>When a Brivo grant fires while at <code>settings.maxCapacity</code>, a Team Chat reminder posts. Front desk should ask new arrivals to wait, or comp them a day pass for a slower time. Idempotent per hour.</p>
+</section>
+
+<!-- ============ MARKETING ============ -->
+<section id="marketing">
+  <h2>Marketing + customer signup</h2>
+
+  <h3>The public sites you have live</h3>
+  <table class="compact">
+    <thead><tr><th>URL</th><th>Audience</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td><code>skateos.com</code></td><td>Anyone</td><td>skateOS product landing</td></tr>
+      <tr><td><code>skateos.com/2ntr</code></td><td>Skaters</td><td>2nd Nature public site (hours / plans / map / join CTA)</td></tr>
+      <tr><td><code>skateos.com/sales</code></td><td>Other operators</td><td>Sales kit aimed at other skatepark owners</td></tr>
+      <tr><td><code>app.skateos.com/admin/join.html</code></td><td>New members</td><td>Signup form (DOB-aware minor flow, plan picker)</td></tr>
+      <tr><td><code>app.skateos.com/admin/me.html</code></td><td>Members</td><td>Self-serve portal (magic-link auth)</td></tr>
+      <tr><td><code>app.skateos.com/admin/park-status.html</code></td><td>Anyone</td><td>Live "Are we open?" status</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Customer signup flow</h3>
+  <ol>
+    <li>Customer visits <code>skateos.com/2ntr</code></li>
+    <li>Clicks "Become a member" → arrives at <code>/admin/join.html</code></li>
+    <li>Fills form (DOB auto-triggers guardian section if minor, plan picker chips)</li>
+    <li>Submits → row lands in <code>form_submissions</code> with form slug <code>member-signup</code></li>
+    <li>Owner sees it in admin → Forms page → can convert to a real customer + ring up membership at POS</li>
+  </ol>
+
+  <h3>Deploying updates to the public sites</h3>
+  <pre>cd ~/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/marketing
+netlify deploy --prod --dir . --site 2c6535a3-70a5-47fd-91e2-f875306aee01</pre>
+  <p>This deploys <code>/2ntr</code>, <code>/sales</code>, <code>/locked</code> (this page) along with the root.</p>
+</section>
+
+<!-- ============ WHITE LABEL ============ -->
+<section id="whitelabel">
+  <h2>White-label · onboarding a second park</h2>
+  <p>When the second skatepark signs up for skateOS:</p>
+
+  <h3>Step 1 · Provision them in Supabase</h3>
+  <ol>
+    <li>Create their <code>tenant</code> row + <code>user_tenants</code> row for their owner email</li>
+    <li>Their admin login lands on <code>app.skateos.com</code> with a clean Dashboard</li>
+  </ol>
+
+  <h3>Step 2 · Their owner configures their Brivo</h3>
+  <ol>
+    <li>Settings → Integrations → "Brivo per-tenant credentials" card</li>
+    <li>Click "Save credentials" → modal opens</li>
+    <li>Paste their own Brivo OAuth client_id, client_secret, api_key, account_id</li>
+    <li>Paste Brivo dashboard config IDs (active members group, park door AP, shop door AP, hours schedule)</li>
+    <li>Generate + paste a webhook secret (<code>openssl rand -hex 32</code>)</li>
+    <li>Save → click "Test credentials" → verifies OAuth + a real API call → stamps <code>last_verified_at</code></li>
+  </ol>
+
+  <h3>Step 3 · Per-tenant webhook URL</h3>
+  <ol>
+    <li>Settings card shows a "🔗 PER-TENANT WEBHOOK URL" block with their tenant UUID baked in</li>
+    <li>Copy that URL → paste into THEIR Brivo dashboard → API Management → Webhooks</li>
+    <li>From now on Brivo posts route directly to their tenant's webhook secret for signature verification</li>
+  </ol>
+
+  <h3>Step 4 · Rest of integrations</h3>
+  <ul>
+    <li>Helcim (their account, their API token) — Settings → Helcim card</li>
+    <li>Smartwaiver (their API key) — Settings → Smartwaiver</li>
+    <li>Resend (their sending domain) — Settings → Email</li>
+    <li>Twilio (their phone number) — Settings → SMS</li>
+    <li>Optional: skateOS Vision Box (Phase 9 — needs hardware shipping)</li>
+  </ul>
+
+  <h3>Step 5 · Park hours + branding</h3>
+  <ul>
+    <li>Settings → Park Hours → set their open/close per day</li>
+    <li>Settings → Business → their park name, phone, address, logo URL, theme color</li>
+  </ul>
+
+  <h3>Step 6 · Verify</h3>
+  <ol>
+    <li>Dashboard → Setup Status card → progress bar should be 100%</li>
+    <li>Invite a test member → see Brivo invite fire → walk to door → unlock</li>
+  </ol>
+
+  <div class="callout green">
+    <strong>2nd Nature's env-var setup keeps working unchanged.</strong> Each park is fully isolated: their lockdown affects only their group, their members provision against only their Brivo account, their door events route to only their webhook secret.
+  </div>
+</section>
+
+<!-- ============ REPORTS ============ -->
+<section id="reports">
+  <h2>Reports + BI</h2>
+
+  <h3>Most-used cards</h3>
+  <table class="compact">
+    <tbody>
+      <tr><td><strong>Dashboard "Park access · last 8h"</strong></td><td>Who's in the park right now via Brivo</td></tr>
+      <tr><td><strong>Dashboard "Performance"</strong></td><td>Today vs prior day hourly revenue chart</td></tr>
+      <tr><td><strong>Reports → "Brivo door activity"</strong></td><td>30-day daily grants/denials + face match adoption % + DOW × hour heatmap</td></tr>
+      <tr><td><strong>Reports → "Sales by hour heatmap"</strong></td><td>Staffing pattern signal</td></tr>
+      <tr><td><strong>Reports → "Customer health score"</strong></td><td>A-F grade per customer (visit cadence / reliability / loyalty / spend / tenure)</td></tr>
+      <tr><td><strong>Reports → "At-risk customer queue"</strong></td><td>C/D/F-grade customers ranked by lifetime spend, one-click re-engage</td></tr>
+      <tr><td><strong>Reports → "Top customers leaderboard"</strong></td><td>Top 20 by lifetime spend (Pareto callout)</td></tr>
+      <tr><td><strong>Reports → "Cohort retention heatmap"</strong></td><td>Monthly signup cohorts × month-elapsed</td></tr>
+      <tr><td><strong>Reports → "12-month GMV with YoY"</strong></td><td>Long-term growth view</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Daily owner email</h3>
+  <p>Every morning at 8am ET, the <code>daily-digest</code> Edge Function emails Doug:</p>
+  <ul>
+    <li>Yesterday's revenue + sales count + tips + tip pool by staff</li>
+    <li>Today's lessons + active mobile runs</li>
+    <li>Open severe incidents + low-punch members + expiring memberships</li>
+    <li>Gift card liability snapshot</li>
+    <li>Auto-pilot count (lesson followups + renewal reminders + overdue rentals fired yesterday)</li>
+    <li>Overdue rentals callout</li>
+  </ul>
+</section>
+
+<!-- ============ VISION BOX ============ -->
+<section id="vision">
+  <h2>Vision Box (when hardware lands)</h2>
+
+  <h3>What you'll buy</h3>
+  <ul>
+    <li>Raspberry Pi 5 (8GB) — ~$75</li>
+    <li>Google Coral USB Accelerator — ~$60</li>
+    <li>Active-cooling Pi case — ~$30</li>
+    <li>microSD card 64GB U3 — ~$20</li>
+    <li>2-4 IP cameras (RTSP-capable, e.g. Reolink RLC-810A) — ~$40-60 each</li>
+    <li>PoE switch / injectors if cameras are PoE</li>
+  </ul>
+  <p><strong>Total: ~$300-500 per park.</strong></p>
+
+  <h3>What it'll do once deployed</h3>
+  <ul>
+    <li>Confirm auto-checkin matches the right human (Brivo grant + person detection within ±5s → linked)</li>
+    <li>Tailgater detection: person at park door + NO Brivo grant → Dashboard alert chip + Team Chat reminder</li>
+    <li>Live capacity count from <code>frigate_recent_park_count</code> view</li>
+    <li>Auto-attach incident photos when an incident is filed within 5 min of a recent person event</li>
+    <li>After-hours forensics: cross-ref door grant + camera detection</li>
+    <li>Vehicle / arrival patterns → staffing data</li>
+  </ul>
+
+  <p>Full hardware + Frigate config in <code>VISION.md</code>.</p>
+</section>
+
+<!-- ============ BRIVO RUNBOOK ============ -->
+<section id="brivo-runbook">
+  <h2>Brivo runbook</h2>
+
+  <h3>The model</h3>
+  <table class="compact">
+    <thead><tr><th>Door</th><th>Hardware</th><th>Group</th><th>Managed by</th></tr></thead>
+    <tbody>
+      <tr><td>Park door</td><td>BDS (intercom + camera + reader) + 9600 rim strike</td><td><code>skateOS Active Members</code></td><td><strong>skateOS via API</strong></td></tr>
+      <tr><td>Shop door</td><td>Brivo Mullion smart reader</td><td><code>Staff</code></td><td><strong>Brivo dashboard manually</strong></td></tr>
+    </tbody>
+  </table>
+
+  <h3>State machine · who gets access</h3>
+  <p>The <code>brivo_member_desired</code> view computes <code>should_have_access</code> per customer. Order of evaluation (first match wins):</p>
+  <table class="compact">
+    <thead><tr><th>Reason</th><th>Triggers FALSE</th></tr></thead>
+    <tbody>
+      <tr><td><code>banned</code></td><td>Customer has tag <code>banned</code> / <code>do_not_serve</code> / <code>donotserve</code> / <code>86d</code></td></tr>
+      <tr><td><code>no_waiver</code></td><td><code>customers.waiver_signed_at</code> is NULL</td></tr>
+      <tr><td><code>waiver_expired</code></td><td><code>waiver_expires_at &lt; now()</code></td></tr>
+      <tr><td><code>no_active_membership</code></td><td>No active monthly/annual subscription within end_date + not paused</td></tr>
+      <tr><td><code>event_pass</code> (TRUE path)</td><td>Active event pass window covers now()</td></tr>
+      <tr><td><code>eligible</code> (TRUE path)</td><td>Active membership + everything else clean</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Common SQL</h3>
+  <details>
+    <summary>Who should have access right now + why</summary>
+    <pre>SELECT name, should_have_access, desired_reason
+FROM brivo_member_desired
+ORDER BY should_have_access DESC, name;</pre>
+  </details>
+  <details>
+    <summary>Flagged customers waiting on sync</summary>
+    <pre>SELECT id, name, brivo_credential_state, brivo_sync_needed_at, brivo_sync_error
+FROM customers
+WHERE brivo_sync_needed_at IS NOT NULL
+ORDER BY brivo_sync_needed_at;</pre>
+  </details>
+  <details>
+    <summary>Recent access events for one customer</summary>
+    <pre>SELECT occurred_at, access_point, event_type
+FROM brivo_access_log
+WHERE customer_id = '&lt;uuid&gt;'
+ORDER BY occurred_at DESC
+LIMIT 20;</pre>
+  </details>
+  <details>
+    <summary>Force-flag one customer for immediate sync</summary>
+    <pre>SELECT brivo_flag_customer_sync('&lt;uuid&gt;');</pre>
+  </details>
+  <details>
+    <summary>View pg_cron schedule</summary>
+    <pre>SELECT jobid, jobname, schedule, command
+FROM cron.job
+WHERE jobname LIKE 'brivo-%';</pre>
+  </details>
+  <details>
+    <summary>Brivo grants without matching person detection (tailgater audit, requires Vision Box)</summary>
+    <pre>SELECT b.occurred_at, c.name
+FROM brivo_access_log b
+LEFT JOIN customers c ON c.id = b.customer_id
+LEFT JOIN frigate_events f ON f.brivo_access_log_id = b.id
+WHERE b.event_type = 'access_granted'
+  AND b.access_point = 'park_door'
+  AND b.occurred_at &gt; NOW() - INTERVAL '7 days'
+  AND f.id IS NULL
+ORDER BY b.occurred_at DESC;</pre>
+  </details>
+</section>
+
+<!-- ============ TROUBLESHOOTING ============ -->
+<section id="troubleshooting">
+  <h2>Troubleshooting cheat-sheet</h2>
+  <table class="compact">
+    <thead><tr><th>Symptom</th><th>Likely cause</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td>Door won't open for a member</td><td>Lapsed membership / waiver expired / banned</td><td>Customer detail → Brivo panel shows reason. Fix root cause, click "Sync now"</td></tr>
+      <tr><td>Brivo invite never arrived</td><td>No email on file / opt-out / Brivo not deployed</td><td>Customer detail → Brivo panel → "Resend mobile pass"</td></tr>
+      <tr><td>Welcome email never arrived</td><td>Resend disabled / customer opt-out / template disabled</td><td>Settings → Brivo welcome email card → check toggle. Customer detail → "Send welcome email"</td></tr>
+      <tr><td>Activity Log → Brivo events is empty</td><td>Webhook not reaching skateOS / signature mismatch</td><td>Activity Log → Webhook log card → look for <code>signature_mismatch</code>. Verify <code>BRIVO_WEBHOOK_SECRET</code> matches Brivo's config</td></tr>
+      <tr><td>Dashboard "Park access" widget never appears</td><td>No grants in last 8h OR Brivo disabled</td><td>Brivo enabled toggle + verify at least one member tap</td></tr>
+      <tr><td>Vision Box widget never appears</td><td>No vision events OR mig 068 not applied</td><td>Both expected pre-hardware. After hardware: check <code>frigate_cameras</code> rows + Frigate webhook fires</td></tr>
+      <tr><td>Sync stuck — customer pending forever</td><td>Brivo invite send failed</td><td>Customer detail → "Sync now". If still pending, check Webhook log → brivo-sync source</td></tr>
+      <tr><td>Capacity alert spamming Team Chat</td><td><code>settings.maxCapacity</code> too low</td><td>Settings → Business → update threshold. Alert is idempotent per hour</td></tr>
+      <tr><td>Lockdown won't release</td><td>Cron not running OR Brivo API rate-limit</td><td>After "End lockdown", verify Webhook log shows <code>brivo-lockdown source=release</code>. Force per-customer sync via customer detail</td></tr>
+      <tr><td>Door grant happens but no auto-checkin</td><td><code>BRIVO_AUTO_CHECKIN_ENABLED=false</code> OR customer already checked in</td><td>Default is ON. Check Supabase secrets. Open checkins row prevents duplicate auto-checkin</td></tr>
+      <tr><td>New tenant's webhook fails signature</td><td>Tenant URL not configured / webhook_secret missing</td><td>Settings → Brivo per-tenant credentials → Webhook secret is set + per-tenant URL is in Brivo dashboard</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ============ AUDIT TRAILS ============ -->
+<section id="audit-trails">
+  <h2>Audit trails (when stuck)</h2>
+  <ul>
+    <li><strong><code>webhook_log</code></strong> (Activity Log card) — every inbound webhook (Brivo, Helcim, Smartwaiver, Frigate) with status + raw payload</li>
+    <li><strong><code>audit_log</code></strong> (Activity Log card) — every staff INSERT/UPDATE/DELETE on watched tables, with diff</li>
+    <li><strong><code>brivo_access_log</code></strong> (Activity Log → Brivo events card) — every door event Brivo posted</li>
+    <li><strong><code>team_messages</code></strong> kind='reminder' with markers like <code>[brivo-failed-access:...]</code> or <code>[brivo-capacity-overflow]</code> — automated alerts</li>
+    <li><strong><code>customers.brivo_sync_error</code></strong> — last error on a per-customer sync attempt</li>
+    <li><strong><code>frigate_events.brivo_access_log_id</code></strong> — cross-ref between vision detections + Brivo grants (when Vision Box deployed)</li>
+  </ul>
+</section>
+
+<footer>
+  <p>Private handoff doc · built 2026-05-15/16 with Doug + Nick at 2nd Nature Park</p>
+  <p style="margin-top:6px;font-size:11px;">Files at project root: <code>TUTORIAL.md</code> · <code>BRIVO.md</code> · <code>VISION.md</code> · <code>CLAUDE.md</code></p>
+</footer>
+
+</main>
+
+</div>
+
+<script>
+  function copyEmail(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var text = el.innerText;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        var btn = el.parentElement.querySelector('.copy-btn');
+        var orig = btn.textContent;
+        btn.textContent = '✓ Copied';
+        setTimeout(function(){ btn.textContent = orig; }, 1500);
+      });
+    } else {
+      // Fallback: select the body div
+      var range = document.createRange();
+      range.selectNodeContents(el);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+      try { document.execCommand('copy'); alert('Copied to clipboard'); } catch(e){ alert('Select + Cmd+C manually'); }
+    }
+  }
+
+  // Active TOC highlight on scroll
+  (function(){
+    var sections = document.querySelectorAll('section[id]');
+    var links = document.querySelectorAll('aside.toc a');
+    function onScroll(){
+      var scrollY = window.scrollY + 90;
+      var current = null;
+      sections.forEach(function(s){
+        if(s.offsetTop <= scrollY) current = s.id;
+      });
+      links.forEach(function(a){
+        a.classList.toggle('active', a.getAttribute('href') === '#'+current);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+</script>
+
+</body></html>

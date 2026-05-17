@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>skateOS — Member Card Printer</title>
+<!-- =====================================================================
+     MEMBER-CARD QR PRINTER
+     Pulls members from Supabase, renders 3.5"x2" cards (8 per Letter sheet),
+     QR encodes "skateos:<customer.id>" so the Check-In screen's QR fast-path
+     just works.
+
+     Usage:
+       1. Open this file via the admin (Settings → Tools → "Print member cards")
+          OR drag into a browser. Sign in if prompted.
+       2. Filter who to print (active members, punch cards, today's signups, etc.)
+       3. Click Print — Cmd+P uses the print stylesheet to remove UI chrome.
+       4. Cut along the trim guides, laminate, hand to skaters.
+
+     The QR fast-path lives in renderCheckin/ciSearch in admin/index.html:
+       if(q.startsWith('skateos:')) ciCheckIn(q.split(':')[1])
+===================================================================== -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  const cfgScript = await fetch('../config.js').then(r => r.text());
+  // eval the config.js into window.APP_CONFIG (it sets window.APP_CONFIG = {...})
+  // safer than dynamic import because config.js isn't an ES module
+  new Function(cfgScript)();
+  const CFG = window.APP_CONFIG;
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey);
+</script>
+<style>
+  :root {
+    color-scheme: light;
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --ink:         #14161a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #f6f6f4;
+    --panel:       #ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  /* ---------- Toolbar (hidden on print) ---------- */
+  .toolbar {
+    position: sticky; top:0; z-index:20;
+    background: var(--ink); color: #fff;
+    padding: 12px 18px;
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+  }
+  .toolbar h1 { margin:0; font-size:15px; font-weight:800; letter-spacing:.04em; }
+  .toolbar h1 b { color: var(--rose); }
+  .toolbar select, .toolbar input, .toolbar button {
+    border: 0; padding: 8px 12px; border-radius: 8px; font: inherit; font-size: 13px;
+  }
+  .toolbar select, .toolbar input { background: #2a2c30; color: #fff; }
+  .toolbar input::placeholder { color: #888; }
+  .toolbar button.primary { background: var(--rose); color: #fff; font-weight: 700; cursor: pointer; }
+  .toolbar button.ghost   { background: transparent; color: #fff; border: 1px solid #444; cursor: pointer; }
+  .toolbar .stats { margin-left: auto; font-size: 12px; color: #aaa; }
+  .err { padding: 10px 18px; background: #fbe4e8; color: var(--rose-dark); display:none; }
+  .err.show { display:block; }
+
+  /* ---------- Sheets (Letter, 8 cards per sheet) ---------- */
+  .sheet {
+    width: 8.5in;
+    height: 11in;
+    margin: 14px auto;
+    padding: 0.5in 0.75in;
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0,0,0,.08);
+    display: grid;
+    grid-template-columns: repeat(2, 3.5in);
+    grid-template-rows: repeat(4, 2in);
+    gap: 0.25in 0.5in;
+    page-break-after: always;
+  }
+  .card {
+    width: 3.5in; height: 2in;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    padding: 0.18in 0.22in;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.12in;
+    overflow: hidden;
+    background: linear-gradient(135deg, #fff 0%, var(--rose-light) 100%);
+    position: relative;
+  }
+  .card .brand {
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .14em;
+    color: var(--rose-dark);
+    text-transform: uppercase;
+  }
+  .card .biz {
+    margin-top: 2px;
+    font-size: 9px;
+    color: var(--ink-soft);
+  }
+  .card .name {
+    margin-top: auto;
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .card .plan {
+    margin-top: 4px;
+    font-size: 10px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .card .meta {
+    margin-top: auto;
+    font-size: 8px;
+    color: #888;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+  }
+  .card .pts {
+    position: absolute;
+    top: 0.18in; right: 0.22in;
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    color: var(--rose-dark);
+    background: rgba(255,255,255,.85);
+    padding: 2px 6px;
+    border-radius: 999px;
+    border: 1px solid rgba(225,29,72,.25);
+  }
+  .card .qr-wrap {
+    align-self: end;
+    background: #fff;
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .card .qr-wrap canvas { display:block; }
+  .card .photo-wrap {
+    position: absolute;
+    top: 0.18in;
+    right: 0.22in;
+    width: 0.55in;
+    height: 0.55in;
+    border-radius: 50%;
+    background: #fff center/cover no-repeat;
+    border: 2px solid var(--rose-dark);
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+  }
+  .card.has-photo .pts {
+    top: auto;
+    bottom: 0.16in;
+    right: 0.22in;
+  }
+
+  /* ---------- Print stylesheet ---------- */
+  @media print {
+    .toolbar, .err, .empty-state { display: none !important; }
+    body { background: #fff; }
+    .sheet { box-shadow: none; margin: 0; padding: 0.5in 0.75in; }
+    .card { border: 0.5pt dashed #999; }
+  }
+
+  .empty-state { padding: 60px 20px; text-align: center; color: var(--ink-soft); }
+  .empty-state h2 { color: var(--ink); margin: 0 0 8px; font-weight:700; }
+
+  .preview-info { padding: 8px 18px; background: var(--rose-light); color: var(--rose-dark); font-size: 12px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>SKATE<b>OS</b> · Member Cards</h1>
+  <select id="filter" onchange="loadCards()">
+    <option value="active_members">Active members (monthly + annual)</option>
+    <option value="punch_cards">Punch-card holders</option>
+    <option value="all_subs">All subscriptions (active or not)</option>
+    <option value="all_customers">All customers (any with waiver)</option>
+    <option value="recent_30">Customers added last 30 days</option>
+  </select>
+  <input id="search" placeholder="Filter by name…" oninput="renderFiltered()" />
+  <span class="stats" id="stats">Loading…</span>
+  <button class="ghost" onclick="window.location.reload()">Reload</button>
+  <button class="primary" onclick="window.print()">🖨 Print</button>
+</div>
+
+<div class="err" id="err"></div>
+<div class="preview-info">
+  <strong>Preview:</strong> 8 cards per Letter sheet (3.5"×2", standard business-card size). Cut along the dashed lines, laminate (4–5 mil pouches recommended), hand out at the desk.
+  Cards work with the Check-In screen's QR fast-path: scan or paste <code>skateos:&lt;id&gt;</code> to instant-check-in.
+</div>
+<div id="sheets"></div>
+
+<script>
+  let ALL_RECORDS = [];   // populated from Supabase
+  let RENDERED = [];      // currently filtered subset
+
+  async function loadCards() {
+    const sb = window.supabaseClient;
+    if (!sb) { return setTimeout(loadCards, 200); }
+    const filter = document.getElementById('filter').value;
+    setStats('Loading…');
+
+    try {
+      let rows = [];
+      if (filter === 'active_members') {
+        const r = await sb.from('subscriptions')
+          .select('id, plan_name, plan_type, end_date, customer_id, customers(*)')
+          .eq('status', 'active')
+          .in('plan_type', ['monthly', 'annual']);
+        if (r.error) throw r.error;
+        rows = (r.data || []).map(s => ({
+          customer: s.customers, plan_name: s.plan_name, plan_type: s.plan_type, end_date: s.end_date,
+        }));
+      } else if (filter === 'punch_cards') {
+        const r = await sb.from('subscriptions')
+          .select('id, plan_name, plan_type, punches_total, punches_used, customer_id, customers(*)')
+          .eq('status', 'active')
+          .eq('plan_type', 'punch_card');
+        if (r.error) throw r.error;
+        rows = (r.data || []).map(s => ({
+          customer: s.customers, plan_name: s.plan_name, plan_type: s.plan_type,
+          punches_total: s.punches_total, punches_used: s.punches_used,
+        }));
+      } else if (filter === 'all_subs') {
+        const r = await sb.from('subscriptions')
+          .select('id, plan_name, plan_type, end_date, status, customer_id, customers(*)');
+        if (r.error) throw r.error;
+        rows = (r.data || []).map(s => ({
+          customer: s.customers, plan_name: s.plan_name, plan_type: s.plan_type,
+          end_date: s.end_date, status: s.status,
+        }));
+      } else if (filter === 'all_customers') {
+        const r = await sb.from('customers')
+          .select('*')
+          .not('waiver_signed_at', 'is', null)
+          .order('name', { ascending: true });
+        if (r.error) throw r.error;
+        rows = (r.data || []).map(c => ({ customer: c }));
+      } else if (filter === 'recent_30') {
+        const cutoff = new Date(); cutoff.setDate(cutoff.getDate() - 30);
+        const r = await sb.from('customers').select('*').gte('created_at', cutoff.toISOString());
+        if (r.error) throw r.error;
+        rows = (r.data || []).map(c => ({ customer: c }));
+      }
+      ALL_RECORDS = rows.filter(x => x && x.customer && x.customer.id);
+      renderFiltered();
+    } catch (e) {
+      showErr('Load failed: ' + (e.message || e));
+      console.error(e);
+      ALL_RECORDS = [];
+      renderFiltered();
+    }
+  }
+
+  function renderFiltered() {
+    const q = (document.getElementById('search').value || '').toLowerCase().trim();
+    RENDERED = q
+      ? ALL_RECORDS.filter(r => (r.customer.name || '').toLowerCase().includes(q))
+      : ALL_RECORDS.slice();
+    setStats(`${RENDERED.length} cards · ${Math.ceil(RENDERED.length/8)} sheet${RENDERED.length === 8 ? '' : 's'}`);
+    renderSheets();
+  }
+
+  function renderSheets() {
+    const host = document.getElementById('sheets');
+    host.innerHTML = '';
+    if (!RENDERED.length) {
+      host.innerHTML = '<div class="empty-state"><h2>No matches</h2><p>Try a different filter or clear the search.</p></div>';
+      return;
+    }
+    let html = '';
+    for (let i = 0; i < RENDERED.length; i += 8) {
+      const chunk = RENDERED.slice(i, i + 8);
+      html += '<div class="sheet">';
+      chunk.forEach((rec, idx) => {
+        const c = rec.customer;
+        const safeName = escapeHtml(c.name || 'Member');
+        const planLabel = planText(rec);
+        const qrId = `qr-${i}-${idx}`;
+        const pts = c.loyalty_points || 0;
+        const ptsBadge = pts > 0 ? `<div class="pts">★ ${pts.toLocaleString()} PTS</div>` : '';
+        const hasPhoto = !!c.photo_url;
+        const photoWrap = hasPhoto ? `<div class="photo-wrap" style="background-image:url('${escapeHtml(c.photo_url)}');"></div>` : '';
+        html += `<div class="card${hasPhoto ? ' has-photo' : ''}">
+          ${photoWrap}
+          ${ptsBadge}
+          <div style="display:flex;flex-direction:column;height:100%;">
+            <div class="brand">2nd Nature Park</div>
+            <div class="biz">Peekskill, NY · Member</div>
+            <div class="name">${safeName}</div>
+            <div class="plan">${planLabel}</div>
+            <div class="meta">${c.id.slice(0,8).toUpperCase()}</div>
+          </div>
+          <div class="qr-wrap"><canvas id="${qrId}"></canvas></div>
+        </div>`;
+      });
+      html += '</div>';
+    }
+    host.innerHTML = html;
+    // Generate QRs after the canvases exist
+    RENDERED.forEach((rec, k) => {
+      const sheetIdx = Math.floor(k / 8) * 8;
+      const localIdx = k % 8;
+      const id = `qr-${sheetIdx}-${localIdx}`;
+      const el = document.getElementById(id);
+      if (el && window.QRCode) {
+        QRCode.toCanvas(el, `skateos:${rec.customer.id}`, {
+          width: 100, margin: 0,
+          color: { dark: '#14161a', light: '#ffffff00' }, // transparent bg
+        });
+      }
+    });
+  }
+
+  function planText(rec) {
+    if (!rec.plan_type) return rec.customer.email || rec.customer.phone || '';
+    if (rec.plan_type === 'monthly') return `Monthly · expires ${rec.end_date || '—'}`;
+    if (rec.plan_type === 'annual')  return `Annual · expires ${rec.end_date || '—'}`;
+    if (rec.plan_type === 'punch_card') {
+      const left = (rec.punches_total||0) - (rec.punches_used||0);
+      return `${rec.plan_name||'10-pack'} · ${left} of ${rec.punches_total||0} left`;
+    }
+    if (rec.plan_type === 'day_pass') return 'Day pass';
+    if (rec.plan_type === 'comped')   return 'Industry / Comped';
+    return rec.plan_name || rec.plan_type;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+  function setStats(s) { document.getElementById('stats').textContent = s; }
+  function showErr(s)  { const e = document.getElementById('err'); e.textContent = s; e.classList.add('show'); }
+
+  // expose for HTML onclick handlers
+  window.loadCards = loadCards;
+  window.renderFiltered = renderFiltered;
+
+  // Wait for supabaseClient (set by the module script above) then go
+  function start() {
+    if (window.supabaseClient) loadCards();
+    else setTimeout(start, 100);
+  }
+  start();
+</script>
+</body>
+</html>

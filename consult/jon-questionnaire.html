@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Partnership Questionnaire — Jon Marchand × Hudson Valley AI</title>
+<meta name="description" content="Internal questionnaire to capture Jon's credentials, target market, insurance posture, and bandwidth — feeds into the firm's positioning and the credentials roadmap.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+
+  .wrap{max-width:880px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  h1{font-size:clamp(2rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.022em;line-height:1.05;margin-bottom:10px;}
+  .subtitle{font-size:1.05rem;color:#404040;margin-bottom:14px;}
+  .meta{
+    background:#fef3c7;border-left:3px solid #d97706;border-radius:6px;
+    padding:12px 16px;font-size:.86rem;color:#92400e;margin-bottom:36px;
+  }
+  .meta strong{color:#7c2d12;}
+
+  .card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:30px;margin-bottom:18px;}
+  .card h2{font-size:1.3rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+  .card h2 .num{
+    width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:8px;
+    display:inline-flex;align-items:center;justify-content:center;font-size:.84rem;font-weight:900;flex-shrink:0;
+  }
+  .card .sec-sub{color:#737373;font-size:.86rem;margin-bottom:18px;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:.84rem;font-weight:700;color:#0a0a0a;margin-bottom:6px;}
+  .field label .req{color:#e11d48;}
+  .field label .hint{font-weight:400;color:#737373;font-size:.78rem;margin-left:6px;}
+  .field input[type=text],.field input[type=email],.field input[type=tel],.field input[type=number],.field textarea,.field select{
+    width:100%;padding:11px 14px;border:1.5px solid #e5e5e0;border-radius:8px;
+    font-size:.95rem;font-family:inherit;background:#fff;color:#0a0a0a;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#0a0a0a;}
+  .field textarea{resize:vertical;min-height:90px;line-height:1.5;}
+  .row-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:520px){.row-2{grid-template-columns:1fr;}}
+
+  /* Cert / specialty checkbox grid */
+  .check-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;}
+  .check-card{
+    border:1.5px solid #e5e5e0;border-radius:8px;padding:12px 14px;cursor:pointer;
+    background:#fff;display:flex;gap:10px;align-items:flex-start;
+    transition:border-color .12s,background .12s;
+  }
+  .check-card:has(input:checked){border-color:#0a0a0a;background:#fff5f7;}
+  .check-card input{margin-top:3px;flex-shrink:0;}
+  .check-card .name{font-weight:700;font-size:.88rem;}
+  .check-card .desc{font-size:.74rem;color:#737373;margin-top:2px;line-height:1.4;}
+  .check-card label{cursor:pointer;display:block;}
+
+  /* Submit + result */
+  .submit-wrap{text-align:center;padding:20px 0;}
+  .submit-btn{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:16px 36px;border-radius:10px;font-size:1.05rem;font-weight:800;
+    background:#0a0a0a;color:#fafaf9;border:none;cursor:pointer;font-family:inherit;
+    box-shadow:0 8px 24px -8px rgba(0,0,0,.4);
+  }
+  .submit-btn:hover{background:#e11d48;}
+  .submit-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+  .result-card{
+    background:#fff;border:2px solid #0a0a0a;border-radius:14px;padding:30px;margin-top:24px;display:none;
+  }
+  .result-card.show{display:block;}
+  .result-card h2{font-size:1.4rem;font-weight:800;margin-bottom:14px;letter-spacing:-0.018em;}
+  .reco-section{
+    background:#fafaf9;border-left:3px solid #e11d48;border-radius:6px;
+    padding:16px 20px;margin-bottom:14px;
+  }
+  .reco-section h3{font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:#e11d48;margin-bottom:8px;}
+  .reco-list{list-style:none;padding:0;margin:0;}
+  .reco-list li{
+    padding:6px 0 6px 22px;font-size:.92rem;color:#0a0a0a;position:relative;line-height:1.55;
+  }
+  .reco-list li::before{content:'→';position:absolute;left:0;color:#e11d48;font-weight:800;}
+  .reco-list li strong{color:#0a0a0a;}
+  .reco-list li .sub{display:block;font-size:.78rem;color:#737373;margin-top:2px;font-weight:500;}
+
+  .status{padding:12px 16px;border-radius:8px;font-size:.92rem;font-weight:600;display:none;margin-bottom:14px;}
+  .status.error{background:#fee2e2;color:#991b1b;display:block;}
+  .status.success{background:#dcfce7;color:#15803d;display:block;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 <strong>Internal — Hudson Valley AI partnership intake</strong> · noindex'd · <a href="index.html">Public site →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <a class="nav-back" href="index.html">← Public site</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Internal / Jon partnership questionnaire</div>
+  <h1>Partnership questionnaire — <span style="color:#e11d48;">Jon Marchand</span></h1>
+  <p class="subtitle">5–10 minutes. Helps Doug + the firm position your security work properly + identifies the credentials and insurance we need to bring on enterprise clients.</p>
+  <div class="meta">
+    <strong>What happens with this:</strong> Your answers email Doug at doug@2ntr.com (no DB storage). Doug uses them to (a) update your bio on the site with real specifics, (b) seed the credentials roadmap below, (c) finalize the partnership agreement. Nothing public until you and Doug both sign off.
+  </div>
+
+  <div class="status error" id="errStatus"></div>
+  <div class="status success" id="okStatus"></div>
+
+  <form id="qForm" onsubmit="return submitQ(event)">
+
+    <!-- ① Identity -->
+    <div class="card">
+      <h2><span class="num">1</span>Identity &amp; contact</h2>
+      <div class="sec-sub">For the contract + your bio on the site.</div>
+      <div class="row-2">
+        <div class="field">
+          <label>Full legal name <span class="req">*</span></label>
+          <input type="text" id="legalName" required>
+        </div>
+        <div class="field">
+          <label>Display name on site <span class="hint">(if different)</span></label>
+          <input type="text" id="displayName" placeholder="e.g. 'Jon M.' or just 'Jon Marchand'">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" id="email" required>
+        </div>
+        <div class="field">
+          <label>Phone <span class="hint">(US format)</span></label>
+          <input type="tel" id="phone" placeholder="(914) 555-0123">
+        </div>
+      </div>
+      <div class="row-2">
+        <div class="field">
+          <label>City / state</label>
+          <input type="text" id="location" placeholder="Cold Spring, NY">
+        </div>
+        <div class="field">
+          <label>LinkedIn URL <span class="hint">(optional)</span></label>
+          <input type="url" id="linkedin" placeholder="linkedin.com/in/...">
+        </div>
+      </div>
+    </div>
+
+    <!-- ② Experience -->
+    <div class="card">
+      <h2><span class="num">2</span>Experience snapshot</h2>
+      <div class="sec-sub">Drives positioning + the bio. Plain English is fine.</div>
+      <div class="field">
+        <label>Years in cybersecurity / IT security <span class="req">*</span></label>
+        <input type="number" id="yearsExp" required min="0" max="60" placeholder="15">
+      </div>
+      <div class="field">
+        <label>One-line elevator pitch <span class="hint">(replaces the placeholder bio on the site)</span></label>
+        <textarea id="pitch" rows="3" placeholder="e.g. '15 years in financial-services security ops, last 5 independent doing SOC 2 prep + pen-testing for Series A SaaS companies'"></textarea>
+      </div>
+      <div class="field">
+        <label>Notable past roles / companies <span class="hint">(may stay private — only used for credibility)</span></label>
+        <textarea id="pastRoles" rows="3" placeholder="e.g. 'Senior Security Engineer @ Big Bank (5 yrs), Independent consultant for Series A SaaS clients (3 yrs)'"></textarea>
+      </div>
+      <div class="field">
+        <label>Bug bounties / public CVEs / published research <span class="hint">(optional, big credibility boost)</span></label>
+        <textarea id="research" rows="2" placeholder="CVE-2023-XXXXX, HackerOne profile, conference talks, blog posts"></textarea>
+      </div>
+    </div>
+
+    <!-- ③ Current credentials -->
+    <div class="card">
+      <h2><span class="num">3</span>Current credentials</h2>
+      <div class="sec-sub">Check all you currently hold. We'll auto-recommend ones to add at the bottom.</div>
+      <div class="check-grid">
+        <label class="check-card"><input type="checkbox" name="cred" value="cissp"><div><div class="name">CISSP</div><div class="desc">(ISC)² · gold standard for security generalists</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="oscp"><div><div class="name">OSCP</div><div class="desc">Offensive Security · hands-on pen-testing</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="cissp-issap"><div><div class="name">CISSP-ISSAP</div><div class="desc">(ISC)² · architecture concentration</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="ccsp"><div><div class="name">CCSP</div><div class="desc">(ISC)² · cloud security</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="cisa"><div><div class="name">CISA</div><div class="desc">ISACA · audit / GRC</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="cism"><div><div class="name">CISM</div><div class="desc">ISACA · security mgmt</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="aws-security"><div><div class="name">AWS Security Specialty</div><div class="desc">AWS-specific · valuable for cloud-native clients</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="azure-security"><div><div class="name">Azure Security Engineer</div><div class="desc">Microsoft · enterprise-friendly</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="gcp-security"><div><div class="name">GCP Pro Cloud Security Engineer</div><div class="desc">Google · less common but premium</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="oswe"><div><div class="name">OSWE</div><div class="desc">Offensive Security · web app pen-testing</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="osce"><div><div class="name">OSCE / OSEE</div><div class="desc">Offensive Security · advanced exploit dev</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="giac-gcih"><div><div class="name">GIAC GCIH</div><div class="desc">SANS · incident handling</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="giac-gpen"><div><div class="name">GIAC GPEN</div><div class="desc">SANS · pen-testing</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="hcispp"><div><div class="name">HCISPP</div><div class="desc">(ISC)² · healthcare info security</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="crisc"><div><div class="name">CRISC</div><div class="desc">ISACA · risk + IT</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="security-plus"><div><div class="name">Security+</div><div class="desc">CompTIA · entry-level (still useful for proof of fundamentals)</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="iso-27001-la"><div><div class="name">ISO 27001 Lead Auditor</div><div class="desc">Premium for international clients</div></div></label>
+        <label class="check-card"><input type="checkbox" name="cred" value="other"><div><div class="name">Other</div><div class="desc">Specify in the notes below</div></div></label>
+      </div>
+      <div class="field" style="margin-top:14px;">
+        <label>Other certs / education <span class="hint">(degrees, bootcamps, conference badges, etc)</span></label>
+        <textarea id="otherCreds" rows="2"></textarea>
+      </div>
+    </div>
+
+    <!-- ④ Specialties -->
+    <div class="card">
+      <h2><span class="num">4</span>Specialties &amp; preferred work</h2>
+      <div class="sec-sub">Where you actually want to spend time. Check all that apply.</div>
+      <div class="check-grid">
+        <label class="check-card"><input type="checkbox" name="spec" value="pentest"><div><div class="name">External pen-testing</div><div class="desc">Black-box external attacks</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="webapp"><div><div class="name">Web app security</div><div class="desc">OWASP Top 10, IDOR, SSRF, etc</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="cloud"><div><div class="name">Cloud security</div><div class="desc">AWS / GCP / Azure misconfig review</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="devsecops"><div><div class="name">DevSecOps</div><div class="desc">CI/CD security, IaC, SAST/DAST</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="ir"><div><div class="name">Incident response</div><div class="desc">Breach investigation, forensics</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="grc"><div><div class="name">GRC / governance</div><div class="desc">Policy, risk, audit prep</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="compliance"><div><div class="name">Compliance prep</div><div class="desc">SOC 2, HIPAA, PCI implementation</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="iam"><div><div class="name">IAM / identity</div><div class="desc">SSO, MFA, federation, zero-trust</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="threat-model"><div><div class="name">Threat modeling</div><div class="desc">STRIDE, attack surface analysis</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="secarch"><div><div class="name">Security architecture</div><div class="desc">Greenfield design, defense in depth</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="redteam"><div><div class="name">Red team / advanced</div><div class="desc">Multi-stage adversarial, social eng</div></div></label>
+        <label class="check-card"><input type="checkbox" name="spec" value="vciso"><div><div class="name">vCISO / fractional</div><div class="desc">Long-term security leadership for one client</div></div></label>
+      </div>
+    </div>
+
+    <!-- ⑤ Compliance frameworks -->
+    <div class="card">
+      <h2><span class="num">5</span>Compliance frameworks you've worked with</h2>
+      <div class="sec-sub">Drives what we can credibly sell. Check what you've actually shipped, not just read about.</div>
+      <div class="check-grid">
+        <label class="check-card"><input type="checkbox" name="comp" value="soc2"><div><div class="name">SOC 2 Type I / II</div><div class="desc">AICPA · the most common SaaS attestation</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="hipaa"><div><div class="name">HIPAA</div><div class="desc">US healthcare</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="pci"><div><div class="name">PCI-DSS</div><div class="desc">Payment card industry</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="iso27001"><div><div class="name">ISO 27001</div><div class="desc">International standard</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="nist-csf"><div><div class="name">NIST CSF</div><div class="desc">US framework, common reference</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="nist-800-53"><div><div class="name">NIST 800-53</div><div class="desc">US federal control catalog</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="fedramp"><div><div class="name">FedRAMP</div><div class="desc">US federal cloud authorization</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="cmmc"><div><div class="name">CMMC</div><div class="desc">US DoD supplier security</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="gdpr"><div><div class="name">GDPR</div><div class="desc">EU privacy</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="ccpa"><div><div class="name">CCPA / CPRA</div><div class="desc">California privacy</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="ny-shield"><div><div class="name">NY SHIELD Act</div><div class="desc">New York state breach law</div></div></label>
+        <label class="check-card"><input type="checkbox" name="comp" value="ferpa"><div><div class="name">FERPA</div><div class="desc">US education records</div></div></label>
+      </div>
+    </div>
+
+    <!-- ⑥ Target market -->
+    <div class="card">
+      <h2><span class="num">6</span>Target market &amp; comfort zones</h2>
+      <div class="sec-sub">Where you've been + where you want to go.</div>
+      <div class="field">
+        <label>Industries you've previously secured <span class="hint">(check all)</span></label>
+        <div class="check-grid">
+          <label class="check-card"><input type="checkbox" name="ind" value="finsvc"><div><div class="name">Financial services</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="healthcare"><div><div class="name">Healthcare / health-tech</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="saas"><div><div class="name">SaaS / B2B software</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="ecommerce"><div><div class="name">E-commerce / retail</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="hospitality"><div><div class="name">Hospitality / restaurants</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="legal"><div><div class="name">Legal / professional services</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="education"><div><div class="name">Education / EdTech</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="government"><div><div class="name">Government / defense</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="nonprofit"><div><div class="name">Nonprofit</div></div></label>
+          <label class="check-card"><input type="checkbox" name="ind" value="manufacturing"><div><div class="name">Manufacturing / industrial</div></div></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⑦ Tooling -->
+    <div class="card">
+      <h2><span class="num">7</span>Tools &amp; tech</h2>
+      <div class="field">
+        <label>Pen-testing / security tools you use regularly</label>
+        <textarea id="tools" rows="3" placeholder="Burp Suite Pro, Nmap, Metasploit, Nessus, Wireshark, OWASP ZAP, etc"></textarea>
+      </div>
+      <div class="field">
+        <label>Cloud / infrastructure platforms you're confident in</label>
+        <textarea id="cloud" rows="2" placeholder="AWS (deep), Azure (working), GCP (touch), Cloudflare, Supabase, etc"></textarea>
+      </div>
+    </div>
+
+    <!-- ⑧ Bandwidth + insurance -->
+    <div class="card">
+      <h2><span class="num">8</span>Bandwidth &amp; current insurance</h2>
+      <div class="row-2">
+        <div class="field">
+          <label>Hours/week available for HVAI work</label>
+          <select id="hours">
+            <option value="">— pick one —</option>
+            <option value="0-10">0–10 (passive partner)</option>
+            <option value="10-20">10–20 (part-time)</option>
+            <option value="20-30">20–30 (substantial)</option>
+            <option value="30-40">30–40 (near full-time)</option>
+            <option value="40+">40+ (full-time)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Earliest reasonable start</label>
+          <select id="start">
+            <option value="">— pick one —</option>
+            <option value="now">Already starting</option>
+            <option value="30d">Within 30 days</option>
+            <option value="90d">Within 90 days</option>
+            <option value="6mo">6+ months out</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label>Existing professional insurance <span class="hint">(if any)</span></label>
+        <textarea id="insurance" rows="2" placeholder="E&O coverage to $X via [carrier], expires [date]. Cyber liability to $X. Or 'none currently'"></textarea>
+      </div>
+    </div>
+
+    <!-- ⑨ Open notes -->
+    <div class="card">
+      <h2><span class="num">9</span>Anything else?</h2>
+      <div class="field">
+        <label>Concerns, red lines, must-haves</label>
+        <textarea id="notes" rows="4" placeholder="Equity preferences, IP arrangements, non-compete with current employer, family/availability constraints, philosophical concerns about AI tooling, etc."></textarea>
+      </div>
+    </div>
+
+    <div class="submit-wrap">
+      <button type="submit" class="submit-btn" id="submitBtn">
+        <span id="submitLabel">⚡ Submit + see credential roadmap</span>
+      </button>
+      <div style="margin-top:12px;font-size:.78rem;color:#737373;">Goes to doug@2ntr.com only · noindex'd · not stored in any database.</div>
+    </div>
+  </form>
+
+  <!-- Recommendations card (shows after submit) -->
+  <div class="result-card" id="resultCard">
+    <h2>🎯 Roadmap based on your answers</h2>
+    <p style="font-size:.92rem;color:#404040;margin-bottom:18px;">Doug + Jon should review together. These are starting points — adjust based on actual market traction over the first 6 months.</p>
+
+    <div class="reco-section" id="credsToAdd">
+      <h3>Credentials to add (priority order)</h3>
+      <ul class="reco-list" id="credsList"></ul>
+    </div>
+
+    <div class="reco-section" id="insuranceReco" style="border-left-color:#0891b2;">
+      <h3 style="color:#0891b2;">Insurance package recommendation</h3>
+      <ul class="reco-list" id="insuranceList"></ul>
+    </div>
+
+    <div class="reco-section" id="positioningReco" style="border-left-color:#9333ea;">
+      <h3 style="color:#9333ea;">Positioning + sales focus</h3>
+      <ul class="reco-list" id="positioningList"></ul>
+    </div>
+
+    <div style="margin-top:20px;text-align:center;">
+      <a href="index.html" style="color:#e11d48;font-weight:700;text-decoration:underline;">← Back to public site</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project · Internal · <a href="index.html">Public site</a></footer>
+
+<script>
+  function escHtml(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+  // Credential roadmap engine — recommends what to add based on what's missing
+  // and what target compliance frameworks the user has selected.
+  function buildCredentialRoadmap(answers){
+    var have = new Set(answers.creds);
+    var compHave = new Set(answers.comp);
+    var indHave = new Set(answers.ind);
+    var specHave = new Set(answers.spec);
+    var recos = [];
+
+    // Foundational gap fill
+    if(!have.has('cissp')){
+      recos.push({ title: 'CISSP — pursue if not held', sub: 'Most-recognized cert in security. Insurance carriers, RFP scorers, and procurement all give weight to it. ~$700 exam fee + 5+ years experience required.', priority: 1 });
+    }
+    if(!have.has('oscp') && (specHave.has('pentest') || specHave.has('webapp'))){
+      recos.push({ title: 'OSCP — for credibility on pen-test deliverables', sub: 'Hands-on lab cert. Clients ordering pen-tests will ask if the report comes from someone OSCP-certified. ~$1,500 incl. 90 days lab.', priority: 1 });
+    }
+    if(!have.has('aws-security') && answers.cloud && /aws/i.test(answers.cloud||'')){
+      recos.push({ title: 'AWS Security Specialty', sub: 'Validates AWS-specific security knowledge. Most clients we\'ll target are on AWS. ~$300 exam fee.', priority: 2 });
+    }
+
+    // Compliance-driven
+    if(compHave.has('soc2') || (!compHave.has('soc2') && indHave.has('saas'))){
+      recos.push({ title: 'AICPA SOC 2 implementation training', sub: 'Drift, Vanta, or AICPA self-study. SOC 2 is going to be 60% of our compliance pipeline. Even if you\'ve done it informally, formal training adds RFP credibility.', priority: 1 });
+    }
+    if(compHave.has('hipaa') || indHave.has('healthcare')){
+      if(!have.has('hcispp')){
+        recos.push({ title: 'HCISPP', sub: 'Healthcare-specific security cert. If we\'re selling HIPAA prep, this is the single best signal. ~$700 exam.', priority: 2 });
+      }
+    }
+    if(compHave.has('iso27001') && !have.has('iso-27001-la')){
+      recos.push({ title: 'ISO 27001 Lead Auditor', sub: 'For international or premium clients. Often required when responding to enterprise RFPs. ~$2,000 course + exam.', priority: 3 });
+    }
+
+    // GRC track
+    if(specHave.has('grc') && !have.has('cisa') && !have.has('cism')){
+      recos.push({ title: 'CISA or CISM (pick one)', sub: 'If GRC is core to your offering. CISA is audit-flavored, CISM is management-flavored. ~$575 exam each.', priority: 2 });
+    }
+
+    // Specialty depth
+    if(specHave.has('webapp') && !have.has('oswe')){
+      recos.push({ title: 'OSWE — advanced web app exploitation', sub: 'Differentiator vs. every "I run Burp" pen-tester. Premium-tier signal. ~$1,500 incl. lab.', priority: 3 });
+    }
+    if(specHave.has('ir') && !have.has('giac-gcih')){
+      recos.push({ title: 'GIAC GCIH — incident handling', sub: 'If incident response is part of the retainer offering, this signals readiness. ~$2,500 exam.', priority: 3 });
+    }
+
+    // De-prioritize Security+ if more advanced certs exist
+    if(have.has('security-plus') && have.size > 2){
+      recos.push({ title: 'Security+ → can drop from public bio', sub: 'You have stronger certs. Listing Security+ next to CISSP can dilute the signal — keep it for resume use only.', priority: 4 });
+    }
+
+    if(!recos.length){
+      recos.push({ title: 'Strong foundation — focus on practice, not paper', sub: 'You have a solid certification base. Time-and-cost gains from more certs are diminishing. Focus on case studies + published research as the next credibility lever.', priority: 1 });
+    }
+
+    return recos.sort(function(a,b){return a.priority-b.priority;});
+  }
+
+  function buildInsuranceRoadmap(answers){
+    var compHave = new Set(answers.comp);
+    var indHave = new Set(answers.ind);
+    var specHave = new Set(answers.spec);
+    var recos = [];
+
+    // Always required
+    recos.push({ title: 'Errors & Omissions (Professional Liability)', sub: 'Mandatory for any consulting work. Coverage: $1M per claim / $3M aggregate to start. Carriers: Hiscox, The Hartford, Travelers Pro Tech. Premium est: $3,000–$8,000/yr.' });
+    recos.push({ title: 'General Liability', sub: 'Bundled with most BOPs (Business Owner Policies). Coverage: $1M per occurrence. Premium est: $400–$1,200/yr.' });
+
+    // Cyber liability — strongly recommended for any IT/security firm
+    recos.push({ title: 'Cyber Liability + Tech E&O combo', sub: 'CRITICAL for security firms. Covers breach response, regulatory fines, business interruption. Coverage: $1M to start, $5M+ for enterprise clients. Carriers: Coalition, Beazley, Chubb. Premium est: $2,500–$10,000/yr.' });
+
+    if(specHave.has('pentest') || specHave.has('redteam')){
+      recos.push({ title: 'Pen-test specific E&O rider or carve-out', sub: 'Standard E&O often excludes "intentional unauthorized access" — which is exactly what pen-testing IS. Need a carrier comfortable with offensive security or a specific rider. Brokers who get this: Founder Shield, Embroker.' });
+    }
+
+    if(indHave.has('healthcare') || compHave.has('hipaa')){
+      recos.push({ title: 'HIPAA-specific liability', sub: 'BAA requires that you carry insurance covering HIPAA breaches you cause. Some cyber liability policies cover this; others require a rider.' });
+    }
+
+    if(compHave.has('soc2') || compHave.has('iso27001')){
+      recos.push({ title: 'Carrier preference: needs SOC 2 / ISO 27001 awareness', sub: 'When we attest to your audit work or implement controls for clients, our carrier needs to be sophisticated enough to write coverage that doesn\'t exclude this. Vet broker carefully.' });
+    }
+
+    recos.push({ title: 'Worker\'s Compensation', sub: 'Required by NY State even for sole-member LLCs in many cases. Check NYS WCB exemption rules. Premium est: $300–$800/yr if non-exempt.' });
+
+    recos.push({ title: 'Combined estimated insurance budget', sub: 'Year 1 total: $7,000–$25,000/yr depending on coverage limits. Most established 2-person firms in our category run around $12,000–$15,000/yr.' });
+
+    return recos;
+  }
+
+  function buildPositioningRoadmap(answers){
+    var have = new Set(answers.creds);
+    var compHave = new Set(answers.comp);
+    var indHave = new Set(answers.ind);
+    var specHave = new Set(answers.spec);
+    var recos = [];
+
+    // Lead positioning based on strengths
+    if(have.has('cissp') && have.has('oscp')){
+      recos.push({ title: 'Lead with "CISSP + OSCP" — the dual-cert positioning', sub: 'Few solo consultants have both. CISSP signals strategy / governance, OSCP signals hands-on. The combination is rare and premium.' });
+    }
+    if(compHave.has('soc2')){
+      recos.push({ title: 'Position SOC 2 prep as a flagship offering', sub: 'Highest-volume compliance need for SaaS in our target market. Build a productized "SOC 2 in 90 days" offering with fixed scope ($30k–$50k).' });
+    }
+    if(specHave.has('pentest')){
+      recos.push({ title: 'Premium pen-test reports as a marketing asset', sub: 'Pen-test deliverables are the most clip-worthy security work. Anonymize + publish executive summaries (with client permission) as case studies.' });
+    }
+    if(indHave.has('healthcare') || compHave.has('hipaa')){
+      recos.push({ title: 'Healthcare vertical = premium pricing', sub: 'HIPAA work is harder + risk-loaded + clients pay for it. If you have past wins, build a healthcare-specific landing page / lead magnet.' });
+    }
+    if(specHave.has('vciso')){
+      recos.push({ title: 'vCISO retainer as recurring revenue anchor', sub: 'Highest-margin offering. Sells at $5k–$15k/mo per client. 2–3 vCISO retainers + occasional projects = stable $250k–$450k ARR for one principal.' });
+    }
+    if(specHave.has('devsecops')){
+      recos.push({ title: 'Cross-sell DevSecOps with Doug\'s build engagements', sub: 'Every Doug client deploying CI/CD needs your pipeline security. This is the strongest cross-sell in the firm.' });
+    }
+
+    // Sales gaps
+    if(!compHave.has('soc2') && indHave.has('saas')){
+      recos.push({ title: 'GAP: target SaaS but no SOC 2 cred', sub: 'If we want SaaS clients, you need SOC 2 implementation experience or a partnership with someone who does. Otherwise pivot to a different vertical.' });
+    }
+    if(!specHave.has('compliance') && !specHave.has('grc')){
+      recos.push({ title: 'GAP: no compliance offering', sub: 'Pen-testing and audits are great but margin-thin. Compliance prep is where the $25k–$50k engagements live. Worth investing in this skill if not already there.' });
+    }
+
+    return recos;
+  }
+
+  async function submitQ(e){
+    e.preventDefault();
+    var btn = document.getElementById('submitBtn');
+    var label = document.getElementById('submitLabel');
+    var errEl = document.getElementById('errStatus');
+    var okEl  = document.getElementById('okStatus');
+    errEl.style.display = 'none';
+    okEl.style.display = 'none';
+    btn.disabled = true;
+    label.textContent = 'Submitting…';
+
+    function getChecked(name){
+      return Array.from(document.querySelectorAll('input[name="'+name+'"]:checked')).map(function(i){return i.value;});
+    }
+
+    var answers = {
+      legalName:   document.getElementById('legalName').value.trim(),
+      displayName: document.getElementById('displayName').value.trim(),
+      email:       document.getElementById('email').value.trim(),
+      phone:       document.getElementById('phone').value.trim(),
+      location:    document.getElementById('location').value.trim(),
+      linkedin:    document.getElementById('linkedin').value.trim(),
+      yearsExp:    document.getElementById('yearsExp').value,
+      pitch:       document.getElementById('pitch').value.trim(),
+      pastRoles:   document.getElementById('pastRoles').value.trim(),
+      research:    document.getElementById('research').value.trim(),
+      creds:       getChecked('cred'),
+      otherCreds:  document.getElementById('otherCreds').value.trim(),
+      spec:        getChecked('spec'),
+      comp:        getChecked('comp'),
+      ind:         getChecked('ind'),
+      tools:       document.getElementById('tools').value.trim(),
+      cloud:       document.getElementById('cloud').value.trim(),
+      hours:       document.getElementById('hours').value,
+      start:       document.getElementById('start').value,
+      insurance:   document.getElementById('insurance').value.trim(),
+      notes:       document.getElementById('notes').value.trim(),
+      submitted_at: new Date().toISOString()
+    };
+
+    if(!answers.legalName || !answers.email || !answers.yearsExp){
+      errEl.textContent = 'Name, email, and years of experience are required.';
+      errEl.style.display = 'block';
+      btn.disabled = false;
+      label.textContent = '⚡ Submit + see credential roadmap';
+      return false;
+    }
+
+    // Build recommendations now (so they show even if email fails)
+    var creds = buildCredentialRoadmap(answers);
+    var ins = buildInsuranceRoadmap(answers);
+    var pos = buildPositioningRoadmap(answers);
+
+    function renderList(elId, items){
+      var el = document.getElementById(elId);
+      el.innerHTML = items.map(function(r){
+        return '<li><strong>'+escHtml(r.title)+'</strong>'+(r.sub?'<span class="sub">'+escHtml(r.sub)+'</span>':'')+'</li>';
+      }).join('');
+    }
+    renderList('credsList', creds);
+    renderList('insuranceList', ins);
+    renderList('positioningList', pos);
+    document.getElementById('resultCard').classList.add('show');
+
+    // Build email body
+    var lines = [
+      'JON MARCHAND — PARTNERSHIP QUESTIONNAIRE',
+      '════════════════════════════════════════',
+      '',
+      '👤 IDENTITY',
+      'Legal name: ' + answers.legalName,
+      (answers.displayName ? 'Display name: ' + answers.displayName : ''),
+      'Email: ' + answers.email,
+      (answers.phone ? 'Phone: ' + answers.phone : ''),
+      (answers.location ? 'Location: ' + answers.location : ''),
+      (answers.linkedin ? 'LinkedIn: ' + answers.linkedin : ''),
+      '',
+      '📊 EXPERIENCE',
+      'Years: ' + answers.yearsExp,
+      (answers.pitch ? '\nElevator pitch:\n' + answers.pitch : ''),
+      (answers.pastRoles ? '\nPast roles:\n' + answers.pastRoles : ''),
+      (answers.research ? '\nResearch / CVEs:\n' + answers.research : ''),
+      '',
+      '🎓 CURRENT CREDENTIALS',
+      answers.creds.length ? answers.creds.join(', ') : '(none checked)',
+      (answers.otherCreds ? '\nOther: ' + answers.otherCreds : ''),
+      '',
+      '🛡 SPECIALTIES',
+      answers.spec.length ? answers.spec.join(', ') : '(none checked)',
+      '',
+      '📋 COMPLIANCE EXPERIENCE',
+      answers.comp.length ? answers.comp.join(', ') : '(none checked)',
+      '',
+      '🏢 INDUSTRIES SECURED',
+      answers.ind.length ? answers.ind.join(', ') : '(none checked)',
+      '',
+      '🔧 TOOLS',
+      answers.tools || '(blank)',
+      '',
+      '☁ CLOUD',
+      answers.cloud || '(blank)',
+      '',
+      '⏰ BANDWIDTH',
+      'Hours/wk: ' + (answers.hours || 'unspecified'),
+      'Start: ' + (answers.start || 'unspecified'),
+      '',
+      '📜 EXISTING INSURANCE',
+      answers.insurance || '(blank)',
+      '',
+      '💬 NOTES',
+      answers.notes || '(blank)',
+      '',
+      '════════════════════════════════════════',
+      'AUTO-GENERATED ROADMAP',
+      '════════════════════════════════════════',
+      '',
+      'CREDENTIALS TO ADD (priority order):',
+      creds.map(function(r,i){return (i+1)+'. '+r.title+(r.sub?' — '+r.sub:'');}).join('\n'),
+      '',
+      'INSURANCE PACKAGE:',
+      ins.map(function(r){return '· '+r.title+(r.sub?' — '+r.sub:'');}).join('\n'),
+      '',
+      'POSITIONING + SALES FOCUS:',
+      pos.map(function(r){return '· '+r.title+(r.sub?' — '+r.sub:'');}).join('\n'),
+      '',
+      '────────────────────────────────────────',
+      'Submitted: ' + answers.submitted_at,
+      'Source: consult.skateos.com/jon-questionnaire.html'
+    ].filter(Boolean).join('\n');
+
+    var subject = '🎯 Jon partnership questionnaire — ' + answers.legalName + ' (' + answers.yearsExp + 'y exp)';
+
+    // Send via skateos send-email Edge Function
+    var SUPABASE_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+    var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+    try {
+      var resp = await fetch(SUPABASE_URL + '/functions/v1/send-email', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY, 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          to: 'doug@2ntr.com',
+          subject: subject,
+          text: lines,
+          replyTo: answers.email,
+          tags: [{name:'type',value:'jon_questionnaire'}]
+        })
+      });
+      var result = await resp.json().catch(function(){return {};});
+      if(resp.ok && result.ok){
+        okEl.textContent = '✓ Submitted to doug@2ntr.com. Roadmap shown below — Doug will follow up within a day.';
+        okEl.style.display = 'block';
+      } else {
+        // Mailto fallback
+        var mailto = 'mailto:doug@2ntr.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+        errEl.innerHTML = 'Auto-submit failed but the roadmap below is real. <a href="'+mailto+'" style="color:#0a0a0a;font-weight:700;text-decoration:underline;">Click here to send via your email instead.</a>';
+        errEl.style.display = 'block';
+      }
+    } catch(err){
+      var mailto = 'mailto:doug@2ntr.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(lines);
+      errEl.innerHTML = 'Network error but the roadmap below is real. <a href="'+mailto+'" style="color:#0a0a0a;font-weight:700;text-decoration:underline;">Click here to send via your email instead.</a>';
+      errEl.style.display = 'block';
+    }
+    btn.disabled = false;
+    label.textContent = '⚡ Submitted';
+    document.getElementById('resultCard').scrollIntoView({behavior:'smooth',block:'start'});
+    return false;
+  }
+</script>
+
+</body>
+</html>

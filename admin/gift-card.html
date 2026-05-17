@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gift card balance</title>
+  <link rel="icon" href="data:,">
+  <script src="config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe4e6 50%, #fce7f3 100%);
+      color: #14161a;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      max-width: 480px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 28px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    }
+    .header { text-align: center; margin-bottom: 24px; }
+    .header .biz-logo { font-size: 2.4rem; line-height: 1; margin-bottom: 8px; }
+    .header .biz-name {
+      font-size: 1.05rem; font-weight: 800; color: #14161a;
+      letter-spacing: -0.01em;
+    }
+    .header .title {
+      font-size: 1.5rem; font-weight: 900; margin-top: 6px;
+      color: #be123c;
+    }
+    .header .subtitle {
+      font-size: 0.85rem; color: #6b7280; margin-top: 4px;
+    }
+    .lookup-form {
+      display: flex; gap: 8px; margin-bottom: 16px;
+    }
+    .lookup-form input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 8px;
+      font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .lookup-form input:focus {
+      outline: none; border-color: #e11d48; box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.12);
+    }
+    .lookup-form button {
+      padding: 12px 22px;
+      background: #e11d48;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+    .lookup-form button:hover { background: #be123c; }
+    .lookup-form button:disabled { background: #fca5a5; cursor: not-allowed; }
+    .help {
+      font-size: 0.78rem; color: #6b7280; text-align: center;
+    }
+    .result { margin-top: 16px; }
+    .result-card {
+      padding: 24px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .result-card.found {
+      background: linear-gradient(135deg, #dcfce7 0%, #f0fdf4 100%);
+      border: 1px solid #86efac;
+    }
+    .result-card.empty {
+      background: #f3f4f6;
+      border: 1px solid #e5e7eb;
+    }
+    .result-card.error, .result-card.expired, .result-card.cancelled {
+      background: #fee2e2;
+      border: 1px solid #fca5a5;
+    }
+    .result-card .balance-label {
+      font-size: 0.7rem;
+      color: #15803d;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 700;
+    }
+    .result-card.empty .balance-label { color: #6b7280; }
+    .result-card.error .balance-label,
+    .result-card.expired .balance-label,
+    .result-card.cancelled .balance-label { color: #991b1b; }
+    .result-card .balance-amount {
+      font-size: 2.6rem;
+      font-weight: 900;
+      margin: 6px 0 8px;
+      color: #15803d;
+    }
+    .result-card.empty .balance-amount { color: #6b7280; }
+    .result-card.error .balance-amount,
+    .result-card.expired .balance-amount,
+    .result-card.cancelled .balance-amount { color: #dc2626; font-size: 1.5rem; }
+    .result-card .meta {
+      font-size: 0.85rem;
+      color: #4b5563;
+      margin-top: 6px;
+    }
+    .result-card .recipient-line { color: #6b21a8; font-style: italic; margin-top: 4px; }
+    .footer {
+      margin-top: 20px; text-align: center;
+      font-size: 0.72rem; color: #9ca3af;
+    }
+    .footer a { color: #6b7280; }
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(225, 29, 72, 0.2);
+      border-top-color: #e11d48;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <div class="biz-logo" id="bizLogo">🛹</div>
+      <div class="biz-name" id="bizName">2nd Nature Park</div>
+      <div class="title">Gift card balance</div>
+      <div class="subtitle">Enter your code to check the remaining balance.</div>
+    </div>
+
+    <form class="lookup-form" id="lookupForm" autocomplete="off">
+      <input
+        type="text"
+        id="code"
+        name="code"
+        placeholder="XXXX-XXXX-XXXX"
+        maxlength="14"
+        spellcheck="false"
+        autocapitalize="characters"
+        required
+      >
+      <button type="submit" id="submitBtn">Check</button>
+    </form>
+
+    <div class="help" id="helpText">Codes are 12 digits. Hyphens optional.</div>
+
+    <div class="result" id="result"></div>
+
+    <div class="footer">
+      For balance disputes, call <span id="bizPhone"></span> or come by the front desk.
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      var cfg = window.APP_CONFIG || {};
+      var SB  = cfg.supabaseUrl;
+      var KEY = cfg.supabaseKey;
+
+      // Branding from config.js
+      if(cfg.bizName)  document.getElementById('bizName').textContent = cfg.bizName;
+      if(cfg.logoEmoji) document.getElementById('bizLogo').textContent = cfg.logoEmoji;
+      if(cfg.bizPhone) document.getElementById('bizPhone').textContent = cfg.bizPhone;
+      if(cfg.themeColor){
+        document.documentElement.style.setProperty('--rose', cfg.themeColor);
+      }
+
+      // Pre-fill code from URL ?code=XXXX-XXXX-XXXX
+      var params = new URLSearchParams(window.location.search);
+      var qCode = (params.get('code') || '').trim();
+      if(qCode){
+        document.getElementById('code').value = qCode;
+        // Auto-submit if code looks valid
+        if(qCode.replace(/\D/g,'').length === 12){
+          setTimeout(function(){ document.getElementById('lookupForm').dispatchEvent(new Event('submit')); }, 100);
+        }
+      }
+
+      // Auto-format input as user types: insert hyphens at 4 / 8
+      var codeInput = document.getElementById('code');
+      codeInput.addEventListener('input', function(){
+        var raw = codeInput.value.replace(/\D/g,'').slice(0, 12);
+        var out = '';
+        for(var i=0;i<raw.length;i++){
+          if(i === 4 || i === 8) out += '-';
+          out += raw[i];
+        }
+        codeInput.value = out;
+      });
+
+      function money(n){
+        return '$' + (Number(n)||0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      }
+
+      function escHtml(s){
+        return String(s ?? '').replace(/[&<>"']/g, function(c){
+          return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' })[c];
+        });
+      }
+
+      function renderResult(card, status){
+        var box = document.getElementById('result');
+        var cls = 'found';
+        var balanceLabel = 'Balance';
+        var content;
+        if(!card){
+          cls = 'empty';
+          balanceLabel = 'Not found';
+          content = '<div class="balance-amount">—</div><div class="meta">No card matched that code. Double-check and try again.</div>';
+        } else if(card.status === 'cancelled' || card.status === 'refunded'){
+          cls = 'cancelled';
+          balanceLabel = 'Card ' + card.status;
+          content = '<div class="balance-amount">—</div><div class="meta">This card has been ' + card.status + '. Call the front desk if you have questions.</div>';
+        } else if(card.expires_at && new Date(card.expires_at + 'T23:59:59').getTime() < Date.now()){
+          cls = 'expired';
+          balanceLabel = 'Expired';
+          content = '<div class="balance-amount">—</div><div class="meta">This card expired on ' + card.expires_at + '.</div>';
+        } else if(Number(card.balance) <= 0 || card.status === 'redeemed'){
+          cls = 'empty';
+          balanceLabel = 'Fully redeemed';
+          content = '<div class="balance-amount">' + money(0) + '</div><div class="meta">This card has been fully used.</div>';
+        } else {
+          // Healthy card
+          var origLine = '';
+          if(Number(card.original_amount) !== Number(card.balance)){
+            origLine = '<div class="meta">of ' + money(card.original_amount) + ' face value · partially used</div>';
+          }
+          var recipLine = card.recipient_name ? '<div class="recipient-line">For: ' + escHtml(card.recipient_name) + '</div>' : '';
+          var expLine   = card.expires_at ? '<div class="meta" style="font-size:.78rem;color:#6b7280;">Expires ' + card.expires_at + '</div>' : '';
+          content = '<div class="balance-amount">' + money(card.balance) + '</div>' + origLine + recipLine + expLine;
+        }
+        box.innerHTML = '<div class="result-card ' + cls + '">'
+          + '<div class="balance-label">' + balanceLabel + '</div>'
+          + content
+          + '</div>';
+      }
+
+      function setError(msg){
+        var box = document.getElementById('result');
+        box.innerHTML = '<div class="result-card error">'
+          + '<div class="balance-label">Error</div>'
+          + '<div class="balance-amount">—</div>'
+          + '<div class="meta">' + escHtml(msg) + '</div>'
+          + '</div>';
+      }
+
+      document.getElementById('lookupForm').addEventListener('submit', function(ev){
+        ev.preventDefault();
+        var raw = (codeInput.value || '').replace(/\D/g,'').slice(0, 12);
+        if(raw.length !== 12){
+          setError('Code must be 12 digits.');
+          return;
+        }
+        var code = raw.slice(0,4) + '-' + raw.slice(4,8) + '-' + raw.slice(8,12);
+
+        var btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner"></span>';
+        document.getElementById('result').innerHTML = '';
+
+        fetch(SB + '/rest/v1/rpc/gift_card_balance_lookup', {
+          method: 'POST',
+          headers: {
+            'apikey': KEY,
+            'Authorization': 'Bearer ' + KEY,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ p_code: code })
+        }).then(function(r){
+          return r.json().then(function(data){ return { ok:r.ok, status:r.status, data:data }; });
+        }).then(function(res){
+          btn.disabled = false; btn.innerHTML = 'Check';
+          if(!res.ok){
+            var err = (res.data && (res.data.message || res.data.hint)) || ('HTTP ' + res.status);
+            // Migration not applied
+            if(/function .* does not exist/i.test(err)){
+              setError('This park\'s gift card system isn\'t set up yet. Try again later or call us.');
+            } else {
+              setError('Lookup failed: ' + err);
+            }
+            return;
+          }
+          // RPC returns array; find first row or null
+          var card = Array.isArray(res.data) && res.data.length ? res.data[0] : null;
+          renderResult(card);
+        }).catch(function(e){
+          btn.disabled = false; btn.innerHTML = 'Check';
+          setError(e.message || 'Network error — check your connection and try again.');
+        });
+      });
+
+      // Auto-focus the code input on load (skip when query param already set)
+      if(!qCode) codeInput.focus();
+    })();
+  </script>
+</body>
+</html>

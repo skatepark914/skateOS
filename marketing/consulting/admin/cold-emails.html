@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cold-email kit — internal — Hudson Valley AI</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Ready-to-send cold emails for top Tier-A targets. Password-gated.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  /* Lock screen */
+  .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;background:#0a0a0a;}
+  .lock-card{background:#fff;border-radius:14px;padding:36px;max-width:420px;width:100%;box-shadow:0 20px 50px -10px rgba(0,0,0,.5);}
+  .lock-card .lk-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .lock-card .lk-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .lock-card .lk-logo .name{font-weight:900;}
+  .lock-card h1{font-size:1.4rem;font-weight:900;letter-spacing:-0.018em;margin-bottom:6px;}
+  .lock-card p{color:#737373;font-size:.86rem;margin-bottom:18px;}
+  .lock-card input{width:100%;padding:12px 14px;border:1.5px solid #e5e5e0;border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;}
+  .lock-card input:focus{outline:none;border-color:#0a0a0a;}
+  .lock-card button{width:100%;padding:12px;background:#0a0a0a;color:#fafaf9;border:none;border-radius:8px;font-size:.96rem;font-weight:700;font-family:inherit;cursor:pointer;}
+  .lock-card button:hover{background:#e11d48;}
+  .lock-err{color:#dc2626;font-size:.84rem;margin-top:8px;display:none;}
+
+  /* Doc styles */
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar strong{color:#fb7185;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+  .lock-out{padding:6px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+
+  .wrap{max-width:880px;margin:0 auto;padding:40px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:18px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  h1.title{font-size:clamp(2rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.022em;line-height:1.1;margin-bottom:8px;}
+  .meta{font-size:.82rem;color:#737373;margin-bottom:24px;}
+
+  .intro-card{background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:22px 26px;margin-bottom:24px;}
+  .intro-card h2{font-size:1rem;font-weight:800;margin-bottom:8px;}
+  .intro-card p{font-size:.95rem;color:#404040;margin:0 0 8px;}
+
+  .email-card{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:0;margin-bottom:18px;overflow:hidden;}
+  .email-card .head{padding:20px 26px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid #e5e5e0;background:linear-gradient(180deg,#fff,#fafaf9);flex-wrap:wrap;}
+  .email-card .head .biz{font-size:1.15rem;font-weight:900;letter-spacing:-0.018em;color:#0a0a0a;}
+  .email-card .head .meta-row{font-size:.78rem;color:#737373;margin-top:2px;}
+  .email-card .head .meta-row a{color:#0369a1;text-decoration:none;}
+  .email-card .head .meta-row a:hover{text-decoration:underline;}
+  .email-card .head .copy-btn{padding:8px 14px;background:#0a0a0a;color:#fff;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;flex-shrink:0;}
+  .email-card .head .copy-btn:hover{background:#e11d48;}
+  .email-card .head .copy-btn.copied{background:#15803d;}
+
+  .email-body{padding:24px 30px;font-family:ui-monospace,'SF Mono',monospace;font-size:.86rem;line-height:1.7;color:#0a0a0a;white-space:pre-wrap;background:#fafaf9;}
+  .email-body .subj{display:block;font-weight:800;color:#0a0a0a;margin-bottom:14px;padding-bottom:10px;border-bottom:1px dashed #e5e5e0;}
+
+  .email-extras{padding:14px 30px 24px;display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:.86rem;}
+  @media(max-width:680px){.email-extras{grid-template-columns:1fr;}}
+  .email-extras .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;color:#9f1239;margin-bottom:6px;}
+  .email-extras .item-body{color:#404040;line-height:1.55;}
+  .email-extras .item-body strong{color:#0a0a0a;}
+
+  .toc{background:#fff;border:1px solid #e5e5e0;border-radius:10px;padding:18px 24px;margin-bottom:24px;}
+  .toc strong{display:block;font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;color:#737373;margin-bottom:8px;}
+  .toc a{display:inline-block;margin:4px 14px 4px 0;font-size:.86rem;font-weight:700;color:#0a0a0a;text-decoration:none;padding:4px 0;}
+  .toc a:hover{color:#e11d48;}
+
+  .sec-doc{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:24px 28px;margin-bottom:18px;}
+  .sec-doc h2{font-size:1.2rem;font-weight:800;letter-spacing:-0.015em;margin-bottom:10px;}
+  .sec-doc p{color:#404040;font-size:.94rem;margin-bottom:10px;}
+  .sec-doc ul{margin:8px 0 12px 22px;color:#404040;font-size:.92rem;}
+  .sec-doc li{margin-bottom:5px;}
+  .sec-doc strong{color:#0a0a0a;}
+
+  .obj-grid{display:grid;grid-template-columns:1fr 2fr;gap:16px;margin-top:14px;}
+  @media(max-width:680px){.obj-grid{grid-template-columns:1fr;}}
+  .obj-grid .obj{font-weight:800;color:#9f1239;font-size:.94rem;}
+  .obj-grid .resp{color:#404040;font-size:.92rem;line-height:1.55;}
+  .obj-grid .row{display:contents;}
+  .obj-grid .row > div{padding:12px 0;border-bottom:1px solid #f3f4f6;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ─── LOCK SCREEN ──────────────────────────────────────────────── -->
+<div id="lockScreen" class="lock-wrap">
+  <div class="lock-card">
+    <div class="lk-logo"><span class="mark">HV</span><span class="name">Hudson Valley AI</span></div>
+    <h1>Internal access required</h1>
+    <p>Ready-to-send cold emails for top Tier-A targets.</p>
+    <form onsubmit="return tryUnlock(event)">
+      <input type="password" id="pw" placeholder="Shared password" autofocus>
+      <button type="submit">Unlock →</button>
+      <div class="lock-err" id="lockErr"></div>
+    </form>
+    <p style="font-size:.74rem;color:#a3a3a3;margin-top:14px;font-style:italic;">Same password as the plan + cold-list pages.</p>
+  </div>
+</div>
+
+<!-- ─── CONTENT ──────────────────────────────────────────────────── -->
+<div id="content" style="display:none;">
+
+<div class="topbar">🔒 <strong>INTERNAL DOCUMENT</strong> · Doug + Jon · do not share</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="../index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="nav-back" href="index.html">⌂ Admin</a>
+    <a class="nav-back" href="cold-list.html">← Cold-call list</a>
+    <a class="nav-back" href="waiver-mock.html">Waiver mock →</a>
+    <a class="nav-back" href="../index.html">Public site</a>
+    <button class="lock-out" onclick="lockOut()">🔒 Lock</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Hudson Valley AI</a> / Internal / <a href="cold-list.html">Cold-call list</a> / Cold-email kit</div>
+  <h1 class="title">Cold-email kit · Tier A.</h1>
+  <div class="meta">v1 · 2026-05-10 · ready-to-send for top 5 Tier-A targets</div>
+
+  <div class="intro-card">
+    <h2>👋 How to use this</h2>
+    <p>Five emails. Five businesses. Each one is the result of homework on the specific business — their likely software stack, their specific pain points, and where the DecisionLayer angle hits hardest for that operation. <strong>Don't send all five the same day.</strong> Pace at 1-2 per day so follow-ups are manageable.</p>
+    <p>Replace <code>[Owner first name]</code> at the top of each before sending. The "Copy email" button copies the full body to your clipboard.</p>
+  </div>
+
+  <div class="toc">
+    <strong>Jump to:</strong>
+    <a href="#rock">A1 · The Rock Club</a>
+    <a href="#airriderz">A3 · Air Riderz</a>
+    <a href="#bananas">A4 · Bananas Axe Cabana</a>
+    <a href="#paint">A7 · Crazy Paint</a>
+    <a href="#salem">A10 · Old Salem Farm</a>
+    <a href="#objections">Objection handlers</a>
+  </div>
+
+  <!-- ─── A1 ROCK CLUB ───────────────────────────────────────────── -->
+  <div class="email-card" id="rock">
+    <div class="head">
+      <div>
+        <div class="biz">A1 · The Rock Club</div>
+        <div class="meta-row">17,000 sqft indie climbing · New Rochelle · <a href="https://pinebrookfitness.com/the-rock-club" target="_blank">site →</a></div>
+      </div>
+      <button class="copy-btn" onclick="copyEmail('rock-body', this)">Copy email</button>
+    </div>
+    <div class="email-body" id="rock-body"><span class="subj">Subject: 17,000 sqft and one lost belay cert — a 5-minute idea</span>Hi [Owner first name],
+
+Doug Brown here — I built skateOS (operating system for skateparks; live at 2nd Nature Park in Peekskill) and Branch Manager (route ops for tree-care companies). My partner Jon Marchand is a CISSP/OSCP security pro. We're a 2-person shop that does one-week prototypes and four-week production sprints for owner-led businesses fighting their software.
+
+I've watched skateparks struggle with Square/Mindbody for years, and the climbing-gym version is the same playbook with higher stakes. Rock Gym Pro reviews consistently flag two specific failures — lost waiver/belay-cert data and brutal group-booking — that I'd bet money cost you real time every weekend with parties and mitzvahs. I'd like 20 minutes to show you a working punch-card + waiver flow we already built for a skatepark, and a feature DecisionLayer.ai gives every one of our customers: an AI-arbitration clause baked right into your liability waivers that routes disputes before they hit your insurer. Worth a coffee in New Rochelle next week?
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+    <div class="email-extras">
+      <div>
+        <div class="label">First-30-seconds question</div>
+        <div class="item-body">"How many belay certifications has Rock Gym Pro lost on you in the last twelve months — and what does your front desk do when a regular shows up and the system says they were never certified?"</div>
+      </div>
+      <div>
+        <div class="label">First-meeting deliverable</div>
+        <div class="item-body">5-min screen-share of skateOS waiver-resolution flow + 1-page mock of a Rock Club waiver with DecisionLayer clause as paragraph 6.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── A3 AIR RIDERZ ──────────────────────────────────────────── -->
+  <div class="email-card" id="airriderz">
+    <div class="head">
+      <div>
+        <div class="biz">A3 · Air Riderz Port Chester</div>
+        <div class="meta-row">Trampoline park · Port Chester · <a href="https://airriderz.com/portchester" target="_blank">site →</a></div>
+      </div>
+      <button class="copy-btn" onclick="copyEmail('air-body', this)">Copy email</button>
+    </div>
+    <div class="email-body" id="air-body"><span class="subj">Subject: Saturday at noon · trampoline-park software that actually keeps up</span>Hi [Owner first name],
+
+Doug Brown — I run skateOS, the operating system at 2nd Nature Park in Peekskill (memberships, waivers, party bookings, the works). My partner Jon Marchand is a CISSP/OSCP security pro. We build software in 1-4 week sprints for action-sport businesses that have outgrown Square + Mindbody.
+
+Trampoline parks live and die by Saturday at noon, and the off-the-shelf booking platforms (CenterEdge, Roller, PartyCenter) all start choking when you've got walk-ins, three parties, and a re-prompted waiver on every kid. We've already solved the skater version of this — what we'd build for Air Riderz is the same shape: walk-ins flow through a QR-scan check-in, parties have a single booking record (not three windows), and liability waivers persist with their guardian links so kids aren't re-signing at every visit. Bonus: every waiver we deliver ships with the DecisionLayer.ai AI-arbitration clause baked in — disputes get routed for AI-mediated review at ~$500 / 45-90 days instead of $100k+ over 18 months of court. Insurers love it.
+
+20 minutes next week — I'll come to Port Chester. Worth a coffee?
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+    <div class="email-extras">
+      <div>
+        <div class="label">First-30-seconds question</div>
+        <div class="item-body">"How many parties did you turn away last Saturday because the booking system couldn't fit them — or worse, double-booked you?"</div>
+      </div>
+      <div>
+        <div class="label">First-meeting deliverable</div>
+        <div class="item-body">Side-by-side comparison: a real birthday party booking in CenterEdge vs. the skateOS party flow (1 form, all attendees, guardian waivers, deposits).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── A4 BANANAS AXE CABANA ─────────────────────────────────── -->
+  <div class="email-card" id="bananas">
+    <div class="head">
+      <div>
+        <div class="biz">A4 · Bananas Axe Cabana</div>
+        <div class="meta-row">Axe throwing + tiki bar · <a href="https://bananasaxecabana.com" target="_blank">site →</a></div>
+      </div>
+      <button class="copy-btn" onclick="copyEmail('bananas-body', this)">Copy email</button>
+    </div>
+    <div class="email-body" id="bananas-body"><span class="subj">Subject: Alcohol + axes + paper waivers = the only honest software conversation</span>Hi [Owner first name],
+
+Doug Brown — I run skateOS (live at 2nd Nature Park in Peekskill) and my partner Jon Marchand is a security pro (CISSP/OSCP). We do small fixed-price software builds — Spike ($5k / 1 week) and Production Sprint ($20k / 4 weeks) — for owner-led businesses where the software stack is fighting you.
+
+I'll be direct: your business is the single highest-stakes waiver operation on my Westchester radar. Alcohol + axes + groups + parties is the combination most plaintiffs' attorneys dream about. The good news is there's a specific, modern fix: we build you a booking + waiver flow where every guest signs once (persisted, not re-prompted), guardian links are real for minors, and every waiver includes the DecisionLayer.ai AI-arbitration clause. DecisionLayer is a real online dispute-resolution platform — disputes get resolved for ~$500 in 45-90 days instead of $100k+ over 18 months in court. We've already piloted it in skateOS's liability waivers; insurers love it; plaintiff lawyers hate it.
+
+Worth 20 minutes? I'll come to you with a working demo of the waiver-resolution flow and a one-page mock of a Bananas-branded waiver with the DecisionLayer clause inserted. No pressure — if it's not a fit, you keep the mock.
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+    <div class="email-extras">
+      <div>
+        <div class="label">First-30-seconds question</div>
+        <div class="item-body">"How are you handling waivers right now — paper binder, QR code to a Google form, or built into your booking system? And when there's an incident, what's the next step?"</div>
+      </div>
+      <div>
+        <div class="label">First-meeting deliverable</div>
+        <div class="item-body">A one-page mock of a Bananas-branded waiver with the DecisionLayer arbitration clause inserted as paragraph 6 + the explainer page from decisionlayer.ai. Lead with the legal angle; the software falls out of that.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── A7 CRAZY PAINT ────────────────────────────────────────── -->
+  <div class="email-card" id="paint">
+    <div class="head">
+      <div>
+        <div class="biz">A7 · Crazy Paint</div>
+        <div class="meta-row">Paintball · 17 fields · Mohegan Lake · <a href="https://crazypaint.net" target="_blank">site →</a></div>
+      </div>
+      <button class="copy-btn" onclick="copyEmail('paint-body', this)">Copy email</button>
+    </div>
+    <div class="email-body" id="paint-body"><span class="subj">Subject: 17 fields + walk-ins + minors · the binder-of-paper-waivers problem</span>Hi [Owner first name],
+
+Doug Brown — I built skateOS, the operating system at 2nd Nature Park in Peekskill (front-desk check-in, waivers, parties, the works). My partner Jon Marchand is a CISSP/OSCP security pro. We're a 2-person shop that does fixed-price 1-week prototypes and 4-week production sprints for action-sport operators where the software is the bottleneck.
+
+17 fields means real volume. The skatepark version of your operation was — until skateOS — a binder of paper waivers, a Square POS, and a Google calendar held together with hope. I'd bet money you've got at least two of those three running today. The fix isn't expensive software; it's a focused 1-week Spike to digitize the waiver flow (with guardian linkage for minors), wire it to a simple booking + walk-in system, and bake the DecisionLayer.ai AI-arbitration clause into every waiver. That last part matters: paintball injuries happen, and routing disputes through AI-mediated review at ~$500 / 45-90 days is a real risk-reduction story your insurer will care about.
+
+20 minutes next week — happy to come up to Mohegan Lake with a live demo of the skateOS flow. Worth a look?
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+    <div class="email-extras">
+      <div>
+        <div class="label">First-30-seconds question</div>
+        <div class="item-body">"Show me the binder. Where are the paper waivers right now, and what happens if a kid shows up Saturday morning whose mom dropped him off without signing one?"</div>
+      </div>
+      <div>
+        <div class="label">First-meeting deliverable</div>
+        <div class="item-body">Print out the actual paper waiver they're using and walk through it with the DecisionLayer clause as a markup. Then show the skateOS waiver-resolution flow live on a phone.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── A10 OLD SALEM FARM ────────────────────────────────────── -->
+  <div class="email-card" id="salem">
+    <div class="head">
+      <div>
+        <div class="biz">A10 · Old Salem Farm</div>
+        <div class="meta-row">Equestrian · 120 acres · 66 stalls · North Salem · <a href="https://oldsalemfarm.net" target="_blank">site →</a></div>
+      </div>
+      <button class="copy-btn" onclick="copyEmail('salem-body', this)">Copy email</button>
+    </div>
+    <div class="email-body" id="salem-body"><span class="subj">Subject: 66 stalls, three software systems · one clean version</span>Hi [Owner first name],
+
+Doug Brown — I run skateOS, the operating system at 2nd Nature Park in Peekskill, and Branch Manager, a tree-care operations platform. My partner Jon Marchand is a CISSP/OSCP security pro. We do fixed-price 1-week prototypes and 4-week production sprints for owner-led operations where the software stack is fighting the team.
+
+Equestrian software is some of the worst-in-class I've seen — most facilities your size end up running three different systems (one for boarding, one for lessons, one for shows) plus a spreadsheet for everything else. We've solved a structurally similar problem at the skatepark (lessons, memberships, waivers, retail, all unified) and the equestrian version is a natural next build. Bonus: every waiver / boarding agreement we ship includes the DecisionLayer.ai AI-arbitration clause — for a 120-acre operation with horse-show liability, this is real risk-mitigation, not a checkbox. We've already piloted DecisionLayer in our own waivers; happy to show the simulated-case results.
+
+20 minutes — I'll come up to North Salem. Worth a coffee?
+
+— Doug
+doug@2ntr.com · (914) 402-4624</div>
+    <div class="email-extras">
+      <div>
+        <div class="label">First-30-seconds question</div>
+        <div class="item-body">"How many systems is the office juggling right now to run boarding + lessons + the horse show — and where does the spreadsheet live that ties them together?"</div>
+      </div>
+      <div>
+        <div class="label">First-meeting deliverable</div>
+        <div class="item-body">A 1-page wireframe sketch of a unified equestrian operations dashboard (boarding contracts + lesson schedule + show registrations on one screen) + the skateOS demo as proof we can ship the underlying pattern in 4 weeks.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── OBJECTION HANDLERS ────────────────────────────────────── -->
+  <section class="sec-doc" id="objections">
+    <h2>Common objections + responses</h2>
+    <p>The 7 questions you'll hear most often, with the honest answer ready. Don't memorize verbatim — internalize the shape.</p>
+    <div class="obj-grid">
+      <div class="row">
+        <div class="obj">"We're already on [Square / Mindbody / RGP / etc.] and it works."</div>
+        <div class="resp">"Totally fair. The question isn't whether it works — it's whether the friction it adds is costing you more than $5-20k a year in lost weekend revenue or front-desk hours. A 1-hour Spike conversation costs you nothing and either confirms you're fine, or surfaces something. Either way you win."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"We tried custom software once and got burned."</div>
+        <div class="resp">"Same. Most agencies bill 8-week discovery cycles, deliver in 6 months, and disappear. Our shape is different: $5k for a 1-week prototype, walk away free if you don't like it by day 3. You're not betting anything meaningful upfront."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"What about ongoing support?"</div>
+        <div class="resp">"30 days of post-ship support is included on Production Sprint at no extra cost. After that, no retainer required — we're a side project, not a managed-services firm. If you want a small fix later, $3k Fix-it Sprint covers a week. We deliberately don't sell ongoing IT contracts."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"How is this different from an offshore Upwork dev?"</div>
+        <div class="resp">"Same hours, different outcome. The work is done by us — Doug ships, Jon does the security review — in the same time zone, in person if needed. And every project includes a working AI-arbitration clause via DecisionLayer that an Upwork dev wouldn't know exists."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"What's this DecisionLayer thing — sounds risky."</div>
+        <div class="resp">"Fair question. It's an arbitration clause — same legal concept as the one in your AT&amp;T or Uber TOS, but the dispute gets resolved via an AI-mediated review process at ~$500 in 45-90 days instead of $100k+ in court. We can show you a simulated case run on our own waivers where the system ruled for the operator. Worst case you don't include it. No lock-in."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"How do I know you'll deliver if it's a side project?"</div>
+        <div class="resp">"Because we ship daily, you see progress every day, and we eat the cost if we miss. Spike has a 3-day walk-away clause — full refund. On Production Sprint the deliverables are written into a one-page scope before money changes hands. If we're not delivering, you stop paying. The structural protection is in the engagement, not in our company size."</div>
+      </div>
+      <div class="row">
+        <div class="obj">"Can you give me a reference?"</div>
+        <div class="resp">"Yes. Doug runs skateOS at 2nd Nature Park; you can walk in, see it running, and ask the front desk. For Branch Manager (tree care), I'll get you in touch with the operator when you're ready. Skip the marketing-deck testimonials — go see the software running in production."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SEND CADENCE ──────────────────────────────────────────── -->
+  <section class="sec-doc">
+    <h2>Recommended send cadence</h2>
+    <p>Don't send all five the same day. Pace it so follow-ups stay manageable.</p>
+    <ul>
+      <li><strong>Day 1 (Monday):</strong> Rock Club + Air Riderz.</li>
+      <li><strong>Day 2 (Tuesday):</strong> Bananas Axe Cabana.</li>
+      <li><strong>Day 3 (Wednesday):</strong> Crazy Paint.</li>
+      <li><strong>Day 4 (Thursday):</strong> Old Salem Farm.</li>
+      <li><strong>Day 8 (next Monday):</strong> Follow up on Rock Club + Air Riderz if no reply. Walk-in or phone, not email.</li>
+      <li><strong>Day 10:</strong> Follow up on Bananas if no reply.</li>
+      <li><strong>Day 12:</strong> Follow up on Crazy Paint + Old Salem.</li>
+    </ul>
+    <p>If 3 of 5 don't reply after 2 follow-ups, you've learned something — either the email needs a different hook, or these specific businesses are wrong fit. Move down to the next 5 in Tier A and adjust.</p>
+  </section>
+
+  <div style="text-align:center;margin-top:30px;padding:20px;color:#737373;font-size:.82rem;font-style:italic;">
+    <p>Five emails. Five businesses. One Saturday morning of work for the front desks of New Rochelle.</p>
+    <p style="margin-top:14px;"><button class="lock-out" onclick="lockOut()">🔒 Lock</button></p>
+  </div>
+</div>
+
+<footer>© 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project · Internal — do not share · <a href="../index.html">Public site</a> · <a href="cold-list.html">Cold-call list</a> · <a href="plan.html">Plan</a></footer>
+
+</div><!-- /content -->
+
+<script>
+  const EXPECTED_HASH = 'f6a834024a630de3cf417b923a064a5ade17dcfc0e65f8c84cf9b7d41e9c6af4';
+
+  async function sha256(s){
+    const buf = new TextEncoder().encode(s);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  async function tryUnlock(e){
+    e.preventDefault();
+    const pw = document.getElementById('pw').value;
+    const errEl = document.getElementById('lockErr');
+    if(!pw) return false;
+    const h = await sha256(pw);
+    if(h === EXPECTED_HASH){
+      sessionStorage.setItem('hvai_plan_unlocked', '1');
+      showContent();
+    } else {
+      errEl.textContent = 'Wrong password.';
+      errEl.style.display = 'block';
+    }
+    return false;
+  }
+  function showContent(){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+  function lockOut(){
+    sessionStorage.removeItem('hvai_plan_unlocked');
+    location.reload();
+  }
+  function copyEmail(targetId, btn){
+    const el = document.getElementById(targetId);
+    if(!el) return;
+    // Strip the subject line span and get clean text
+    const fullText = el.innerText;
+    navigator.clipboard.writeText(fullText).then(() => {
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = orig; btn.classList.remove('copied'); }, 1800);
+    }).catch(() => {
+      // Fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = fullText;
+      ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); btn.textContent = '✓ Copied'; btn.classList.add('copied');
+        setTimeout(() => { btn.textContent = 'Copy email'; btn.classList.remove('copied'); }, 1800);
+      } catch(e) { btn.textContent = 'Copy failed'; }
+      document.body.removeChild(ta);
+    });
+  }
+  if(sessionStorage.getItem('hvai_plan_unlocked') === '1') showContent();
+</script>
+
+</body>
+</html>

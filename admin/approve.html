@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign agreement</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛹%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+  :root {
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --ink:         #0a0a0a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #faf9f6;
+    --green:       #16a34a;
+    --green-light: #dcfce7;
+    --red:         #dc2626;
+    --red-light:   #fee2e2;
+    --amber:       #f59e0b;
+    --amber-light: #fef3c7;
+    --gray:        #9ca3af;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    max-width: 720px;
+    margin: 0 auto;
+    box-shadow: 0 6px 24px rgba(0,0,0,.05);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1f1f23 50%, #0a0a0a 100%);
+    color: #fff;
+    padding: 28px 36px;
+    text-align: center;
+    position: relative;
+  }
+  .header .logo { font-size: 36px; line-height: 1; margin-bottom: 8px; }
+  .header .biz {
+    font-weight: 800; font-size: 1.15rem; letter-spacing: -0.01em;
+  }
+  .header .biz .accent { color: var(--rose); }
+  .header .sub { font-size: .8rem; color: rgba(255,255,255,.5); margin-top: 3px; letter-spacing: .04em; }
+  .header::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+    background: linear-gradient(90deg, #fb7185, #e11d48, #9333ea);
+  }
+
+  .body { padding: 36px; }
+  @media (max-width: 600px) { .body { padding: 24px 20px; } }
+
+  .type-pill {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    border-radius: 99px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .meta {
+    color: var(--ink-soft);
+    font-size: .82rem;
+    margin-bottom: 24px;
+  }
+
+  /* Markdown-rendered agreement body */
+  .agreement-body {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    max-height: 50vh;
+    overflow-y: auto;
+    font-size: .92rem;
+  }
+  .agreement-body p { margin-bottom: 12px; }
+  .agreement-body h2 {
+    font-size: 1.1rem; font-weight: 800; margin: 18px 0 10px;
+    letter-spacing: -0.01em;
+  }
+  .agreement-body h3 {
+    font-size: .98rem; font-weight: 700; margin: 14px 0 8px;
+  }
+  .agreement-body ul, .agreement-body ol { margin: 8px 0 14px 22px; }
+  .agreement-body li { margin-bottom: 4px; }
+  .agreement-body strong { font-weight: 700; }
+  .agreement-body em     { font-style: italic; }
+  .agreement-body a      { color: var(--rose); text-decoration: underline; }
+  .agreement-body code   { background: rgba(0,0,0,.05); padding: 1px 5px; border-radius: 3px; font-family: ui-monospace, monospace; font-size: .88em; }
+  .agreement-body blockquote {
+    border-left: 3px solid var(--rose);
+    padding: 4px 0 4px 14px;
+    margin: 8px 0;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  /* Sign section */
+  .sign-section {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 20px 22px;
+  }
+  .sign-section h2 {
+    font-size: 1.05rem;
+    font-weight: 800;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: .82rem;
+    color: var(--ink);
+    font-weight: 600;
+    margin-bottom: 5px;
+  }
+  .field input[type="text"], .field input[type="email"] {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    font-size: .95rem;
+    font-family: inherit;
+    background: #fff;
+  }
+  .field input:focus {
+    outline: none;
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(225,29,72,.1);
+  }
+  .opt { color: var(--gray); font-weight: 400; margin-left: 6px; }
+
+  .sig-wrap {
+    position: relative;
+    background: #fff;
+    border: 2px dashed var(--line);
+    border-radius: 9px;
+    padding: 0;
+    overflow: hidden;
+  }
+  #sigCanvas {
+    display: block;
+    width: 100%;
+    height: 180px;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .sig-hint {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--gray);
+    font-style: italic;
+    font-size: .9rem;
+    pointer-events: none;
+    transition: opacity .2s;
+  }
+  .sig-hint.hide { opacity: 0; }
+  .sig-controls {
+    display: flex; justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .btn-clear {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-size: .82rem;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: inherit;
+  }
+  .btn-clear:hover { color: var(--ink); }
+
+  /* Action buttons */
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background .12s, transform .08s;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: .5; cursor: wait; }
+  .btn-primary { background: var(--green); color: #fff; flex: 1; justify-content: center; }
+  .btn-primary:hover:not(:disabled) { background: #128039; }
+  .btn-decline {
+    background: transparent;
+    color: var(--red);
+    border-color: var(--red-light);
+  }
+  .btn-decline:hover { background: var(--red-light); }
+
+  .err {
+    color: var(--red);
+    background: var(--red-light);
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: .88rem;
+    margin-top: 12px;
+    display: none;
+  }
+  .err.show { display: block; }
+
+  /* Status states (already signed / declined / expired) */
+  .status-card {
+    background: var(--green-light);
+    border-radius: 9px;
+    padding: 24px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .status-card.declined { background: var(--red-light); }
+  .status-card.expired,
+  .status-card.revoked { background: var(--amber-light); }
+  .status-card.is-error     { background: var(--red-light); }
+  .status-card .icon { font-size: 48px; margin-bottom: 10px; color: var(--green); }
+  .status-card.declined .icon { color: var(--red); }
+  .status-card.expired .icon,
+  .status-card.revoked .icon { color: var(--amber); }
+  .status-card.is-error .icon { color: var(--red); }
+  .status-card h2 {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .status-card p {
+    color: var(--ink-soft);
+    font-size: .92rem;
+  }
+  .status-card .when {
+    font-weight: 600; color: var(--ink); margin-top: 4px;
+  }
+
+  .footer {
+    text-align: center;
+    color: var(--gray);
+    font-size: .72rem;
+    margin-top: 22px;
+    letter-spacing: .04em;
+  }
+
+  /* Loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0eb 25%, #faf9f6 50%, #f0f0eb 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+    border-radius: 6px;
+    height: 18px;
+    margin-bottom: 12px;
+  }
+  .skeleton.wide  { width: 92%; }
+  .skeleton.short { width: 65%; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="logo">🛹</div>
+    <div class="biz" id="bizName">Skatepark</div>
+    <div class="sub">CUSTOMER AGREEMENT</div>
+  </div>
+
+  <div class="body" id="bodyPane">
+    <!-- Loading skeleton -->
+    <div id="loadingState">
+      <div class="skeleton wide"></div>
+      <div class="skeleton short"></div>
+      <div class="skeleton wide"></div>
+      <div class="skeleton wide" style="height:120px;margin-top:18px;"></div>
+    </div>
+
+    <!-- Active sign form (filled on load if status='pending') -->
+    <div id="signForm" style="display:none;">
+      <div class="type-pill" id="typePill">AGREEMENT</div>
+      <h1 id="agreementTitle">—</h1>
+      <div class="meta" id="agreementMeta"></div>
+
+      <div class="agreement-body" id="agreementBody"></div>
+
+      <div class="sign-section">
+        <h2><i class="fas fa-pen-nib"></i> Sign to accept</h2>
+        <div class="field">
+          <label for="f_name">Your full legal name</label>
+          <input type="text" id="f_name" placeholder="Type your name as your signature" autocomplete="name">
+        </div>
+        <div class="field">
+          <label for="f_email">Email <span class="opt">optional · so we can send you a copy</span></label>
+          <input type="email" id="f_email" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="field">
+          <label>Draw your signature</label>
+          <div class="sig-wrap">
+            <canvas id="sigCanvas"></canvas>
+            <div class="sig-hint" id="sigHint">Sign here with your finger, stylus, or mouse</div>
+          </div>
+          <div class="sig-controls">
+            <button class="btn-clear" type="button" onclick="clearSig()">Clear</button>
+          </div>
+        </div>
+
+        <div class="err" id="err"></div>
+
+        <div class="actions">
+          <button class="btn btn-decline" onclick="doDecline()" type="button"><i class="fas fa-xmark"></i> Decline</button>
+          <button class="btn btn-primary" onclick="doSign()" type="button" id="signBtn"><i class="fas fa-check"></i> Accept &amp; sign</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status states -->
+    <div id="statusState" style="display:none;">
+      <div class="status-card" id="statusCard">
+        <div class="icon" id="statusIcon"><i class="fas fa-circle-check"></i></div>
+        <h2 id="statusHeading">—</h2>
+        <p id="statusText">—</p>
+        <p class="when" id="statusWhen"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Powered by skateOS · Secured by 256-bit TLS</div>
+
+<script>
+//─────────────────────────── Bootstrap
+var CFG = window.APP_CONFIG || {};
+var sbClient = null;
+var agreement = null;
+var tenantInfo = null;
+var sigContext = null;
+var sigEmpty = true;
+
+function getSupabase() {
+  if (sbClient) return sbClient;
+  sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  return sbClient;
+}
+
+function qs(name) {
+  var m = new URLSearchParams(window.location.search).get(name);
+  return m || '';
+}
+
+async function init() {
+  var id = qs('id');
+  if (!id || !/^[0-9a-f-]{30,40}$/i.test(id)) {
+    showError('Invalid link', 'This agreement link is malformed. Ask the park for a fresh one.');
+    return;
+  }
+  try {
+    var sb = getSupabase();
+    var r = await sb.from('agreements').select('*').eq('id', id).limit(1);
+    if (r.error || !r.data || r.data.length === 0) {
+      showError('Agreement not found', 'This link may have been revoked or the agreement was deleted. Contact the park.');
+      return;
+    }
+    agreement = r.data[0];
+
+    // Look up tenant for biz name (anon can read tenants if they have a user_tenants entry — but anon doesn't.
+    // Workaround: fetch tenants.name with a public RPC OR use APP_CONFIG default. For now use APP_CONFIG bizName.)
+    document.getElementById('bizName').innerHTML = renderBizName(CFG.bizShortName || 'Skate', CFG.bizShortAccent || 'park');
+
+    document.getElementById('loadingState').style.display = 'none';
+
+    if (agreement.status === 'signed') {
+      renderStatus('signed', 'Already signed', 'You signed this on ' + fmtDate(agreement.signed_at) + '.',
+        agreement.signed_by_name ? 'Signed by ' + agreement.signed_by_name : '');
+    } else if (agreement.status === 'declined') {
+      renderStatus('declined', 'Agreement declined', 'You declined this on ' + fmtDate(agreement.declined_at) + '.',
+        agreement.declined_reason ? '"' + agreement.declined_reason + '"' : '');
+    } else if (agreement.status === 'expired') {
+      renderStatus('expired', 'Agreement expired', 'This agreement was only valid through ' + fmtDate(agreement.expires_at) + '.',
+        'Please ask the park to send a new one.');
+    } else if (agreement.status === 'revoked') {
+      renderStatus('revoked', 'Agreement cancelled', 'The park revoked this agreement before it was signed.',
+        'Contact the park if you have questions.');
+    } else {
+      // pending — render sign form
+      renderSignForm(agreement);
+    }
+  } catch (e) {
+    console.error(e);
+    showError('Could not load', e.message || 'Network error. Try again in a moment.');
+  }
+}
+
+function renderBizName(short, accent) {
+  return '<span>' + esc(short) + '</span> ' + (accent ? '<span class="accent">' + esc(accent) + '</span>' : '');
+}
+
+function renderSignForm(a) {
+  var typeLabels = {
+    waiver:      'Liability waiver',
+    membership:  'Membership agreement',
+    party:       'Party deposit agreement',
+    equipment:   'Equipment rental agreement',
+    custom:      'Agreement'
+  };
+  document.getElementById('typePill').textContent = (typeLabels[a.type] || 'Agreement').toUpperCase();
+  document.getElementById('agreementTitle').textContent = a.title;
+
+  var meta = '';
+  if (a.expires_at) meta += 'Expires ' + fmtDate(a.expires_at) + ' · ';
+  meta += 'Sent ' + fmtDate(a.created_at);
+  document.getElementById('agreementMeta').textContent = meta;
+
+  document.getElementById('agreementBody').innerHTML = renderMarkdown(a.body_markdown || '');
+  document.getElementById('signForm').style.display = 'block';
+
+  initSignaturePad();
+}
+
+function renderStatus(state, heading, text, when) {
+  var iconMap = {
+    signed:   'fa-circle-check',
+    declined: 'fa-circle-xmark',
+    expired:  'fa-clock',
+    revoked:  'fa-ban',
+    'is-error': 'fa-circle-exclamation'
+  };
+  var card = document.getElementById('statusCard');
+  card.className = 'status-card ' + state;
+  document.getElementById('statusIcon').innerHTML = '<i class="fas ' + (iconMap[state] || 'fa-circle-info') + '"></i>';
+  document.getElementById('statusHeading').textContent = heading;
+  document.getElementById('statusText').textContent = text;
+  document.getElementById('statusWhen').textContent = when || '';
+  document.getElementById('statusState').style.display = 'block';
+}
+
+function showError(heading, text) {
+  document.getElementById('loadingState').style.display = 'none';
+  renderStatus('is-error', heading, text, '');
+}
+
+//─────────────────────────── Signature pad (touch + mouse)
+function initSignaturePad() {
+  var c = document.getElementById('sigCanvas');
+  var dpr = window.devicePixelRatio || 1;
+  // Size to parent width
+  var rect = c.parentElement.getBoundingClientRect();
+  c.width  = rect.width * dpr;
+  c.height = 180 * dpr;
+  c.style.width  = rect.width + 'px';
+  c.style.height = '180px';
+  sigContext = c.getContext('2d');
+  sigContext.scale(dpr, dpr);
+  sigContext.lineCap = 'round';
+  sigContext.lineJoin = 'round';
+  sigContext.strokeStyle = '#0a0a0a';
+  sigContext.lineWidth = 2.2;
+
+  var drawing = false;
+  function getPoint(ev) {
+    var r = c.getBoundingClientRect();
+    var x, y;
+    if (ev.touches && ev.touches.length) {
+      x = ev.touches[0].clientX - r.left;
+      y = ev.touches[0].clientY - r.top;
+    } else {
+      x = ev.clientX - r.left;
+      y = ev.clientY - r.top;
+    }
+    return {x:x, y:y};
+  }
+  function start(ev) {
+    ev.preventDefault();
+    drawing = true;
+    sigEmpty = false;
+    document.getElementById('sigHint').classList.add('hide');
+    var p = getPoint(ev);
+    sigContext.beginPath();
+    sigContext.moveTo(p.x, p.y);
+  }
+  function move(ev) {
+    if (!drawing) return;
+    ev.preventDefault();
+    var p = getPoint(ev);
+    sigContext.lineTo(p.x, p.y);
+    sigContext.stroke();
+  }
+  function end(ev) { drawing = false; }
+  c.addEventListener('mousedown', start);
+  c.addEventListener('mousemove', move);
+  c.addEventListener('mouseup',   end);
+  c.addEventListener('mouseleave',end);
+  c.addEventListener('touchstart', start, {passive:false});
+  c.addEventListener('touchmove',  move,  {passive:false});
+  c.addEventListener('touchend',   end);
+  // Re-size on orientation change
+  window.addEventListener('resize', function(){
+    // Preserve current drawing by storing dataURL then redrawing isn't trivial; just keep size
+    var newRect = c.parentElement.getBoundingClientRect();
+    if (Math.abs(newRect.width - rect.width) > 30) initSignaturePad();
+  });
+}
+
+function clearSig() {
+  if (!sigContext) return;
+  var c = document.getElementById('sigCanvas');
+  var dpr = window.devicePixelRatio || 1;
+  sigContext.clearRect(0, 0, c.width / dpr, c.height / dpr);
+  sigEmpty = true;
+  document.getElementById('sigHint').classList.remove('hide');
+}
+
+//─────────────────────────── Submit
+async function doSign() {
+  var err = document.getElementById('err');
+  var btn = document.getElementById('signBtn');
+  err.classList.remove('show'); err.textContent = '';
+
+  var name = document.getElementById('f_name').value.trim();
+  var email = document.getElementById('f_email').value.trim();
+
+  if (name.length < 2) {
+    err.classList.add('show'); err.textContent = 'Please type your full legal name.';
+    return;
+  }
+  if (sigEmpty) {
+    err.classList.add('show'); err.textContent = 'Please draw your signature in the box above.';
+    return;
+  }
+
+  btn.disabled = true;
+  var origText = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing…';
+
+  try {
+    var c = document.getElementById('sigCanvas');
+    var sigData = c.toDataURL('image/png');
+    var sb = getSupabase();
+    var r = await sb.rpc('agreement_record_signature', {
+      p_id: agreement.id,
+      p_signed_name: name,
+      p_signature:   sigData,
+      p_email:       email || null
+    });
+    if (r.error) throw r.error;
+    var res = r.data || {};
+    if (res.ok) {
+      document.getElementById('signForm').style.display = 'none';
+      renderStatus('signed', 'Thanks — signed!',
+        'You signed this agreement on ' + fmtDate(new Date()) + '.',
+        'Signed by ' + name);
+    } else {
+      err.classList.add('show');
+      err.textContent = 'Could not record signature: ' + (res.error || 'unknown');
+      btn.disabled = false; btn.innerHTML = origText;
+    }
+  } catch (e) {
+    console.error(e);
+    err.classList.add('show');
+    err.textContent = 'Network error: ' + (e.message || 'try again');
+    btn.disabled = false; btn.innerHTML = origText;
+  }
+}
+
+async function doDecline() {
+  var reason = prompt('Why are you declining? (optional)');
+  if (reason === null) return;
+  try {
+    var sb = getSupabase();
+    var r = await sb.rpc('agreement_record_decline', {
+      p_id: agreement.id,
+      p_reason: reason
+    });
+    if (r.error) throw r.error;
+    document.getElementById('signForm').style.display = 'none';
+    renderStatus('declined', 'Agreement declined',
+      'You declined this on ' + fmtDate(new Date()) + '.',
+      reason ? '"' + reason + '"' : '');
+  } catch (e) {
+    alert('Could not record decline: ' + (e.message || 'try again'));
+  }
+}
+
+//─────────────────────────── Markdown (basic)
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function renderMarkdown(src) {
+  // Minimal markdown — handles paragraphs, headings, lists, bold/italic, links, blockquote
+  if (!src) return '<p><em>Agreement text is empty.</em></p>';
+  var s = esc(src);
+
+  // Headings
+  s = s.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  s = s.replace(/^## (.+)$/gm,  '<h2>$1</h2>');
+
+  // Bold + italic
+  s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+
+  // Links [text](url)
+  s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+
+  // Inline code
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // Blockquote
+  s = s.replace(/^&gt; ?(.*)$/gm, '<blockquote>$1</blockquote>');
+
+  // Bulleted lists
+  var lines = s.split('\n');
+  var out = [];
+  var inList = false;
+  var inOl = false;
+  lines.forEach(function(line){
+    var ul = line.match(/^[-*] (.+)$/);
+    var ol = line.match(/^(\d+)\. (.+)$/);
+    if (ul) {
+      if (!inList) { out.push('<ul>'); inList = true; inOl = false; }
+      out.push('<li>' + ul[1] + '</li>');
+    } else if (ol) {
+      if (inList && !inOl) { out.push('</ul>'); inList = false; }
+      if (!inOl) { out.push('<ol>'); inOl = true; }
+      out.push('<li>' + ol[2] + '</li>');
+    } else {
+      if (inList) { out.push('</ul>'); inList = false; }
+      if (inOl)   { out.push('</ol>'); inOl   = false; }
+      if (line.trim().length > 0 && !/^<h\d|<blockquote/.test(line)) {
+        out.push('<p>' + line + '</p>');
+      } else {
+        out.push(line);
+      }
+    }
+  });
+  if (inList) out.push('</ul>');
+  if (inOl)   out.push('</ol>');
+
+  return out.join('\n');
+}
+
+function fmtDate(d) {
+  if (!d) return '';
+  var dt = (d instanceof Date) ? d : new Date(d);
+  if (isNaN(dt.getTime())) return String(d);
+  return dt.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+}
+
+init();
+</script>
+
+</body>
+</html>

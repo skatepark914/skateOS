@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case Study: Branch Manager — Hudson Valley AI</title>
+<meta name="description" content="How Hudson Valley AI built Branch Manager — a multi-tenant SaaS operations platform for tree-care + outdoor-service companies. Architecture, security, and outcomes.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://consult.skateos.com/case-branchmanager.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+  .wrap{max-width:920px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .tag{background:#dcfce7;color:#15803d;padding:5px 10px;border-radius:5px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-0.022em;line-height:1.05;margin-bottom:14px;}
+  .subtitle{font-size:1.1rem;color:#404040;margin-bottom:36px;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin:30px 0 40px;background:linear-gradient(135deg,#0a0a0a,#0f1f15);color:#fafaf9;padding:30px;border-radius:14px;}
+  .stat-num{font-size:2.4rem;font-weight:900;color:#86efac;letter-spacing:-0.03em;line-height:1;}
+  .stat-label{font-size:.78rem;color:#a3a3a3;font-weight:600;margin-top:6px;}
+
+  section{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:32px;margin-bottom:18px;}
+  section h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:16px;}
+  section h3{font-size:1.05rem;font-weight:700;margin:20px 0 8px;color:#0a0a0a;}
+  section p{margin-bottom:12px;color:#404040;font-size:.95rem;}
+  section ul{margin:8px 0 14px 22px;color:#404040;font-size:.94rem;}
+  section li{margin-bottom:5px;}
+  section strong{color:#0a0a0a;}
+  section code{font-family:ui-monospace,monospace;font-size:.84rem;background:#f3f4f6;padding:1px 5px;border-radius:3px;color:#0a0a0a;}
+  .pull{background:#f0fdf4;border-left:3px solid #15803d;padding:14px 18px;border-radius:6px;margin:16px 0;font-size:.94rem;font-style:italic;color:#14532d;}
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px;}
+  .stack-item{background:#fafaf9;border:1px solid #e5e5e0;border-radius:8px;padding:12px;}
+  .stack-item .h{font-weight:700;font-size:.86rem;margin-bottom:4px;}
+  .stack-item .b{font-size:.78rem;color:#737373;}
+
+  .cta-bottom{background:linear-gradient(135deg,#0a0a0a,#0f1f15);color:#fafaf9;border-radius:14px;padding:36px;margin-top:40px;text-align:center;}
+  .cta-bottom h2{color:#fafaf9;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;}
+  .cta-bottom .btn{display:inline-block;padding:12px 24px;background:#86efac;color:#0a0a0a;border-radius:8px;font-weight:700;text-decoration:none;margin:4px;}
+  .cta-bottom .btn.alt{background:transparent;color:#fafaf9;border:1.5px solid #525252;}
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="topbar">📍 Hudson Valley, NY · Software your business <em>actually owns</em> · <a href="index.html">Back to overview →</a></div>
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="ownership/">Why ownership</a>
+    <a href="products.html">Products</a>
+    <a href="work.html" class="active">Work</a>
+    <a href="security.html">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html">Compare</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Case studies / Branch Manager</div>
+  <div class="tag-row">
+    <span class="tag">● Live in production</span>
+    <span class="tag">Multi-tenant SaaS</span>
+    <span class="tag">Tree-care &amp; outdoor-service</span>
+  </div>
+  <h1>Branch Manager — operations platform for tree-care &amp; outdoor-service crews</h1>
+  <p class="subtitle">Replacing the Jobber / QuickBooks / ServiceTitan stack with one platform built for arborist crews, lawn-care operators, and outdoor-service businesses. The original codebase that skateOS was later forked from. Running in production at 2nd Nature Tree (Hudson Valley, NY).</p>
+
+  <div class="stats">
+    <div><div class="stat-num">2024</div><div class="stat-label">Live since</div></div>
+    <div><div class="stat-num">22+</div><div class="stat-label">Admin modules</div></div>
+    <div><div class="stat-num">Multi-<br>tenant</div><div class="stat-label">SaaS architecture</div></div>
+    <div><div class="stat-num">Stripe</div><div class="stat-label">Connect + autopay</div></div>
+    <div><div class="stat-num">Mobile</div><div class="stat-label">+ web · offline-first</div></div>
+    <div><div class="stat-num">0</div><div class="stat-label">Security incidents</div></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Tree-care and outdoor-service companies are some of the most under-served SMBs in software. The market leaders look like this:</p>
+    <ul>
+      <li><strong>Jobber</strong> — generic field-service SaaS at $200-400/mo. Reasonable software, but every tree-care company ends up bolting on 5+ workarounds because Jobber doesn't know what an ISA certification is, doesn't track chemical-applicator licenses, doesn't understand crew-by-property history, doesn't have map-based equipment placement.</li>
+      <li><strong>ServiceTitan</strong> — enterprise-priced ($500-2000/mo) and built for HVAC / electrical contractors. Tree-care workflows force-fit awkwardly. Multi-month implementations.</li>
+      <li><strong>QuickBooks + paper / spreadsheets</strong> — what most independent tree-care companies actually use. Quotes scribbled on paper, photos texted to the office, invoices generated by hand, AR aging on a sticky note.</li>
+    </ul>
+    <p>The combination is roughly: $400-600/mo of SaaS subscriptions that don't quite fit, plus 4-6 hours/week of admin work that wouldn't exist with the right tool. For a 3-6 person crew running $500k-2M/yr in revenue, that's tens of thousands per year of friction.</p>
+    <div class="pull">
+      Field crews live in their trucks. Operators live in their phones. Neither lives at a desk. Software built for HVAC dispatchers misses this basic shape — and the gap shows up as paper, spreadsheets, and Saturday-morning catch-up work.
+    </div>
+  </section>
+
+  <section>
+    <h2>What we built</h2>
+    <p>Branch Manager is a multi-tenant SaaS operations platform built specifically for outdoor-service crews — tree care, landscaping, lawn care, pest control. One platform that replaces the Jobber + QuickBooks + Smartwaiver + DocuSign + scattered-paper stack with an integrated flow from quote → job → invoice → recurring service.</p>
+
+    <h3>Core flow</h3>
+    <ul>
+      <li><strong>Quote-to-invoice</strong> — Crew lead snaps photos, sketches the property, marks where equipment goes. Quote generated, emailed, customer reviews on a mobile-friendly page, approves, optional deposit charged via Stripe.</li>
+      <li><strong>Crew dispatch + scheduling</strong> — Schedule view of upcoming jobs, drag-and-drop assignment to crews, real-time job status as crews move through the day, automated email/SMS reminders to customers 24 hours out.</li>
+      <li><strong>Mobile crew app</strong> — Crew foreman has the day's jobs on their phone, offline-first capture so they can update status from rural service areas without cellular. Photos, time tracking, completion notes, customer signature.</li>
+      <li><strong>Customer self-serve portal</strong> — Authenticated customer page showing service history, upcoming jobs, invoices, autopay, the property record.</li>
+      <li><strong>Stripe Connect + autopay</strong> — Recurring service customers go on autopay. Card on file, monthly bill, no chasing AR.</li>
+      <li><strong>Vehicle inspection + safety compliance</strong> — Pre-job inspection logs, equipment maintenance tracking, ISA cert renewals, applicator license renewals.</li>
+      <li><strong>Communications hub</strong> — All customer messages in one place. Email, SMS, voicemail transcription. Per-customer history.</li>
+      <li><strong>Payroll + time tracking</strong> — Crew time entries by job, approval workflow, gross-pay calc with overtime, CSV export to your accounting system.</li>
+    </ul>
+
+    <h3>Beyond the core</h3>
+    <p>Branch Manager has 22+ admin modules covering employee onboarding (incident reports, employment agreements, safety training certificates, wage-theft notices), expense tracking, campaigns + marketing, automations, command-palette navigation, custom form builder for service-specific intake, PDF generation for invoices and certificates, and a notifications system that ties everything together.</p>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <p>Built on the same stack as skateOS — these are sibling products from the same codebase lineage (skateOS was forked from Branch Manager in April 2026 to specialize the recreation-industry version).</p>
+    <div class="stack-grid">
+      <div class="stack-item"><div class="h">Postgres on Supabase</div><div class="b">Multi-tenant via <code>tenant_id</code> columns + RLS</div></div>
+      <div class="stack-item"><div class="h">Cloudflare Workers</div><div class="b">Static-asset hosting + DNS + WAF</div></div>
+      <div class="stack-item"><div class="h">React Native / Expo</div><div class="b">Crew app · iOS-first with offline cache</div></div>
+      <div class="stack-item"><div class="h">Stripe Connect</div><div class="b">Multi-account payments + autopay</div></div>
+      <div class="stack-item"><div class="h">Resend</div><div class="b">Transactional email · quote sends + receipts + reminders</div></div>
+      <div class="stack-item"><div class="h">Twilio</div><div class="b">SMS reminders + crew alerts + transcription</div></div>
+      <div class="stack-item"><div class="h">Edge Functions</div><div class="b">Stripe webhook, AI chat, dialpad bridge, email/notify</div></div>
+      <div class="stack-item"><div class="h">pg_cron</div><div class="b">Scheduled reminders + reconciliation + AR aging</div></div>
+    </div>
+
+    <h3>Multi-tenant from day 1</h3>
+    <p>Branch Manager was built multi-tenant from the start — RLS-enforced at the database layer, tenant-scoped routing, owner / staff / crew / customer permission tiers. Adding a second tenant is a row in the <code>tenants</code> table, not a forklift migration. Multiple tree-care companies could be onboarded to the same install without code changes.</p>
+    <p>This architecture is what made skateOS possible — when Doug decided to build a recreation-industry parallel in 2026, the entire multi-tenant infrastructure ported over with just the domain layer rewritten.</p>
+  </section>
+
+  <section>
+    <h2>Security choices &amp; why</h2>
+
+    <h3>RLS at the database layer</h3>
+    <p>Every business table has Row-Level Security policies tied to <code>tenant_id</code> and the authenticated user's role. Even if application-layer auth fails, the database refuses cross-tenant reads/writes. The customer portal is similarly scoped — a signed-in customer can read only their own records, enforced at the DB.</p>
+
+    <h3>Stripe Connect = no card data on our servers</h3>
+    <p>All payment captures happen via Stripe's hosted forms. We store only the Stripe customer ID and the latest charge reference — never the card PAN, CVV, or expiration. PCI scope = SAQ-A.</p>
+
+    <h3>Webhook signature verification</h3>
+    <p>Stripe webhooks verify the shared-secret signature before acting on any payload. Idempotency keys prevent replay attacks. Failed signature = silent 200 OK back to Stripe so attackers can't probe.</p>
+
+    <h3>Audit log on every business table</h3>
+    <p>Postgres trigger captures every INSERT/UPDATE/DELETE on core tables with actor identity. Owner can review changes by table/actor/date for forensic / dispute purposes.</p>
+
+    <h3>Authentication via Supabase Auth</h3>
+    <p>Magic-link sign-in for customers (no password storage). Hardware MFA option for owners. SSO via Google Workspace for staff.</p>
+
+    <h3>Encrypted in transit + at rest</h3>
+    <p>TLS 1.2+ everywhere via Cloudflare. AES-256 at rest via Supabase defaults. Backups encrypted with separate key.</p>
+  </section>
+
+  <section>
+    <h2>How we shipped this fast</h2>
+    <p>Branch Manager was built and put into production in months, not years. The shape of the work:</p>
+    <ul>
+      <li><strong>Pattern from the parent codebase</strong> — Branch Manager started as a fork of an earlier internal admin tool (Smart Lawn NY). The multi-tenant foundation, auth flow, payment integration, and audit log were already battle-tested before tree-care-specific work began.</li>
+      <li><strong>Build at our own business first</strong> — Every feature ships into 2nd Nature Tree's production operation before it goes into the platform. If it doesn't work for our own crews, it doesn't ship. Real-world stress test before any customer sees it.</li>
+      <li><strong>AI as force multiplier</strong> — Claude-assisted development collapsed the "write a new admin page" cycle from days to hours. Without AI velocity, Branch Manager doesn't exist as a 2-person-built product.</li>
+      <li><strong>Vanilla JS for the admin</strong> — No framework churn. The admin SPA is plain HTML/JS/CSS. Every dependency added is justified individually.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Outcomes</h2>
+    <p>Running in production at 2nd Nature Tree (Hudson Valley, NY) — Doug's tree-care business. The metrics we track:</p>
+    <ul>
+      <li><strong>0 security incidents</strong> since launch</li>
+      <li><strong>Multi-month average customer lifetime</strong> on autopay recurring service (vs. one-shot job model under the previous stack)</li>
+      <li><strong>Stripe Connect</strong> handles ~$X00k/yr of card volume without us ever touching card data</li>
+      <li><strong>Crew app offline-first capture</strong> means rural service areas without cellular don't break the workflow</li>
+    </ul>
+    <p>The system runs without daily admin intervention. Reminders go out automatically, invoices generate on completion, autopay captures the day after the service is performed. Most of Doug's day at 2nd Nature Tree is in the field — Branch Manager handles the back-office tail without supervision.</p>
+  </section>
+
+  <div class="cta-bottom">
+    <h2>Run a tree-care or outdoor-service business?</h2>
+    <p>Branch Manager is white-label-deployable to other operators. Take a 30-day free trial, or jump straight to a deploy-your-own engagement and run it on your own infrastructure.</p>
+    <a href="mailto:doug@2ntr.com?subject=Branch%20Manager%20%E2%80%94%2030-day%20free%20trial" class="btn">🎁 Start 30-day free trial</a>
+    <a href="products.html#branch-manager" class="btn alt">📦 See pricing</a>
+    <a href="https://branchmanager.app" target="_blank" class="btn alt">↗ branchmanager.app</a>
+  </div>
+</div>
+<footer>© 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="security.html">Security</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></footer>
+</body>
+</html>

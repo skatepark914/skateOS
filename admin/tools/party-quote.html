@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Birthday Party Quote — SkateOS</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="../config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --brand: #e11d48;
+    --brand-dark: #be123c;
+    --brand-light: #ffe4e6;
+    --g50:  #f9fafb;  --g100: #f3f4f6;  --g200: #e5e7eb;
+    --g300: #d1d5db;  --g400: #9ca3af;  --g500: #6b7280;
+    --g600: #4b5563;  --g700: #374151;  --g800: #1f2937;  --g900: #111827;
+    --green: #16a34a;  --red: #dc2626;  --blue: #2563eb;
+    --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.08), 0 4px 6px -2px rgba(0,0,0,.04);
+    --radius: 10px;
+  }
+  *,*::before,*::after { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--g100);
+    color: var(--g800);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  header {
+    background: #fff;
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--g200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  header .brand { display: flex; align-items: center; gap: 12px; font-size: 1.15rem; font-weight: 800; color: var(--g900); }
+  header .brand .emoji { font-size: 1.6rem; }
+  header .brand .accent { color: var(--brand); }
+  header a.back { color: var(--g500); text-decoration: none; font-size: .85rem; font-weight: 600; }
+  header a.back:hover { color: var(--brand); }
+  .container {
+    max-width: 1100px;
+    margin: 28px auto;
+    padding: 0 20px;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+  }
+  @media (max-width: 880px) { .container { grid-template-columns: 1fr; } }
+  .card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  h1 { margin: 0 0 4px; font-size: 1.6rem; font-weight: 800; }
+  h2 { margin: 0 0 16px; font-size: 1.05rem; font-weight: 700; color: var(--g700); display: flex; align-items: center; gap: 8px; }
+  h2 i { color: var(--brand); }
+  .sub { color: var(--g500); font-size: .9rem; margin-bottom: 20px; }
+  label { display: block; font-size: .82rem; font-weight: 600; color: var(--g700); margin-bottom: 5px; }
+  input, select, textarea {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid var(--g300); border-radius: 8px;
+    font-family: inherit; font-size: .92rem;
+    background: #fff; color: var(--g900);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-light);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+  .row.three { grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 600px) { .row, .row.three { grid-template-columns: 1fr; } }
+
+  /* Package picker */
+  .packages { display: grid; gap: 10px; }
+  .pkg {
+    border: 2px solid var(--g200); border-radius: 12px;
+    padding: 14px 16px; cursor: pointer;
+    transition: border-color .15s, background .15s;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 12px;
+  }
+  .pkg:hover { border-color: var(--g400); }
+  .pkg.selected { border-color: var(--brand); background: var(--brand-light); }
+  .pkg-meta { font-size: .8rem; color: var(--g500); margin-top: 3px; }
+  .pkg-price { font-size: 1.05rem; font-weight: 800; color: var(--brand); white-space: nowrap; }
+
+  /* Add-ons */
+  .addons { display: grid; gap: 8px; }
+  .addon {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; border: 1px solid var(--g200); border-radius: 8px;
+    cursor: pointer; gap: 10px;
+  }
+  .addon input { width: auto; }
+  .addon.selected { background: var(--brand-light); border-color: var(--brand); }
+  .addon .price { font-weight: 700; color: var(--brand); white-space: nowrap; }
+  .addon-qty { display: flex; align-items: center; gap: 6px; }
+  .addon-qty button {
+    width: 28px; height: 28px; border: 1px solid var(--g300); background: #fff;
+    border-radius: 6px; cursor: pointer; font-weight: 700; padding: 0;
+    color: var(--g700); font-family: inherit;
+  }
+  .addon-qty input { width: 44px; text-align: center; padding: 4px; }
+
+  /* Quote panel (sticky on desktop) */
+  .quote {
+    position: sticky; top: 20px;
+    background: #fff; border-radius: 14px; box-shadow: var(--shadow-lg);
+    padding: 24px;
+    height: fit-content;
+  }
+  .quote h2 { margin-bottom: 6px; font-size: 1.1rem; }
+  .quote .total {
+    font-size: 2.2rem; font-weight: 900; color: var(--brand);
+    margin: 6px 0 4px;
+  }
+  .quote .deposit { font-size: .82rem; color: var(--g500); margin-bottom: 16px; }
+  .quote .breakdown { border-top: 1px solid var(--g200); padding-top: 12px; font-size: .85rem; }
+  .quote .row-line { display: flex; justify-content: space-between; padding: 4px 0; color: var(--g600); }
+  .quote .row-line.bold { font-weight: 700; color: var(--g900); border-top: 1px solid var(--g200); padding-top: 8px; margin-top: 8px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 12px 18px; border: none; border-radius: 10px;
+    font-family: inherit; font-size: .92rem; font-weight: 700;
+    cursor: pointer; transition: opacity .15s, transform .05s;
+    width: 100%;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn-primary { background: var(--brand); color: #fff; }
+  .btn-primary:hover { background: var(--brand-dark); }
+  .btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-outline { background: #fff; color: var(--g700); border: 1px solid var(--g300); }
+  .btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+  .gap-8 { margin-top: 8px; }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--g900); color: #fff; padding: 12px 20px; border-radius: 10px;
+    font-size: .9rem; box-shadow: var(--shadow-lg); z-index: 100;
+    opacity: 0; transition: opacity .2s;
+    pointer-events: none;
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--red); }
+  .toast.success { background: var(--green); }
+
+  .auth-banner {
+    background: #fffbeb; border: 1px solid #fde68a; color: #92400e;
+    padding: 12px 16px; border-radius: 8px; font-size: .85rem;
+    margin: 0 20px 16px;
+  }
+  .conf-screen {
+    text-align: center; padding: 40px 24px;
+  }
+  .conf-screen i.big { font-size: 3.5rem; color: var(--green); margin-bottom: 12px; }
+  .conf-screen h2 { justify-content: center; font-size: 1.4rem; }
+  .conf-screen .conf-num {
+    font-family: ui-monospace, "SF Mono", monospace;
+    background: var(--g100); padding: 8px 14px; border-radius: 8px;
+    display: inline-block; font-size: 1rem; margin: 12px 0;
+    letter-spacing: .05em;
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <span class="emoji" id="brandEmoji">🛹</span>
+    <span><span id="brandShortName">2nd Nature</span> <span class="accent" id="brandAccent">Park</span> <span style="color:var(--g500);font-weight:500;">— Birthday Party Quote</span></span>
+  </div>
+  <a href="../index.html" class="back"><i class="fas fa-arrow-left"></i> Back to admin</a>
+</header>
+
+<div id="authBanner" class="auth-banner" style="display:none;">
+  <i class="fas fa-info-circle"></i> Sign in to the admin first — quotes save against the live database.
+  <a href="../index.html" style="color:#92400e;font-weight:700;">Sign in →</a>
+</div>
+
+<div class="container" id="bookerView">
+  <!-- LEFT: form -->
+  <div>
+    <div class="card">
+      <h1>Birthday Party Booking</h1>
+      <p class="sub">Internal staff form — fill out as the parent describes their party. Submitting creates a lesson row (<code>type=birthday</code>) and a customer record if needed.</p>
+
+      <h2><i class="fas fa-user"></i> Parent / Booker</h2>
+      <div class="row">
+        <div><label>Parent Name *</label><input id="parentName" placeholder="Maria Rodriguez" required></div>
+        <div><label>Phone *</label><input id="parentPhone" type="tel" placeholder="(914) 555-0101" required></div>
+      </div>
+      <div class="row">
+        <div><label>Email *</label><input id="parentEmail" type="email" placeholder="maria@example.com" required></div>
+        <div><label>How heard about us?</label><select id="hearAbout"><option value="">—</option><option>Word of mouth</option><option>Instagram</option><option>Google</option><option>Drove by</option><option>Already a member</option><option>Other</option></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-cake-candles"></i> Birthday Skater</h2>
+      <div class="row">
+        <div><label>Skater Name *</label><input id="skaterName" placeholder="Ava Rodriguez" required></div>
+        <div><label>Date of Birth (turning age)</label><input id="skaterDob" type="date"></div>
+      </div>
+      <div class="row">
+        <div><label>Skill Level</label><select id="skillLevel"><option>First-timer</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+        <div><label>T-shirt Size (if Deluxe)</label><select id="shirtSize"><option value="">—</option><option>YS</option><option>YM</option><option>YL</option><option>S</option><option>M</option><option>L</option><option>XL</option></select></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-calendar-day"></i> When &amp; How Many</h2>
+      <div class="row three">
+        <div><label>Party Date *</label><input id="partyDate" type="date" required></div>
+        <div><label>Start Time *</label><input id="partyTime" type="time" value="14:00" required></div>
+        <div><label>Skaters *</label><input id="skaterCount" type="number" min="1" max="30" value="8" required></div>
+      </div>
+      <div style="font-size:.78rem;color:var(--g500);">Most parties run weekend afternoons. Slot length depends on package.</div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-box"></i> Package</h2>
+      <div class="packages" id="packageList"><!-- filled by JS --></div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-plus"></i> Add-ons</h2>
+      <div class="addons" id="addonList"><!-- filled by JS --></div>
+    </div>
+
+    <div class="card">
+      <h2><i class="fas fa-comment"></i> Notes &amp; Special Requests</h2>
+      <textarea id="notes" placeholder="Allergies, theme preferences, additional instructor coverage, accessibility, etc."></textarea>
+    </div>
+  </div>
+
+  <!-- RIGHT: live quote -->
+  <aside>
+    <div class="quote">
+      <h2><i class="fas fa-receipt" style="color:var(--brand);"></i> Live Quote</h2>
+      <div class="total" id="totalDisplay">$0</div>
+      <div class="deposit" id="depositDisplay">50% deposit due to confirm — $0</div>
+      <div class="breakdown" id="breakdown"></div>
+      <button class="btn btn-primary gap-8" id="submitBtn" onclick="submitBooking()" style="margin-top:18px;"><i class="fas fa-check"></i> Reserve Party</button>
+      <button class="btn btn-outline gap-8" onclick="window.print()"><i class="fas fa-print"></i> Print This Quote</button>
+    </div>
+  </aside>
+</div>
+
+<!-- CONFIRMATION VIEW -->
+<div class="container" id="confView" style="display:none;grid-template-columns:1fr;">
+  <div class="card conf-screen">
+    <i class="fas fa-circle-check big"></i>
+    <h2>Party Reserved</h2>
+    <p style="color:var(--g500);">Confirmation # below — also saved to the lesson record.</p>
+    <div class="conf-num" id="confNum">—</div>
+    <p id="confSummary" style="color:var(--g600);font-size:.9rem;max-width:520px;margin:12px auto 24px;"></p>
+    <div id="confActions" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;max-width:520px;margin:0 auto;">
+      <button class="btn btn-outline" onclick="window.print()" style="width:auto;"><i class="fas fa-print"></i> Print Confirmation</button>
+      <button class="btn btn-primary" onclick="resetForm()" style="width:auto;"><i class="fas fa-plus"></i> Book Another</button>
+    </div>
+    <p style="font-size:.78rem;color:var(--g400);margin-top:24px;">A deposit invoice was created automatically. Click "Send deposit payment link" above to generate a Helcim payment URL and text/email it to the parent.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// =============================================================
+// Brand from APP_CONFIG (deep-merged from localStorage in admin;
+// here we keep it light — read CFG defaults + localStorage overlay).
+// =============================================================
+var CFG = window.APP_CONFIG || {};
+try {
+  var saved = JSON.parse(localStorage.getItem('skateos_settings')||'null');
+  if(saved){
+    Object.keys(saved).forEach(function(k){
+      if(saved[k] && typeof saved[k]==='object' && CFG[k] && typeof CFG[k]==='object' && !Array.isArray(saved[k])){
+        Object.assign(CFG[k], saved[k]);
+      } else if(saved[k]!==undefined){
+        CFG[k] = saved[k];
+      }
+    });
+  }
+} catch(e){}
+
+// Apply branding to header + theme.
+document.getElementById('brandEmoji').textContent     = CFG.logoEmoji || '🛹';
+document.getElementById('brandShortName').textContent = CFG.bizShortName || '2nd Nature';
+document.getElementById('brandAccent').textContent    = CFG.bizShortAccent || 'Park';
+document.title = (CFG.bizName || 'SkateOS') + ' — Birthday Party Quote';
+if(CFG.themeColor)      document.documentElement.style.setProperty('--brand',       CFG.themeColor);
+if(CFG.themeColorDark)  document.documentElement.style.setProperty('--brand-dark',  CFG.themeColorDark);
+if(CFG.themeColorLight) document.documentElement.style.setProperty('--brand-light', CFG.themeColorLight);
+
+// =============================================================
+// Pricing (TODO: hoist into config.js + Settings → Party Packages
+// once Doug locks the menu — this is a v1 price table only).
+// =============================================================
+var PACKAGES = [
+  {
+    key:'basic',  name:'Basic',
+    price: 299,
+    capacity: 8,        // included skaters
+    duration: 90,       // minutes
+    perks: '90 min · 1 instructor · helmets &amp; pads · juice + cookies · 30 min party room'
+  },
+  {
+    key:'premium', name:'Premium',
+    price: 449,
+    capacity: 12,
+    duration: 120,
+    perks: '2 hr · 2 instructors · helmets &amp; pads · pizza + drinks · 45 min party room · 2NTR-themed décor'
+  },
+  {
+    key:'deluxe',  name:'Deluxe',
+    price: 699,
+    capacity: 15,
+    duration: 150,
+    perks: '2½ hr · 2 instructors · helmets &amp; pads · pizza + cake + drinks · 60 min party room · t-shirt for guest of honor'
+  }
+];
+
+var ADDONS = [
+  {key:'extra_skater', label:'Extra skater (over package capacity)', price: 25,  qty:true,  unit:'each'},
+  {key:'pizza',        label:'Extra large pizza',                    price: 22,  qty:true,  unit:'each'},
+  {key:'cake',         label:'Custom skate-themed cake (1/4 sheet)',  price: 65,  qty:false, unit:''},
+  {key:'tshirt',       label:'Party t-shirt (per guest)',            price: 18,  qty:true,  unit:'each'},
+  {key:'photographer', label:'In-house photographer (1 hr)',         price: 150, qty:false, unit:''},
+  {key:'second_room',  label:'Second party room (overflow)',         price: 100, qty:false, unit:''}
+];
+
+var DEPOSIT_PCT = 0.5;
+var SUPABASE_URL = CFG.supabaseUrl;
+var SUPABASE_KEY = CFG.supabaseKey;
+
+// =============================================================
+// State
+// =============================================================
+var state = {
+  packageKey: 'premium',
+  addons: {}   // key → qty
+};
+var sb = null;
+var session = null;
+
+// =============================================================
+// Render packages + addons
+// =============================================================
+function renderPackages(){
+  var html = PACKAGES.map(function(p){
+    var sel = state.packageKey===p.key ? ' selected' : '';
+    return '<div class="pkg'+sel+'" data-key="'+p.key+'" onclick="pickPackage(\''+p.key+'\')">'
+      + '<div><div style="font-weight:700;font-size:1rem;">'+p.name+'</div>'
+      + '<div class="pkg-meta">Up to '+p.capacity+' skaters · '+p.duration+' min</div>'
+      + '<div class="pkg-meta">'+p.perks+'</div></div>'
+      + '<div class="pkg-price">$'+p.price+'</div></div>';
+  }).join('');
+  document.getElementById('packageList').innerHTML = html;
+}
+function pickPackage(key){ state.packageKey = key; renderPackages(); recalc(); }
+
+function renderAddons(){
+  var html = ADDONS.map(function(a){
+    var qty = state.addons[a.key] || 0;
+    var sel = qty>0 ? ' selected' : '';
+    var control;
+    if(a.qty){
+      control = '<div class="addon-qty" onclick="event.stopPropagation()">'
+        +'<button onclick="bumpAddon(\''+a.key+'\',-1)">−</button>'
+        +'<input type="number" min="0" value="'+qty+'" onchange="setAddonQty(\''+a.key+'\',this.value)">'
+        +'<button onclick="bumpAddon(\''+a.key+'\',1)">+</button></div>';
+    } else {
+      control = '<input type="checkbox" '+(qty?'checked':'')+' onchange="event.stopPropagation();setAddonQty(\''+a.key+'\',this.checked?1:0)">';
+    }
+    return '<label class="addon'+sel+'">'
+      + '<div><div style="font-weight:600;">'+a.label+'</div><div style="font-size:.75rem;color:var(--g500);">$'+a.price+(a.unit?' '+a.unit:'')+'</div></div>'
+      + control
+      + '</label>';
+  }).join('');
+  document.getElementById('addonList').innerHTML = html;
+}
+function bumpAddon(key, delta){
+  var cur = state.addons[key] || 0;
+  setAddonQty(key, cur + delta);
+}
+function setAddonQty(key, qty){
+  qty = Math.max(0, parseInt(qty,10) || 0);
+  if(qty===0) delete state.addons[key]; else state.addons[key] = qty;
+  renderAddons();
+  recalc();
+}
+
+// =============================================================
+// Live calculation
+// =============================================================
+function getSelectedPackage(){ return PACKAGES.find(function(p){return p.key===state.packageKey;}); }
+function getQuoteLines(){
+  var lines = [];
+  var pkg = getSelectedPackage();
+  lines.push({label: pkg.name+' Package', amount: pkg.price});
+
+  // Auto-calc extra skaters above capacity unless user manually set it.
+  var skaterCount = parseInt(document.getElementById('skaterCount').value,10) || 0;
+  var manualExtra = state.addons.extra_skater;
+  if(manualExtra === undefined && skaterCount > pkg.capacity){
+    var extras = skaterCount - pkg.capacity;
+    var price  = ADDONS.find(function(a){return a.key==='extra_skater';}).price;
+    lines.push({label: extras+' extra skater'+(extras>1?'s':'')+' (auto)', amount: extras*price});
+  }
+
+  ADDONS.forEach(function(a){
+    var qty = state.addons[a.key] || 0;
+    if(!qty) return;
+    var label = a.qty ? (qty+' × '+a.label) : a.label;
+    lines.push({label: label, amount: a.price * qty});
+  });
+
+  return lines;
+}
+function recalc(){
+  var lines = getQuoteLines();
+  var subtotal = lines.reduce(function(a,l){return a+l.amount;}, 0);
+  var tax = Math.round(subtotal * (CFG.taxRate||0.08375) * 100)/100;
+  var total = subtotal + tax;
+  var deposit = Math.round(total * DEPOSIT_PCT * 100)/100;
+
+  document.getElementById('totalDisplay').textContent = '$'+total.toFixed(2);
+  document.getElementById('depositDisplay').textContent = (DEPOSIT_PCT*100)+'% deposit due to confirm — $'+deposit.toFixed(2);
+
+  var html = lines.map(function(l){
+    return '<div class="row-line"><span>'+l.label+'</span><span>$'+l.amount.toFixed(2)+'</span></div>';
+  }).join('');
+  html += '<div class="row-line"><span>Subtotal</span><span>$'+subtotal.toFixed(2)+'</span></div>';
+  html += '<div class="row-line"><span>Tax ('+(((CFG.taxRate||0.08375)*100).toFixed(3))+'%)</span><span>$'+tax.toFixed(2)+'</span></div>';
+  html += '<div class="row-line bold"><span>Total</span><span>$'+total.toFixed(2)+'</span></div>';
+  document.getElementById('breakdown').innerHTML = html;
+
+  return {lines:lines, subtotal:subtotal, tax:tax, total:total, deposit:deposit};
+}
+
+// Recalc on relevant input changes
+['skaterCount','partyDate','partyTime'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', recalc);
+});
+
+// =============================================================
+// Submit — creates customer (if new) + lesson row (type=birthday)
+// =============================================================
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.className = 'toast show ' + (kind||'');
+  t.textContent = msg;
+  setTimeout(function(){ t.className = 'toast'; }, 3500);
+}
+
+async function submitBooking(){
+  if(!sb || !session){
+    document.getElementById('authBanner').style.display = 'block';
+    toast('Sign in to admin first', 'error');
+    window.scrollTo(0,0);
+    return;
+  }
+
+  var parentName  = document.getElementById('parentName').value.trim();
+  var parentEmail = document.getElementById('parentEmail').value.trim();
+  var parentPhone = document.getElementById('parentPhone').value.trim();
+  var skaterName  = document.getElementById('skaterName').value.trim();
+  var date        = document.getElementById('partyDate').value;
+  var time        = document.getElementById('partyTime').value;
+
+  if(!parentName || !parentEmail || !parentPhone){ toast('Parent name, email, and phone are required', 'error'); return; }
+  if(!skaterName){ toast('Skater name is required', 'error'); return; }
+  if(!date || !time){ toast('Party date and time are required', 'error'); return; }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reserving…';
+
+  try {
+    var pkg = getSelectedPackage();
+    var quote = recalc();
+    var scheduledAt = new Date(date + 'T' + time).toISOString();
+    var skaterDob = document.getElementById('skaterDob').value || null;
+
+    // 1. Find or create customer (skater).
+    var existing = await sb
+      .from('customers')
+      .select('id, email, phone')
+      .eq('email', parentEmail)
+      .limit(1);
+    if(existing.error) throw existing.error;
+
+    var customerId;
+    if(existing.data && existing.data.length){
+      customerId = existing.data[0].id;
+      // Backfill any blank fields on the existing record.
+      await sb.from('customers').update({
+        parent_name: parentName,
+        parent_phone: parentPhone,
+        parent_email: parentEmail
+      }).eq('id', customerId);
+    } else {
+      var [first, ...rest] = skaterName.split(' ');
+      var last = rest.join(' ') || null;
+      var custIns = await sb.from('customers').insert({
+        first_name: first, last_name: last,
+        email: parentEmail, phone: parentPhone, dob: skaterDob,
+        parent_name: parentName, parent_phone: parentPhone, parent_email: parentEmail,
+        state: 'NY',
+        notes: 'Created via party-quote.html',
+        tags: ['birthday-party']
+      }).select('id').single();
+      if(custIns.error) throw custIns.error;
+      customerId = custIns.data.id;
+    }
+
+    // 2. Create the lesson row (type=birthday).
+    var partyNotes = {
+      package: pkg.key,
+      skater_count: parseInt(document.getElementById('skaterCount').value,10) || pkg.capacity,
+      addons: state.addons,
+      skill_level: document.getElementById('skillLevel').value,
+      shirt_size:  document.getElementById('shirtSize').value || null,
+      hear_about:  document.getElementById('hearAbout').value || null,
+      special_requests: document.getElementById('notes').value.trim() || null,
+      quote: quote
+    };
+
+    var lessonIns = await sb.from('lessons').insert({
+      customer_id: customerId,
+      type: 'birthday',
+      scheduled_at: scheduledAt,
+      duration_min: pkg.duration,
+      price: quote.total,
+      status: 'scheduled',
+      notes: JSON.stringify(partyNotes)
+    }).select('id').single();
+    if(lessonIns.error) throw lessonIns.error;
+    var lessonId = lessonIns.data.id;
+    var confNum = (lessonId || '').slice(0,8).toUpperCase();
+
+    // 3. Also create a deposit invoice (50% of total) so cashier can send a payment link.
+    var depositAmount = Math.round(quote.total * 0.5 * 100) / 100;
+    var dueDate = new Date(date); dueDate.setDate(dueDate.getDate() - 7); // due a week before the party
+    var invoiceRow = {
+      customer_id: customerId,
+      customer_name: parentName,
+      customer_email: parentEmail,
+      customer_phone: parentPhone,
+      subtotal: depositAmount,
+      tax: 0,
+      discount: 0,
+      total: depositAmount,
+      due_date: dueDate.toISOString().slice(0,10),
+      status: 'draft',
+      notes: 'Deposit (50%) for ' + skaterName + "'s party on " + new Date(scheduledAt).toLocaleDateString() + '. Lesson ID: ' + lessonId
+    };
+    var invIns = await sb.from('invoices').insert(invoiceRow).select('id').maybeSingle();
+    var invoiceId = invIns && invIns.data && invIns.data.id;
+    if(invoiceId){
+      // Add invoice item for the deposit
+      await sb.from('invoice_items').insert({
+        invoice_id: invoiceId,
+        product_name: 'Birthday party deposit (50%) — ' + (pkg.label || pkg.key),
+        quantity: 1,
+        unit_price: depositAmount,
+        total: depositAmount
+      });
+    }
+
+    showConfirmation(confNum, parentName, skaterName, parentEmail, parentPhone, scheduledAt, quote.total, depositAmount, invoiceId, customerId);
+  } catch(e){
+    console.error(e);
+    toast('Save failed: ' + (e.message || e), 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-check"></i> Reserve Party';
+  }
+}
+
+function showConfirmation(confNum, parentName, skaterName, parentEmail, parentPhone, scheduledAt, total, depositAmount, invoiceId, customerId){
+  document.getElementById('bookerView').style.display = 'none';
+  document.getElementById('confView').style.display = 'grid';
+  document.getElementById('confNum').textContent = 'PARTY-' + confNum;
+  var when = new Date(scheduledAt).toLocaleString(undefined, {weekday:'long',month:'long',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit'});
+  document.getElementById('confSummary').textContent =
+    skaterName + "'s party on " + when + ' — $' + total.toFixed(2) + ' total. 50% deposit ($' + (depositAmount||0).toFixed(2) + ') invoice created.';
+
+  // Stash for send-deposit handler
+  window._partyCtx = { invoiceId: invoiceId, depositAmount: depositAmount, parentName: parentName, parentEmail: parentEmail, parentPhone: parentPhone, scheduledAt: scheduledAt, skaterName: skaterName, customerId: customerId };
+
+  // Inject deposit-link button if available
+  var actions = document.getElementById('confActions');
+  if(actions && invoiceId){
+    var existingBtn = document.getElementById('sendDepositBtn');
+    if(!existingBtn){
+      var btn = document.createElement('button');
+      btn.id = 'sendDepositBtn';
+      btn.className = 'btn btn-primary';
+      btn.style.width = 'auto';
+      btn.innerHTML = '<i class="fas fa-link"></i> Send deposit payment link';
+      btn.onclick = sendDepositLink;
+      actions.insertBefore(btn, actions.firstChild);
+    }
+  }
+  toast('Party reserved + deposit invoice created!', 'success');
+}
+
+async function sendDepositLink(){
+  var ctx = window._partyCtx;
+  if(!ctx || !ctx.invoiceId){ toast('No invoice context','error'); return; }
+  var btn = document.getElementById('sendDepositBtn');
+  btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Helcim invoice…';
+  try {
+    var url = window.APP_CONFIG.supabaseUrl + '/functions/v1/helcim-invoice';
+    var resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + (session.access_token || window.APP_CONFIG.supabaseKey),
+        'apikey': window.APP_CONFIG.supabaseKey,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        currency: 'USD',
+        lineItems: [{ sku:'PARTY-DEP', description:'Birthday party deposit — '+ctx.skaterName, quantity:1, price: ctx.depositAmount }],
+        customer: { email: ctx.parentEmail, name: ctx.parentName, code: ctx.customerId },
+        notes: 'Party deposit for '+ctx.skaterName+' on '+new Date(ctx.scheduledAt).toLocaleDateString(),
+        skateos_invoice_id: ctx.invoiceId
+      })
+    });
+    var data = await resp.json();
+    if(!resp.ok || !data.ok){
+      var errMsg = (data && data.error) || ('HTTP '+resp.status);
+      if(resp.status===401 || (data && data.helcimStatus===401)) errMsg = 'Helcim 401 — replace HELCIM_API_TOKEN placeholder.';
+      throw new Error(errMsg);
+    }
+    var payUrl = data.hostedPaymentUrl;
+    var smsBody = "Your party deposit ($" + ctx.depositAmount.toFixed(2) + ") for " + ctx.skaterName + ": " + payUrl;
+    var emailSubj = "Deposit invoice — " + ctx.skaterName + "'s party";
+
+    // Show URL in confirmation area
+    var actions = document.getElementById('confActions');
+    var linkBox = document.createElement('div');
+    linkBox.style.cssText = 'margin-top:12px;padding:12px;background:#fff5f5;border:1px solid #fecaca;border-radius:8px;font-size:13px;word-break:break-all;text-align:left;';
+    linkBox.innerHTML = '<strong>Payment link:</strong><br><a href="'+payUrl+'" target="_blank" style="color:#be123c;">'+payUrl+'</a><br><br>'
+      + '<button class="btn btn-outline" style="font-size:12px;padding:6px 10px;" onclick="navigator.clipboard.writeText(\''+payUrl+'\').then(function(){toast(\'Copied!\')})"><i class="fas fa-copy"></i> Copy</button> '
+      + '<a class="btn btn-outline" style="font-size:12px;padding:6px 10px;" href="sms:'+(ctx.parentPhone||'')+'?body='+encodeURIComponent(smsBody)+'"><i class="fas fa-sms"></i> Text parent</a> '
+      + '<a class="btn btn-outline" style="font-size:12px;padding:6px 10px;" href="mailto:'+(ctx.parentEmail||'')+'?subject='+encodeURIComponent(emailSubj)+'&body='+encodeURIComponent(smsBody)+'"><i class="fas fa-envelope"></i> Email parent</a>';
+    actions.parentNode.insertBefore(linkBox, actions);
+    btn.style.display = 'none';
+    toast('Deposit link created');
+  } catch(e){
+    btn.disabled = false; btn.innerHTML = '<i class="fas fa-link"></i> Send deposit payment link';
+    toast('Helcim error: '+(e.message||e), 'error');
+  }
+}
+
+function resetForm(){
+  document.getElementById('confView').style.display = 'none';
+  document.getElementById('bookerView').style.display = 'grid';
+  ['parentName','parentPhone','parentEmail','skaterName','skaterDob','notes'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('skaterCount').value = 8;
+  state.addons = {};
+  state.packageKey = 'premium';
+  renderPackages(); renderAddons(); recalc();
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').innerHTML = '<i class="fas fa-check"></i> Reserve Party';
+  window.scrollTo(0,0);
+}
+
+// =============================================================
+// Boot — Supabase auth check
+// =============================================================
+function boot(){
+  if(!SUPABASE_URL || !SUPABASE_KEY){
+    document.getElementById('authBanner').textContent = 'Missing supabaseUrl or supabaseKey in config.js — quotes cannot be saved.';
+    document.getElementById('authBanner').style.display = 'block';
+  }
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  sb.auth.getSession().then(function(res){
+    session = res && res.data && res.data.session;
+    if(!session){
+      document.getElementById('authBanner').style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
+    }
+  });
+
+  // Default party date: next Saturday at 2pm
+  var d = new Date();
+  d.setDate(d.getDate() + ((6 - d.getDay() + 7) % 7 || 7));
+  document.getElementById('partyDate').value = d.toISOString().slice(0,10);
+
+  renderPackages();
+  renderAddons();
+  recalc();
+}
+boot();
+</script>
+</body>
+</html>

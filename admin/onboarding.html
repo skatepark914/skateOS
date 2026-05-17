@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Set up your skatepark — SkateOS</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛹%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+  :root {
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --rose-pink:   #fb7185;
+    --ink:         #0a0a0a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #faf9f6;
+    --bg-card:     #fff;
+    --green:       #16a34a;
+    --green-light: #dcfce7;
+    --red:         #dc2626;
+    --gray:        #9ca3af;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    min-height: 100vh;
+  }
+  @media (max-width: 760px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar { display:none; }
+  }
+  .sidebar {
+    background: var(--bg-card);
+    border-right: 1px solid var(--line);
+    padding: 32px 24px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 900; font-size: 1.05rem;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+  }
+  .sidebar .brand .logo { font-size: 28px; line-height: 1; }
+  .sidebar .brand .accent { color: var(--rose); }
+  .sidebar h3 {
+    font-size: .72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .step-list {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+  .step-list li {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    cursor: pointer;
+    font-size: .9rem;
+    color: var(--ink-soft);
+    transition: background .12s;
+  }
+  .step-list li:hover { background: var(--bg); }
+  .step-list li.active { background: var(--rose-light); color: var(--rose-dark); font-weight: 700; }
+  .step-list li.done { color: var(--green); }
+  .step-list li.done .step-num { background: var(--green); color:#fff; border-color: var(--green); }
+  .step-list li.active .step-num { background: var(--rose); color: #fff; border-color: var(--rose); }
+  .step-num {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 24px; height: 24px;
+    border: 1.5px solid var(--line);
+    border-radius: 50%;
+    font-size: .72rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+  .progress-card {
+    background: var(--rose-light);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+  }
+  .progress-card .bar {
+    height: 6px; background: rgba(225,29,72,.2); border-radius: 99px; margin-top: 8px; overflow: hidden;
+  }
+  .progress-card .bar-fill {
+    height: 100%; background: var(--rose); border-radius: 99px; transition: width .25s;
+  }
+  .progress-card .label { font-size: .78rem; font-weight: 700; color: var(--rose-dark); }
+  .progress-card .meta  { font-size: .72rem; color: var(--rose-dark); margin-top: 2px; opacity: .8; }
+
+  /* Main pane */
+  .main {
+    padding: 56px 64px;
+    max-width: 760px;
+  }
+  @media (max-width: 760px) {
+    .main { padding: 32px 22px; }
+  }
+  .step-header {
+    margin-bottom: 8px;
+    font-size: .78rem;
+    color: var(--ink-soft);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+  .step-header .num { color: var(--rose); }
+  h1 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+  .lede {
+    color: var(--ink-soft);
+    font-size: 1.05rem;
+    margin-bottom: 32px;
+  }
+  .step-pane { display: none; }
+  .step-pane.active { display: block; }
+
+  .field {
+    margin-bottom: 18px;
+  }
+  .field label {
+    display: block;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .field .opt {
+    color: var(--gray);
+    font-weight: 400;
+    margin-left: 6px;
+  }
+  input[type="text"], input[type="email"], input[type="password"], input[type="tel"], input[type="number"], input[type="time"] {
+    width: 100%;
+    padding: 10px 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    font-size: .95rem;
+    font-family: inherit;
+    background: #fff;
+    transition: border-color .12s, box-shadow .12s;
+  }
+  input:focus {
+    outline: none;
+    border-color: var(--rose);
+    box-shadow: 0 0 0 3px rgba(225,29,72,.1);
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+
+  /* Hours grid */
+  .hours-grid {
+    display: grid; gap: 8px;
+    grid-template-columns: 90px 1fr 1fr 30px;
+    align-items: center;
+  }
+  .hours-grid .day-label { font-weight: 600; font-size: .9rem; }
+  .hours-grid input[type="time"] { padding: 7px 10px; font-size: .85rem; }
+  .hours-grid .closed-chip {
+    color: var(--gray); font-size: .78rem; font-style: italic;
+  }
+  .closed-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: .78rem; color: var(--ink-soft); cursor: pointer;
+  }
+  .closed-toggle input { margin: 0; cursor: pointer; }
+
+  /* Product grid */
+  .product-grid {
+    display: grid; gap: 10px;
+    grid-template-columns: 1fr;
+  }
+  .product-row {
+    display: grid;
+    grid-template-columns: 30px 1fr 100px 60px;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+  }
+  .product-row.skip { opacity: .5; }
+  .product-row input[type="checkbox"] { margin: 0; cursor: pointer; transform: scale(1.2); }
+  .product-row input[type="number"] {
+    padding: 6px 9px; font-size: .85rem; text-align: right; width: 95px;
+  }
+  .product-row .name { font-weight: 600; font-size: .92rem; }
+  .product-row .name .cat { font-size: .72rem; color: var(--gray); font-weight: 400; }
+  .product-row .qty-label { font-size: .72rem; color: var(--ink-soft); text-align: center; }
+
+  /* Tip presets */
+  .tip-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+  .tip-row input { text-align: center; font-size: 1.1rem; font-weight: 700; }
+
+  /* Buttons */
+  .actions {
+    display: flex; gap: 12px; justify-content: space-between; align-items: center;
+    margin-top: 36px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+  }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 9px;
+    font-size: .95rem; font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background .12s, transform .08s;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn:active:not(:disabled) { transform: translateY(1px); }
+  .btn:disabled { opacity: .55; cursor: wait; }
+  .btn-primary { background: var(--rose); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--rose-dark); }
+  .btn-ghost   { background: transparent; color: var(--ink-soft); }
+  .btn-ghost:hover { color: var(--ink); }
+  .btn-outline { background: #fff; color: var(--ink); border-color: var(--line); }
+  .btn-outline:hover { border-color: var(--ink-soft); }
+
+  .pill-info {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: var(--rose-light);
+    color: var(--rose-dark);
+    border-radius: 99px;
+    font-size: .78rem;
+    font-weight: 600;
+    margin-bottom: 14px;
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: #fff;
+    padding: 11px 22px; border-radius: 99px;
+    font-size: .9rem; font-weight: 600;
+    box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    z-index: 999;
+    display: none;
+  }
+  .toast.show { display: block; }
+
+  .err {
+    color: var(--red); font-size: .85rem; margin-top: 8px; min-height: 1.2em;
+  }
+
+  .done-card {
+    background: var(--green-light);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+  .done-card .icon { font-size: 48px; color: var(--green); margin-bottom: 10px; }
+  .done-card h2 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; }
+  .done-card p  { color: var(--ink-soft); margin-top: 8px; }
+
+  .hint-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--rose);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+    font-size: .88rem;
+    color: var(--ink-soft);
+  }
+  .hint-card .lbl {
+    color: var(--rose-dark);
+    font-weight: 700;
+    margin-right: 6px;
+  }
+
+  .checklist {
+    list-style: none;
+  }
+  .checklist li {
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: flex-start; gap: 12px;
+    font-size: .92rem;
+  }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist .ck-icon {
+    color: var(--green); flex-shrink: 0; margin-top: 2px;
+  }
+  .checklist .ck-pending {
+    color: var(--gray);
+  }
+  .checklist .ck-label { font-weight: 600; }
+  .checklist .ck-detail { font-size: .82rem; color: var(--ink-soft); margin-top: 2px; }
+  .checklist .ck-detail a { color: var(--rose); text-decoration: none; font-weight: 600; }
+  .checklist .ck-detail a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ─────────── Sidebar ─────────── -->
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="logo">🛹</span>
+      <span><span class="accent">skate</span>OS</span>
+    </div>
+    <h3>Set up your park</h3>
+    <ul class="step-list" id="stepList">
+      <li data-step="1"><span class="step-num">1</span><span>Welcome</span></li>
+      <li data-step="2"><span class="step-num">2</span><span>Business info</span></li>
+      <li data-step="3"><span class="step-num">3</span><span>Park hours</span></li>
+      <li data-step="4"><span class="step-num">4</span><span>Tax &amp; tips</span></li>
+      <li data-step="5"><span class="step-num">5</span><span>Starter products</span></li>
+      <li data-step="6"><span class="step-num">6</span><span>Integrations</span></li>
+      <li data-step="7"><span class="step-num">7</span><span>Done!</span></li>
+    </ul>
+    <div class="progress-card">
+      <div class="label" id="progressLabel">Step 1 of 7</div>
+      <div class="bar"><div class="bar-fill" id="progressBar" style="width:14%"></div></div>
+      <div class="meta">~5 minutes</div>
+    </div>
+  </aside>
+
+  <!-- ─────────── Main ─────────── -->
+  <main class="main">
+
+    <!-- Step 1: Welcome -->
+    <div class="step-pane active" data-pane="1">
+      <div class="step-header"><span class="num">STEP 1</span> · Welcome</div>
+      <h1>Welcome to <span style="color:var(--rose);">skateOS</span></h1>
+      <p class="lede">Your skatepark is provisioned. This quick setup gets you running — usually 5 minutes. You can skip any step and come back later.</p>
+
+      <div class="hint-card">
+        <span class="lbl">What we'll cover:</span> business info, park hours, tax rate, tip presets, a starter product list, and pointers for connecting payments + email later.
+      </div>
+      <div class="hint-card">
+        <span class="lbl">Already set up?</span> If you're an existing park just clicking around, hit "Skip setup" at the bottom — won't lose anything.
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="skipAll()">Skip setup →</button>
+        <button class="btn btn-primary" onclick="nextStep()">Let's go <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- Step 2: Business info -->
+    <div class="step-pane" data-pane="2">
+      <div class="step-header"><span class="num">STEP 2</span> · Business info</div>
+      <h1>What's your park called?</h1>
+      <p class="lede">This shows up on receipts, invoices, the front desk, and customer-facing pages.</p>
+
+      <div class="field">
+        <label for="f_bizName">Business name</label>
+        <input type="text" id="f_bizName" placeholder="e.g. Bay City Skatepark">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label for="f_bizPhone">Phone <span class="opt">optional</span></label>
+          <input type="tel" id="f_bizPhone" placeholder="(555) 123-4567">
+        </div>
+        <div class="field">
+          <label for="f_bizEmail">Owner email</label>
+          <input type="email" id="f_bizEmail" placeholder="you@yourpark.com" readonly style="background:#f5f5f0;color:var(--ink-soft);">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f_bizAddr">Street address <span class="opt">optional</span></label>
+        <input type="text" id="f_bizAddr" placeholder="123 Main St, Brooklyn, NY 10001">
+      </div>
+      <div class="field">
+        <label for="f_bizWebsite">Website / domain <span class="opt">optional</span></label>
+        <input type="text" id="f_bizWebsite" placeholder="yourpark.com">
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="skipStep()">Skip</button>
+          <button class="btn btn-primary" onclick="saveStep2()">Save &amp; continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="err" id="err2"></div>
+    </div>
+
+    <!-- Step 3: Park hours -->
+    <div class="step-pane" data-pane="3">
+      <div class="step-header"><span class="num">STEP 3</span> · Park hours</div>
+      <h1>When are you open?</h1>
+      <p class="lede">Used by the check-in flow (closing-soon warnings), online booking, and lesson scheduling. You can always tweak in Settings.</p>
+
+      <div class="pill-info"><i class="fas fa-clock"></i> Default: Mon–Fri 3–9pm, Sat–Sun 10am–9pm</div>
+
+      <div class="hours-grid" id="hoursGrid">
+        <!-- Generated by JS -->
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="skipStep()">Skip</button>
+          <button class="btn btn-primary" onclick="saveStep3()">Save &amp; continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="err" id="err3"></div>
+    </div>
+
+    <!-- Step 4: Tax + tip presets -->
+    <div class="step-pane" data-pane="4">
+      <div class="step-header"><span class="num">STEP 4</span> · Tax &amp; tips</div>
+      <h1>Tax rate and tip presets</h1>
+      <p class="lede">Tax rate applies to all retail sales. Tip presets show up as quick-tap buttons on POS for lesson + service tips.</p>
+
+      <div class="field">
+        <label for="f_taxRate">Sales tax rate (%)</label>
+        <input type="number" id="f_taxRate" placeholder="8.375" step="0.001" min="0" max="20" style="max-width:200px;">
+        <div style="font-size:.78rem;color:var(--ink-soft);margin-top:4px;">Westchester County NY default is <strong>8.375%</strong>. Check your state's rate.</div>
+      </div>
+
+      <div class="field" style="margin-top:24px;">
+        <label>Tip presets <span class="opt">three quick-pick percentages on the POS tip row</span></label>
+        <div class="tip-row">
+          <input type="number" id="f_tip1" placeholder="15" min="0" max="100">
+          <input type="number" id="f_tip2" placeholder="20" min="0" max="100">
+          <input type="number" id="f_tip3" placeholder="25" min="0" max="100">
+        </div>
+        <div style="font-size:.78rem;color:var(--ink-soft);margin-top:6px;">Set any to <strong>0</strong> to hide that button. Custom tip amounts are always available too.</div>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="skipStep()">Skip</button>
+          <button class="btn btn-primary" onclick="saveStep4()">Save &amp; continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="err" id="err4"></div>
+    </div>
+
+    <!-- Step 5: Starter products -->
+    <div class="step-pane" data-pane="5">
+      <div class="step-header"><span class="num">STEP 5</span> · Starter products</div>
+      <h1>Seed common products</h1>
+      <p class="lede">Pre-built skate-shop SKUs you can edit later. Uncheck anything you don't sell — you can always add more in Products.</p>
+
+      <div class="pill-info"><i class="fas fa-info-circle"></i> Tip: edit prices to match your park</div>
+
+      <div class="product-grid" id="productGrid">
+        <!-- Generated by JS -->
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-outline" onclick="skipStep()">Skip</button>
+          <button class="btn btn-primary" onclick="saveStep5()">Add products &amp; continue <i class="fas fa-arrow-right"></i></button>
+        </div>
+      </div>
+      <div class="err" id="err5"></div>
+    </div>
+
+    <!-- Step 6: Integrations hint -->
+    <div class="step-pane" data-pane="6">
+      <div class="step-header"><span class="num">STEP 6</span> · Integrations</div>
+      <h1>The things you'll wire later</h1>
+      <p class="lede">These need accounts you sign up for and API keys you paste in. Skip for now and revisit in Settings → Integrations any time.</p>
+
+      <ul class="checklist">
+        <li>
+          <i class="fas fa-circle-check ck-icon ck-pending"></i>
+          <div>
+            <div class="ck-label">💳 Helcim — card processing</div>
+            <div class="ck-detail">Sign up at <a href="https://helcim.com" target="_blank">helcim.com</a>, get an API token, paste into Settings → Integrations. Interchange-plus pricing typically beats Square by ~$6k/year at moderate volume.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-circle-check ck-icon ck-pending"></i>
+          <div>
+            <div class="ck-label">📧 Resend — email (receipts, reminders, marketing)</div>
+            <div class="ck-detail">Verify your sending domain at <a href="https://resend.com" target="_blank">resend.com</a> and paste the API key. Without this, automated emails won't fire.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-circle-check ck-icon ck-pending"></i>
+          <div>
+            <div class="ck-label">📱 Twilio — SMS (lesson reminders, marketing)</div>
+            <div class="ck-detail">Sign up at <a href="https://twilio.com" target="_blank">twilio.com</a>, buy a number, paste your SID + token. Optional — skip if you only want email.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-circle-check ck-icon ck-pending"></i>
+          <div>
+            <div class="ck-label">🛡️ Smartwaiver — digital liability waivers</div>
+            <div class="ck-detail">Optional. Without it, you can still mark paper waivers in skateOS. Sign up at <a href="https://smartwaiver.com" target="_blank">smartwaiver.com</a> if you want skaters to sign on their phone before they arrive.</div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-primary" onclick="nextStep()">Got it <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <!-- Step 7: Done -->
+    <div class="step-pane" data-pane="7">
+      <div class="step-header"><span class="num">STEP 7</span> · Done!</div>
+      <h1>You're all set 🎉</h1>
+      <p class="lede">Your skatepark is provisioned, branded, and ready. Here's where to go next.</p>
+
+      <div class="done-card">
+        <div class="icon"><i class="fas fa-circle-check"></i></div>
+        <h2>Setup complete</h2>
+        <p>Your business info, hours, tax, tips, and starter products are saved. Jump into the admin to start running your park.</p>
+      </div>
+
+      <ul class="checklist">
+        <li>
+          <i class="fas fa-arrow-right ck-icon" style="color:var(--rose);"></i>
+          <div>
+            <div class="ck-label">Add your team</div>
+            <div class="ck-detail">Staff page → invite cashiers, instructors, monitors. Assign roles so they can clock in.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-arrow-right ck-icon" style="color:var(--rose);"></i>
+          <div>
+            <div class="ck-label">Print member cards</div>
+            <div class="ck-detail">Tools → Print Member Cards. Hand to skaters at signup → scan at the front desk.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-arrow-right ck-icon" style="color:var(--rose);"></i>
+          <div>
+            <div class="ck-label">Make social graphics</div>
+            <div class="ck-detail">Tools → Social Graphics. Generate brand-consistent Facebook, IG, TikTok profile pics + cover art in one click.</div>
+          </div>
+        </li>
+        <li>
+          <i class="fas fa-arrow-right ck-icon" style="color:var(--rose);"></i>
+          <div>
+            <div class="ck-label">Test a sale</div>
+            <div class="ck-detail">POS page → ring up a $0.01 test sale to make sure receipts, loyalty, and inventory all fire.</div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="actions">
+        <button class="btn btn-ghost" onclick="prevStep()"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-primary" onclick="finishSetup()">Open admin <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+//─────────────────────────── Bootstrap
+var CFG = window.APP_CONFIG || {};
+var sbClient = null;
+var session = null;
+var tenant = null;        // tenants row for the current user
+var currentStep = 1;
+
+function getSupabase() {
+  if (sbClient) return sbClient;
+  if (!CFG.supabaseUrl || !CFG.supabaseKey) throw new Error('Missing Supabase config');
+  sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  return sbClient;
+}
+
+async function init() {
+  try {
+    // Preview mode — skip auth gate, use placeholder tenant. Lets you eyeball
+    // the design without logging in. Triggered by ?preview=1 in the URL.
+    if (/[?&]preview=1/.test(window.location.search)) {
+      tenant = { id: '00000000-0000-0000-0000-000000000000', name: 'Preview Park', slug:'preview', config: {} };
+      session = { user: { email: 'preview@example.com' } };
+      document.getElementById('f_bizEmail').value = 'preview@example.com';
+      buildHoursGrid();
+      buildProductGrid();
+      renderStep(currentStep);
+      showToast('Preview mode — nothing will save', 3000);
+      return;
+    }
+    var sb = getSupabase();
+    var s = await sb.auth.getSession();
+    if (!s.data.session) {
+      // Not logged in — bounce to login
+      window.location.href = 'index.html';
+      return;
+    }
+    session = s.data.session;
+
+    // Look up tenant for this user
+    var ut = await sb.from('user_tenants').select('tenant_id, role').eq('user_id', session.user.id).limit(1);
+    if (ut.error || !ut.data || ut.data.length === 0) {
+      showToast('No tenant on this account — contact support', 8000);
+      return;
+    }
+    var tid = ut.data[0].tenant_id;
+    var t = await sb.from('tenants').select('id, name, slug, config').eq('id', tid).limit(1);
+    if (t.error || !t.data || t.data.length === 0) {
+      showToast('Tenant lookup failed', 8000);
+      return;
+    }
+    tenant = t.data[0];
+    var cfg = tenant.config || {};
+
+    // Pre-fill from existing tenant.config
+    document.getElementById('f_bizName').value    = cfg.bizName    || tenant.name || '';
+    document.getElementById('f_bizPhone').value   = cfg.bizPhone   || '';
+    document.getElementById('f_bizEmail').value   = session.user.email || cfg.bizEmail || '';
+    document.getElementById('f_bizAddr').value    = cfg.bizAddr    || '';
+    document.getElementById('f_bizWebsite').value = cfg.bizWebsite || '';
+
+    // Pre-fill tax rate from app_settings if set
+    var as = await sb.from('app_settings').select('value').eq('tenant_id', tid).eq('key', 'all').limit(1);
+    if (as.data && as.data[0]) {
+      var v = as.data[0].value || {};
+      if (v.taxRate != null)      document.getElementById('f_taxRate').value = v.taxRate;
+      if (v.operations && v.operations.tipPresets) {
+        var tp = v.operations.tipPresets;
+        if (tp[0] != null) document.getElementById('f_tip1').value = tp[0];
+        if (tp[1] != null) document.getElementById('f_tip2').value = tp[1];
+        if (tp[2] != null) document.getElementById('f_tip3').value = tp[2];
+      }
+    }
+
+    buildHoursGrid();
+    buildProductGrid();
+    renderStep(currentStep);
+  } catch (e) {
+    console.error('init failed', e);
+    showToast('Setup failed to load: ' + (e.message || e), 8000);
+  }
+}
+
+//─────────────────────────── Stepper
+function renderStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.step-pane').forEach(function(p){
+    p.classList.toggle('active', +p.getAttribute('data-pane') === n);
+  });
+  document.querySelectorAll('.step-list li').forEach(function(li){
+    var s = +li.getAttribute('data-step');
+    li.classList.toggle('active', s === n);
+    li.classList.toggle('done',   s < n);
+  });
+  var pct = Math.round((n / 7) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = 'Step ' + n + ' of 7';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function nextStep(){ if (currentStep < 7) renderStep(currentStep + 1); }
+function prevStep(){ if (currentStep > 1) renderStep(currentStep - 1); }
+function skipStep(){ nextStep(); }
+
+//─────────────────────────── Step 2: Business info
+async function saveStep2() {
+  var err = document.getElementById('err2');
+  err.textContent = '';
+  var bizName = document.getElementById('f_bizName').value.trim();
+  if (bizName.length < 2) { err.textContent = 'Park name required'; return; }
+  try {
+    var updated = Object.assign({}, tenant.config || {}, {
+      bizName:    bizName,
+      bizPhone:   document.getElementById('f_bizPhone').value.trim(),
+      bizEmail:   document.getElementById('f_bizEmail').value.trim(),
+      bizAddr:    document.getElementById('f_bizAddr').value.trim(),
+      bizWebsite: document.getElementById('f_bizWebsite').value.trim()
+    });
+    var sb = getSupabase();
+    var r1 = await sb.from('tenants').update({ name: bizName, config: updated }).eq('id', tenant.id);
+    if (r1.error) throw r1.error;
+    // Also reflect into app_settings so the SPA picks it up on boot
+    await upsertAppSettings({
+      bizName:    bizName,
+      bizPhone:   document.getElementById('f_bizPhone').value.trim(),
+      bizEmail:   document.getElementById('f_bizEmail').value.trim(),
+      bizAddr:    document.getElementById('f_bizAddr').value.trim(),
+      bizWebsite: document.getElementById('f_bizWebsite').value.trim()
+    });
+    tenant.config = updated;
+    showToast('Saved');
+    nextStep();
+  } catch (e) {
+    err.textContent = 'Save failed: ' + (e.message || e);
+  }
+}
+
+//─────────────────────────── Step 3: Park hours
+var DAYS = [['mon','Monday'],['tue','Tuesday'],['wed','Wednesday'],['thu','Thursday'],['fri','Friday'],['sat','Saturday'],['sun','Sunday']];
+var DEFAULT_HOURS = {
+  mon: {open:'15:00', close:'21:00'},
+  tue: {open:'15:00', close:'21:00'},
+  wed: {open:'15:00', close:'21:00'},
+  thu: {open:'15:00', close:'21:00'},
+  fri: {open:'15:00', close:'21:00'},
+  sat: {open:'10:00', close:'21:00'},
+  sun: {open:'10:00', close:'21:00'}
+};
+function buildHoursGrid() {
+  var grid = document.getElementById('hoursGrid');
+  grid.innerHTML = '';
+  DAYS.forEach(function(d){
+    var key = d[0], label = d[1];
+    var def = DEFAULT_HOURS[key];
+    grid.insertAdjacentHTML('beforeend',
+      '<div class="day-label">' + label + '</div>'
+      + '<input type="time" id="hr_'+key+'_open"  value="'+def.open+'">'
+      + '<input type="time" id="hr_'+key+'_close" value="'+def.close+'">'
+      + '<label class="closed-toggle" title="Closed"><input type="checkbox" id="hr_'+key+'_closed" onchange="toggleHourRow(\''+key+'\')"></label>'
+    );
+  });
+}
+function toggleHourRow(key) {
+  var closed = document.getElementById('hr_'+key+'_closed').checked;
+  document.getElementById('hr_'+key+'_open').disabled  = closed;
+  document.getElementById('hr_'+key+'_close').disabled = closed;
+}
+async function saveStep3() {
+  var err = document.getElementById('err3');
+  err.textContent = '';
+  try {
+    var hours = {};
+    DAYS.forEach(function(d){
+      var key = d[0];
+      if (document.getElementById('hr_'+key+'_closed').checked) {
+        hours[key] = { open:'', close:'' };
+      } else {
+        hours[key] = {
+          open:  document.getElementById('hr_'+key+'_open').value,
+          close: document.getElementById('hr_'+key+'_close').value
+        };
+      }
+    });
+    await upsertAppSettings({ hours: hours });
+    showToast('Hours saved');
+    nextStep();
+  } catch (e) {
+    err.textContent = 'Save failed: ' + (e.message || e);
+  }
+}
+
+//─────────────────────────── Step 4: Tax + tip presets
+async function saveStep4() {
+  var err = document.getElementById('err4');
+  err.textContent = '';
+  try {
+    var taxRate = parseFloat(document.getElementById('f_taxRate').value);
+    if (isNaN(taxRate)) taxRate = 0;
+    var tipPresets = [
+      parseInt(document.getElementById('f_tip1').value, 10) || 0,
+      parseInt(document.getElementById('f_tip2').value, 10) || 0,
+      parseInt(document.getElementById('f_tip3').value, 10) || 0
+    ];
+    await upsertAppSettings({
+      taxRate: taxRate,
+      operations: { tipPresets: tipPresets }
+    });
+    showToast('Tax + tips saved');
+    nextStep();
+  } catch (e) {
+    err.textContent = 'Save failed: ' + (e.message || e);
+  }
+}
+
+//─────────────────────────── Step 5: Starter products
+var STARTER_PRODUCTS = [
+  { name:'Day Pass — Adult',      category:'Session Passes', price:25, cost:0 },
+  { name:'Day Pass — Youth (under 18)', category:'Session Passes', price:18, cost:0 },
+  { name:'2-Hour Pass',           category:'Session Passes', price:15, cost:0 },
+  { name:'10-Pack Punch Card',    category:'Memberships',    price:200, cost:0, punches_total:10 },
+  { name:'Monthly Unlimited',     category:'Memberships',    price:99, cost:0 },
+  { name:'Private Lesson (1 hr)', category:'Lessons',        price:75, cost:0 },
+  { name:'Group Lesson',          category:'Lessons',        price:35, cost:0 },
+  { name:'Helmet Rental',         category:'Rentals',        price:5,  cost:0 },
+  { name:'Pads Set Rental',       category:'Rentals',        price:5,  cost:0 },
+  { name:'Loaner Board Rental',   category:'Rentals',        price:10, cost:0 }
+];
+function buildProductGrid() {
+  var grid = document.getElementById('productGrid');
+  grid.innerHTML = '';
+  STARTER_PRODUCTS.forEach(function(p, i){
+    grid.insertAdjacentHTML('beforeend',
+      '<div class="product-row">'
+      + '<input type="checkbox" id="prod_'+i+'" checked onchange="toggleProductRow('+i+')">'
+      + '<div class="name">'+p.name+'<div class="cat">'+p.category+'</div></div>'
+      + '<div><input type="number" id="prod_'+i+'_price" value="'+p.price+'" step="0.01" min="0"></div>'
+      + '<div class="qty-label">$</div>'
+      + '</div>'
+    );
+  });
+}
+function toggleProductRow(i) {
+  var checked = document.getElementById('prod_'+i).checked;
+  document.querySelector('#prod_'+i).closest('.product-row').classList.toggle('skip', !checked);
+}
+async function saveStep5() {
+  var err = document.getElementById('err5');
+  err.textContent = '';
+  var btn = event.target; var origText = btn.innerHTML;
+  btn.disabled = true; btn.innerHTML = 'Adding…';
+  try {
+    var sb = getSupabase();
+    var picks = [];
+    STARTER_PRODUCTS.forEach(function(p, i){
+      if (document.getElementById('prod_'+i).checked) {
+        var priceVal = parseFloat(document.getElementById('prod_'+i+'_price').value);
+        if (isNaN(priceVal) || priceVal < 0) priceVal = p.price;
+        picks.push({
+          name: p.name,
+          price: priceVal,
+          cost:  p.cost || 0,
+          quantity: 0,
+          low_stock_threshold: 5,
+          status: 'active',
+          tenant_id: tenant.id   // auto-fill trigger will also do this, but be explicit
+        });
+      }
+    });
+    if (picks.length === 0) {
+      showToast('Skipped — no products added');
+      btn.disabled = false; btn.innerHTML = origText;
+      nextStep();
+      return;
+    }
+    // Insert one at a time so partial failures don't kill everything
+    var ok = 0, failed = [];
+    for (var i = 0; i < picks.length; i++) {
+      var r = await sb.from('products').insert(picks[i]);
+      if (r.error) failed.push(picks[i].name + ' (' + (r.error.message || '?') + ')');
+      else ok++;
+    }
+    if (ok > 0) showToast('Added ' + ok + ' product' + (ok===1?'':'s'));
+    if (failed.length > 0) err.textContent = 'Some failed: ' + failed.slice(0,3).join(' · ');
+    btn.disabled = false; btn.innerHTML = origText;
+    if (failed.length === 0) nextStep();
+  } catch (e) {
+    err.textContent = 'Save failed: ' + (e.message || e);
+    btn.disabled = false; btn.innerHTML = origText;
+  }
+}
+
+//─────────────────────────── Finish
+async function finishSetup() {
+  try {
+    var updated = Object.assign({}, tenant.config || {}, {
+      onboarding_completed: true,
+      onboarding_completed_at: new Date().toISOString()
+    });
+    var sb = getSupabase();
+    await sb.from('tenants').update({ config: updated }).eq('id', tenant.id);
+    window.location.href = 'index.html';
+  } catch (e) {
+    showToast('Couldn\'t mark complete — going to admin anyway', 3000);
+    setTimeout(function(){ window.location.href = 'index.html'; }, 1200);
+  }
+}
+async function skipAll() {
+  if (!confirm('Skip setup for now? You can revisit from Settings any time.')) return;
+  await finishSetup();
+}
+
+//─────────────────────────── Helpers
+async function upsertAppSettings(patch) {
+  var sb = getSupabase();
+  // Read current 'all' settings (composite PK = tenant_id, key)
+  var r = await sb.from('app_settings').select('value').eq('tenant_id', tenant.id).eq('key', 'all').limit(1);
+  var current = (r.data && r.data[0] && r.data[0].value) || {};
+  // Deep merge for operations.*
+  var merged = Object.assign({}, current, patch);
+  if (patch.operations && current.operations) {
+    merged.operations = Object.assign({}, current.operations, patch.operations);
+  }
+  var w = await sb.from('app_settings').upsert(
+    { tenant_id: tenant.id, key: 'all', value: merged },
+    { onConflict: 'tenant_id,key' }
+  );
+  if (w.error) throw w.error;
+}
+
+function showToast(msg, ms) {
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, ms || 1800);
+}
+
+// Bind sidebar clicks
+document.getElementById('stepList').addEventListener('click', function(ev){
+  var li = ev.target.closest('li[data-step]');
+  if (li) renderStep(+li.getAttribute('data-step'));
+});
+
+// Kick it off
+init();
+</script>
+
+</body>
+</html>

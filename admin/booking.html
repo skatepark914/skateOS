@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book — 2nd Nature Park</title>
+<meta name="robots" content="noindex,nofollow">
+<!-- =====================================================================
+     PUBLIC FORM RENDERER
+     URL: /admin/booking.html?form=<slug>
+     Loads the matching `forms` row, renders its schema.fields[],
+     submits to `form_submissions`. Pairs with migration 011_forms.sql.
+
+     Schema example (forms.schema):
+       { "fields": [
+           { "id":"name",  "type":"text",  "label":"Skater name", "required":true },
+           { "id":"email", "type":"email", "label":"Email",       "required":true },
+           { "id":"date",  "type":"date",  "label":"Preferred date" }
+       ] }
+===================================================================== -->
+<style>
+  :root {
+    --rose:       #e11d48;
+    --rose-dark:  #be123c;
+    --rose-light: #ffe4e6;
+    --ink:        #14161a;
+    --ink-soft:   #555a63;
+    --bg:         #f6f6f4;
+    --line:       #e6e6e1;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    max-width: 560px;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .card-top {
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%);
+    padding: 28px;
+    color: #fff;
+    text-align: center;
+  }
+  .card-top h1 { font-size: 24px; font-weight: 900; letter-spacing: -0.02em; }
+  .card-top p { font-size: 13px; opacity: 0.9; margin-top: 4px; }
+  .card-body { padding: 24px; }
+  .field { margin-bottom: 14px; }
+  label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--ink); }
+  .req { color: var(--rose); }
+  input, select, textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: 2px solid var(--rose);
+    outline-offset: -1px;
+    border-color: var(--rose);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  .help { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .btn:hover { background: var(--rose-dark); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .status {
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+  .status.ok  { background: #dcfce7; color: #166534; display: block; }
+  .status.err { background: #fee2e2; color: #991b1b; display: block; }
+  .empty {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+  .footer-link {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+  .footer-link a { color: var(--rose); text-decoration: none; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="card-top">
+    <h1 id="form-name">Loading…</h1>
+    <p id="form-desc"></p>
+  </div>
+  <div class="card-body">
+    <form id="dyn-form">
+      <div id="fields"></div>
+      <button type="submit" class="btn" id="submit-btn" style="display:none;">Submit</button>
+      <div id="status" class="status"></div>
+    </form>
+  </div>
+</div>
+<div class="footer-link">2nd Nature Park · <a href="https://www.2ntr.com">2ntr.com</a></div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  const cfgScript = await fetch('config.js').then(r => r.text());
+  new Function(cfgScript)();
+  const CFG = window.APP_CONFIG;
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey);
+</script>
+<script>
+  const $ = id => document.getElementById(id);
+  function status(msg, kind){ const s = $('status'); s.className = 'status ' + (kind||'ok'); s.textContent = msg; }
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+  function param(k){ return new URLSearchParams(window.location.search).get(k); }
+
+  async function init(){
+    let tries = 0;
+    while (!window.supabaseClient && tries < 30) { await new Promise(r => setTimeout(r, 100)); tries++; }
+    if (!window.supabaseClient) { $('form-name').textContent = 'Could not load form'; return; }
+
+    const slug = param('form');
+    if (!slug) {
+      $('form-name').textContent = 'No form specified';
+      $('fields').innerHTML = '<div class="empty">Add <code>?form=&lt;slug&gt;</code> to the URL.</div>';
+      return;
+    }
+
+    const sb = window.supabaseClient;
+    const { data: form, error } = await sb.from('forms').select('id, slug, name, description, schema, enabled').eq('slug', slug).maybeSingle();
+    if (error || !form) {
+      $('form-name').textContent = 'Form not found';
+      $('fields').innerHTML = '<div class="empty">No form matches that slug, or you don\'t have permission to view it.</div>';
+      return;
+    }
+    if (!form.enabled) {
+      $('form-name').textContent = form.name || 'Form unavailable';
+      $('fields').innerHTML = '<div class="empty">This form isn\'t accepting submissions right now.</div>';
+      return;
+    }
+
+    $('form-name').textContent = form.name || 'Booking';
+    $('form-desc').textContent = form.description || '';
+    document.title = (form.name || 'Booking') + ' — 2nd Nature Park';
+
+    const fields = (form.schema && Array.isArray(form.schema.fields)) ? form.schema.fields : [];
+    if (!fields.length) {
+      $('fields').innerHTML = '<div class="empty">This form has no fields configured yet.</div>';
+      return;
+    }
+
+    let html = '';
+    fields.forEach(f => {
+      const id = 'f-' + esc(f.id);
+      html += '<div class="field"><label for="'+id+'">'+esc(f.label || f.id)+(f.required?' <span class="req">*</span>':'')+'</label>';
+      const placeholder = f.placeholder ? ' placeholder="'+esc(f.placeholder)+'"' : '';
+      const required    = f.required ? ' required' : '';
+      switch(f.type) {
+        case 'textarea':
+          html += '<textarea id="'+id+'" name="'+esc(f.id)+'"'+placeholder+required+'></textarea>';
+          break;
+        case 'select':
+          html += '<select id="'+id+'" name="'+esc(f.id)+'"'+required+'>';
+          if (!f.required) html += '<option value="">— choose —</option>';
+          (f.options || []).forEach(o => {
+            const v = typeof o === 'string' ? o : (o.value || '');
+            const l = typeof o === 'string' ? o : (o.label || o.value || '');
+            html += '<option value="'+esc(v)+'">'+esc(l)+'</option>';
+          });
+          html += '</select>';
+          break;
+        case 'checkbox':
+          html += '<label style="display:flex;align-items:center;gap:8px;font-weight:400;font-size:14px;"><input type="checkbox" id="'+id+'" name="'+esc(f.id)+'" style="width:auto;"'+required+'> '+esc(f.checkboxLabel || 'Yes')+'</label>';
+          break;
+        default:
+          html += '<input type="'+esc(f.type || 'text')+'" id="'+id+'" name="'+esc(f.id)+'"'+placeholder+required+'>';
+      }
+      if (f.help) html += '<div class="help">'+esc(f.help)+'</div>';
+      html += '</div>';
+    });
+
+    $('fields').innerHTML = html;
+    $('submit-btn').style.display = 'block';
+
+    // Pre-fill from URL params — lets the customer self-serve portal hand
+    // off ?name=Tommy&email=tommy@x.com so the customer doesn't retype.
+    // Also surfaces any field whose id matches a query param.
+    const _qs = new URLSearchParams(window.location.search);
+    fields.forEach(f => {
+      const v = _qs.get(f.id);
+      if (v == null || v === '') return;
+      const el = document.getElementById('f-' + f.id);
+      if (!el) return;
+      if (el.tagName === 'SELECT') {
+        // Match value or label
+        for (let i = 0; i < el.options.length; i++) {
+          if (el.options[i].value === v || el.options[i].textContent === v) {
+            el.selectedIndex = i; break;
+          }
+        }
+      } else if (el.type === 'checkbox') {
+        el.checked = (v === '1' || v === 'true' || v === 'yes');
+      } else {
+        el.value = v;
+      }
+    });
+
+    document.getElementById('dyn-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = $('submit-btn');
+      btn.disabled = true; btn.textContent = 'Submitting…';
+      const data = {};
+      fields.forEach(f => {
+        const el = $('f-' + f.id);
+        if (!el) return;
+        data[f.id] = (f.type === 'checkbox') ? !!el.checked : el.value;
+      });
+      const ins = await sb.from('form_submissions').insert({ form_id: form.id, data: data }).select('id').maybeSingle();
+      btn.disabled = false; btn.textContent = 'Submit';
+      if (ins.error) { status('Submission failed: ' + ins.error.message, 'err'); return; }
+      status('✓ Submitted! We\'ll be in touch soon.', 'ok');
+      btn.style.display = 'none';
+      document.getElementById('fields').style.display = 'none';
+    });
+  }
+
+  init();
+</script>
+
+</body>
+</html>

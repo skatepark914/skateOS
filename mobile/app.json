@@ -1,0 +1,62 @@
+{
+  "expo": {
+    "name": "2nd Nature Park",
+    "slug": "two-ntr-park",
+    "version": "0.1.0",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
+    "scheme": "twoNtrPark",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#e11d48"
+    },
+    "ios": {
+      "bundleIdentifier": "com.2ntr.park",
+      "buildNumber": "1",
+      "supportsTablet": true,
+      "requireFullScreen": false,
+      "appleTeamId": "6DGA5856LS",
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "Use Face ID to sign in quickly at the front desk.",
+        "NSCameraUsageDescription": "Scan skater QR cards to check them in.",
+        "UIBackgroundModes": [
+          "fetch"
+        ]
+      }
+    },
+    "android": {
+      "package": "com.twoNtr.park",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#e11d48"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        {
+          "faceIDPermission": "Use Face ID to sign in."
+        }
+      ],
+      "expo-asset",
+      "expo-font"
+    ],
+    "extra": {
+      "supabaseUrl": "https://zecurmlenxyxanqucrga.supabase.co",
+      "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8",
+      "brandColor": "#e11d48",
+      "brandColorDark": "#be123c",
+      "brandColorLight": "#ffe4e6",
+      "bizName": "2nd Nature Park",
+      "eas": {
+        "projectId": "REPLACE_WITH_EAS_PROJECT_ID"
+      }
+    }
+  }
+}

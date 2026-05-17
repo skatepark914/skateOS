@@ -1,0 +1,74 @@
+// ============================================================
+// WHITE-LABEL CONFIG
+// Edit this file to rebrand the admin for any shop/park.
+// Loaded before index.html's main script, so every reference
+// to window.APP_CONFIG.* picks up these values.
+// ============================================================
+window.APP_CONFIG = {
+  // --- Product (software brand — constant across all deployments) ---
+  appProductName:    'SkateOS',
+  appProductTagline: 'The operating system for skate parks.',
+  appProductUrl:     'skateos.com',     // register ASAP — see README
+
+  // --- Deployment (this park's brand — varies per customer) ---
+  bizName:      '2nd Nature Park',
+  bizShortName: '2nd Nature',          // shown in sidebar, split-styled
+  bizShortAccent:'Park',                // accent-colored tail (e.g. "2nd Nature Park")
+  bizTagline:   'PARK OPERATIONS',      // sidebar subtitle (uppercase)
+  logoEmoji:    '🛹',                   // fallback icon if no image
+  logoUrl:      '',                     // optional image path
+  themeColor:   '#e11d48',              // primary accent (rose-600)
+  themeColorDark:'#be123c',
+  themeColorLight:'#ffe4e6',
+
+  // --- Contact ---
+  bizPhone:     '(914) 402-4624',
+  bizEmail:     'info@2ntr.com',
+  bizAddr:      '1 Highland Industrial Park, Peekskill, NY 10566',
+  bizWebsite:   '2ntr.com',
+  receiptFooter:'Thanks for skating with us!',
+
+  // --- Financial ---
+  taxRate:      0.08375,                // Westchester County NY
+
+  // --- Backend ---
+  supabaseUrl:  'https://.supabase.co',
+  supabaseKey:  '',
+
+  // --- Payments ---
+  // We use Square at the park. Stripe-specific UI in the base template
+  // will be swapped to Square Terminal / Square Checkout links.
+  paymentProvider: 'square',            // 'square' | 'stripe'
+  squareLocationId:'',                  // TODO: from Square Dashboard → Locations
+  squareAppId:    '',                   // TODO: from Square Developer Dashboard
+
+  // --- Feature flags ---
+  features: {
+    memberships:  true,   // monthly skate passes (replaces MaaS)
+    sessionPasses:true,   // day passes / punch cards
+    rentals:      true,   // board/pad rentals
+    lessons:      true,   // booked lessons
+    warranties:   false,  // skate products rarely carry warranty
+  },
+
+  // --- Login ---
+  adminPassword:'CHANGEME',             // set this before go-live
+
+  // --- Categories (seed data for fresh install) ---
+  defaultCategories: [
+    'Session Passes',
+    'Memberships',
+    'Lessons',
+    'Decks',
+    'Trucks',
+    'Wheels',
+    'Bearings',
+    'Hardware',
+    'Grip Tape',
+    'Shoes',
+    'Apparel',
+    'Safety Gear',
+    'Rentals',
+    'Food & Drink',
+  ],
+};

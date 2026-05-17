@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Unsubscribe — skateOS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; background: #f9fafb; color: #14161a; margin: 0; padding: 24px 16px; }
+    .card { max-width: 480px; margin: 60px auto; background: #fff; border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); padding: 32px 28px; text-align: center; }
+    .icon { font-size: 48px; margin-bottom: 12px; }
+    .icon.ok { color: #16a34a; }
+    .icon.warn { color: #d97706; }
+    .icon.err { color: #dc2626; }
+    h1 { font-size: 22px; margin: 0 0 10px; font-weight: 800; letter-spacing: -0.01em; }
+    p  { font-size: 14px; line-height: 1.6; color: #4b5563; margin: 0 0 14px; }
+    .biz { font-size: 12px; color: #9ca3af; margin-top: 24px; }
+    button { background: #e11d48; color: #fff; border: 0; padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 14px; cursor: pointer; font-family: inherit; }
+    button:disabled { opacity: 0.5; cursor: wait; }
+    .small { font-size: 12px; color: #6b7280; }
+    a { color: #e11d48; }
+  </style>
+</head>
+<body>
+  <div class="card" id="card">
+    <div class="icon warn"><i class="fas fa-envelope-open-text"></i></div>
+    <h1 id="title">Unsubscribe from emails?</h1>
+    <p id="msg">Click below to stop receiving lesson reminders, daily digests, and marketing emails from us. You can re-subscribe by emailing us anytime.</p>
+    <button id="btn" onclick="doOptOut()">Confirm unsubscribe</button>
+    <div class="biz" id="bizFooter">Loading…</div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script>
+  // CAN-SPAM-compliant one-click unsubscribe. The customer's UUID is
+  // passed in the URL (?cid=<uuid>). RPC email_opt_out from migration 035
+  // handles the actual flag flip — public-callable, idempotent.
+  (function(){
+    var bizFooter = document.getElementById('bizFooter');
+    var biz = (window.APP_CONFIG && APP_CONFIG.bizName) || 'Skate Park';
+    bizFooter.textContent = biz + ' · skateOS';
+
+    var params = new URLSearchParams(location.search);
+    var cid = params.get('cid');
+    if(!cid || !/^[0-9a-f-]{36}$/i.test(cid)){
+      _showState('err', 'Invalid link', 'This unsubscribe link is missing or malformed. Reply to any email from us to opt out manually.');
+      document.getElementById('btn').disabled = true;
+      return;
+    }
+    window._unsubCid = cid;
+  })();
+
+  function _showState(kind, title, msg){
+    var icon = document.querySelector('.icon');
+    icon.className = 'icon ' + kind;
+    icon.innerHTML = '<i class="fas fa-' + (kind==='ok' ? 'check-circle' : kind==='err' ? 'exclamation-triangle' : 'envelope-open-text') + '"></i>';
+    document.getElementById('title').textContent = title;
+    document.getElementById('msg').textContent = msg;
+  }
+
+  async function doOptOut(){
+    var btn = document.getElementById('btn');
+    btn.disabled = true; btn.textContent = 'Working…';
+    try {
+      var sb = supabase.createClient(APP_CONFIG.supabaseUrl, APP_CONFIG.supabaseAnonKey);
+      var r = await sb.rpc('email_opt_out', { p_customer_id: window._unsubCid });
+      if(r.error) throw new Error(r.error.message || 'unsubscribe failed');
+      var data = r.data || {};
+      if(data.already_opted_out){
+        _showState('ok', "You're already unsubscribed", "We won't send you any more emails. If you want to opt back in, email us directly.");
+      } else {
+        _showState('ok', "You've been unsubscribed", "Sorry to see you go! We won't send you any more emails. If you change your mind, email us and we'll add you back.");
+      }
+      btn.style.display = 'none';
+    } catch(e){
+      _showState('err', 'Unsubscribe failed', (e.message||String(e)) + ' — please reply to one of our emails and we\'ll handle it manually.');
+      btn.disabled = false;
+      btn.textContent = 'Try again';
+    }
+  }
+  </script>
+</body>
+</html>

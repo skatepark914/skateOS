@@ -1,0 +1,624 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2nd Nature Park — Check-In</title>
+<!-- =====================================================================
+     SKATEOS CHECK-IN SCREEN — preview build
+     Rose theme matches admin/config.js (#e11d48 / #be123c).
+     Schema-aligned to migrations/001_init.sql:
+       customers(name, parent_name, dob, phone, waiver_signed_at, ...)
+       subscriptions(plan_type, plan_name, punches_total, punches_used, status, ...)
+       checkins(customer_id, subscription_id, checked_in_at, checked_out_at, ...)
+     Mock data here; production splice into index.html will swap mock arrays
+     for sb.from(...).select(...) calls and live realtime subscriptions.
+===================================================================== -->
+<style>
+  :root {
+    color-scheme: light;
+    --rose:        #e11d48;   /* CFG.themeColor    */
+    --rose-dark:   #be123c;   /* CFG.themeColorDark */
+    --rose-light:  #ffe4e6;   /* CFG.themeColorLight */
+    --ink:         #14161a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --panel:       #ffffff;
+    --bg:          #f6f6f4;
+    --good:        #117a39;
+    --warn:        #c25700;
+    --bad:         #a8102b;
+    --chip:        #ececec;
+    --shadow:      0 1px 2px rgba(0,0,0,.04), 0 8px 24px rgba(0,0,0,.06);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; height:100%; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    display: grid;
+    grid-template-columns: 280px 1fr 360px;
+    grid-template-rows: 56px 1fr;
+    grid-template-areas:
+      "header header header"
+      "side   main   right";
+    height: 100vh;
+  }
+  @media (max-width:1100px) {
+    .app { grid-template-columns: 1fr; grid-template-rows: 56px auto auto auto;
+      grid-template-areas:"header" "side" "main" "right"; height:auto; }
+  }
+  header {
+    grid-area: header;
+    display: flex; align-items: center; gap: 16px;
+    padding: 0 18px;
+    background: var(--ink);
+    color: #fff;
+  }
+  header .brand { font-weight: 800; letter-spacing: .04em; display:flex; gap:8px; align-items:center; }
+  header .brand .emoji { font-size: 1.2rem; }
+  header .brand b { color: var(--rose); }
+  header .meta { margin-left: auto; font-size: 12px; opacity: .85; display: flex; gap: 14px; }
+  header .meta b { color: #fff; }
+
+  aside.left {
+    grid-area: side;
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 16px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  aside.right {
+    grid-area: right;
+    background: var(--panel);
+    border-left: 1px solid var(--line);
+    padding: 16px;
+    overflow-y: auto;
+  }
+  main {
+    grid-area: main;
+    padding: 16px 18px;
+    overflow-y: auto;
+  }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .08em; color: var(--ink-soft); margin: 0; }
+
+  .stat {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .stat .n { font-size: 28px; font-weight: 800; line-height: 1; }
+  .stat .l { font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
+  .stat.accent { background: var(--rose); color: #fff; border-color: var(--rose); }
+  .stat.accent .l { color: rgba(255,255,255,.85); }
+
+  .search {
+    display: flex; gap: 8px; align-items: center;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    box-shadow: var(--shadow);
+  }
+  .search input {
+    flex: 1; border: 0; outline: 0; background: transparent;
+    font-size: 16px; color: var(--ink);
+  }
+  .search button {
+    border: 0; background: var(--rose); color: #fff;
+    padding: 8px 14px; border-radius: 8px; font-weight: 700; cursor: pointer;
+    font-size: 14px;
+  }
+  .search .hint { font-size: 11px; color: var(--ink-soft); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 56px 1fr auto auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    border-radius: 10px;
+    margin-bottom: 8px;
+  }
+  .row.in-park { border-left: 4px solid var(--rose); background: linear-gradient(90deg, var(--rose-light) 0%, var(--panel) 25%); }
+  .avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--ink); color: #fff;
+    display: grid; place-items: center;
+    font-weight: 700; letter-spacing: .04em;
+  }
+  .avatar.minor { background: var(--rose-dark); }
+  .name { font-weight: 700; }
+  .sub { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+  .chip {
+    font-size: 11px; padding: 3px 8px; border-radius: 999px;
+    background: var(--chip); color: var(--ink); display: inline-block;
+  }
+  .chip.good { background: #e6f4ec; color: var(--good); }
+  .chip.warn { background: #fdecd9; color: var(--warn); }
+  .chip.bad  { background: #fbe4e8; color: var(--bad); }
+  .chip.member { background: var(--ink); color: #fff; }
+  .chip.rose { background: var(--rose-light); color: var(--rose-dark); border: 1px solid var(--rose); }
+
+  .btn { border: 0; background: var(--ink); color: #fff;
+    padding: 8px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; font-size: 13px; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn.danger { background: var(--bad); }
+  .btn.rose { background: var(--rose); }
+  .btn:disabled { opacity:.4; cursor: not-allowed; }
+  .section { margin-top: 18px; }
+  .section .head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+  .section .head .count { font-size: 12px; color: var(--ink-soft); }
+  .empty { font-size: 13px; color: var(--ink-soft); padding: 14px; text-align: center;
+           border: 1px dashed var(--line); border-radius: 10px; background: var(--panel); }
+
+  /* Big banner for "WELCOME, {name}" on successful check-in */
+  .banner-wrap { position: fixed; inset: 0; background: rgba(20,22,26,.55); display: none; align-items: center; justify-content: center; z-index: 80; }
+  .banner-wrap.show { display: flex; }
+  .banner {
+    background: var(--panel);
+    border-radius: 18px;
+    padding: 28px 36px;
+    box-shadow: var(--shadow);
+    text-align: center;
+    max-width: 560px;
+    border-top: 8px solid var(--rose);
+  }
+  .banner h1 { margin: 0 0 4px; font-size: 28px; font-weight: 800; letter-spacing: -.01em; }
+  .banner h1 .name { color: var(--rose); }
+  .banner .sub2 { color: var(--ink-soft); font-size: 14px; }
+  .banner .meta-line { margin: 14px 0 4px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; font-size: 13px; }
+  .banner .pill { background: var(--rose-light); color: var(--rose-dark); padding: 4px 12px; border-radius: 999px; font-weight: 600; }
+
+  /* Modal: New skater */
+  .modal-wrap { position: fixed; inset: 0; background: rgba(20,22,26,.45); display: none; align-items: center; justify-content: center; z-index: 50; }
+  .modal-wrap.show { display: flex; }
+  .modal { width: min(540px, 92vw); background: var(--panel); border-radius: 14px; box-shadow: var(--shadow); padding: 18px; }
+  .modal h3 { font-size: 16px; margin: 0 0 12px; }
+  .modal .field { display: grid; gap: 4px; margin-bottom: 10px; }
+  .modal label { font-size: 12px; color: var(--ink-soft); }
+  .modal input, .modal select { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #fff; color: var(--ink); }
+  .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+  /* Search results */
+  .results { background: var(--panel); border: 1px solid var(--line); border-top: 0;
+             border-radius: 0 0 10px 10px; max-height: 280px; overflow: auto; }
+  .results .hit { padding: 10px 12px; cursor: pointer; display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--line); }
+  .results .hit:first-child { border-top: 0; }
+  .results .hit:hover { background: var(--rose-light); }
+
+  .park-flag {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px;
+    color: var(--rose-dark); font-weight: 700; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--rose); display: inline-block; }
+  .footnote { font-size: 11px; color: var(--ink-soft); margin-top: 12px; line-height: 1.5; }
+
+  /* Punch progress bar */
+  .punch-bar { height: 6px; background: var(--chip); border-radius: 999px; overflow: hidden; margin-top: 4px; }
+  .punch-bar > .fill { height: 100%; background: var(--rose); transition: width .25s; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand"><span class="emoji">🛹</span><span>2nd Nature</span><b>Park</b></div>
+    <div class="meta">
+      <span>Front Desk · iPad 1</span>
+      <span id="staff-meta">Staff: <b>Doug</b> (owner)</span>
+      <span id="clock">—</span>
+    </div>
+  </header>
+
+  <aside class="left">
+    <div id="stat-in-park" class="stat accent">
+      <div class="n" id="n-in-park">0</div>
+      <div class="l">In the park right now</div>
+    </div>
+    <div class="stat">
+      <div class="n" id="n-today">0</div>
+      <div class="l">Check-ins today</div>
+    </div>
+    <div class="stat">
+      <div class="n" id="n-active-passes">0</div>
+      <div class="l">Active members &amp; passes</div>
+    </div>
+    <button class="btn rose" onclick="openNewSkater()">+ New skater · waiver · pass</button>
+    <button class="btn ghost" onclick="endAll()">End all sessions (close park)</button>
+    <div class="footnote">
+      Preview build, mock data. Schema-aligned to <code>customers / subscriptions / checkins</code>.
+      Splice into <code>admin/index.html</code> once Supabase project is live; swap mock arrays for <code>sb.from(...)</code> calls.
+    </div>
+  </aside>
+
+  <main>
+    <div class="search">
+      <input id="q" placeholder="Search skater by name or phone, or scan a member-card QR…" oninput="search()" autofocus />
+      <span class="hint">Enter to check in top hit</span>
+      <button onclick="checkInTop()">Check in</button>
+    </div>
+    <div id="results" class="results" style="display:none"></div>
+
+    <div class="section">
+      <div class="head"><h2>In the park</h2><span class="count" id="park-count">0 skaters</span></div>
+      <div id="park-list"></div>
+    </div>
+
+    <div class="section">
+      <div class="head"><h2>Recently checked out</h2><span class="count" id="recent-count">0</span></div>
+      <div id="recent-list"></div>
+    </div>
+  </main>
+
+  <aside class="right">
+    <h2>Today's roster</h2>
+    <div id="roster" style="margin-top:8px"></div>
+  </aside>
+</div>
+
+<!-- WELCOME banner -->
+<div id="banner" class="banner-wrap" onclick="this.classList.remove('show')">
+  <div class="banner">
+    <h1>WELCOME, <span class="name" id="banner-name">—</span></h1>
+    <div class="sub2" id="banner-sub">Have a great session.</div>
+    <div class="meta-line" id="banner-meta"></div>
+  </div>
+</div>
+
+<!-- New skater modal -->
+<div id="modal" class="modal-wrap" onclick="closeModalBg(event)">
+  <div class="modal">
+    <h3>New skater</h3>
+    <div class="field"><label>Full name</label><input id="m-name" placeholder="e.g. Mateo Rivera"/></div>
+    <div class="grid-2">
+      <div class="field"><label>Date of birth</label><input id="m-dob" type="date"/></div>
+      <div class="field"><label>Phone</label><input id="m-phone" placeholder="(914) 555-1234"/></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Parent / guardian (if minor)</label><input id="m-parent-name" placeholder="Optional"/></div>
+      <div class="field"><label>Parent phone</label><input id="m-parent-phone" placeholder="Optional"/></div>
+    </div>
+    <div class="grid-2">
+      <div class="field"><label>Waiver</label>
+        <select id="m-waiver">
+          <option value="signed">Signed today (paper)</option>
+          <option value="digital">Sent digital waiver (Smartwaiver)</option>
+          <option value="missing">Missing — block check-in</option>
+        </select>
+      </div>
+      <div class="field"><label>Pass</label>
+        <select id="m-pass">
+          <option value="day_pass">Day pass (drop-in, $)</option>
+          <option value="punch_card">10-pack punch card</option>
+          <option value="monthly">Monthly membership</option>
+          <option value="annual">Annual membership</option>
+          <option value="comped">Comped / industry</option>
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn rose" onclick="saveNewSkater()">Save &amp; check in</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------------- mock data shaped like real DB rows ----------------
+  // customers
+  const customers = [
+    { id:'c1', name:'Mateo Rivera',  dob:'2010-05-04', phone:'914-555-0102', parent_name:null, parent_phone:null, waiver_signed_at:'2026-04-12', sub:'sub1' },
+    { id:'c2', name:'Aiden Park',    dob:'2012-09-22', phone:'914-555-0144', parent_name:'Susan Park', parent_phone:'914-555-0143', waiver_signed_at:'2026-03-30', sub:'sub2' },
+    { id:'c3', name:'Sofia Nguyen',  dob:'2008-02-15', phone:'914-555-0177', parent_name:null, parent_phone:null, waiver_signed_at:'2026-01-15', sub:'sub3' },
+    { id:'c4', name:'Jackson Cole',  dob:'2014-11-30', phone:'914-555-0199', parent_name:'Mark Cole', parent_phone:'914-555-0198', waiver_signed_at:'2026-04-28', sub:'sub4' },
+    { id:'c5', name:'Liana Brooks',  dob:'2013-06-18', phone:'914-555-0211', parent_name:'Ron Brooks', parent_phone:'914-555-0210', waiver_signed_at:null, sub:null },
+    { id:'c6', name:'Devon Walsh',   dob:'2009-08-08', phone:'914-555-0233', parent_name:null, parent_phone:null, waiver_signed_at:'2026-02-04', sub:'sub5' },
+    { id:'c7', name:'Quinn Patel',   dob:'2007-12-01', phone:'914-555-0265', parent_name:null, parent_phone:null, waiver_signed_at:'2025-12-10', sub:'sub6' },
+    { id:'c8', name:'Eli Thompson',  dob:'1999-04-17', phone:'914-555-0288', parent_name:null, parent_phone:null, waiver_signed_at:'2025-11-02', sub:'sub7' },
+    { id:'c9', name:'Harper Vega',   dob:'2011-03-25', phone:'914-555-0301', parent_name:'Maya Vega', parent_phone:'914-555-0300', waiver_signed_at:'2026-02-01', sub:'sub8' },
+    { id:'c10',name:'Noah Kim',      dob:'2006-07-09', phone:'914-555-0322', parent_name:null, parent_phone:null, waiver_signed_at:'2026-04-29', sub:null },
+  ];
+
+  // subscriptions (matches schema 001_init.sql)
+  const subscriptions = [
+    { id:'sub1', customer_id:'c1', plan_name:'Monthly Skate',    plan_type:'monthly',    monthly_rate:55, punches_total:null, punches_used:null, end_date:'2026-08-30', status:'active' },
+    { id:'sub2', customer_id:'c2', plan_name:'10-pack',          plan_type:'punch_card', monthly_rate:null, punches_total:10, punches_used:4,    end_date:'2026-09-01', status:'active' },
+    { id:'sub3', customer_id:'c3', plan_name:'Annual',           plan_type:'annual',     monthly_rate:null, punches_total:null, punches_used:null, end_date:'2027-01-15', status:'active' },
+    { id:'sub4', customer_id:'c4', plan_name:'Day Pass',         plan_type:'day_pass',   monthly_rate:null, punches_total:1,  punches_used:0,    end_date:null,         status:'active' },
+    { id:'sub5', customer_id:'c6', plan_name:'10-pack',          plan_type:'punch_card', monthly_rate:null, punches_total:10, punches_used:8,    end_date:'2026-06-04', status:'active' },
+    { id:'sub6', customer_id:'c7', plan_name:'Monthly Skate',    plan_type:'monthly',    monthly_rate:55, punches_total:null, punches_used:null, end_date:'2026-05-12', status:'active' },
+    { id:'sub7', customer_id:'c8', plan_name:'Industry Comped',  plan_type:'monthly',    monthly_rate:0,   punches_total:null, punches_used:null, end_date:null,         status:'active' },
+    { id:'sub8', customer_id:'c9', plan_name:'10-pack',          plan_type:'punch_card', monthly_rate:null, punches_total:10, punches_used:1,    end_date:'2027-02-01', status:'active' },
+  ];
+
+  // checkins
+  let nextCkId = 100;
+  const checkins = [];
+  (function seed(){
+    const t = new Date();
+    checkins.push({ id:'ck'+(++nextCkId), customer_id:'c1', subscription_id:'sub1', checked_in_at:new Date(t-47*60000), checked_out_at:null });
+    checkins.push({ id:'ck'+(++nextCkId), customer_id:'c3', subscription_id:'sub3', checked_in_at:new Date(t-22*60000), checked_out_at:null });
+    checkins.push({ id:'ck'+(++nextCkId), customer_id:'c6', subscription_id:'sub5', checked_in_at:new Date(t-8*60000),  checked_out_at:null });
+    checkins.push({ id:'ck'+(++nextCkId), customer_id:'c2', subscription_id:'sub2', checked_in_at:new Date(t-130*60000),checked_out_at:new Date(t-65*60000) });
+    checkins.push({ id:'ck'+(++nextCkId), customer_id:'c7', subscription_id:'sub6', checked_in_at:new Date(t-200*60000),checked_out_at:new Date(t-110*60000) });
+  })();
+
+  // ---------------- helpers ----------------
+  const initials = (n) => n.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
+  const now = () => new Date();
+  const fmtTime = (d) => d.toLocaleTimeString([], {hour:'numeric', minute:'2-digit'});
+  const fmtDur = (s,e) => { const m=Math.max(0,Math.round((( e||now())-s)/60000)); if(m<60)return m+'m'; return Math.floor(m/60)+'h '+(m%60)+'m'; };
+  const ageOf = (dob) => { if(!dob) return null; const d=new Date(dob), n=now(); let a=n.getFullYear()-d.getFullYear(); if(n.getMonth()<d.getMonth()||(n.getMonth()===d.getMonth()&&n.getDate()<d.getDate())) a--; return a; };
+  const isMinor = (c) => { const a = ageOf(c.dob); return a !== null && a < 18; };
+  const findCustomer = (id) => customers.find(c=>c.id===id);
+  const findSub      = (id) => subscriptions.find(s=>s.id===id);
+  const subForCustomer = (cid) => { const c = findCustomer(cid); return c && c.sub ? findSub(c.sub) : null; };
+  const activeCheckin = (cid) => checkins.find(k=>k.customer_id===cid && !k.checked_out_at);
+  const todaysCheckins = () => { const start = new Date(); start.setHours(0,0,0,0); return checkins.filter(k=>k.checked_in_at>=start); };
+
+  function passLabel(sub) {
+    if (!sub) return 'No active pass';
+    if (sub.plan_type === 'punch_card') return `${sub.plan_name} · ${sub.punches_total - sub.punches_used} of ${sub.punches_total} left`;
+    if (sub.plan_type === 'monthly')    return `Monthly · expires ${sub.end_date}`;
+    if (sub.plan_type === 'annual')     return `Annual · expires ${sub.end_date}`;
+    if (sub.plan_type === 'day_pass')   return sub.punches_used >= sub.punches_total ? 'Day pass used' : 'Day pass';
+    return sub.plan_name;
+  }
+  function passChip(c) {
+    if (!c.waiver_signed_at) return '<span class="chip bad">No waiver</span>';
+    const sub = subForCustomer(c.id);
+    if (!sub) return '<span class="chip bad">No pass · charge drop-in</span>';
+    if (sub.plan_type === 'monthly' || sub.plan_type === 'annual')
+      return `<span class="chip member">${sub.plan_name}</span>`;
+    if (sub.plan_type === 'punch_card') {
+      const left = sub.punches_total - sub.punches_used;
+      const cls = left <= 2 ? 'warn' : 'good';
+      return `<span class="chip ${cls}">${sub.plan_name} · ${left} left</span>`;
+    }
+    if (sub.plan_type === 'day_pass') return '<span class="chip rose">Day pass</span>';
+    return `<span class="chip">${sub.plan_name}</span>`;
+  }
+
+  // ---------------- core ops ----------------
+  // TODO: replace mock pushes with sb.from('checkins').insert(...) etc.
+  function startCheckin(customerId) {
+    const c = findCustomer(customerId);
+    if (!c) return;
+    if (!c.waiver_signed_at) {
+      alert(c.name + ' has no waiver on file. Take a waiver before check-in.');
+      return;
+    }
+    if (activeCheckin(customerId)) {
+      alert(c.name + ' is already in the park.');
+      return;
+    }
+    const sub = subForCustomer(customerId);
+    if (!sub) {
+      if (!confirm(c.name + ' has no active pass. Charge a drop-in now?')) return;
+    } else if (sub.plan_type === 'punch_card' || sub.plan_type === 'day_pass') {
+      const left = (sub.punches_total||0) - (sub.punches_used||0);
+      if (left <= 0) {
+        if (!confirm(c.name + ' has 0 left on their ' + sub.plan_name + '. Charge a drop-in?')) return;
+      } else {
+        sub.punches_used += 1;
+      }
+    }
+    const ck = { id:'ck'+(++nextCkId), customer_id:customerId, subscription_id: sub ? sub.id : null, checked_in_at: now(), checked_out_at:null };
+    checkins.push(ck);
+    showBanner(c, sub);
+    render();
+  }
+  function endCheckin(ckId) {
+    const k = checkins.find(x=>x.id===ckId);
+    if (k && !k.checked_out_at) { k.checked_out_at = now(); render(); }
+  }
+  function endAll() {
+    const open = checkins.filter(k=>!k.checked_out_at);
+    if (!open.length) return alert('Nobody is in the park.');
+    if (!confirm('End all '+open.length+' active sessions?')) return;
+    open.forEach(k=>k.checked_out_at = now());
+    render();
+  }
+
+  // ---------------- search / scan ----------------
+  function search() {
+    const qEl = document.getElementById('q');
+    const q = qEl.value.trim().toLowerCase();
+    const box = document.getElementById('results');
+    if (!q) { box.style.display='none'; box.innerHTML=''; return; }
+    // QR formats: "skateos:c<id>" or just a plain UUID — treat colon match as instant check-in
+    if (q.startsWith('skateos:')) {
+      const id = q.split(':')[1].trim();
+      qEl.value=''; box.style.display='none'; box.innerHTML='';
+      return startCheckin(id);
+    }
+    const hits = customers.filter(c =>
+      c.name.toLowerCase().includes(q) ||
+      (c.phone||'').replace(/\D/g,'').includes(q.replace(/\D/g,''))
+    ).slice(0,8);
+    box.innerHTML = hits.length
+      ? hits.map(c => {
+          const inPark = activeCheckin(c.id);
+          const minor = isMinor(c);
+          return `<div class="hit" onclick="checkIn('${c.id}')">
+            <div class="avatar ${minor?'minor':''}">${initials(c.name)}</div>
+            <div style="flex:1">
+              <div class="name">${c.name}${minor?' <span class="chip rose" style="margin-left:6px">minor</span>':''}</div>
+              <div class="sub">${c.phone||'—'} · ${passLabel(subForCustomer(c.id))}</div>
+            </div>
+            ${inPark ? '<span class="park-flag"><span class="dot"></span> in park</span>' : '<span class="chip">Tap to check in</span>'}
+          </div>`;
+        }).join('')
+      : '<div class="hit"><div class="sub">No matches. Use the orange "+ New skater" button.</div></div>';
+    box.style.display='block';
+  }
+  function checkIn(id) {
+    document.getElementById('q').value=''; document.getElementById('results').style.display='none';
+    startCheckin(id);
+  }
+  function checkInTop() {
+    const q = document.getElementById('q').value.trim().toLowerCase();
+    if (!q) return;
+    const hit = customers.find(c => c.name.toLowerCase().includes(q) || (c.phone||'').replace(/\D/g,'').includes(q.replace(/\D/g,'')));
+    if (hit) checkIn(hit.id); else alert('No match. Add a new skater?');
+  }
+  document.getElementById('q').addEventListener('keydown', (e)=>{ if (e.key==='Enter') checkInTop(); });
+
+  // ---------------- banner ----------------
+  function showBanner(c, sub) {
+    const banner = document.getElementById('banner');
+    document.getElementById('banner-name').textContent = c.name.split(' ')[0].toUpperCase();
+    const pieces = [];
+    if (sub) {
+      if (sub.plan_type === 'punch_card') {
+        const left = sub.punches_total - sub.punches_used;
+        pieces.push(`<span class="pill">${sub.plan_name}</span><span>${left} of ${sub.punches_total} punches left</span>`);
+      } else if (sub.plan_type === 'monthly' || sub.plan_type === 'annual') {
+        pieces.push(`<span class="pill">${sub.plan_name}</span><span>expires ${sub.end_date}</span>`);
+      } else if (sub.plan_type === 'day_pass') {
+        pieces.push(`<span class="pill">Day pass</span>`);
+      }
+    } else {
+      pieces.push(`<span class="pill">Drop-in</span>`);
+    }
+    if (isMinor(c)) pieces.push(`<span>Minor — guardian: ${c.parent_name||'(not on file)'}</span>`);
+    document.getElementById('banner-meta').innerHTML = pieces.join('');
+    document.getElementById('banner-sub').textContent = 'Have a great session.';
+    banner.classList.add('show');
+    setTimeout(()=>banner.classList.remove('show'), 3500);
+  }
+
+  // ---------------- rendering ----------------
+  function renderRow(ck, mode) {
+    const c = findCustomer(ck.customer_id);
+    const sub = ck.subscription_id ? findSub(ck.subscription_id) : null;
+    const dur = fmtDur(ck.checked_in_at, ck.checked_out_at);
+    const time = mode==='park'
+      ? `<div class="sub">In since ${fmtTime(ck.checked_in_at)} · ${dur}</div>`
+      : `<div class="sub">${fmtTime(ck.checked_in_at)}–${fmtTime(ck.checked_out_at)} · ${dur}</div>`;
+    const action = mode==='park'
+      ? `<button class="btn danger" onclick="endCheckin('${ck.id}')">End session</button>`
+      : `<button class="btn ghost" onclick="checkIn('${c.id}')">Re-check in</button>`;
+    const minor = isMinor(c);
+    return `<div class="row ${mode==='park'?'in-park':''}">
+      <div class="avatar ${minor?'minor':''}">${initials(c.name)}</div>
+      <div>
+        <div class="name">${c.name}${minor?' <span class="chip rose" style="margin-left:6px">minor</span>':''}</div>
+        ${time}
+      </div>
+      ${passChip(c)}
+      ${action}
+    </div>`;
+  }
+
+  function render() {
+    const open = checkins.filter(k=>!k.checked_out_at).sort((a,b)=>b.checked_in_at-a.checked_in_at);
+    const closed = checkins.filter(k=>k.checked_out_at).sort((a,b)=>b.checked_out_at-a.checked_out_at).slice(0,8);
+
+    document.getElementById('n-in-park').textContent = open.length;
+    document.getElementById('n-today').textContent  = todaysCheckins().length;
+    document.getElementById('n-active-passes').textContent = subscriptions.filter(s=>s.status==='active').length;
+
+    const park = document.getElementById('park-list');
+    document.getElementById('park-count').textContent = open.length+' skater'+(open.length===1?'':'s');
+    park.innerHTML = open.length
+      ? open.map(k=>renderRow(k,'park')).join('')
+      : '<div class="empty">Nobody is in the park right now. Search a name or scan a member-card QR above.</div>';
+
+    const recent = document.getElementById('recent-list');
+    document.getElementById('recent-count').textContent = closed.length;
+    recent.innerHTML = closed.length
+      ? closed.map(k=>renderRow(k,'recent')).join('')
+      : '<div class="empty">No completed sessions yet today.</div>';
+
+    const today = todaysCheckins().map(k=>k.customer_id);
+    const seen = new Set();
+    const unique = today.filter(id => seen.has(id)?false:(seen.add(id),true));
+    const roster = document.getElementById('roster');
+    roster.innerHTML = unique.length
+      ? unique.map(id => {
+          const c = findCustomer(id);
+          const a = activeCheckin(id);
+          const sub = subForCustomer(id);
+          let punchHtml = '';
+          if (sub && sub.plan_type === 'punch_card') {
+            const pct = Math.round((sub.punches_used / sub.punches_total) * 100);
+            punchHtml = `<div class="punch-bar"><div class="fill" style="width:${pct}%"></div></div>`;
+          }
+          return `<div class="row" style="grid-template-columns: 40px 1fr auto;">
+            <div class="avatar ${isMinor(c)?'minor':''}" style="width:36px;height:36px;font-size:13px">${initials(c.name)}</div>
+            <div>
+              <div class="name" style="font-size:13px">${c.name}</div>
+              <div class="sub">${a?'In park · '+fmtDur(a.checked_in_at):'Done'}${sub && sub.plan_type==='punch_card' ? ' · '+(sub.punches_total-sub.punches_used)+' left':''}</div>
+              ${punchHtml}
+            </div>
+            <span class="dot" style="${a?'':'background:#bbb'}"></span>
+          </div>`;
+        }).join('')
+      : '<div class="empty">No check-ins yet.</div>';
+  }
+
+  // ---------------- new skater modal ----------------
+  function openNewSkater() {
+    document.getElementById('modal').classList.add('show');
+    setTimeout(()=>document.getElementById('m-name').focus(), 50);
+  }
+  function closeModal() { document.getElementById('modal').classList.remove('show'); }
+  function closeModalBg(e) { if (e.target.id === 'modal') closeModal(); }
+  function saveNewSkater() {
+    const name = document.getElementById('m-name').value.trim();
+    if (!name) { alert('Need a name.'); return; }
+    const dob = document.getElementById('m-dob').value || null;
+    const phone = document.getElementById('m-phone').value.trim() || null;
+    const parent_name  = document.getElementById('m-parent-name').value.trim()  || null;
+    const parent_phone = document.getElementById('m-parent-phone').value.trim() || null;
+    const waiverChoice = document.getElementById('m-waiver').value;
+    const passType     = document.getElementById('m-pass').value;
+
+    // TODO: sb.from('customers').insert(...) → returns row with id
+    const id = 'c'+(customers.length+1);
+    const c = {
+      id, name, dob, phone, parent_name, parent_phone,
+      waiver_signed_at: waiverChoice === 'missing' ? null : new Date().toISOString().slice(0,10),
+      sub: null,
+    };
+    customers.push(c);
+
+    // TODO: sb.from('subscriptions').insert(...)
+    if (passType !== 'comped' || true) {
+      const subId = 'sub'+(subscriptions.length+1);
+      let sub;
+      if (passType === 'punch_card') sub = { id:subId, customer_id:id, plan_name:'10-pack', plan_type:'punch_card', punches_total:10, punches_used:0, end_date:null, status:'active' };
+      else if (passType === 'monthly') sub = { id:subId, customer_id:id, plan_name:'Monthly Skate', plan_type:'monthly', monthly_rate:55, end_date:'2026-05-29', status:'active' };
+      else if (passType === 'annual')  sub = { id:subId, customer_id:id, plan_name:'Annual', plan_type:'annual', end_date:'2027-04-29', status:'active' };
+      else if (passType === 'comped')  sub = { id:subId, customer_id:id, plan_name:'Industry Comped', plan_type:'monthly', monthly_rate:0, status:'active' };
+      else                              sub = { id:subId, customer_id:id, plan_name:'Day Pass', plan_type:'day_pass', punches_total:1, punches_used:0, status:'active' };
+      subscriptions.push(sub);
+      c.sub = subId;
+    }
+
+    closeModal();
+    if (waiverChoice !== 'missing') startCheckin(id);
+    else { render(); alert('Saved. Get a waiver before check-in.'); }
+  }
+
+  // ---------------- clock + heartbeat ----------------
+  function tickClock() {
+    const d = now();
+    document.getElementById('clock').textContent =
+      d.toLocaleDateString([], {weekday:'short', month:'short', day:'numeric'}) + ' · ' + fmtTime(d);
+  }
+  setInterval(()=>{ tickClock(); render(); }, 30000);
+  tickClock();
+  render();
+</script>
+</body>
+</html>

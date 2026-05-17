@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2nd Nature Park — Skatepark in Peekskill, NY</title>
+<meta name="description" content="Indoor + outdoor skatepark in Peekskill, NY. Memberships, lessons, day passes, parties. 24/7 access for members via Brivo Mobile Pass.">
+<meta property="og:title" content="2nd Nature Park · Peekskill NY">
+<meta property="og:description" content="Skate when you want. Members get 24/7 park access. Drop in, lesson up, throw a birthday party.">
+<meta property="og:image" content="/og.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛹</text></svg>">
+<style>
+  :root {
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --ink:         #14161a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #faf9f6;
+    --green:       #16a34a;
+    --amber:       #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+  /* === Nav === */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(250, 249, 246, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .inner {
+    max-width: 1080px; margin: 0 auto; padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .logo {
+    font-weight: 900; font-size: 18px; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 8px; color: var(--ink);
+    text-decoration: none;
+  }
+  .logo .emoji { font-size: 24px; }
+  .logo .accent { color: var(--rose); font-weight: 800; }
+  .nav-links { display: flex; gap: 22px; font-size: 14px; }
+  .nav-links a { color: var(--ink-soft); text-decoration: none; font-weight: 600; }
+  .nav-links a:hover { color: var(--rose); }
+  .nav-cta {
+    background: var(--rose); color: #fff; padding: 9px 18px; border-radius: 8px;
+    font-size: 14px; font-weight: 700; text-decoration: none;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .nav-cta:hover { background: var(--rose-dark); }
+  .nav-cta:active { transform: scale(0.97); }
+  @media (max-width: 720px) { .nav-links { display: none; } }
+
+  /* === Hero === */
+  .hero {
+    padding: 80px 20px 60px;
+    text-align: center;
+    background: radial-gradient(circle at top, var(--rose-light) 0%, var(--bg) 60%);
+  }
+  .badge {
+    display: inline-block; background: #fff; border: 1px solid var(--line);
+    padding: 6px 14px; border-radius: 999px; font-size: 12px;
+    font-weight: 700; color: var(--rose); margin-bottom: 18px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .hero h1 {
+    font-weight: 900;
+    font-size: clamp(40px, 7vw, 72px);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .hero .lede {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto 28px;
+  }
+  .cta-row {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: 10px;
+    font-size: 15px; font-weight: 800; text-decoration: none;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: var(--rose); color: #fff; }
+  .btn-primary:hover { background: var(--rose-dark); transform: translateY(-1px); }
+  .btn-ghost {
+    background: #fff; color: var(--ink); border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
+
+  /* === Live status pill === */
+  #live-status {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 22px; padding: 8px 16px; background: #fff;
+    border: 1px solid var(--line); border-radius: 999px; font-size: 13px;
+    color: var(--ink-soft); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  #live-status .dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #d4d4d4;
+    box-shadow: 0 0 0 0 currentColor; animation: pulse 2s infinite;
+  }
+  #live-status.open .dot { background: var(--green); color: var(--green); }
+  #live-status.closed .dot { background: var(--rose); color: var(--rose); }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 currentColor; }
+    70% { box-shadow: 0 0 0 6px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+  }
+
+  /* === Sections === */
+  section { padding: 64px 20px; }
+  section.alt { background: #fff; }
+  .section-head { text-align: center; margin-bottom: 48px; }
+  .section-head .eyebrow {
+    font-size: 12px; font-weight: 800; color: var(--rose);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 10px;
+  }
+  .section-head h2 {
+    font-weight: 900; font-size: clamp(28px, 4vw, 40px);
+    letter-spacing: -0.02em; line-height: 1.15; margin-bottom: 10px;
+  }
+  .section-head p {
+    color: var(--ink-soft); max-width: 580px; margin: 0 auto;
+    font-size: 16px;
+  }
+
+  /* === What you get cards === */
+  .perks {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+  }
+  .perk {
+    background: #fff; border: 1px solid var(--line); border-radius: 14px;
+    padding: 24px; transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .perk:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+  .perk .icon {
+    font-size: 32px; margin-bottom: 14px; display: block;
+  }
+  .perk h3 { font-size: 17px; font-weight: 800; margin-bottom: 6px; }
+  .perk p { font-size: 14px; color: var(--ink-soft); }
+
+  /* === Plans === */
+  .plans {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+  }
+  .plan-card {
+    background: #fff; border: 2px solid var(--line); border-radius: 16px;
+    padding: 24px; position: relative; transition: all 0.15s;
+    display: flex; flex-direction: column;
+  }
+  .plan-card.featured {
+    border-color: var(--rose);
+    box-shadow: 0 8px 30px rgba(225,29,72,0.12);
+    transform: scale(1.02);
+  }
+  .plan-card .ribbon {
+    position: absolute; top: -10px; right: 20px;
+    background: var(--rose); color: #fff;
+    font-size: 10px; font-weight: 800; padding: 4px 10px;
+    border-radius: 4px; letter-spacing: 0.08em;
+  }
+  .plan-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 4px; }
+  .plan-card .sub { font-size: 13px; color: var(--ink-soft); margin-bottom: 16px; }
+  .plan-card .price {
+    font-size: 36px; font-weight: 900; color: var(--rose);
+    letter-spacing: -0.02em; line-height: 1; margin-bottom: 6px;
+  }
+  .plan-card .price small { font-size: 13px; color: var(--ink-soft); font-weight: 600; }
+  .plan-card ul {
+    list-style: none; padding: 16px 0; margin: 14px 0 0;
+    border-top: 1px solid var(--line); flex: 1;
+  }
+  .plan-card ul li {
+    padding: 5px 0; font-size: 14px; color: var(--ink-soft);
+    padding-left: 22px; position: relative;
+  }
+  .plan-card ul li::before {
+    content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 800;
+  }
+  .plan-card ul li.no::before { content: '✗'; color: #d4d4d4; }
+  .plan-card .pick {
+    margin-top: 20px; text-align: center;
+    background: var(--ink); color: #fff;
+    padding: 12px; border-radius: 8px; text-decoration: none;
+    font-weight: 700; font-size: 14px;
+    transition: background 0.15s;
+  }
+  .plan-card.featured .pick { background: var(--rose); }
+  .plan-card .pick:hover { background: var(--rose-dark); }
+
+  /* === Info grid === */
+  .info-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .info-block {
+    padding: 18px 20px; background: var(--bg); border-radius: 12px;
+    border: 1px solid var(--line);
+  }
+  .info-block .label {
+    font-size: 11px; font-weight: 800; color: var(--rose);
+    text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+  }
+  .info-block .value { font-size: 16px; font-weight: 700; color: var(--ink); }
+  .info-block .sub { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .info-block a { color: var(--rose); text-decoration: none; }
+
+  /* === Hours === */
+  #hours-block .hours-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 4px 18px; font-size: 14px;
+  }
+  #hours-block .hours-list dt { color: var(--ink-soft); font-weight: 600; }
+  #hours-block .hours-list dd { color: var(--ink); font-weight: 700; text-align: right; }
+
+  /* === FAQ === */
+  details {
+    background: #fff; border: 1px solid var(--line); border-radius: 12px;
+    padding: 18px 22px; margin-bottom: 12px;
+  }
+  details summary {
+    cursor: pointer; font-weight: 700; font-size: 15px;
+    list-style: none; display: flex; justify-content: space-between; align-items: center;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::after {
+    content: '+'; color: var(--rose); font-size: 22px; font-weight: 300; transition: transform 0.2s;
+  }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--ink-soft); font-size: 14px; line-height: 1.6; margin-top: 12px; }
+
+  /* === Footer === */
+  footer {
+    background: var(--ink); color: #fff; padding: 48px 20px 32px; margin-top: 40px;
+  }
+  footer .inner {
+    max-width: 1080px; margin: 0 auto;
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 32px;
+  }
+  @media (max-width: 720px) { footer .inner { grid-template-columns: 1fr; } }
+  footer h4 {
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.08em; color: var(--rose); margin-bottom: 12px;
+  }
+  footer p, footer a { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+  footer a { text-decoration: none; display: block; }
+  footer a:hover { color: var(--rose); }
+  footer .colophon {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 32px; padding-top: 18px; text-align: center;
+    font-size: 12px; color: rgba(255,255,255,0.5);
+  }
+  footer .colophon a { color: var(--rose); display: inline; }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="inner">
+    <a href="/2ntr" class="logo">
+      <span class="emoji">🛹</span>
+      2nd Nature <span class="accent">Park</span>
+    </a>
+    <div class="nav-links">
+      <a href="#plans">Memberships</a>
+      <a href="#hours">Hours + visit</a>
+      <a href="#faq">FAQ</a>
+    </div>
+    <a href="/admin/join.html" class="nav-cta">Join now</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="container">
+    <span class="badge">🛹 Peekskill, NY · Open now</span>
+    <h1>Skate when you want.</h1>
+    <p class="lede">
+      Indoor + outdoor skatepark in Peekskill. Memberships, lessons, day passes, and birthday parties.
+      Members get <strong>24/7 park access</strong> — walk up + tap your phone.
+    </p>
+    <div class="cta-row">
+      <a href="/admin/join.html" class="btn btn-primary">🛹 Become a member</a>
+      <a href="#plans" class="btn btn-ghost">See pricing</a>
+    </div>
+    <div id="live-status">
+      <span class="dot"></span>
+      <span id="live-status-text">Checking park status…</span>
+    </div>
+  </div>
+</header>
+
+<!-- ============ WHY MEMBER ============ -->
+<section class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Member perks</div>
+      <h2>The whole point of being a member</h2>
+      <p>Drop-in pricing is fine. But if you skate more than twice a month, membership wins on every axis.</p>
+    </div>
+    <div class="perks">
+      <div class="perk">
+        <span class="icon">🔓</span>
+        <h3>24/7 park access</h3>
+        <p>Your phone unlocks the park door. No clocks, no waiting on staff, no "we're closed Mondays." Skate at 6am or 11pm — your call.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">💰</span>
+        <h3>You stop counting visits</h3>
+        <p>$89/month is 4 day passes. Most members skate 8-15 times a month. The math gets silly fast.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">🎓</span>
+        <h3>Priority lesson booking</h3>
+        <p>Members get first crack at instructor calendars + weekend slot availability before drop-ins do.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">🏆</span>
+        <h3>Loyalty points + perks</h3>
+        <p>Every visit + every dollar spent earns points. Cash them in for retail, sessions, or stack to unlock tier perks (Silver, Gold).</p>
+      </div>
+      <div class="perk">
+        <span class="icon">🪪</span>
+        <h3>Bring a friend</h3>
+        <p>Members get discounted guest passes — bring the friend who doesn't skate enough to commit yet.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">📅</span>
+        <h3>Birthday parties at a discount</h3>
+        <p>Member rate on private bookings + birthday packages. We do the work, you take the credit.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PLANS ============ -->
+<section id="plans">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Memberships</div>
+      <h2>Pick a plan</h2>
+      <p>Cancel anytime. No setup fees. Waiver required on first visit (we email you the link).</p>
+    </div>
+    <div class="plans">
+      <div class="plan-card">
+        <h3>Day Pass</h3>
+        <div class="sub">Drop in any time we're open.</div>
+        <div class="price">$25<small> / visit</small></div>
+        <div class="sub" style="margin-top:-4px;">$18 under 12</div>
+        <ul>
+          <li>Pay at the front desk</li>
+          <li>Helmet loaners available</li>
+          <li class="no">No 24/7 access</li>
+          <li class="no">No loyalty multiplier</li>
+        </ul>
+        <a href="/admin/join.html" class="pick">Buy at the door</a>
+      </div>
+      <div class="plan-card">
+        <h3>10-Pack Punch Card</h3>
+        <div class="sub">$18/visit — save vs day pass.</div>
+        <div class="price">$180<small> / 10 visits</small></div>
+        <div class="sub" style="margin-top:-4px;">No expiration</div>
+        <ul>
+          <li>Stays valid forever</li>
+          <li>Skater + sibling can share</li>
+          <li>Loyalty points earn on each punch</li>
+          <li class="no">No 24/7 access</li>
+        </ul>
+        <a href="/admin/join.html" class="pick">Buy a 10-pack</a>
+      </div>
+      <div class="plan-card featured">
+        <div class="ribbon">MOST POPULAR</div>
+        <h3>Monthly Unlimited</h3>
+        <div class="sub">Skate every day if you want.</div>
+        <div class="price">$89<small> / mo</small></div>
+        <div class="sub" style="margin-top:-4px;">Cancel anytime</div>
+        <ul>
+          <li><strong>🔓 24/7 park access</strong></li>
+          <li>Unlimited sessions</li>
+          <li>Priority lesson booking</li>
+          <li>Member rate on parties + retail</li>
+        </ul>
+        <a href="/admin/join.html" class="pick">Become a member</a>
+      </div>
+      <div class="plan-card">
+        <h3>Annual Unlimited</h3>
+        <div class="sub">Save $169 vs monthly.</div>
+        <div class="price">$899<small> / yr</small></div>
+        <div class="sub" style="margin-top:-4px;">≈ $74/month</div>
+        <ul>
+          <li><strong>🔓 24/7 park access</strong></li>
+          <li>Everything monthly gets, plus:</li>
+          <li>One free skate lesson</li>
+          <li>Birthday session comp on file</li>
+        </ul>
+        <a href="/admin/join.html" class="pick">Lock in annual</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOURS + LOCATION ============ -->
+<section id="hours" class="alt">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Visit us</div>
+      <h2>Hours + location</h2>
+    </div>
+    <div class="info-grid">
+      <div class="info-block">
+        <div class="label">📍 Address</div>
+        <div class="value">1 Highland Industrial Park</div>
+        <div class="sub">Peekskill, NY 10566</div>
+        <div class="sub"><a href="https://maps.google.com/?q=1+Highland+Industrial+Park+Peekskill+NY+10566" target="_blank">Open in Google Maps →</a></div>
+      </div>
+      <div class="info-block">
+        <div class="label">📞 Contact</div>
+        <div class="value"><a href="tel:+19144024624">(914) 402-4624</a></div>
+        <div class="sub"><a href="mailto:info@2ntr.com">info@2ntr.com</a></div>
+      </div>
+      <div class="info-block" id="hours-block">
+        <div class="label">🕒 Hours</div>
+        <dl class="hours-list" id="hours-list">
+          <dt>Mon–Fri</dt><dd>3pm – 9pm</dd>
+          <dt>Sat–Sun</dt><dd>10am – 9pm</dd>
+        </dl>
+        <div class="sub" style="margin-top:8px;">Members: <strong>24/7 access</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section>
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">How it works</div>
+      <h2>From signup to first skate in under 24 hours</h2>
+    </div>
+    <div class="perks">
+      <div class="perk">
+        <span class="icon">1️⃣</span>
+        <h3>Sign up online</h3>
+        <p>Fill out the form (2 minutes). Pick a plan. If you're under 18, we'll add a parent contact section automatically.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">2️⃣</span>
+        <h3>Sign the waiver</h3>
+        <p>We email you a Smartwaiver link the moment you submit. Sign on your phone in 90 seconds. Required to skate.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">3️⃣</span>
+        <h3>Pay</h3>
+        <p>Helcim invoice link via text or email. Card, cash at the desk, or both — whatever works.</p>
+      </div>
+      <div class="perk">
+        <span class="icon">4️⃣</span>
+        <h3>Get your Brivo pass <small style="color:var(--ink-soft);font-size:11px;display:block;font-weight:500;">(monthly + annual only)</small></h3>
+        <p>Brivo emails you an invite. Install the app. Walk to the park door. Tap. Done. 24/7 access from that moment on.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="alt">
+  <div class="container" style="max-width:720px;">
+    <div class="section-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>Stuff people ask</h2>
+    </div>
+    <details>
+      <summary>How does 24/7 access actually work?</summary>
+      <p>We use Brivo cloud-controlled door locks. When you sign up as a monthly or annual member, we provision a credential in Brivo. They email you a Mobile Pass invite. You install the Brivo Mobile app, accept the pass, and from that point on your phone unlocks the park door via Bluetooth — just walk up and tap. No keys, no codes.</p>
+    </details>
+    <details>
+      <summary>What if I lose my phone or it dies?</summary>
+      <p>The park door has an intercom — press it and you ring the front desk during staffed hours. Outside staffed hours, your phone is the only way in, so keep it charged. If you genuinely lose your phone, message us and we'll reset your credential before close of business that day.</p>
+    </details>
+    <details>
+      <summary>Are kids allowed? What's the deal with minors?</summary>
+      <p>Yes — we host kids from about 6+ regularly. Anyone under 18 needs a parent or guardian on file with their own contact info. The waiver has to be signed by the guardian, not the skater. Parents are welcome on the deck — there's seating + WiFi.</p>
+    </details>
+    <details>
+      <summary>Do you have rental gear / loaners?</summary>
+      <p>Helmets are free loaners — we have a bin by the front desk in adult + kid sizes. Boards, pads, and shoes are rental ($5/session) but we recommend bringing your own once you've decided to stick with it.</p>
+    </details>
+    <details>
+      <summary>Can I bring a friend who's not a member?</summary>
+      <p>Yes — guests pay the day pass rate ($25 adult / $18 under 12). Monthly + annual members get a discounted guest rate on Saturdays. If you're throwing a birthday party, that's a separate package — see <a href="mailto:info@2ntr.com?subject=Birthday%20party%20inquiry">info@2ntr.com</a>.</p>
+    </details>
+    <details>
+      <summary>What if I want to pause my membership?</summary>
+      <p>Self-serve pause via your member portal — pick a return date. While paused you don't get charged + your 24/7 access is suspended. We auto-resume on your chosen date.</p>
+    </details>
+    <details>
+      <summary>Do you offer lessons?</summary>
+      <p>Yes — private lessons, group lessons, beginner camps, and birthday parties. <a href="https://book.skateos.com/?form=lesson-request">Book online</a> or call <a href="tel:+19144024624">(914) 402-4624</a>.</p>
+    </details>
+    <details>
+      <summary>Are you skater-owned?</summary>
+      <p>Yes. Built by Doug Brown + Jon DiCarlo — both lifelong skaters. The park runs on <a href="https://skateos.com">skateOS</a>, software we're building to run skateparks better than any off-the-shelf POS can.</p>
+    </details>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section>
+  <div class="container" style="text-align:center;">
+    <h2 style="font-size:clamp(28px,4vw,40px);font-weight:900;letter-spacing:-0.02em;margin-bottom:14px;">
+      Ready to skate?
+    </h2>
+    <p style="color:var(--ink-soft);max-width:520px;margin:0 auto 24px;font-size:16px;">
+      Sign up online in 2 minutes. Or just drop by during staffed hours — first day pass is on us if you mention this page.
+    </p>
+    <div class="cta-row">
+      <a href="/admin/join.html" class="btn btn-primary">🛹 Sign up now</a>
+      <a href="tel:+19144024624" class="btn btn-ghost">📞 Call us</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="inner">
+    <div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.02em;margin-bottom:8px;">🛹 2nd Nature Park</div>
+      <p style="margin-bottom:12px;">Skate when you want. Indoor + outdoor skatepark in Peekskill, NY.</p>
+      <p>Built + run on <a href="https://skateos.com" style="display:inline;">skateOS</a> — the operating system for skate parks.</p>
+    </div>
+    <div>
+      <h4>Visit</h4>
+      <a href="https://maps.google.com/?q=1+Highland+Industrial+Park+Peekskill+NY+10566" target="_blank">1 Highland Industrial Park<br>Peekskill, NY 10566</a>
+      <a href="tel:+19144024624">(914) 402-4624</a>
+      <a href="mailto:info@2ntr.com">info@2ntr.com</a>
+    </div>
+    <div>
+      <h4>Pages</h4>
+      <a href="/admin/join.html">Become a member</a>
+      <a href="/admin/booking.html?form=lesson-request">Book a lesson</a>
+      <a href="/admin/park-status.html">Are we open?</a>
+      <a href="/admin/me.html">Member portal</a>
+    </div>
+  </div>
+  <div class="colophon">
+    © 2026 2nd Nature Park · Built on <a href="https://skateos.com">skateOS</a>
+  </div>
+</footer>
+
+<!-- ============ LIVE PARK STATUS ============ -->
+<script>
+(async function(){
+  // Pull live park status from skateOS public_park_status RPC (mig 051)
+  const SB_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+  // anon key — public, safe to embed
+  const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4NjMxMjcsImV4cCI6MjA2MDQzOTEyN30.placeholder';
+  // ^ The actual anon key needs to be pasted in by Doug — placeholder above
+  //   will fail silently and the status pill just shows "open during park hours"
+  //   without surfacing live capacity. Pull the real key from admin/config.js
+  //   or Supabase dashboard → Settings → API → "anon public" key.
+  const statusEl = document.getElementById('live-status');
+  const statusTxt = document.getElementById('live-status-text');
+  try {
+    const r = await fetch(SB_URL + '/rest/v1/rpc/public_park_status', {
+      method: 'POST',
+      headers: {
+        'apikey': SB_KEY,
+        'Authorization': 'Bearer ' + SB_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: '{}'
+    });
+    if(!r.ok) throw new Error('status fetch failed');
+    const j = await r.json();
+    if(j && j.open === true){
+      statusEl.classList.add('open');
+      let txt = 'Open now';
+      if(j.closes_at_label) txt += ' · closes ' + j.closes_at_label;
+      if(j.current_count != null && j.max_capacity){
+        txt += ' · ' + j.current_count + '/' + j.max_capacity + ' skaters';
+      }
+      statusTxt.textContent = txt;
+    } else if(j && j.open === false){
+      statusEl.classList.add('closed');
+      statusTxt.textContent = j.next_open_label ? 'Closed · opens ' + j.next_open_label : 'Closed right now';
+    } else {
+      statusTxt.textContent = 'Check our hours below';
+    }
+    // Also paint the hours block if the RPC returned today's hours array
+    if(j && j.week_hours){
+      const labels = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+      const list = document.getElementById('hours-list');
+      if(list){
+        list.innerHTML = '';
+        labels.forEach((lbl, idx) => {
+          const day = j.week_hours[idx] || j.week_hours[lbl.toLowerCase()];
+          const txt = day && day.open ? (day.open + ' – ' + day.close) : 'Closed';
+          list.insertAdjacentHTML('beforeend', '<dt>'+lbl+'</dt><dd>'+txt+'</dd>');
+        });
+      }
+    }
+  } catch(e) {
+    // Quiet failure — fall back to static "open during park hours" copy
+    statusTxt.textContent = 'Check our hours below';
+  }
+})();
+</script>
+
+</body></html>

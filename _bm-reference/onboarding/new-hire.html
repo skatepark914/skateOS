@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Hire Intake — Second Nature Tree Service</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,system-ui,sans-serif; background:#f8fafc; color:#0f172a; }
+  .topbar { background:#fff; border-bottom:1px solid #e2e8f0; padding:12px 20px; display:flex; align-items:center; gap:12px; position:sticky; top:0; z-index:10; }
+  .topbar-logo { width:36px; height:36px; background:#1b5e20; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:18px; }
+  .topbar h1 { font-size:16px; font-weight:700; }
+  .topbar p { font-size:12px; color:#64748b; }
+  .wrap { max-width:600px; margin:0 auto; padding:20px; }
+  .card { background:#fff; border-radius:12px; padding:20px; margin-bottom:16px; border:1px solid #e2e8f0; }
+  .card h2 { font-size:15px; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+  .card h2 .num { background:#1b5e20; color:#fff; width:24px; height:24px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:12px; font-weight:600; color:#64748b; margin-bottom:4px; }
+  .field input, .field select { width:100%; padding:10px 12px; border:1px solid #e2e8f0; border-radius:8px; font-size:15px; font-family:inherit; }
+  .field input:focus, .field select:focus { outline:none; border-color:#1b5e20; box-shadow:0 0 0 2px rgba(27,94,32,.1); }
+  .row { display:flex; gap:12px; }
+  .row .field { flex:1; }
+  .help { font-size:11px; color:#94a3b8; margin-top:3px; }
+  .divider { height:1px; background:#e2e8f0; margin:20px 0; }
+  .btn { width:100%; padding:14px; background:#1b5e20; color:#fff; border:none; border-radius:10px; font-size:16px; font-weight:700; cursor:pointer; }
+  .btn:hover { background:#166534; }
+  .btn-outline { background:#fff; color:#1b5e20; border:2px solid #1b5e20; }
+  .success { display:none; background:#f0fdf4; border:2px solid #22c55e; border-radius:12px; padding:24px; text-align:center; margin-bottom:16px; }
+  .success h2 { color:#166534; margin-top:8px; }
+  .doc-list { margin-top:16px; }
+  .doc-item { display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #f1f5f9; }
+  .doc-item:last-child { border-bottom:none; }
+  .doc-name { font-size:14px; font-weight:600; }
+  .doc-status { font-size:12px; color:#22c55e; font-weight:600; }
+  .doc-btn { padding:6px 14px; background:#1b5e20; color:#fff; border:none; border-radius:6px; font-size:12px; font-weight:600; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">🌳</div>
+  <div>
+    <h1>New Hire Intake</h1>
+    <p>Enter once — fills all required forms</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="success" id="success">
+    <div style="font-size:40px;">✅</div>
+    <h2>Employee Added</h2>
+    <p style="color:#15803d;margin-top:6px;" id="success-name"></p>
+    <p style="color:#64748b;font-size:13px;margin-top:8px;">All forms pre-filled. Review, sign, and complete training below.</p>
+
+    <div class="doc-list" id="doc-list"></div>
+
+    <div style="margin-top:16px;">
+      <a href="index.html" class="btn" style="display:block;text-decoration:none;text-align:center;">Start Onboarding Checklist →</a>
+    </div>
+  </div>
+
+  <form id="intake-form">
+    <!-- PERSONAL INFO -->
+    <div class="card">
+      <h2><span class="num">1</span> Personal Information</h2>
+      <div class="row">
+        <div class="field"><label>First Name *</label><input type="text" id="firstName" required></div>
+        <div class="field"><label>Last Name *</label><input type="text" id="lastName" required></div>
+      </div>
+      <div class="field"><label>Phone *</label><input type="tel" id="phone" placeholder="(914) 555-0123" required></div>
+      <div class="field"><label>Email</label><input type="email" id="email" placeholder="name@email.com"></div>
+      <div class="field"><label>Address</label><input type="text" id="address" placeholder="Street, City, NY ZIP"></div>
+      <div class="row">
+        <div class="field"><label>Date of Birth</label><input type="date" id="dob"></div>
+        <div class="field"><label>SSN (last 4 for ID only)</label><input type="text" id="ssn4" maxlength="4" placeholder="0000"><div class="help">Full SSN on W-4 only — not stored here</div></div>
+      </div>
+    </div>
+
+    <!-- EMPLOYMENT -->
+    <div class="card">
+      <h2><span class="num">2</span> Employment Details</h2>
+      <div class="row">
+        <div class="field"><label>Start Date *</label><input type="date" id="startDate" required></div>
+        <div class="field"><label>Role *</label>
+          <select id="role" required>
+            <option value="groundsperson">Groundsperson</option>
+            <option value="climber">Climber</option>
+            <option value="crew_lead">Crew Lead</option>
+            <option value="operator">Operator</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Pay Rate * ($/hr)</label><input type="number" id="payRate" step="0.50" placeholder="20.00" required></div>
+        <div class="field"><label>Schedule</label>
+          <select id="schedule">
+            <option>Mon–Fri 7:00–3:30</option>
+            <option>Mon–Sat 7:00–3:30</option>
+            <option>As needed</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMERGENCY CONTACT -->
+    <div class="card">
+      <h2><span class="num">3</span> Emergency Contact</h2>
+      <div class="field"><label>Contact Name *</label><input type="text" id="ecName" required></div>
+      <div class="row">
+        <div class="field"><label>Phone *</label><input type="tel" id="ecPhone" required></div>
+        <div class="field"><label>Relationship</label>
+          <select id="ecRelation">
+            <option>Spouse</option>
+            <option>Parent</option>
+            <option>Sibling</option>
+            <option>Friend</option>
+            <option>Other</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- DIRECT DEPOSIT -->
+    <div class="card">
+      <h2><span class="num">4</span> Direct Deposit</h2>
+      <div class="field"><label>Bank Name</label><input type="text" id="bankName" placeholder="Chase, Wells Fargo, etc."></div>
+      <div class="row">
+        <div class="field"><label>Routing Number</label><input type="text" id="routing" maxlength="9" placeholder="9 digits"></div>
+        <div class="field"><label>Account Number</label><input type="text" id="account" placeholder="Account #"></div>
+      </div>
+      <div class="help">This info goes directly to Gusto for payroll. Not stored in Branch Manager.</div>
+    </div>
+
+    <button type="submit" class="btn">Save & Generate Documents →</button>
+  </form>
+
+</div>
+
+<script>
+document.getElementById('intake-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var emp = {
+    firstName: document.getElementById('firstName').value.trim(),
+    lastName: document.getElementById('lastName').value.trim(),
+    phone: document.getElementById('phone').value.trim(),
+    email: document.getElementById('email').value.trim(),
+    address: document.getElementById('address').value.trim(),
+    dob: document.getElementById('dob').value,
+    startDate: document.getElementById('startDate').value,
+    role: document.getElementById('role').value,
+    payRate: document.getElementById('payRate').value,
+    schedule: document.getElementById('schedule').value,
+    ecName: document.getElementById('ecName').value.trim(),
+    ecPhone: document.getElementById('ecPhone').value.trim(),
+    ecRelation: document.getElementById('ecRelation').value,
+    bankName: document.getElementById('bankName').value.trim(),
+    routing: document.getElementById('routing').value.trim(),
+    account: document.getElementById('account').value.trim(),
+  };
+
+  emp.fullName = emp.firstName + ' ' + emp.lastName;
+  emp.overtimeRate = (parseFloat(emp.payRate) * 1.5).toFixed(2);
+  emp.createdAt = new Date().toISOString();
+
+  // 1. Save to localStorage for other forms to read
+  localStorage.setItem('new-hire-data', JSON.stringify(emp));
+
+  // 2. Save to all-employees roster (local backup — persists across hires)
+  var roster = JSON.parse(localStorage.getItem('employee-roster') || '[]');
+  emp.id = Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  roster.push(emp);
+  localStorage.setItem('employee-roster', JSON.stringify(roster));
+
+  // 3. Download JSON backup to computer
+  var blob = new Blob([JSON.stringify(emp, null, 2)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = emp.lastName + '_' + emp.firstName + '_hire_' + emp.startDate + '.json';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+  // 4. Try saving to Supabase (cloud backup)
+  try {
+    var SUPA_URL = 'https://ltpivkqahvplapyagljt.supabase.co';
+    var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx0cGl2a3FhaHZwbGFweWFnbGp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwOTgxNzIsImV4cCI6MjA4OTY3NDE3Mn0.bQ-wAx4Uu-FyA2ZwsTVfFoU2ZPbeWCmupqV-6ZR9uFI';
+    fetch(SUPA_URL + '/rest/v1/team_members', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPA_KEY, 'Authorization': 'Bearer ' + SUPA_KEY, 'Prefer': 'return=minimal' },
+      body: JSON.stringify({
+        name: emp.fullName,
+        email: emp.email || null,
+        phone: emp.phone || null,
+        role: emp.role === 'crew_lead' ? 'crew_lead' : emp.role === 'climber' ? 'crew' : 'crew',
+        rate: parseFloat(emp.payRate) || 0,
+        active: true,
+      })
+    }).then(function(r) {
+      if (r.ok) console.log('[Supabase] Employee saved to cloud');
+      else console.warn('[Supabase] Save failed:', r.status);
+    }).catch(function(e) { console.warn('[Supabase] Offline — saved locally only'); });
+  } catch(e) { console.warn('[Supabase] Error:', e); }
+
+  // Show success + document list
+  document.getElementById('intake-form').style.display = 'none';
+  document.getElementById('success').style.display = 'block';
+  document.getElementById('success-name').textContent = emp.fullName + ' — ' + emp.role.replace('_', ' ') + ' — $' + emp.payRate + '/hr — starts ' + emp.startDate;
+
+  var docs = [
+    { name: 'Wage Theft Prevention Notice', url: 'wage-theft-notice.html', status: 'Pre-filled' },
+    { name: 'Onboarding Checklist', url: 'index.html', status: 'Ready' },
+    { name: 'Required Safety Training', url: 'training-required.html', status: 'Ready' },
+    { name: 'Role Training — ' + emp.role.replace('_', ' '), url: 'training-' + emp.role.replace('crew_lead','crewlead') + '.html', status: 'Ready' },
+    { name: 'Incident Report (blank)', url: 'incident-report.html', status: 'Template' },
+    { name: 'Vehicle Inspection (blank)', url: 'vehicle-inspection.html', status: 'Template' },
+  ];
+
+  var html = '';
+  docs.forEach(function(d) {
+    html += '<div class="doc-item">'
+      + '<div><div class="doc-name">' + d.name + '</div><div style="font-size:11px;color:#64748b;">' + d.status + '</div></div>'
+      + '<a href="' + d.url + '" class="doc-btn" target="_blank">Open →</a>'
+      + '</div>';
+  });
+  document.getElementById('doc-list').innerHTML = html;
+});
+</script>
+</body>
+</html>

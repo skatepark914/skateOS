@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /intake
+Disallow: /intake.html
+
+Sitemap: https://consult.skateos.com/sitemap.xml

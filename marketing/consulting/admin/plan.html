@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Side-project plan — internal — Hudson Valley AI</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Internal side-project plan for Doug + Jon. Password-gated.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+
+  /* Lock screen */
+  .lock-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px;background:#0a0a0a;}
+  .lock-card{background:#fff;border-radius:14px;padding:36px;max-width:420px;width:100%;box-shadow:0 20px 50px -10px rgba(0,0,0,.5);}
+  .lock-card .lk-logo{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+  .lock-card .lk-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .lock-card .lk-logo .name{font-weight:900;}
+  .lock-card h1{font-size:1.4rem;font-weight:900;letter-spacing:-0.018em;margin-bottom:6px;}
+  .lock-card p{color:#737373;font-size:.86rem;margin-bottom:18px;}
+  .lock-card input{width:100%;padding:12px 14px;border:1.5px solid #e5e5e0;border-radius:8px;font-size:1rem;font-family:inherit;margin-bottom:12px;}
+  .lock-card input:focus{outline:none;border-color:#0a0a0a;}
+  .lock-card button{width:100%;padding:12px;background:#0a0a0a;color:#fafaf9;border:none;border-radius:8px;font-size:.96rem;font-weight:700;font-family:inherit;cursor:pointer;}
+  .lock-card button:hover{background:#e11d48;}
+  .lock-err{color:#dc2626;font-size:.84rem;margin-top:8px;display:none;}
+
+  /* Doc styles */
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar strong{color:#fb7185;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+  .lock-out{padding:6px 14px;background:#fee2e2;color:#991b1b;border:none;border-radius:6px;font-size:.78rem;font-weight:700;cursor:pointer;font-family:inherit;}
+
+  .wrap{max-width:780px;margin:0 auto;padding:40px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:18px;}
+  h1.title{font-size:clamp(2rem,4vw,2.8rem);font-weight:900;letter-spacing:-0.022em;line-height:1.1;margin-bottom:8px;}
+  .meta{font-size:.82rem;color:#737373;margin-bottom:30px;}
+
+  section.doc{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:30px;margin-bottom:18px;scroll-margin-top:80px;}
+  section.doc h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+  section.doc h2 .num{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:.84rem;font-weight:900;flex-shrink:0;}
+  section.doc h2 + p.lede{color:#737373;margin-bottom:14px;font-size:.92rem;}
+  section.doc p{color:#404040;font-size:.95rem;margin-bottom:12px;}
+  section.doc ul{margin:8px 0 14px 22px;color:#404040;font-size:.94rem;}
+  section.doc li{margin-bottom:5px;}
+  section.doc strong{color:#0a0a0a;}
+
+  /* Big-headline simple budget */
+  .big-num{
+    font-size:clamp(3rem,7vw,4.5rem);font-weight:900;letter-spacing:-0.04em;
+    color:#e11d48;line-height:1;margin:14px 0 4px;
+  }
+  .big-num-label{font-size:.86rem;color:#737373;font-weight:600;}
+
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.94rem;}
+  th{text-align:left;padding:10px 12px;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;color:#737373;font-weight:700;border-bottom:2px solid #0a0a0a;}
+  th.right{text-align:right;}
+  td{padding:11px 12px;border-bottom:1px solid #f3f4f6;color:#404040;}
+  td.right{text-align:right;font-family:ui-monospace,monospace;font-weight:600;color:#0a0a0a;}
+  tfoot td{background:#0a0a0a;color:#fafaf9;font-weight:800;border:none;font-size:1.05rem;}
+  tfoot td.right{font-family:ui-monospace,monospace;color:#fb7185;}
+
+  .pull{background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;margin:14px 0;font-size:.92rem;}
+  .pull strong{color:#e11d48;}
+  .ok{background:#dcfce7;border-left:3px solid #15803d;padding:12px 16px;border-radius:6px;margin:14px 0;font-size:.9rem;color:#14532d;}
+  .ok strong{color:#15803d;}
+
+  .pkg-card{background:#fafaf9;border:1px solid #e5e5e0;border-radius:8px;padding:18px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;}
+  .pkg-name{font-size:1.05rem;font-weight:800;letter-spacing:-0.015em;}
+  .pkg-desc{font-size:.84rem;color:#737373;margin-top:4px;}
+  .pkg-price{font-size:1.4rem;font-weight:900;color:#e11d48;letter-spacing:-0.018em;font-family:ui-monospace,monospace;text-align:right;}
+  .pkg-price .unit{font-size:.78rem;color:#737373;font-weight:600;display:block;}
+
+  .milestone{display:grid;grid-template-columns:60px 1fr;gap:14px;padding:14px 0;border-top:1px solid #f3f4f6;}
+  .milestone:first-of-type{border-top:none;padding-top:0;}
+  .milestone .when{font-weight:900;color:#e11d48;font-family:ui-monospace,monospace;font-size:.86rem;}
+  .milestone .what{font-size:.94rem;color:#404040;}
+  .milestone strong{color:#0a0a0a;}
+
+  /* Scenario picker */
+  .scenarios{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0 28px;}
+  @media(max-width:780px){.scenarios{grid-template-columns:1fr;}}
+  .scn{background:#fff;border:2px solid #e5e5e0;border-radius:14px;padding:22px 20px;text-align:center;transition:border-color .15s;text-decoration:none;color:inherit;display:block;}
+  .scn:hover{border-color:#0a0a0a;}
+  .scn.A{border-top:6px solid #15803d;}
+  .scn.B{border-top:6px solid #d97706;}
+  .scn.C{border-top:6px solid #e11d48;}
+  .scn-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.1em;font-weight:800;color:#737373;margin-bottom:6px;}
+  .scn-name{font-size:1.2rem;font-weight:900;letter-spacing:-0.02em;margin-bottom:6px;}
+  .scn-rev{font-size:2.1rem;font-weight:900;color:#0a0a0a;letter-spacing:-0.03em;line-height:1;margin:8px 0 4px;font-family:ui-monospace,monospace;}
+  .scn-sub{font-size:.78rem;color:#737373;font-weight:600;margin-bottom:14px;}
+  .scn-stats{display:flex;flex-direction:column;gap:6px;text-align:left;font-size:.82rem;color:#404040;margin-bottom:14px;}
+  .scn-stats div span{color:#737373;}
+  .scn-stats div strong{color:#0a0a0a;}
+  .scn-jump{font-size:.82rem;font-weight:700;color:#e11d48;}
+
+  /* Scenario detail blocks */
+  .scn-detail{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:30px;margin-bottom:18px;scroll-margin-top:80px;}
+  .scn-detail.A{border-left:6px solid #15803d;}
+  .scn-detail.B{border-left:6px solid #d97706;}
+  .scn-detail.C{border-left:6px solid #e11d48;}
+  .scn-detail h2{font-size:1.4rem;font-weight:900;letter-spacing:-0.018em;margin-bottom:4px;display:flex;align-items:center;gap:10px;}
+  .scn-detail h2 .num{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:10px;color:#fff;font-size:.96rem;font-weight:900;}
+  .scn-detail.A h2 .num{background:#15803d;}
+  .scn-detail.B h2 .num{background:#d97706;}
+  .scn-detail.C h2 .num{background:#e11d48;}
+  .scn-detail .lede{color:#737373;font-size:.92rem;margin-bottom:14px;}
+  .scn-detail h3{font-size:.86rem;text-transform:uppercase;letter-spacing:.08em;font-weight:800;margin:20px 0 8px;color:#0a0a0a;}
+  .scn-detail .scn-top{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 20px;}
+  @media(max-width:640px){.scn-detail .scn-top{grid-template-columns:1fr;}}
+  .scn-detail .stat-tile{background:#fafaf9;border:1px solid #e5e5e0;border-radius:10px;padding:14px;text-align:center;}
+  .stat-tile .v{font-size:1.5rem;font-weight:900;color:#0a0a0a;letter-spacing:-0.02em;font-family:ui-monospace,monospace;line-height:1;margin-bottom:4px;}
+  .stat-tile .l{font-size:.72rem;color:#737373;font-weight:600;text-transform:uppercase;letter-spacing:.06em;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ─── LOCK SCREEN ──────────────────────────────────────────────── -->
+<div id="lockScreen" class="lock-wrap">
+  <div class="lock-card">
+    <div class="lk-logo"><span class="mark">HV</span><span class="name">Hudson Valley AI</span></div>
+    <h1>Internal access required</h1>
+    <p>Internal side-project plan. Restricted to Doug + Jon.</p>
+    <form onsubmit="return tryUnlock(event)">
+      <input type="password" id="pw" placeholder="Shared password" autofocus>
+      <button type="submit">Unlock →</button>
+      <div class="lock-err" id="lockErr"></div>
+    </form>
+    <p style="font-size:.74rem;color:#a3a3a3;margin-top:14px;font-style:italic;">If you don't have the password, you're not supposed to be here.</p>
+  </div>
+</div>
+
+<!-- ─── ACTUAL CONTENT (hidden until unlock) ─────────────────────── -->
+<div id="content" style="display:none;">
+
+<div class="topbar">🔒 <strong>INTERNAL DOCUMENT</strong> · Doug + Jon · do not share</div>
+
+<nav class="nav">
+  <a class="nav-logo" href="../index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="nav-back" href="index.html">⌂ Admin</a>
+    <a class="nav-back" href="cold-list.html">Cold-call list →</a>
+    <a class="nav-back" href="../index.html">Public site</a>
+    <button class="lock-out" onclick="lockOut()">🔒 Lock</button>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="../index.html">Hudson Valley AI</a> / Internal / Plan scenarios</div>
+  <h1 class="title">Pick a scenario.</h1>
+  <div class="meta">v3 · 2026-05-10 · Doug + Jon · 3 ways to run this thing</div>
+
+  <p style="color:#404040;font-size:.95rem;margin-bottom:8px;">Three different versions of Hudson Valley AI, each with a clear revenue ceiling and matched operating cost profile. Pick the one that fits the bandwidth and risk appetite we actually have right now.</p>
+  <p style="color:#737373;font-size:.88rem;margin-bottom:8px;font-style:italic;">Click a card to jump to the details.</p>
+
+  <!-- ─── SCENARIO PICKER ─────────────────────────────────────────── -->
+  <div class="scenarios">
+    <a href="#A" class="scn A">
+      <div class="scn-tag">Scenario A</div>
+      <div class="scn-name">🏚 Garage</div>
+      <div class="scn-rev">≤$30k</div>
+      <div class="scn-sub">Year-1 revenue ceiling · <a href="/garage/" style="color:#15803d;">live at /garage/ ↗</a></div>
+      <div class="scn-stats">
+        <div><span>OPEX:</span> <strong>$0-35</strong></div>
+        <div><span>Time:</span> <strong>3-5 hr/wk ea.</strong></div>
+        <div><span>Per partner:</span> <strong>~$15k</strong></div>
+        <div><span>Risk:</span> <strong>~zero</strong></div>
+      </div>
+      <div class="scn-jump">See details ↓</div>
+    </a>
+    <a href="#B" class="scn B">
+      <div class="scn-tag">Scenario B</div>
+      <div class="scn-name">🏪 Small biz</div>
+      <div class="scn-rev">~$100k</div>
+      <div class="scn-sub">Year-1 revenue target</div>
+      <div class="scn-stats">
+        <div><span>OPEX:</span> <strong>~$5k</strong></div>
+        <div><span>Time:</span> <strong>10-15 hr/wk ea.</strong></div>
+        <div><span>Per partner:</span> <strong>~$47k</strong></div>
+        <div><span>Risk:</span> <strong>Low</strong></div>
+      </div>
+      <div class="scn-jump">See details ↓</div>
+    </a>
+    <a href="#C" class="scn C">
+      <div class="scn-tag">Scenario C</div>
+      <div class="scn-name">🏢 Full scale</div>
+      <div class="scn-rev">$1M</div>
+      <div class="scn-sub">Year-1 revenue target</div>
+      <div class="scn-stats">
+        <div><span>OPEX:</span> <strong>~$180k</strong></div>
+        <div><span>Time:</span> <strong>Full-time ea.</strong></div>
+        <div><span>Per partner:</span> <strong>~$410k</strong></div>
+        <div><span>Risk:</span> <strong>Real</strong></div>
+      </div>
+      <div class="scn-jump">See details ↓</div>
+    </a>
+  </div>
+
+  <!-- ─── COST-CUTTING PRINCIPLES ────────────────────────────────── -->
+  <section class="doc">
+    <h2><span class="num">⚙</span>How to drastically cut OPEX</h2>
+    <p class="lede">Same playbook regardless of scenario. The cheaper we can run, the longer our runway and the lower the deal-volume we need to break even.</p>
+    <ul>
+      <li><strong>Free tiers, not paid:</strong> Cloudflare Workers, Supabase, GitHub, Resend, Vercel — all have free tiers that cover &lt;$50k revenue projects easily.</li>
+      <li><strong>Sole proprietor before LLC:</strong> NY LLC formation is $200 filing + $200-1500 mandatory publication. Skip until revenue justifies it.</li>
+      <li><strong>Insurance only when required:</strong> E&amp;O policies start ~$1500/yr. Don't buy until a customer's contract requires it OR we're handling regulated data.</li>
+      <li><strong>One template, lawyer-reviewed once:</strong> A $500 lawyer review of an engagement letter template amortizes across every project. Don't pay a lawyer per deal.</li>
+      <li><strong>Skip SOC 2 until enterprise:</strong> Vanta/Drata cost $7-15k/yr before the auditor. Useless until we're chasing customers who require it.</li>
+      <li><strong>1099 contractors, not W-2 employees:</strong> Until $500k+ run-rate, hiring 1099s avoids payroll tax, benefits, unemployment, workers' comp.</li>
+      <li><strong>No office. No conferences. No ads.</strong> Coffee shops, Zoom, warm-lead referrals. Marketing dollars are the easiest to defer.</li>
+      <li><strong>Personal devices, personal subscriptions:</strong> Doug + Jon already own the hardware + Claude/1Password/etc. Don't double-buy under a business name.</li>
+      <li><strong>Tax structure: pass-through.</strong> Sole prop or single-member LLC means business income flows to personal returns. No double taxation, no separate corporate filing fees.</li>
+    </ul>
+    <p>Anything that's "nice to have for legitimacy" but doesn't directly produce revenue → defer.</p>
+  </section>
+
+  <!-- ─── SCENARIO A: GARAGE ─────────────────────────────────────── -->
+  <section class="scn-detail A" id="A">
+    <h2><span class="num">A</span>🏚 Garage scenario <span style="font-size:.62rem;background:#dcfce7;color:#15803d;padding:3px 8px;border-radius:4px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;margin-left:8px;vertical-align:middle;">↗ live at /garage/</span></h2>
+    <p class="lede">Stay tiny. Take 2-4 warm-lead projects per year. Prove the offer works. Spend essentially nothing — only money out of pocket is the optional DBA filing if you want to invoice as "Hudson Valley AI" instead of your own name.</p>
+
+    <div class="scn-top">
+      <div class="stat-tile"><div class="v">≤$30k</div><div class="l">Year-1 revenue ceiling</div></div>
+      <div class="stat-tile"><div class="v">$0-35</div><div class="l">Total NEW OPEX</div></div>
+      <div class="stat-tile"><div class="v">~$15k</div><div class="l">Each, post-cost, pre-tax</div></div>
+    </div>
+
+    <h3>Revenue mix</h3>
+    <table>
+      <thead><tr><th>Offering</th><th class="right">Sold</th><th class="right">Revenue</th></tr></thead>
+      <tbody>
+        <tr><td>Spike ($5k)</td><td class="right">2</td><td class="right">$10k</td></tr>
+        <tr><td>Production Sprint ($20k)</td><td class="right">0-1</td><td class="right">$0-20k</td></tr>
+        <tr><td>Security Look-Over ($5k)</td><td class="right">1</td><td class="right">$5k</td></tr>
+        <tr><td>Fix-it Sprint ($3k)</td><td class="right">1-2</td><td class="right">$3-6k</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="2"><strong>TOTAL</strong></td><td class="right">$18-30k</td></tr></tfoot>
+    </table>
+
+    <h3>Operating expenses · personal-garage floor</h3>
+    <table>
+      <thead><tr><th>Item</th><th class="right">Year 1</th></tr></thead>
+      <tbody>
+        <tr><td><strong>DBA / Assumed Name filing</strong> · Westchester County Clerk · only if invoicing as "Hudson Valley AI"</td><td class="right">$0-35</td></tr>
+        <tr><td>Domain · use consult.skateos.com subdomain (free)</td><td class="right">$0</td></tr>
+        <tr><td>Hosting · Cloudflare Workers + GitHub free tiers</td><td class="right">$0</td></tr>
+        <tr><td>Claude API · Doug's existing skateOS subscription absorbs the marginal usage</td><td class="right">$0</td></tr>
+        <tr><td>1Password · Doug + Jon already pay for personal accounts</td><td class="right">$0</td></tr>
+        <tr><td>Email · Resend free tier (100 emails/day)</td><td class="right">$0</td></tr>
+        <tr><td>Engagement-letter template · DIY, no lawyer review at this volume</td><td class="right">$0</td></tr>
+        <tr><td>EIN from IRS · optional, free</td><td class="right">$0</td></tr>
+        <tr><td>Business bank account · optional, fee-free with Chase or local credit union</td><td class="right">$0</td></tr>
+      </tbody>
+      <tfoot><tr><td><strong>TOTAL NEW OUT-OF-POCKET</strong></td><td class="right">$0-35</td></tr></tfoot>
+    </table>
+    <div class="ok"><strong>Personal-garage math:</strong> almost every "running a software side-business" cost is either free (free tier of every modern dev tool), already-sunk (1Password / personal Claude / personal devices), or genuinely not legally required (E&amp;O, LLC, SOC 2). The honest floor is one $25-35 DBA filing if you want the business name, otherwise truly $0.</div>
+    <div class="pull"><strong>What we explicitly DON'T spend money on:</strong> LLC formation ($200-1700 in NY, skipped — sole props don't need it), E&amp;O insurance ($1500-3000/yr, skipped — not legally required), lawyer-reviewed MSA ($500-1000 one-time, skipped — DIY template is fine for friend-rate work), accounting software ($240+/yr, skipped — a spreadsheet handles 5-10 invoices/year), conferences / marketing / ads ($0, warm referrals only). All of these become "real business" line items at the Small Biz tier; they don't belong in Garage mode.</div>
+
+    <h3>Time commitment</h3>
+    <p>3-5 hours/week each. Truly side project. Doug works on this on weekends, Jon contributes evenings as needed.</p>
+
+    <h3>What we DON'T do at this tier</h3>
+    <ul>
+      <li>No LLC. Both contract as sole proprietors. 1099 income flows to personal taxes.</li>
+      <li>No insurance. Don't take engagements that require it.</li>
+      <li>No formal contracts beyond a one-page engagement letter (template, copy-pasted).</li>
+      <li>No outbound sales. Warm referrals only. If we run out of warm leads we slow down, not pay for ads.</li>
+      <li>No SOC 2 / HIPAA / regulated-data work.</li>
+      <li>No marketing spend. Public site exists; it doesn't get pushed.</li>
+    </ul>
+
+    <h3>Pros / cons</h3>
+    <p><strong>Pros:</strong> Effectively zero risk. Doesn't compete with day jobs. Quick to start (zero setup). Easy to walk away from if life gets busy.</p>
+    <p><strong>Cons:</strong> Won't grow on its own. If demand turns out to be strong, we leave money on the table. Can't take regulated-data customers. Personal liability exposure if something goes wrong (mitigated by careful client selection).</p>
+
+    <div class="ok"><strong>Trigger to graduate to Scenario B:</strong> 5+ paying customers in 12 months. 2+ asking for more work or sending referrals. Pipeline we're turning away.</div>
+  </section>
+
+  <!-- ─── SCENARIO B: SMALL BIZ ─────────────────────────────────── -->
+  <section class="scn-detail B" id="B">
+    <h2><span class="num">B</span>🏪 Small-biz scenario</h2>
+    <p class="lede">Legit side hustle. LLC, basic insurance, repeatable sales. ~$100k/yr, on top of day jobs.</p>
+
+    <div class="scn-top">
+      <div class="stat-tile"><div class="v">~$100k</div><div class="l">Year-1 revenue target</div></div>
+      <div class="stat-tile"><div class="v">~$5k</div><div class="l">Total OPEX</div></div>
+      <div class="stat-tile"><div class="v">~$47k</div><div class="l">Each, post-cost, pre-tax</div></div>
+    </div>
+
+    <h3>Revenue mix</h3>
+    <table>
+      <thead><tr><th>Offering</th><th class="right">Sold</th><th class="right">Revenue</th></tr></thead>
+      <tbody>
+        <tr><td>Spike ($5k)</td><td class="right">4-6</td><td class="right">$20-30k</td></tr>
+        <tr><td>Production Sprint ($20k)</td><td class="right">2-3</td><td class="right">$40-60k</td></tr>
+        <tr><td>Security Look-Over ($5k)</td><td class="right">2-3</td><td class="right">$10-15k</td></tr>
+        <tr><td>Fix-it Sprint ($3k)</td><td class="right">2-3</td><td class="right">$6-9k</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="2"><strong>TOTAL</strong></td><td class="right">$76-114k</td></tr></tfoot>
+    </table>
+
+    <h3>Operating expenses</h3>
+    <table>
+      <thead><tr><th>Item</th><th class="right">Year 1</th></tr></thead>
+      <tbody>
+        <tr><td>LLC formation (NY filing + publication)</td><td class="right">$500</td></tr>
+        <tr><td>Domain (hudsonvalley.ai or similar)</td><td class="right">$80</td></tr>
+        <tr><td>Hosting (still mostly free tier; modest Supabase paid for client work)</td><td class="right">$300</td></tr>
+        <tr><td>Claude API + Resend paid tier</td><td class="right">$600</td></tr>
+        <tr><td>Basic E&amp;O / professional liability ($1M)</td><td class="right">$1,800</td></tr>
+        <tr><td>Lawyer-reviewed MSA + DPA + NDA templates (one-time)</td><td class="right">$1,000</td></tr>
+        <tr><td>QuickBooks Self-Employed + CPA partnership return</td><td class="right">$400</td></tr>
+        <tr><td>Coffee, networking, slush</td><td class="right">$320</td></tr>
+      </tbody>
+      <tfoot><tr><td><strong>TOTAL</strong></td><td class="right">~$5,000</td></tr></tfoot>
+    </table>
+
+    <h3>Time commitment</h3>
+    <p>10-15 hours/week each. Still side project, but a serious one. Probably 1 evening + Saturday morning per week for Doug; Jon similar.</p>
+
+    <h3>What we DO add at this tier</h3>
+    <ul>
+      <li>Single-member or multi-member LLC formation. Operating agreement signed between Doug + Jon.</li>
+      <li>Basic E&amp;O insurance — required to land bigger customers + reduces personal liability.</li>
+      <li>Reusable contract templates (MSA + DPA + NDA) so we're not improvising per deal.</li>
+      <li>One-page invoices via Stripe or Helcim (no QuickBooks complexity yet — direct payment links).</li>
+      <li>Soft outbound: occasional LinkedIn posts, light networking, public talks at local meetups.</li>
+      <li>Customer reference / testimonial workflow — every project ends with a "would you recommend us?" ask.</li>
+    </ul>
+
+    <h3>What we still DON'T do at this tier</h3>
+    <ul>
+      <li>No SOC 2 attestation.</li>
+      <li>No employees / W-2.</li>
+      <li>No office.</li>
+      <li>No 24/7 on-call / managed-IT retainers.</li>
+      <li>No paid ads / conferences.</li>
+    </ul>
+
+    <h3>Pros / cons</h3>
+    <p><strong>Pros:</strong> Real income that meaningfully adds to day jobs. Legitimate business structure protects personal assets. Templates + light insurance unlock bigger deals. Still walkable if life shifts.</p>
+    <p><strong>Cons:</strong> 10-15 hr/wk is a real time commitment alongside day jobs — there will be weeks where it slips. Requires deliberate sales effort, not just answering inbound. Still can't compete for enterprise customers requiring SOC 2 / 24/7 support.</p>
+
+    <div class="ok"><strong>Trigger to graduate to Scenario C:</strong> Pipeline routinely exceeds capacity. One of us willing to leave the day job. ~$200k+ annual run-rate sustained for 6+ months.</div>
+  </section>
+
+  <!-- ─── SCENARIO C: FULL SCALE ────────────────────────────────── -->
+  <section class="scn-detail C" id="C">
+    <h2><span class="num">C</span>🏢 Full-scale scenario</h2>
+    <p class="lede">Real business. Both of us full-time. Enterprise-grade trust signals (insurance, compliance, formal processes). $1M+ revenue trajectory.</p>
+
+    <div class="scn-top">
+      <div class="stat-tile"><div class="v">$1M+</div><div class="l">Year-1 revenue target</div></div>
+      <div class="stat-tile"><div class="v">~$180k</div><div class="l">Total OPEX</div></div>
+      <div class="stat-tile"><div class="v">~$410k</div><div class="l">Each, post-cost, pre-tax</div></div>
+    </div>
+
+    <h3>Revenue mix</h3>
+    <table>
+      <thead><tr><th>Offering</th><th class="right">Sold</th><th class="right">Revenue</th></tr></thead>
+      <tbody>
+        <tr><td>Spike ($5k)</td><td class="right">12-15</td><td class="right">$60-75k</td></tr>
+        <tr><td>Production Sprint ($25k)</td><td class="right">15-20</td><td class="right">$375-500k</td></tr>
+        <tr><td>Security Audit ($10k formal pen-test report)</td><td class="right">8-12</td><td class="right">$80-120k</td></tr>
+        <tr><td>Managed IT retainer ($4k/mo, 6mo avg active)</td><td class="right">5 × 6mo</td><td class="right">$120k</td></tr>
+        <tr><td>SOC 2 / HIPAA Compliance Prep ($35k avg)</td><td class="right">3-5</td><td class="right">$105-175k</td></tr>
+        <tr><td>White-label product licensing (skateOS deploys)</td><td class="right">2-3</td><td class="right">$20-45k</td></tr>
+      </tbody>
+      <tfoot><tr><td colspan="2"><strong>TOTAL</strong></td><td class="right">$760k-1.04M</td></tr></tfoot>
+    </table>
+
+    <h3>Operating expenses</h3>
+    <table>
+      <thead><tr><th>Item</th><th class="right">Year 1</th></tr></thead>
+      <tbody>
+        <tr><td>LLC + S-corp election + CPA setup</td><td class="right">$2,500</td></tr>
+        <tr><td>Legal counsel retainer (~$300/hr × 20hr)</td><td class="right">$6,000</td></tr>
+        <tr><td>E&amp;O + cyber + general liability + workers comp</td><td class="right">$12,000</td></tr>
+        <tr><td>SOC 2 Type I — Drata/Vanta + auditor</td><td class="right">$20,000</td></tr>
+        <tr><td>1 contractor / first hire ($85k W-2 loaded)</td><td class="right">$85,000</td></tr>
+        <tr><td>Co-working space / occasional office (Hudson Valley + NYC)</td><td class="right">$6,000</td></tr>
+        <tr><td>Bookkeeping + CPA + tax prep</td><td class="right">$5,000</td></tr>
+        <tr><td>Marketing — LinkedIn ads + content + 1-2 conferences</td><td class="right">$15,000</td></tr>
+        <tr><td>Hosting + paid tools (Supabase Pro, Resend, monitoring, 1Password Business, etc.)</td><td class="right">$6,000</td></tr>
+        <tr><td>Health insurance subsidy (~$700/mo × 12 × 2)</td><td class="right">$16,800</td></tr>
+        <tr><td>Buffer / misc</td><td class="right">$5,700</td></tr>
+      </tbody>
+      <tfoot><tr><td><strong>TOTAL</strong></td><td class="right">~$180k</td></tr></tfoot>
+    </table>
+
+    <h3>Time commitment</h3>
+    <p>Full-time for both. Doug quits skateOS-as-day-job (it becomes a portfolio product the firm licenses out). Jon quits his security role. Both committed.</p>
+
+    <h3>What we DO add at this tier</h3>
+    <ul>
+      <li>S-corp election for tax efficiency (reasonable W-2 salary + distributions).</li>
+      <li>SOC 2 Type I attestation — unlocks enterprise customers (mid-market + regulated).</li>
+      <li>HIPAA + PCI compliance support per engagement (separate from SOC 2).</li>
+      <li>Managed IT + 24/7 on-call retainers as a real offering.</li>
+      <li>First contractor / hire — likely a junior dev or QA engineer to take volume off Doug.</li>
+      <li>Legal counsel retainer for redlines, IP, contract negotiation.</li>
+      <li>Outbound sales: LinkedIn, content, conferences, partnerships with adjacent firms.</li>
+      <li>Real bookkeeping + CPA — quarterly estimated tax, multi-state payroll, etc.</li>
+    </ul>
+
+    <h3>Pros / cons</h3>
+    <p><strong>Pros:</strong> Life-changing income. Real company we own. Can credibly compete with NYC firms at half their price. Equity value if we ever sold.</p>
+    <p><strong>Cons:</strong> No fallback if it fails — both day jobs gone. Health insurance + retirement on our own. Hiring + managing people = a different job than building software. SOC 2 + insurance + compliance is real work, not just a checkbox. Burnout risk. Two-person partnership disputes can sink the company.</p>
+
+    <div class="pull"><strong>Reality check:</strong> Scenario C is a real bet. $1M revenue means closing ~30-40 deals + 5 retainers in 12 months. That's 1-2 closes per month every month, plus delivery. Most consulting firms take 2-3 years to get there.</div>
+  </section>
+
+  <!-- ─── SIDE-BY-SIDE COMPARISON ───────────────────────────────── -->
+  <section class="doc">
+    <h2><span class="num">⚖</span>Side by side</h2>
+    <p class="lede">All three on one screen.</p>
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th class="right">A · Garage</th><th class="right">B · Small biz</th><th class="right">C · Full scale</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Revenue target</td><td class="right">≤$30k</td><td class="right">~$100k</td><td class="right">$1M+</td></tr>
+        <tr><td>OPEX</td><td class="right">$0-35</td><td class="right">$5,000</td><td class="right">$180,000</td></tr>
+        <tr><td>OPEX as % of revenue</td><td class="right">0.1%</td><td class="right">5%</td><td class="right">18%</td></tr>
+        <tr><td>Net per partner</td><td class="right">~$15k</td><td class="right">~$47k</td><td class="right">~$410k</td></tr>
+        <tr><td>Hours/week each</td><td class="right">3-5</td><td class="right">10-15</td><td class="right">Full-time</td></tr>
+        <tr><td>LLC?</td><td class="right">No</td><td class="right">Yes</td><td class="right">Yes + S-corp</td></tr>
+        <tr><td>E&amp;O insurance?</td><td class="right">No</td><td class="right">Basic ($1M)</td><td class="right">Full coverage</td></tr>
+        <tr><td>SOC 2?</td><td class="right">No</td><td class="right">No</td><td class="right">Type I year 1</td></tr>
+        <tr><td>Day jobs?</td><td class="right">Keep both</td><td class="right">Keep both</td><td class="right">Drop both</td></tr>
+        <tr><td>Risk level</td><td class="right">~zero</td><td class="right">Low</td><td class="right">Real</td></tr>
+        <tr><td>Walkable if life shifts?</td><td class="right">Yes, easily</td><td class="right">Yes, with notice</td><td class="right">No</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- ─── RECOMMENDATION ────────────────────────────────────────── -->
+  <section class="doc">
+    <h2><span class="num">★</span>Doug's recommendation</h2>
+    <p><strong>Start at A.</strong> Pick up 2-4 warm-lead projects. Spend $0-35 total — literally one DBA filing if we want the "Hudson Valley AI" name, otherwise just operate as our legal names. See if we actually like working together on something with stakes (vs. just talking about it). See if customers come back.</p>
+    <p>If A delivers, B is the natural next step in year 2. We don't go to C until we've earned it with year-2 numbers.</p>
+    <p>The reason this stacking matters: <strong>C only works if customers think we're worth $1M of their business</strong>. The way they come to think that is through A and B delivering for them. Skipping to C without that track record is the most common reason consultancies fail — they burn $180k OPEX before they've proven the offer works.</p>
+    <div class="ok"><strong>Bottom line:</strong> A is the right starting answer. B is the right destination for year 2. C is the right destination for year 3-4 if everything goes well.</div>
+  </section>
+
+  <div style="text-align:center;margin-top:30px;padding:20px;color:#737373;font-size:.82rem;font-style:italic;">
+    <p>Three scenarios. One choice. We can always level up later — we can't easily level down once we've committed.</p>
+    <p style="margin-top:14px;"><button class="lock-out" onclick="lockOut()">🔒 Lock</button></p>
+  </div>
+</div>
+
+<footer>© 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project · Internal — do not share · <a href="../index.html">Public site</a></footer>
+
+</div><!-- /content -->
+
+<script>
+  // SHA-256 password gate. Doug + Jon share password verbally / via 1Password.
+  // To change: run `echo -n "NEW_PASSWORD" | shasum -a 256` and replace below.
+  const EXPECTED_HASH = 'f6a834024a630de3cf417b923a064a5ade17dcfc0e65f8c84cf9b7d41e9c6af4';
+
+  async function sha256(s){
+    const buf = new TextEncoder().encode(s);
+    const hash = await crypto.subtle.digest('SHA-256', buf);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  async function tryUnlock(e){
+    e.preventDefault();
+    const pw = document.getElementById('pw').value;
+    const errEl = document.getElementById('lockErr');
+    if(!pw) return false;
+    const h = await sha256(pw);
+    if(h === EXPECTED_HASH){
+      sessionStorage.setItem('hvai_plan_unlocked', '1');
+      showContent();
+    } else {
+      errEl.textContent = 'Wrong password.';
+      errEl.style.display = 'block';
+    }
+    return false;
+  }
+  function showContent(){
+    document.getElementById('lockScreen').style.display = 'none';
+    document.getElementById('content').style.display = 'block';
+  }
+  function lockOut(){
+    sessionStorage.removeItem('hvai_plan_unlocked');
+    location.reload();
+  }
+  if(sessionStorage.getItem('hvai_plan_unlocked') === '1') showContent();
+</script>
+
+</body>
+</html>

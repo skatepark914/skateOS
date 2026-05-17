@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our team riders · skateOS</title>
+<meta property="og:title" content="Our team riders">
+<meta property="og:description" content="Sponsored skaters who represent the shop. Use their code at the shop and they earn — automatically.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛹%3C/text%3E%3C/svg%3E">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:linear-gradient(135deg,#fdf4ff 0%,#fff 50%,#fef3c7 100%);min-height:100vh;color:#1f2937;padding:0;}
+  .container{max-width:980px;margin:0 auto;padding:30px 20px;}
+  .biz-header{text-align:center;font-size:.78rem;text-transform:uppercase;letter-spacing:.1em;color:#6b7280;margin-bottom:8px;}
+  .page-title{text-align:center;font-size:2.2rem;font-weight:900;margin-bottom:6px;color:#1f2937;letter-spacing:-.02em;}
+  .page-sub{text-align:center;font-size:1rem;color:#6b7280;margin-bottom:30px;line-height:1.5;max-width:540px;margin-left:auto;margin-right:auto;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+  .rider{background:#fff;border-radius:16px;padding:22px 18px;box-shadow:0 4px 16px rgba(0,0,0,.04);border:1px solid #f3f4f6;text-align:center;transition:transform .12s,box-shadow .12s;cursor:pointer;}
+  .rider:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(124,58,237,.12);border-color:#a78bfa;}
+  .rider .rank{display:inline-block;background:#7c3aed;color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:10px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.05em;}
+  .rider .rank.gold{background:linear-gradient(135deg,#f59e0b,#d97706);}
+  .rider .rank.silver{background:linear-gradient(135deg,#9ca3af,#6b7280);}
+  .rider .rank.bronze{background:linear-gradient(135deg,#b45309,#92400e);}
+  .rider .photo{width:100px;height:100px;border-radius:50%;background:#f3e8ff center/cover no-repeat;border:3px solid #a78bfa;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:2.2rem;color:#7c3aed;font-weight:800;}
+  .rider .name{font-size:1.15rem;font-weight:800;margin-bottom:6px;}
+  .rider .bio{font-size:.82rem;color:#6b7280;font-style:italic;margin-bottom:10px;line-height:1.4;min-height:33px;}
+  .rider .code{display:inline-block;font-family:ui-monospace,monospace;font-size:1.05rem;font-weight:800;color:#581c87;background:#fdf4ff;border:2px dashed #a78bfa;padding:6px 14px;border-radius:8px;letter-spacing:.05em;margin-bottom:10px;}
+  .rider .stats{display:flex;justify-content:center;gap:18px;font-size:.78rem;color:#6b7280;margin-top:8px;}
+  .rider .stats .num{font-weight:800;color:#7c3aed;font-size:1rem;display:block;}
+  .rider .socials{margin-top:8px;font-size:1.1rem;}
+  .rider .socials a{margin:0 4px;text-decoration:none;color:#6b7280;}
+  .rider .socials a:hover{color:#7c3aed;}
+  .err{background:#fef2f2;border:1px solid #fecaca;color:#991b1b;padding:18px;border-radius:10px;text-align:center;font-size:.95rem;}
+  .empty{text-align:center;color:#6b7280;padding:50px 20px;background:#fff;border-radius:14px;border:1px dashed #e5e7eb;}
+  .loading{text-align:center;color:#6b7280;padding:60px 20px;}
+  .footer{text-align:center;margin-top:40px;font-size:.75rem;color:#9ca3af;}
+  .cta{display:inline-block;background:#e11d48;color:#fff;padding:12px 28px;border-radius:10px;font-weight:700;text-decoration:none;font-size:.95rem;margin-top:10px;}
+  .cta:hover{background:#be123c;}
+  .info-box{background:#fdf4ff;border:1px solid #e9d5ff;border-radius:10px;padding:16px 18px;margin-bottom:24px;font-size:.88rem;color:#581c87;line-height:1.5;}
+  @media (max-width: 480px){
+    .container{padding:20px 14px;}
+    .page-title{font-size:1.6rem;}
+    .grid{grid-template-columns:1fr;}
+    .rider{padding:18px 14px;}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="biz-header" id="bizHeader">SKATEPARK · TEAM</div>
+    <h1 class="page-title">Our team riders</h1>
+    <p class="page-sub">Sponsored skaters who represent the shop. Tap any rider's code to copy + share — when you use it at the shop, they earn.</p>
+
+    <div class="info-box" id="infoBox" style="display:none;">
+      💡 <strong>How it works:</strong> Pick a rider whose style you vibe with. Use their code at the shop (or at our online booking form). They earn commission on your purchase — and so does the next person you refer with the same code!
+    </div>
+
+    <div id="content" class="loading">Loading team…</div>
+
+    <div class="footer">
+      <a class="cta" href="/">← Back to <span id="bizFooter">the shop</span></a>
+      <div style="margin-top:18px;">Powered by <strong>skateOS</strong></div>
+    </div>
+  </div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  var bizName = (window.APP_CONFIG && window.APP_CONFIG.bizName) || '2nd Nature Park';
+  var SUPABASE_URL = (window.APP_CONFIG && window.APP_CONFIG.supabaseUrl) || '';
+  var SUPABASE_KEY = (window.APP_CONFIG && window.APP_CONFIG.supabaseAnonKey) || '';
+
+  document.getElementById('bizHeader').textContent = bizName.toUpperCase() + ' · TEAM';
+  document.getElementById('bizFooter').textContent = bizName;
+  document.title = 'Our team riders · ' + bizName;
+
+  // Call the public list RPC (anon-permissioned, mig 045)
+  fetch(SUPABASE_URL + '/rest/v1/rpc/affiliate_program_public_list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY
+    },
+    body: '{}'
+  })
+  .then(function(r){ return r.json(); })
+  .then(function(rows){
+    if(!Array.isArray(rows)){
+      // Likely an error response
+      document.getElementById('content').innerHTML = '<div class="err">Could not load team listing. Migration 045 may not be applied yet.</div>';
+      return;
+    }
+    if(!rows.length){
+      document.getElementById('content').innerHTML = '<div class="empty"><div style="font-size:2rem;margin-bottom:10px;">🏆</div><div style="font-size:1rem;font-weight:700;color:#374151;">No team riders enrolled yet</div><div style="margin-top:8px;color:#9ca3af;">Check back soon — or ask the shop how to join the team.</div></div>';
+      return;
+    }
+    document.getElementById('infoBox').style.display = '';
+    renderTeam(rows);
+  })
+  .catch(function(err){
+    document.getElementById('content').innerHTML = '<div class="err">Couldn\'t load team listing: ' + escapeHtml(err.message || String(err)) + '<br><br>The shop may be in setup. Check back later.</div>';
+  });
+
+  function renderTeam(riders){
+    var html = '<div class="grid">';
+    riders.forEach(function(r, idx){
+      var name = r.customer_name || 'Team Rider';
+      var first = name.split(' ')[0] || name;
+      var photoStyle = r.photo_url ? ('background-image:url(' + escapeAttr(r.photo_url) + ');') : '';
+      var photoInner = r.photo_url ? '' : escapeHtml((first.charAt(0)||'?').toUpperCase());
+      var rankClass = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
+      var rankLabel = idx === 0 ? '🏆 Top rider' : idx === 1 ? '🥈 #2' : idx === 2 ? '🥉 #3' : '🛹 Team rider';
+
+      var socials = '';
+      if(r.social_handles){
+        var bits = [];
+        if(r.social_handles.instagram) bits.push('<a href="https://instagram.com/' + encodeURIComponent(r.social_handles.instagram) + '" target="_blank" onclick="event.stopPropagation();" title="Instagram">📷</a>');
+        if(r.social_handles.tiktok)    bits.push('<a href="https://tiktok.com/@'   + encodeURIComponent(r.social_handles.tiktok)    + '" target="_blank" onclick="event.stopPropagation();" title="TikTok">🎵</a>');
+        if(r.social_handles.youtube)   bits.push('<a href="https://youtube.com/@'  + encodeURIComponent(r.social_handles.youtube)   + '" target="_blank" onclick="event.stopPropagation();" title="YouTube">▶</a>');
+        if(bits.length) socials = '<div class="socials">' + bits.join('') + '</div>';
+      }
+
+      var bio = r.bio ? escapeHtml(r.bio) : '<span style="color:#cbd5e1;">— Skater profile coming soon —</span>';
+
+      html += '<div class="rider" onclick="window.location.href=\'affiliate.html?code=' + encodeURIComponent(r.code) + '\'">'
+        +    '<div class="rank ' + rankClass + '">' + rankLabel + '</div>'
+        +    '<div class="photo" style="' + photoStyle + '">' + photoInner + '</div>'
+        +    '<div class="name">' + escapeHtml(name) + '</div>'
+        +    '<div class="bio">' + bio + '</div>'
+        +    '<div class="code" onclick="event.stopPropagation();copyCode(\'' + escapeAttr(r.code) + '\', this)" title="Tap to copy">' + escapeHtml(r.code) + '</div>'
+        +    '<div class="stats">'
+        +      '<div><span class="num">' + (r.total_referrals||0) + '</span> friends</div>'
+        +      '<div><span class="num">$' + Number(r.total_revenue||0).toFixed(0) + '</span> driven</div>'
+        +    '</div>'
+        +    socials
+        + '</div>';
+    });
+    html += '</div>';
+    document.getElementById('content').innerHTML = html;
+  }
+
+  // Tap-to-copy code with brief flash feedback. Stops bubbling so the
+  // click doesn't navigate to the affiliate profile page.
+  window.copyCode = function(code, el){
+    var orig = el.textContent;
+    var doFallback = function(){
+      var ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(_) {}
+      document.body.removeChild(ta);
+    };
+    var flash = function(){
+      el.textContent = '✓ Copied!';
+      el.style.background = '#dcfce7';
+      el.style.color = '#15803d';
+      el.style.borderColor = '#15803d';
+      setTimeout(function(){
+        el.textContent = orig;
+        el.style.background = '';
+        el.style.color = '';
+        el.style.borderColor = '';
+      }, 1500);
+    };
+    if(navigator.clipboard){
+      navigator.clipboard.writeText(code).then(flash).catch(function(){ doFallback(); flash(); });
+    } else { doFallback(); flash(); }
+  };
+
+  function escapeHtml(s){
+    return String(s||'').replace(/[&<>"']/g, function(ch){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch];
+    });
+  }
+  function escapeAttr(s){ return String(s||'').replace(/['"\\]/g, '\\$&'); }
+})();
+</script>
+</body>
+</html>

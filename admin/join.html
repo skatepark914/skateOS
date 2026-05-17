@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Join 2nd Nature Park</title>
+<meta name="description" content="Become a member at 2nd Nature Park. 24/7 access for monthly + annual members, plus punch cards and day passes.">
+<meta property="og:title" content="Join 2nd Nature Park">
+<meta property="og:description" content="Skate when you want. Member perks include 24/7 park access via your phone.">
+<!-- =====================================================================
+     PUBLIC MEMBER SIGNUP — admin/join.html
+     Anon-accessible. Submits to form_submissions with form slug
+     'member-signup' (seeded by migration 066). Public RLS on
+     form_submissions (mig 011) allows the insert.
+     Linked from skateos.com/2ntr landing.
+===================================================================== -->
+<style>
+  :root {
+    --rose:       #e11d48;
+    --rose-dark:  #be123c;
+    --rose-light: #ffe4e6;
+    --ink:        #14161a;
+    --ink-soft:   #555a63;
+    --line:       #e6e6e1;
+    --bg:         #faf9f6;
+    --green:      #16a34a;
+    --amber:      #f59e0b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  .crumbs { font-size: 13px; color: var(--ink-soft); margin-bottom: 18px; }
+  .crumbs a { color: var(--rose); text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .card {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 30px rgba(0,0,0,.06);
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .card-top {
+    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%);
+    padding: 32px 28px;
+    color: #fff;
+    text-align: center;
+  }
+  .card-top .emoji { font-size: 48px; line-height: 1; margin-bottom: 12px; display: block; }
+  .card-top h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 900; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .card-top p { font-size: 14px; opacity: 0.92; max-width: 360px; margin: 0 auto; line-height: 1.5; }
+  .card-body { padding: 28px; }
+  .section { margin-bottom: 24px; }
+  .section h2 {
+    font-size: 12px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--rose); margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h2 .num {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--rose); color: #fff; display: inline-flex;
+    align-items: center; justify-content: center; font-size: 11px;
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .row { grid-template-columns: 1fr; } }
+  .field { margin-bottom: 12px; }
+  label {
+    display: block; font-size: 12px; font-weight: 700; color: var(--ink-soft);
+    margin-bottom: 4px; letter-spacing: 0.02em;
+  }
+  label .req { color: var(--rose); }
+  input[type="text"], input[type="email"], input[type="tel"], input[type="date"], select, textarea {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--line); border-radius: 10px;
+    font-size: 15px; font-family: inherit; color: var(--ink); background: #fff;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    outline: none; border-color: var(--rose); box-shadow: 0 0 0 3px rgba(225,29,72,0.12);
+  }
+  textarea { min-height: 80px; resize: vertical; }
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 10px; }
+  .plan {
+    border: 2px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    cursor: pointer; transition: all 0.15s; background: #fff;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .plan:hover { border-color: var(--rose-light); background: #fffaf9; }
+  .plan input { position: absolute; opacity: 0; pointer-events: none; }
+  .plan.selected {
+    border-color: var(--rose); background: var(--rose-light);
+    box-shadow: 0 4px 12px rgba(225,29,72,0.15);
+  }
+  .plan-name { font-weight: 700; font-size: 15px; color: var(--ink); }
+  .plan-price { font-weight: 900; font-size: 20px; color: var(--rose); }
+  .plan-price small { font-size: 11px; color: var(--ink-soft); font-weight: 600; }
+  .plan-perk { font-size: 12px; color: var(--ink-soft); line-height: 1.4; margin-top: 4px; }
+  .plan-badge {
+    display: inline-block; background: var(--rose); color: #fff;
+    font-size: 9px; padding: 2px 7px; border-radius: 4px; font-weight: 800;
+    letter-spacing: 0.05em; margin-bottom: 4px; text-transform: uppercase;
+  }
+  .checkbox-row {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 12px; border: 1px solid var(--line); border-radius: 10px;
+    background: #fafafa; cursor: pointer;
+  }
+  .checkbox-row:hover { background: #f5f5f3; }
+  .checkbox-row input { margin-top: 3px; flex-shrink: 0; }
+  .checkbox-row .text { font-size: 13px; color: var(--ink-soft); line-height: 1.5; }
+  .checkbox-row .text strong { color: var(--ink); }
+  .checkbox-row a { color: var(--rose); }
+  #guardian-section { display: none; }
+  #guardian-section.show { display: block; animation: slideIn 0.25s ease-out; }
+  @keyframes slideIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+  .minor-banner {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 1px solid var(--amber); border-radius: 10px;
+    padding: 10px 12px; font-size: 13px; color: #92400e;
+    margin-bottom: 12px;
+  }
+  .submit-btn {
+    width: 100%; padding: 16px; background: var(--rose); color: #fff;
+    border: none; border-radius: 12px; font-size: 16px; font-weight: 800;
+    cursor: pointer; margin-top: 8px; letter-spacing: 0.02em;
+    transition: background 0.15s, transform 0.05s;
+  }
+  .submit-btn:hover:not(:disabled) { background: var(--rose-dark); }
+  .submit-btn:active:not(:disabled) { transform: scale(0.98); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .help { font-size: 12px; color: var(--ink-soft); margin-top: 4px; line-height: 1.4; }
+  .status {
+    margin-top: 14px; padding: 12px 14px; border-radius: 10px;
+    font-size: 14px; line-height: 1.5; display: none;
+  }
+  .status.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; display: block; }
+  .status.err { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; display: block; }
+  .success-card {
+    text-align: center; padding: 32px 24px;
+  }
+  .success-card .check {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), #15803d); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 16px; box-shadow: 0 8px 20px rgba(22,163,74,0.3);
+  }
+  .success-card h2 { font-size: 24px; font-weight: 900; margin-bottom: 10px; }
+  .success-card p { color: var(--ink-soft); line-height: 1.6; font-size: 15px; max-width: 380px; margin: 0 auto 12px; }
+  .success-card .next-steps { text-align: left; max-width: 380px; margin: 18px auto 0; }
+  .success-card .next-steps li { margin-bottom: 8px; font-size: 14px; color: var(--ink-soft); }
+  .footer-link {
+    text-align: center; font-size: 12px; color: var(--ink-soft);
+    margin-top: 20px;
+  }
+  .footer-link a { color: var(--rose); text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="crumbs">
+    <a href="https://skateos.com/2ntr">← Back to 2nd Nature Park</a>
+  </div>
+
+  <div class="card" id="formCard">
+    <div class="card-top">
+      <span class="emoji">🛹</span>
+      <h1>Become a member</h1>
+      <p>Skate when you want. Members get 24/7 park access via Brivo Mobile Pass — just walk up + tap.</p>
+    </div>
+    <div class="card-body">
+      <form id="signup" novalidate>
+
+        <!-- 1 — Skater info -->
+        <div class="section">
+          <h2><span class="num">1</span>Skater info</h2>
+          <div class="field">
+            <label>Full name <span class="req">*</span></label>
+            <input type="text" id="name" required autocomplete="name">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>Date of birth <span class="req">*</span></label>
+              <input type="date" id="dob" required>
+            </div>
+            <div class="field">
+              <label>How'd you hear about us?</label>
+              <select id="source">
+                <option value="">— pick one —</option>
+                <option value="instagram">Instagram</option>
+                <option value="walk-in">Walked by</option>
+                <option value="referral">A friend / referral</option>
+                <option value="google">Google search</option>
+                <option value="event">An event we hosted</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 — Contact -->
+        <div class="section">
+          <h2><span class="num">2</span>Contact</h2>
+          <div class="row">
+            <div class="field">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" id="email" required autocomplete="email">
+              <div class="help">Where we send your Brivo invite + receipts.</div>
+            </div>
+            <div class="field">
+              <label>Phone <span class="req">*</span></label>
+              <input type="tel" id="phone" required autocomplete="tel" placeholder="(914) 555-0123">
+            </div>
+          </div>
+          <div class="field">
+            <label>Address</label>
+            <input type="text" id="address" autocomplete="street-address" placeholder="Street + City + State + ZIP">
+          </div>
+        </div>
+
+        <!-- 3 — Guardian (auto-shown for minors) -->
+        <div class="section" id="guardian-section">
+          <h2><span class="num">3</span>Parent / guardian</h2>
+          <div class="minor-banner">
+            👶 We noticed the skater is under 18 — we'll need a parent or legal guardian on file too.
+          </div>
+          <div class="field">
+            <label>Parent / guardian name <span class="req">*</span></label>
+            <input type="text" id="parent_name" autocomplete="off">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label>Parent email <span class="req">*</span></label>
+              <input type="email" id="parent_email" autocomplete="off">
+            </div>
+            <div class="field">
+              <label>Parent phone <span class="req">*</span></label>
+              <input type="tel" id="parent_phone" autocomplete="off">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 — Plan picker -->
+        <div class="section">
+          <h2><span class="num" id="plan-step-num">3</span>Pick a plan</h2>
+          <div class="plan-grid" id="plan-grid">
+            <label class="plan" data-plan="monthly">
+              <input type="radio" name="plan" value="monthly">
+              <span class="plan-badge">24/7 ACCESS</span>
+              <span class="plan-name">Monthly Unlimited</span>
+              <span class="plan-price">$89<small> / mo</small></span>
+              <span class="plan-perk">Skate as much as you want · Brivo Mobile Pass for 24/7 park door access · cancel anytime</span>
+            </label>
+            <label class="plan" data-plan="annual">
+              <input type="radio" name="plan" value="annual">
+              <span class="plan-badge">BEST VALUE</span>
+              <span class="plan-name">Annual Unlimited</span>
+              <span class="plan-price">$899<small> / yr</small></span>
+              <span class="plan-perk">Same as monthly but you save $169 vs paying monthly. 24/7 park access included.</span>
+            </label>
+            <label class="plan" data-plan="punch_card">
+              <input type="radio" name="plan" value="punch_card">
+              <span class="plan-name">10-Pack Punch Card</span>
+              <span class="plan-price">$180<small> / 10 visits</small></span>
+              <span class="plan-perk">$18 per visit (vs $25 day pass). No 24/7 access — check in with staff during park hours.</span>
+            </label>
+            <label class="plan" data-plan="day_pass">
+              <input type="radio" name="plan" value="day_pass">
+              <span class="plan-name">Day Pass</span>
+              <span class="plan-price">$25<small> / visit · $18 under 12</small></span>
+              <span class="plan-perk">Drop in any time during staffed hours. Pay at the front desk on arrival.</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 5 — Waiver + finish -->
+        <div class="section">
+          <h2><span class="num" id="waiver-step-num">4</span>Waiver + finish</h2>
+          <label class="checkbox-row">
+            <input type="checkbox" id="waiver_ack" required>
+            <span class="text">
+              <strong>I'll sign the waiver before my first session.</strong> We use Smartwaiver — we'll email you a link when you sign up, OR you can sign on an iPad at the front desk on your first visit. <em>(Required to skate at the park.)</em>
+            </span>
+          </label>
+          <label class="checkbox-row" style="margin-top:10px;">
+            <input type="checkbox" id="marketing_ack">
+            <span class="text">
+              Yes, send me occasional emails about events, demos, sales, and Friday night skate jams. (Optional — you can unsubscribe anytime.)
+            </span>
+          </label>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Sign me up →</button>
+        <div class="status" id="status"></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="footer-link">
+    <a href="https://2ntr.com">2ntr.com</a> · <a href="tel:+19144024624">(914) 402-4624</a> · <a href="mailto:info@2ntr.com">info@2ntr.com</a>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  const cfgScript = await fetch('config.js').then(r => r.text());
+  new Function(cfgScript)();
+  const CFG = window.APP_CONFIG;
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey);
+</script>
+<script>
+  const $ = id => document.getElementById(id);
+  function setStatus(msg, kind){ const s = $('status'); s.className = 'status ' + (kind||'ok'); s.textContent = msg; }
+  function isMinor(dob){
+    if(!dob) return false;
+    const b = new Date(dob); if(isNaN(b.getTime())) return false;
+    const now = new Date();
+    let age = now.getFullYear() - b.getFullYear();
+    const m = now.getMonth() - b.getMonth();
+    if(m < 0 || (m === 0 && now.getDate() < b.getDate())) age--;
+    return age < 18;
+  }
+  function refreshGuardian(){
+    const minor = isMinor($('dob').value);
+    $('guardian-section').classList.toggle('show', minor);
+    $('parent_name').required  = minor;
+    $('parent_email').required = minor;
+    $('parent_phone').required = minor;
+    // Renumber subsequent sections
+    $('plan-step-num').textContent   = minor ? '4' : '3';
+    $('waiver-step-num').textContent = minor ? '5' : '4';
+  }
+  $('dob').addEventListener('change', refreshGuardian);
+  $('dob').addEventListener('input',  refreshGuardian);
+
+  // Plan picker visual selection
+  document.querySelectorAll('.plan').forEach(p => {
+    p.addEventListener('click', () => {
+      document.querySelectorAll('.plan').forEach(x => x.classList.remove('selected'));
+      p.classList.add('selected');
+      p.querySelector('input').checked = true;
+    });
+  });
+
+  // Submit
+  $('signup').addEventListener('submit', async e => {
+    e.preventDefault();
+    const btn = $('submitBtn');
+    btn.disabled = true; btn.textContent = 'Submitting…';
+
+    // Wait for supabase client to be ready
+    let tries = 0;
+    while(!window.supabaseClient && tries < 30){ await new Promise(r => setTimeout(r, 100)); tries++; }
+    if(!window.supabaseClient){ setStatus('Could not connect — refresh and try again.', 'err'); btn.disabled = false; btn.textContent = 'Sign me up →'; return; }
+
+    const sb = window.supabaseClient;
+
+    // Validate plan picked
+    const plan = (document.querySelector('input[name="plan"]:checked')||{}).value;
+    if(!plan){ setStatus('Pick a plan to continue.', 'err'); btn.disabled = false; btn.textContent = 'Sign me up →'; document.querySelector('.plan-grid').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+
+    if(!$('waiver_ack').checked){ setStatus('You need to acknowledge the waiver.', 'err'); btn.disabled = false; btn.textContent = 'Sign me up →'; return; }
+
+    // Look up the member-signup form (seeded by migration 066)
+    const { data: form, error: fErr } = await sb.from('forms').select('id').eq('slug', 'member-signup').maybeSingle();
+    if(fErr || !form){
+      setStatus('Signup form not configured yet. Please call us at (914) 402-4624 — we\'ll get you sorted right away.', 'err');
+      btn.disabled = false; btn.textContent = 'Sign me up →';
+      return;
+    }
+
+    const minor = isMinor($('dob').value);
+    const data = {
+      // Mirror customers table field names so the admin "Add as customer"
+      // smart-detection button (per CLAUDE.md) can pre-fill cleanly
+      name:    $('name').value.trim(),
+      dob:     $('dob').value,
+      email:   $('email').value.trim().toLowerCase(),
+      phone:   $('phone').value.trim(),
+      address: $('address').value.trim(),
+      source:  $('source').value,
+      plan:    plan,
+      parent_name:  minor ? $('parent_name').value.trim()  : null,
+      parent_email: minor ? $('parent_email').value.trim().toLowerCase() : null,
+      parent_phone: minor ? $('parent_phone').value.trim() : null,
+      waiver_acknowledged:    true,
+      marketing_opt_in:       $('marketing_ack').checked,
+      submitted_at:           new Date().toISOString(),
+      submitted_from:         'admin/join.html'
+    };
+
+    const { error: insErr } = await sb.from('form_submissions').insert({
+      form_id: form.id,
+      data: data
+    });
+    if(insErr){
+      setStatus('Submission failed: ' + insErr.message, 'err');
+      btn.disabled = false; btn.textContent = 'Sign me up →';
+      return;
+    }
+
+    // Success — replace the form with a confirmation card
+    const planLabel = {
+      'monthly':    'Monthly Unlimited ($89/mo)',
+      'annual':     'Annual Unlimited ($899/yr)',
+      'punch_card': '10-Pack Punch Card ($180)',
+      'day_pass':   'Day Pass'
+    }[plan] || plan;
+    const firstName = data.name.split(/\s+/)[0] || 'there';
+    const has247 = (plan === 'monthly' || plan === 'annual');
+
+    document.getElementById('formCard').innerHTML = `
+      <div class="card-top">
+        <span class="emoji">🛹</span>
+        <h1>You're on the list, ${firstName}</h1>
+        <p>We got it. Welcome to the family.</p>
+      </div>
+      <div class="card-body success-card">
+        <div class="check">✓</div>
+        <h2>What happens next</h2>
+        <ul class="next-steps">
+          <li>📧 You'll get a confirmation email within an hour (check spam — it's a new sender)</li>
+          <li>💳 We'll text you a payment link for your <strong>${planLabel}</strong> — pay online or settle at the front desk on your first visit</li>
+          <li>📋 The waiver gets emailed to ${minor ? '<strong>your parent/guardian</strong>' : 'you'} from Smartwaiver — sign before your first session</li>
+          ${has247 ? '<li>🔓 Once payment lands, we activate your <strong>24/7 Brivo Mobile Pass</strong> — Brivo emails you the app invite, tap to install, walk to the park door, tap to enter</li>' : '<li>🛹 Stop by during staffed hours to start skating — bring ID + your kid if applicable</li>'}
+          <li>📞 Questions? Call <a href="tel:+19144024624" style="color:var(--rose);">(914) 402-4624</a> any time</li>
+        </ul>
+      </div>
+    `;
+    window.scrollTo({top: 0, behavior:'smooth'});
+  });
+</script>
+
+</body></html>

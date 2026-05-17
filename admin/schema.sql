@@ -1,0 +1,9 @@
+-- ============================================================
+-- 2nd Nature Skatepark — schema pointer
+-- The authoritative schema lives in migrations/.
+-- Run migrations in numeric order in Supabase SQL Editor:
+--   1. migrations/001_init.sql
+--   (future migrations: 002_*.sql, 003_*.sql, etc.)
+--
+-- Each migration is idempotent — safe to re-run.
+-- ============================================================

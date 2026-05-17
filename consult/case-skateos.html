@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Case Study: skateOS — Hudson Valley AI</title>
+<meta name="description" content="How Hudson Valley AI built skateOS — a multi-tenant SaaS operating system for skateparks. Architecture, security, and metrics.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;}
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+  .wrap{max-width:920px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  .tag-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+  .tag{background:#dcfce7;color:#15803d;padding:5px 10px;border-radius:5px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;}
+  h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;letter-spacing:-0.022em;line-height:1.05;margin-bottom:14px;}
+  .subtitle{font-size:1.1rem;color:#404040;margin-bottom:36px;}
+
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:18px;margin:30px 0 40px;background:#0a0a0a;color:#fafaf9;padding:30px;border-radius:14px;}
+  .stat-num{font-size:2.4rem;font-weight:900;color:#fb7185;letter-spacing:-0.03em;line-height:1;}
+  .stat-label{font-size:.78rem;color:#a3a3a3;font-weight:600;margin-top:6px;}
+
+  section{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:32px;margin-bottom:18px;}
+  section h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:16px;}
+  section h3{font-size:1.05rem;font-weight:700;margin:20px 0 8px;color:#0a0a0a;}
+  section p{margin-bottom:12px;color:#404040;font-size:.95rem;}
+  section ul{margin:8px 0 14px 22px;color:#404040;font-size:.94rem;}
+  section li{margin-bottom:5px;}
+  section strong{color:#0a0a0a;}
+  section code{font-family:ui-monospace,monospace;font-size:.84rem;background:#f3f4f6;padding:1px 5px;border-radius:3px;color:#0a0a0a;}
+  .pull{
+    background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;
+    margin:16px 0;font-size:.94rem;font-style:italic;color:#404040;
+  }
+  .stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px;}
+  .stack-item{background:#fafaf9;border:1px solid #e5e5e0;border-radius:8px;padding:12px;}
+  .stack-item .h{font-weight:700;font-size:.86rem;margin-bottom:4px;}
+  .stack-item .b{font-size:.78rem;color:#737373;}
+
+  .cta-bottom{background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:36px;margin-top:40px;text-align:center;}
+  .cta-bottom h2{color:#fafaf9;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;}
+  .cta-bottom .btn{display:inline-block;padding:12px 24px;background:#fb7185;color:#fafaf9;border-radius:8px;font-weight:700;text-decoration:none;}
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="topbar">📍 Hudson Valley, NY · Principal-led software + security consultancy · <a href="index.html">Back to overview →</a></div>
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="products.html">Products</a>
+    <a href="work.html" class="active">Work</a>
+    <a href="security.html">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html">Compare</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Case studies / skateOS</div>
+  <div class="tag-row">
+    <span class="tag">● Live in production</span>
+    <span class="tag">Multi-tenant SaaS</span>
+    <span class="tag">Recreation industry</span>
+  </div>
+  <h1>skateOS — operating system for skateparks</h1>
+  <p class="subtitle">Replacing Square POS, Mindbody, and a half-dozen single-purpose tools with one multi-tenant platform serving real customers in Peekskill, NY.</p>
+
+  <div class="stats">
+    <div><div class="stat-num">61</div><div class="stat-label">Database migrations</div></div>
+    <div><div class="stat-num">~60</div><div class="stat-label">Database tables</div></div>
+    <div><div class="stat-num">17</div><div class="stat-label">Cloud functions</div></div>
+    <div><div class="stat-num">8</div><div class="stat-label">Scheduled crons</div></div>
+    <div><div class="stat-num">100+</div><div class="stat-label">Features shipped</div></div>
+    <div><div class="stat-num">0</div><div class="stat-label">Security incidents</div></div>
+  </div>
+
+  <section>
+    <h2>The problem</h2>
+    <p>Independent skateparks run their operations on a stack of single-purpose tools: Square for POS, Mindbody for memberships, Smartwaiver for liability, a Squarespace site for marketing, Stripe Payouts for payments, MailChimp for marketing emails, paper for incident reports. Nothing talks to each other. Customer data lives in five places. Reports are spreadsheet stitch-jobs.</p>
+    <p>2nd Nature Park, an independent skatepark in Peekskill NY, hired us to replace the entire stack with one accountable system.</p>
+    <div class="pull">"We were spending 8 hours a week reconciling data across tools that didn't talk. We needed one system, built for skateparks specifically, that we could actually trust." — 2nd Nature Park founders</div>
+  </section>
+
+  <section>
+    <h2>What we built</h2>
+    <p>A multi-tenant SaaS operating system covering the full skatepark workflow:</p>
+    <ul>
+      <li><strong>Front-desk check-in</strong> with QR member-card scan, voice search, real-time park-capacity tracking, waiver enforcement, age-gate logic for minors.</li>
+      <li><strong>Point of sale</strong> with cart memo, discount codes, gift cards, loyalty redemption, split payments, tip allocation, cash-drawer reconciliation, end-of-shift tape printing.</li>
+      <li><strong>Lessons &amp; bookings</strong> with calendar, instructor scheduling, group attendance tracking, automated reminders + post-lesson follow-ups, waitlist promotion, online booking via Helcim.</li>
+      <li><strong>Memberships</strong> with monthly / annual / punch-card / day-pass plan types, pause + auto-resume, customer self-serve cancel.</li>
+      <li><strong>Customer self-serve portal</strong> — magic-link auth, edit profile, view orders, cancel lessons, manage memberships, print member card, view loyalty points, hours-skated stat, achievement badges.</li>
+      <li><strong>Online retail shop</strong> with public catalog, cart, checkout, order tracking, automated payment + shipping confirmation emails.</li>
+      <li><strong>Equipment / loaner gear tracking</strong> with check-out / check-in / damage tracking / overdue reminders.</li>
+      <li><strong>Mobile bus shop</strong> for off-site events with separate inventory tracking + run reconciliation.</li>
+      <li><strong>Affiliate / team rider program</strong> with commission tracking, public profiles, share-codes, payout management.</li>
+      <li><strong>Incident logging</strong> with structured fields for liability + insurance compliance.</li>
+      <li><strong>Marketing</strong> — campaign builder with tag-based segmentation, A/B test split, CAN-SPAM-compliant unsubscribe, Twilio SMS opt-out compliance.</li>
+      <li><strong>Reports + BI</strong> — 30+ analytical cards covering revenue, retention, cohort, LTV, churn, lesson cancellation reasons, instructor utilization, per-product margin.</li>
+      <li><strong>iPad-native mobile app</strong> (Expo / React Native) for front-desk + bus-shop use.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Architecture</h2>
+    <p>Built for security, multi-tenancy, and the velocity to ship 100+ features without the system collapsing under its own weight.</p>
+
+    <div class="stack-grid">
+      <div class="stack-item"><div class="h">Database</div><div class="b">Postgres on Supabase · ~60 tables · Row Level Security</div></div>
+      <div class="stack-item"><div class="h">Auth</div><div class="b">Supabase Auth (JWT) · magic-link for customers · MFA-ready for staff</div></div>
+      <div class="stack-item"><div class="h">Frontend</div><div class="b">Vanilla-JS SPA · no framework bloat · Cloudflare Workers</div></div>
+      <div class="stack-item"><div class="h">Mobile</div><div class="b">React Native / Expo · iPad-targeted</div></div>
+      <div class="stack-item"><div class="h">Cloud functions</div><div class="b">17 Deno-based Edge Functions on Supabase</div></div>
+      <div class="stack-item"><div class="h">Payments</div><div class="b">Helcim hosted-iframe · zero card data on our infra</div></div>
+      <div class="stack-item"><div class="h">Email / SMS</div><div class="b">Resend + Twilio · CAN-SPAM + TCPA compliant</div></div>
+      <div class="stack-item"><div class="h">Liability waivers</div><div class="b">Smartwaiver integration with signed-webhook verification</div></div>
+      <div class="stack-item"><div class="h">Cron / scheduling</div><div class="b">pg_cron + pg_net · 8 scheduled jobs</div></div>
+      <div class="stack-item"><div class="h">CDN / DDoS</div><div class="b">Cloudflare on every public surface</div></div>
+      <div class="stack-item"><div class="h">Backup</div><div class="b">Daily snapshots + WAL streaming · weekly off-site backup function</div></div>
+      <div class="stack-item"><div class="h">Multi-tenancy</div><div class="b"><code>tenant_id</code> on every business table · RLS strict-mode pending Phase 2 rollout</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Security choices &amp; why</h2>
+    <p>Every architectural decision was made with security implications front of mind. The full <a href="security.html" style="color:#e11d48;font-weight:700;">security &amp; compliance posture</a> is published; here are the highlights specific to skateOS:</p>
+    <ul>
+      <li><strong>Postgres RLS for multi-tenancy</strong> — even if application-layer auth fails, the database refuses cross-tenant reads. Cross-tenant data exposure is technically impossible without compromising the database itself.</li>
+      <li><strong>Card data never on our infrastructure</strong> — Helcim's hosted iframe captures cards, returns a tokenized transaction reference. We store only the reference, never the PAN. PCI scope: SAQ-A or lower.</li>
+      <li><strong>Customer self-serve portal isolation</strong> — RLS policies restrict authenticated customers to read-only access on their own record + sales + lessons + loyalty. No cross-customer leakage even on application bugs.</li>
+      <li><strong>Webhook signature verification</strong> on Helcim and Smartwaiver inbound webhooks. Replay-protection via idempotency keys.</li>
+      <li><strong>Audit log via Postgres trigger</strong> — every INSERT/UPDATE/DELETE on business-critical tables captured with actor identity and old/new values. Full forensic trail for "who changed what when" investigations.</li>
+      <li><strong>CAN-SPAM + TCPA compliance built in</strong> — public unsubscribe RPC, tag-based SMS opt-out, opt-out gates on every commercial-email send path.</li>
+      <li><strong>Encrypted at rest</strong> — Supabase Postgres + S3-equivalent backup storage, all AES-256.</li>
+      <li><strong>HTTPS / TLS 1.2+ via Cloudflare</strong> on every public surface. HSTS headers. No HTTP fallback.</li>
+      <li><strong>Secret management</strong> — all API keys / signing tokens stored in Supabase secrets, never in client code or git.</li>
+      <li><strong>Honeypot anti-spam</strong> on public forms (intake, lesson booking).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>How we shipped this fast</h2>
+    <p>61 database migrations and 100+ features in a few months. The velocity came from three things:</p>
+    <ul>
+      <li><strong>AI as a force multiplier.</strong> Every feature was specced, written, and reviewed with AI-assisted tooling. This is not "AI generates the code unsupervised" — it's "principal engineer + AI tooling = 5× output." Quality is enforced by the principal, not by the AI.</li>
+      <li><strong>Daily ship cadence.</strong> Features ship the day they're discussed. No two-week sprints, no waiting for the next planning meeting. Bugs and feedback land within the same business day.</li>
+      <li><strong>Minimal framework choices.</strong> Vanilla JS for the frontend, Postgres for the database, Cloudflare Workers for static assets, Supabase Edge Functions for server logic. Boring, fast, observable, scales without rearchitecting.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Outcomes</h2>
+    <ul>
+      <li>Replaced Square POS, Mindbody, and 4 other tools with one accountable system.</li>
+      <li>Reconciliation time cut from ~8 hours/week to under 30 minutes.</li>
+      <li>Customer-self-serve portal deflected an estimated ~40% of routine front-desk calls (membership balance checks, lesson cancellations, receipt requests).</li>
+      <li>Zero security incidents over the build period.</li>
+      <li>Now expanding as white-label SaaS for additional skatepark deployments.</li>
+    </ul>
+  </section>
+
+  <div class="cta-bottom">
+    <h2>Run a skatepark? Skip the build.</h2>
+    <p>skateOS is licensable for your park. We can have you live on your own branded instance in 5 business days. Or build something custom if your needs are different.</p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;">
+      <a href="products.html#skateos" class="btn" style="background:#fb7185;">📦 License skateOS for your park</a>
+      <a href="intake.html" class="btn" style="background:transparent;border:1.5px solid #fb7185;color:#fb7185;">Or scope a custom build →</a>
+    </div>
+  </div>
+</div>
+<footer>© 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="security.html">Security</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></footer>
+</body>
+</html>

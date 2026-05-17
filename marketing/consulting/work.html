@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Our Work — Hudson Valley AI</title>
+<meta name="description" content="Production software shipped by Hudson Valley AI. Live products, real customers, real metrics.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;}
+  h1{font-size:clamp(2rem,4.4vw,3.2rem);font-weight:900;letter-spacing:-0.024em;line-height:1.05;margin-bottom:14px;}
+  .subtitle{font-size:1.15rem;color:#404040;max-width:680px;margin-bottom:40px;}
+
+  .case-card{
+    background:#fff;border:1px solid #e5e5e0;border-radius:14px;padding:32px;margin-bottom:18px;
+    transition:border-color .12s,transform .12s,box-shadow .12s;
+  }
+  .case-card:hover{border-color:#0a0a0a;transform:translateY(-2px);box-shadow:0 12px 30px -10px rgba(0,0,0,.08);}
+  .case-row{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start;}
+  @media(max-width:780px){.case-row{grid-template-columns:1fr;gap:18px;}}
+  .case-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:6px;font-size:.74rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;}
+  .case-tag.live{background:#dcfce7;color:#15803d;}
+  .case-tag.live::before{content:'●';}
+  .case-tag.dev{background:#fef3c7;color:#92400e;}
+  .case-tag.alpha{background:#fce7f3;color:#9f1239;}
+  .case-tag.partner{background:#dbeafe;color:#1e40af;}
+  .case-tag.partner::before{content:'⚡';}
+  .case-card h2{font-size:1.6rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:6px;}
+  .case-domain{font-family:ui-monospace,monospace;font-size:.84rem;color:#737373;margin-bottom:14px;}
+  .case-card p{color:#404040;font-size:.96rem;line-height:1.65;margin-bottom:14px;}
+  .case-card strong{color:#0a0a0a;}
+  .case-features{list-style:none;padding:0;margin:0 0 14px;}
+  .case-features li{padding:4px 0 4px 22px;font-size:.88rem;color:#404040;position:relative;}
+  .case-features li::before{content:'→';position:absolute;left:0;color:#e11d48;font-weight:800;}
+  .stack-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .stack-pill{background:#f3f4f6;color:#0a0a0a;font-size:.74rem;padding:4px 10px;border-radius:5px;font-weight:600;}
+  .case-stats{
+    background:#0a0a0a;color:#fafaf9;border-radius:12px;padding:24px;
+    display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  }
+  .stat-num{font-size:1.8rem;font-weight:900;color:#fb7185;letter-spacing:-0.025em;line-height:1;}
+  .stat-label{font-size:.74rem;color:#a3a3a3;font-weight:600;margin-top:4px;}
+  .case-cta{
+    display:inline-flex;align-items:center;gap:8px;
+    margin-top:14px;padding:10px 18px;background:#0a0a0a;color:#fafaf9;
+    border-radius:8px;font-size:.86rem;font-weight:700;
+  }
+  .case-cta:hover{background:#e11d48;}
+
+  .legend{
+    background:#fff;border:1px solid #e5e5e0;border-radius:10px;padding:16px 22px;margin-bottom:28px;
+    font-size:.86rem;color:#404040;display:flex;flex-wrap:wrap;gap:18px;
+  }
+  .legend-item{display:flex;align-items:center;gap:6px;}
+  .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .cta-bottom{background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:36px;margin-top:40px;text-align:center;}
+  .cta-bottom h2{color:#fafaf9;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;}
+  .cta-bottom .btn{display:inline-block;padding:12px 24px;background:#fb7185;color:#fafaf9;border-radius:8px;font-weight:700;}
+  .cta-bottom .btn:hover{background:#be123c;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Principal-led software + security consultancy · <a href="security.html">How we handle security →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="products.html">Products</a>
+    <a href="work.html" class="active">Work</a>
+    <a href="security.html">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html">Compare</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Our work</div>
+  <h1>Production software. <span style="color:#e11d48;">Real customers.</span></h1>
+  <p class="subtitle">We don't pitch hypothetical builds. Below is the actual ship list — products that exist, that are live, that have customers using them today.</p>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot" style="background:#15803d;"></span><strong>Live</strong> — in production, customers using it today</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#92400e;"></span><strong>In development</strong> — actively building</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#9f1239;"></span><strong>Alpha</strong> — early-stage, internal testing</div>
+    <div class="legend-item"><span class="legend-dot" style="background:#1e40af;"></span><strong>Partner integration</strong> — third-party tech we layer into client builds</div>
+  </div>
+
+  <!-- ─── skateOS ──────────────────────────────────────────────── -->
+  <div class="case-card">
+    <span class="case-tag live">Live · 2nd Nature Skate Park</span>
+    <div class="case-row">
+      <div>
+        <h2>skateOS</h2>
+        <div class="case-domain"><a href="https://skateos.com" target="_blank" style="color:#0369a1;">skateos.com</a> · <a href="https://app.skateos.com" target="_blank" style="color:#0369a1;">app.skateos.com</a> · shop.skateos.com · book.skateos.com</div>
+        <p><strong>White-label SaaS operating system for skateparks.</strong> Replaces Square POS, Mindbody, Smartwaiver, and a half-dozen single-purpose tools with one accountable platform. First deployment serving real customers at 2nd Nature Skate Park (Peekskill, NY). Multi-tenant — designed to deploy at additional parks without code rewrites.</p>
+        <ul class="case-features">
+          <li>Front-desk check-in (QR scan, voice search, capacity tracking, waiver enforcement)</li>
+          <li>Point of sale + tip allocation + cash reconciliation + receipt printing</li>
+          <li>Lessons + bookings + automated reminders + post-lesson follow-ups</li>
+          <li>Customer self-serve portal (magic-link auth, cancel lessons, manage memberships)</li>
+          <li>Online retail shop + lesson booking with Helcim payments</li>
+          <li>Affiliate / team rider program with commission tracking</li>
+          <li>Mobile bus shop for off-site events</li>
+          <li>iPad-native app + 30+ analytical reports</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">Postgres · Supabase</span>
+          <span class="stack-pill">Cloudflare Workers</span>
+          <span class="stack-pill">React Native (Expo)</span>
+          <span class="stack-pill">Helcim payments</span>
+          <span class="stack-pill">Resend / Twilio</span>
+          <span class="stack-pill">RLS multi-tenant</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="mailto:doug@2ntr.com?subject=skateOS%20%E2%80%94%2030-day%20free%20trial" class="case-cta">🎁 Start 30-day free trial</a>
+          <a href="mailto:doug@2ntr.com?subject=skateOS%20walkthrough%20request" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">📺 Walkthrough first</a>
+          <a href="https://skateos.com" target="_blank" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">↗ skateos.com</a>
+          <a href="case-skateos.html" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">Read the case study</a>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">61</div><div class="stat-label">Database migrations</div></div>
+        <div><div class="stat-num">~60</div><div class="stat-label">Database tables</div></div>
+        <div><div class="stat-num">17</div><div class="stat-label">Cloud functions</div></div>
+        <div><div class="stat-num">100+</div><div class="stat-label">Features shipped</div></div>
+        <div><div class="stat-num">8</div><div class="stat-label">Cron schedules</div></div>
+        <div><div class="stat-num">0</div><div class="stat-label">Security incidents</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Branch Manager ──────────────────────────────────────── -->
+  <div class="case-card">
+    <span class="case-tag live">Live · 2nd Nature Tree</span>
+    <div class="case-row">
+      <div>
+        <h2>Branch Manager</h2>
+        <div class="case-domain"><a href="https://branchmanager.app" target="_blank" style="color:#0369a1;">branchmanager.app</a> · running in production at 2nd Nature Tree (Hudson Valley, NY)</div>
+        <p><strong>Full-stack operations platform for tree-care and outdoor-service companies.</strong> Replaces the stack of single-purpose tools (Jobber, QuickBooks, ServiceTitan) with one accountable platform built for the specific workflow of arborist crews. Predates skateOS; the original codebase that skateOS was forked from. Live at 2nd Nature Tree, deployed multi-tenant so additional tree-care operators can be brought live without rewrites.</p>
+        <ul class="case-features">
+          <li>Quote-to-invoice flow with photo + sketch + crew time tracking</li>
+          <li>Stripe-powered customer portal (pay-online, autopay, subscription billing)</li>
+          <li>Crew dispatch + route optimization + real-time job status</li>
+          <li>Customer relationship management with property-history tracking</li>
+          <li>Mobile crew app with offline-first capture</li>
+          <li>Vehicle inspection logs + safety compliance</li>
+          <li>Automated email/SMS reminders for upcoming jobs + overdue invoices</li>
+          <li>White-label deployable to other outdoor-service businesses (landscaping, lawn care, pest control)</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">Postgres · Supabase</span>
+          <span class="stack-pill">Cloudflare Workers</span>
+          <span class="stack-pill">Stripe payments</span>
+          <span class="stack-pill">Mobile + web</span>
+          <span class="stack-pill">Multi-tenant RLS</span>
+          <span class="stack-pill">Offline-first crew app</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="mailto:doug@2ntr.com?subject=Branch%20Manager%20%E2%80%94%2030-day%20free%20trial" class="case-cta">🎁 Start 30-day free trial</a>
+          <a href="mailto:doug@2ntr.com?subject=Branch%20Manager%20walkthrough%20request" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">📺 Walkthrough first</a>
+          <a href="https://branchmanager.app" target="_blank" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">↗ branchmanager.app</a>
+          <a href="products.html#branch-manager" class="case-cta" style="background:transparent;color:#0a0a0a;border:1.5px solid #0a0a0a;">📦 License for your business</a>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">2024</div><div class="stat-label">Live since</div></div>
+        <div><div class="stat-num">Multi-<br>tenant</div><div class="stat-label">SaaS architecture</div></div>
+        <div><div class="stat-num">Stripe</div><div class="stat-label">Payments + subs</div></div>
+        <div><div class="stat-num">Live</div><div class="stat-label">At 2nd Nature Tree</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Murray ──────────────────────────────────────────────── -->
+  <div class="case-card">
+    <span class="case-tag dev">In development</span>
+    <div class="case-row">
+      <div>
+        <h2>Murray</h2>
+        <div class="case-domain">Claude-powered character consultation PWA</div>
+        <p><strong>Conversational AI character consultation.</strong> Progressive web app for character-driven coaching and creative consultation. Demonstrates AI integration with Claude API, persistent conversation memory, and a focused single-purpose UX.</p>
+        <ul class="case-features">
+          <li>Character persona with persistent memory across sessions</li>
+          <li>Anthropic Claude API integration with system-prompt engineering</li>
+          <li>PWA installable on iOS / Android / desktop</li>
+          <li>Conversation history with semantic search</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">Anthropic Claude API</span>
+          <span class="stack-pill">PWA</span>
+          <span class="stack-pill">Vercel</span>
+        </div>
+        <a href="products.html#murray" class="case-cta">📦 White-label Murray for your brand →</a>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">Claude</div><div class="stat-label">AI backbone</div></div>
+        <div><div class="stat-num">PWA</div><div class="stat-label">Installable</div></div>
+        <div><div class="stat-num">Cross-<br>platform</div><div class="stat-label">iOS / Android / web</div></div>
+        <div><div class="stat-num">Beta</div><div class="stat-label">Closed testers</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── PopCut ──────────────────────────────────────────────── -->
+  <div class="case-card">
+    <span class="case-tag alpha">Alpha · v0 shipping</span>
+    <div class="case-row">
+      <div>
+        <h2>PopCut</h2>
+        <div class="case-domain">skateboarding video editor for creators</div>
+        <p><strong>Skateboarding-specific video editor.</strong> Mobile-first clip-trim + share workflow optimized for skateparks and creators. Built for the "I just landed it, post it now" moment — not "open Adobe Premiere when I get home."</p>
+        <ul class="case-features">
+          <li>Multi-clip trim + reorder with finger-drag UX</li>
+          <li>Skate-specific edit presets (slow-mo on landing, beat-sync to music)</li>
+          <li>One-tap publish to Instagram Reels / TikTok / YouTube Shorts</li>
+          <li>Cloud backup of source clips</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">Mobile-first</span>
+          <span class="stack-pill">Native iOS</span>
+          <span class="stack-pill">Creator tools</span>
+        </div>
+        <a href="products.html#popcut" class="case-cta">📦 Partner on PopCut →</a>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">v0</div><div class="stat-label">Alpha shipping</div></div>
+        <div><div class="stat-num">Mobile</div><div class="stat-label">First</div></div>
+        <div><div class="stat-num">Skate-<br>specific</div><div class="stat-label">Niche tool</div></div>
+        <div><div class="stat-num">2026</div><div class="stat-label">Build year</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── DecisionLayer (partner integration) ──────────────────── -->
+  <div class="case-card" id="decisionlayer">
+    <span class="case-tag partner">Partner integration · AI legal tech</span>
+    <div class="case-row">
+      <div>
+        <h2>DecisionLayer · AI arbitration in the contract layer</h2>
+        <div class="case-domain">decisionlayer.ai · piloting with 2nd Nature Park waivers</div>
+        <p><strong>We integrate AI arbitration into clients' contracts as part of the build.</strong> DecisionLayer is an online AI dispute-resolution platform built by Liberty McAteer — disputes resolved in ~45-90 days for ~$500, versus the $100k+/18-month standard of traditional litigation. We're an early-adopter integration partner: every Production Sprint can ship with the DecisionLayer arbitration clause already in your contract templates. <strong>You don't just leave with software — you leave with a contract stack that handles disputes the new way.</strong></p>
+        <ul class="case-features">
+          <li><strong>Why it matters:</strong> Most software gets shipped with a generic "we'll see you in court" clause from a 2002 template. DecisionLayer turns that clause into a working AI arbitration system on day one.</li>
+          <li><strong>Pre-shipped with skateOS waivers:</strong> the same waiver flow we built for 2nd Nature Park is being upgraded to ship with the AI arbitration clause baked in.</li>
+          <li><strong>Battle-tested already:</strong> Liberty ran a simulated injury claim (plaintiff alleging $35k in damages from a ramp defect) against our waiver + his clause. System ruled for the operator. We saw the receipts.</li>
+          <li><strong>Standard inclusion on Production Sprint:</strong> if your build needs a customer-facing contract or waiver, we drop the clause in. No extra charge.</li>
+          <li><strong>Optional opt-in for Spike + Fix-it Sprint</strong> — we'll wire it up if you want it.</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">AI dispute resolution</span>
+          <span class="stack-pill">Online arbitration</span>
+          <span class="stack-pill">~$500 / 45-90 days</span>
+          <span class="stack-pill">Liberty McAteer / DecisionLayer</span>
+        </div>
+        <p style="font-size:.84rem;color:#737373;margin-top:14px;font-style:italic;">Why we're listing this as a partner integration, not something we built: DecisionLayer is Liberty's company — he built the AI arbitration system. Our role is to wire it correctly into every client's contract stack on day one. The point isn't that we built AI legal tech; the point is that <strong>we ship clients out the door with it already integrated</strong>, while most agencies wouldn't think to.</p>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">$500</div><div class="stat-label">Dispute cost (vs $100k+)</div></div>
+        <div><div class="stat-num">45-<br>90d</div><div class="stat-label">Resolution time</div></div>
+        <div><div class="stat-num">AI</div><div class="stat-label">Decision engine</div></div>
+        <div><div class="stat-num">Day 1</div><div class="stat-label">Of every Sprint</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── Hudson Valley AI ─────────────────────────────────────── -->
+  <div class="case-card">
+    <span class="case-tag live">Live · This site</span>
+    <div class="case-row">
+      <div>
+        <h2>Hudson Valley AI · this site</h2>
+        <div class="case-domain">consult.skateos.com · skateos.com/consulting</div>
+        <p><strong>Trust-grade marketing site for the firm.</strong> Six pages: services, products, work portfolio, security practices, engagement process, alternatives comparison. Plus the intake form with anti-spam. Built and deployed in two days. The site you're reading right now.</p>
+        <ul class="case-features">
+          <li>Anti-spam intake form (honeypot + Resend Edge Function delivery)</li>
+          <li>Plain-English security page (no compliance theater)</li>
+          <li>Engagement process + comparison vs. agencies / NYC firms / offshore / freelancers / no-code</li>
+          <li>Headless-Chrome-rendered OG images (no design tool needed)</li>
+          <li>Cloudflare Workers static-asset deploys with auto-SSL</li>
+          <li>Sitemap + robots + canonical URLs for SEO</li>
+        </ul>
+        <div class="stack-row">
+          <span class="stack-pill">Cloudflare Workers</span>
+          <span class="stack-pill">Resend</span>
+          <span class="stack-pill">Vanilla HTML/CSS</span>
+          <span class="stack-pill">2-day build</span>
+        </div>
+      </div>
+      <div class="case-stats">
+        <div><div class="stat-num">7</div><div class="stat-label">Pages</div></div>
+        <div><div class="stat-num">2</div><div class="stat-label">Day build</div></div>
+        <div><div class="stat-num">100/<br>100</div><div class="stat-label">Lighthouse target</div></div>
+        <div><div class="stat-num">$0</div><div class="stat-label">Hosting cost</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cta-bottom">
+    <h2>Have a similar problem?</h2>
+    <p>Migration off Square / Mindbody / Shopify, multi-tenant SaaS, AI integration, security-first build — let's scope it.</p>
+    <a href="intake.html" class="btn">Submit intake →</a>
+  </div>
+</div>
+
+<footer>© 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="security.html">Security</a> · <a href="process.html">Process</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a></footer>
+
+</body>
+</html>

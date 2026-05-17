@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay invoice</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛹%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+  :root {
+    --rose:        #e11d48;
+    --rose-dark:   #be123c;
+    --rose-light:  #ffe4e6;
+    --rose-pink:   #fb7185;
+    --purple:      #9333ea;
+    --ink:         #0a0a0a;
+    --ink-soft:    #555a63;
+    --line:        #e6e6e1;
+    --bg:          #faf9f6;
+    --green:       #16a34a;
+    --green-light: #dcfce7;
+    --red:         #dc2626;
+    --red-light:   #fee2e2;
+    --amber:       #f59e0b;
+    --gray:        #9ca3af;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    padding: 24px 16px;
+    min-height: 100vh;
+  }
+  .card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    max-width: 560px;
+    margin: 0 auto;
+    box-shadow: 0 6px 24px rgba(0,0,0,.05);
+    overflow: hidden;
+  }
+  .header {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1f1f23 50%, #0a0a0a 100%);
+    color: #fff;
+    padding: 28px 32px;
+    text-align: center;
+    position: relative;
+  }
+  .header .logo { font-size: 32px; line-height: 1; margin-bottom: 6px; }
+  .header .biz { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.01em; }
+  .header .biz .accent { color: var(--rose-pink); }
+  .header .sub { font-size: .76rem; color: rgba(255,255,255,.5); margin-top: 3px; letter-spacing: .06em; }
+  .header::after {
+    content:''; position:absolute; bottom:0; left:0; right:0; height:3px;
+    background: linear-gradient(90deg, #fb7185, #e11d48, #9333ea);
+  }
+  .body { padding: 28px 32px; }
+  @media (max-width: 500px) { .body { padding: 24px 22px; } }
+
+  .invoice-meta {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .invoice-meta .label {
+    font-size: .72rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    font-weight: 700;
+  }
+  .invoice-meta .num { font-weight: 700; font-size: .92rem; }
+  h1 {
+    font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15;
+    margin-bottom: 4px;
+  }
+  .who { color: var(--ink-soft); font-size: .92rem; margin-bottom: 24px; }
+
+  /* Line items */
+  .items {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    padding: 6px 0;
+    margin-bottom: 16px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 1fr 70px 90px;
+    gap: 8px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: .92rem;
+  }
+  .item:last-child { border-bottom: none; }
+  .item .qty  { text-align: right; color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+  .item .price { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
+
+  /* Totals */
+  .totals { font-size: .94rem; }
+  .totals .line {
+    display: flex; justify-content: space-between;
+    padding: 5px 0;
+    color: var(--ink-soft);
+  }
+  .totals .line .v { font-variant-numeric: tabular-nums; }
+  .totals .line.total {
+    color: var(--ink);
+    font-weight: 800;
+    font-size: 1.25rem;
+    border-top: 1px solid var(--line);
+    margin-top: 6px;
+    padding-top: 12px;
+  }
+  .totals .line.tip { color: var(--rose); }
+  .totals .line.tip .v { font-weight: 700; }
+
+  /* Tip section */
+  .tip-section {
+    background: var(--rose-light);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin: 22px 0;
+  }
+  .tip-section .title {
+    font-weight: 800;
+    font-size: 1rem;
+    letter-spacing: -0.01em;
+    color: var(--rose-dark);
+    margin-bottom: 4px;
+  }
+  .tip-section .help {
+    font-size: .82rem;
+    color: var(--rose-dark);
+    opacity: .8;
+    margin-bottom: 12px;
+  }
+  .tip-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .tip-chip {
+    background: #fff;
+    color: var(--ink);
+    border: 1.5px solid var(--rose-light);
+    border-radius: 9px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .12s;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: .9rem;
+  }
+  .tip-chip:hover { border-color: var(--rose-pink); }
+  .tip-chip.active {
+    background: var(--rose);
+    color: #fff;
+    border-color: var(--rose);
+  }
+  .tip-chip .pct  { display: block; font-size: 1.05rem; }
+  .tip-chip .amt  { display: block; font-size: .72rem; opacity: .8; margin-top: 2px; font-weight: 500; }
+  .tip-custom {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #fff;
+    padding: 10px 14px;
+    border: 1.5px solid var(--rose-light);
+    border-radius: 9px;
+  }
+  .tip-custom label { font-size: .82rem; color: var(--ink-soft); font-weight: 600; flex-shrink:0; }
+  .tip-custom .dollar { color: var(--ink-soft); font-weight: 600; }
+  .tip-custom input {
+    flex: 1; border: none; outline: none; padding: 4px 0; font-size: 1rem;
+    font-family: inherit; background: transparent;
+  }
+
+  /* Pay button */
+  .pay-btn {
+    width: 100%;
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: 11px;
+    padding: 17px 22px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background .12s, transform .08s;
+    margin-top: 6px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    letter-spacing: -0.01em;
+  }
+  .pay-btn:hover:not(:disabled) { background: var(--rose-dark); }
+  .pay-btn:active:not(:disabled) { transform: translateY(1px); }
+  .pay-btn:disabled { opacity: .6; cursor: wait; }
+
+  .secure {
+    text-align: center;
+    margin-top: 14px;
+    font-size: .78rem;
+    color: var(--ink-soft);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+  }
+  .secure i { color: var(--green); }
+
+  .err {
+    background: var(--red-light);
+    color: var(--red);
+    padding: 12px 14px;
+    border-radius: 8px;
+    font-size: .88rem;
+    margin-top: 12px;
+    display: none;
+  }
+  .err.show { display: block; }
+
+  /* Status states */
+  .status-card {
+    background: var(--green-light);
+    border-radius: 9px;
+    padding: 24px;
+    text-align: center;
+  }
+  .status-card.is-error   { background: var(--red-light); }
+  .status-card.paid  { background: var(--green-light); }
+  .status-card .icon { font-size: 48px; margin-bottom: 10px; }
+  .status-card.is-error   .icon { color: var(--red); }
+  .status-card.paid  .icon { color: var(--green); }
+  .status-card h2 { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+  .status-card p { color: var(--ink-soft); font-size: .92rem; }
+
+  /* Loading skeleton */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0eb 25%, #faf9f6 50%, #f0f0eb 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.4s linear infinite;
+    border-radius: 6px;
+    height: 18px;
+    margin-bottom: 12px;
+  }
+  .skeleton.wide  { width: 92%; }
+  .skeleton.short { width: 65%; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  .footer {
+    text-align: center;
+    color: var(--gray);
+    font-size: .72rem;
+    margin-top: 18px;
+    letter-spacing: .04em;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <div class="header">
+    <div class="logo">🛹</div>
+    <div class="biz" id="bizName">Skatepark</div>
+    <div class="sub">PAYMENT</div>
+  </div>
+
+  <div class="body" id="bodyPane">
+    <!-- Loading skeleton -->
+    <div id="loadingState">
+      <div class="skeleton wide"></div>
+      <div class="skeleton short"></div>
+      <div class="skeleton wide" style="height:60px;margin-top:18px;"></div>
+      <div class="skeleton wide" style="height:60px;"></div>
+    </div>
+
+    <!-- Pay form -->
+    <div id="payForm" style="display:none;">
+      <div class="invoice-meta">
+        <span class="label">Invoice</span>
+        <span class="num" id="invNumber">—</span>
+      </div>
+      <h1 id="invTitle">Amount due</h1>
+      <div class="who" id="invWho"></div>
+
+      <div class="items" id="invItems"></div>
+
+      <div class="totals">
+        <div class="line"><span>Subtotal</span><span class="v" id="lnSubtotal">—</span></div>
+        <div class="line" id="lnTaxRow"><span>Tax</span><span class="v" id="lnTax">—</span></div>
+        <div class="line tip" id="lnTipRow" style="display:none;"><span>Tip</span><span class="v" id="lnTip">$0.00</span></div>
+        <div class="line total"><span>Total</span><span class="v" id="lnTotal">—</span></div>
+      </div>
+
+      <div class="tip-section">
+        <div class="title">Add a tip?</div>
+        <div class="help">Optional. 100% goes to the front-desk + instructor team. Tap a percentage or enter custom.</div>
+        <div class="tip-grid" id="tipGrid"></div>
+        <div class="tip-custom">
+          <label for="f_tipCustom">Custom</label>
+          <span class="dollar">$</span>
+          <input type="number" id="f_tipCustom" min="0" step="0.01" placeholder="0.00" oninput="onCustomTip()">
+        </div>
+      </div>
+
+      <button class="pay-btn" id="payBtn" onclick="doPay()">
+        <i class="fas fa-credit-card"></i>
+        <span id="payBtnText">Pay $0.00</span>
+      </button>
+
+      <div class="err" id="err"></div>
+
+      <div class="secure">
+        <i class="fas fa-lock"></i> Secured payment by Helcim · 256-bit TLS
+      </div>
+    </div>
+
+    <!-- Status -->
+    <div id="statusState" style="display:none;">
+      <div class="status-card" id="statusCard">
+        <div class="icon" id="statusIcon"><i class="fas fa-circle-check"></i></div>
+        <h2 id="statusHeading">—</h2>
+        <p id="statusText">—</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">Powered by skateOS</div>
+
+<script>
+//─────────────────────────── Bootstrap
+var CFG = window.APP_CONFIG || {};
+var sbClient = null;
+var invoiceData = null;
+var biz = null;
+var tipPresets = [15, 20, 25];     // overridden from biz config if available
+var subtotal = 0, tax = 0, tipAmt = 0;
+var activeTipIdx = -1;             // -1 means none, 0/1/2 picks preset, 99 means custom
+
+function getSupabase() {
+  if (sbClient) return sbClient;
+  sbClient = window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey);
+  return sbClient;
+}
+
+function qs(name) {
+  return new URLSearchParams(window.location.search).get(name) || '';
+}
+
+async function init() {
+  var id = qs('invoice');
+  if (!id || !/^[0-9a-f-]{30,40}$/i.test(id)) {
+    showError('Invalid link', 'This payment link is malformed. Ask the park for a fresh one.');
+    return;
+  }
+  try {
+    var sb = getSupabase();
+    var r = await sb.rpc('invoice_for_payment', { p_id: id });
+    if (r.error) throw r.error;
+    var res = r.data || {};
+    if (!res.ok) {
+      showError(
+        res.error === 'not_found' ? 'Invoice not found' :
+        res.error === 'not_payable' ? 'Already settled' : 'Could not load',
+        res.error === 'not_payable'
+          ? 'This invoice is marked "' + (res.status || 'paid') + '". If you think this is a mistake, contact the park.'
+          : 'Check the link and try again, or ask the park for a new one.'
+      );
+      return;
+    }
+    invoiceData = res.invoice;
+    biz = res.biz || {};
+    var items = res.items || [];
+
+    document.getElementById('bizName').innerHTML = renderBizName(biz.name || 'Skate', '');
+
+    subtotal = parseFloat(invoiceData.subtotal) || 0;
+    tax      = parseFloat(invoiceData.tax) || 0;
+
+    renderInvoice(items);
+    renderTipChips();
+    updateTotals();
+
+    document.getElementById('loadingState').style.display = 'none';
+    document.getElementById('payForm').style.display = 'block';
+  } catch (e) {
+    console.error(e);
+    showError('Could not load', e.message || 'Network error.');
+  }
+}
+
+function renderBizName(name, accent) {
+  return '<span>' + esc(name) + '</span>' + (accent ? ' <span class="accent">' + esc(accent) + '</span>' : '');
+}
+
+function renderInvoice(items) {
+  document.getElementById('invNumber').textContent = invoiceData.invoice_number || '—';
+  document.getElementById('invWho').textContent = invoiceData.customer_name
+    ? 'For ' + invoiceData.customer_name
+    : '';
+
+  var html = '';
+  items.forEach(function(it){
+    var sub = parseFloat(it.subtotal) || (parseFloat(it.price)*parseFloat(it.quantity));
+    html += '<div class="item">'
+         +   '<div class="name">' + esc(it.name) + '</div>'
+         +   '<div class="qty">×' + (it.quantity || 1) + '</div>'
+         +   '<div class="price">$' + fmt(sub) + '</div>'
+         + '</div>';
+  });
+  document.getElementById('invItems').innerHTML = html || '<div class="item"><em style="color:var(--gray)">No line items</em></div>';
+}
+
+function renderTipChips() {
+  var grid = document.getElementById('tipGrid');
+  var html = '<button class="tip-chip" data-idx="-1" onclick="pickTip(-1)"><span class="pct">No tip</span></button>';
+  tipPresets.forEach(function(pct, i){
+    if (!pct || pct <= 0) return;
+    html += '<button class="tip-chip" data-idx="' + i + '" onclick="pickTip(' + i + ')">'
+         +   '<span class="pct">' + pct + '%</span>'
+         +   '<span class="amt">$' + fmt(subtotal * pct / 100) + '</span>'
+         + '</button>';
+  });
+  grid.innerHTML = html;
+}
+
+function pickTip(idx) {
+  activeTipIdx = idx;
+  document.getElementById('f_tipCustom').value = '';
+  if (idx === -1) {
+    tipAmt = 0;
+  } else if (idx === 99) {
+    var v = parseFloat(document.getElementById('f_tipCustom').value);
+    tipAmt = isNaN(v) ? 0 : Math.max(0, v);
+  } else {
+    var pct = tipPresets[idx];
+    tipAmt = (subtotal * pct) / 100;
+  }
+  updateActiveChip();
+  updateTotals();
+}
+
+function onCustomTip() {
+  activeTipIdx = 99;
+  var v = parseFloat(document.getElementById('f_tipCustom').value);
+  tipAmt = isNaN(v) ? 0 : Math.max(0, v);
+  updateActiveChip();
+  updateTotals();
+}
+
+function updateActiveChip() {
+  document.querySelectorAll('.tip-chip').forEach(function(b){
+    b.classList.toggle('active', +b.getAttribute('data-idx') === activeTipIdx);
+  });
+}
+
+function updateTotals() {
+  document.getElementById('lnSubtotal').textContent = '$' + fmt(subtotal);
+  document.getElementById('lnTax').textContent      = '$' + fmt(tax);
+  if (tax === 0) document.getElementById('lnTaxRow').style.display = 'none';
+  if (tipAmt > 0) {
+    document.getElementById('lnTipRow').style.display = 'flex';
+    document.getElementById('lnTip').textContent = '$' + fmt(tipAmt);
+  } else {
+    document.getElementById('lnTipRow').style.display = 'none';
+  }
+  var total = subtotal + tax + tipAmt;
+  document.getElementById('lnTotal').textContent = '$' + fmt(total);
+  document.getElementById('payBtnText').textContent = 'Pay $' + fmt(total);
+}
+
+async function doPay() {
+  var btn = document.getElementById('payBtn');
+  var err = document.getElementById('err');
+  err.classList.remove('show'); err.textContent = '';
+  btn.disabled = true;
+  var origBtn = btn.innerHTML;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Preparing checkout…</span>';
+
+  try {
+    // Build the line-item array for the Helcim hosted invoice.
+    // Adds gratuity as a separate line so the Helcim receipt + reconciliation
+    // reflect the customer's tip choice.
+    var items = [];
+    document.querySelectorAll('#invItems .item').forEach(function(row){
+      var name = row.querySelector('.name').textContent;
+      var qty  = parseInt(row.querySelector('.qty').textContent.replace(/[×x]/g,''), 10) || 1;
+      var sub  = parseFloat(row.querySelector('.price').textContent.replace(/[^0-9.]/g,'')) || 0;
+      items.push({ name: name, quantity: qty, price: sub / qty });
+    });
+    if (tipAmt > 0) {
+      items.push({ name: 'Gratuity', quantity: 1, price: tipAmt });
+    }
+
+    // Call helcim-invoice Edge Function. Endpoint expects:
+    //   { customerName, customerEmail, lineItems[], tax, skateos_invoice_id }
+    var url = CFG.supabaseUrl + '/functions/v1/helcim-invoice';
+    var resp = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + CFG.supabaseKey,
+        'apikey': CFG.supabaseKey
+      },
+      body: JSON.stringify({
+        customerName:        invoiceData.customer_name || 'Customer',
+        customerEmail:       invoiceData.customer_email || '',
+        lineItems:           items,
+        tax:                 tax,
+        skateos_invoice_id:  invoiceData.id,
+        tip:                 tipAmt
+      })
+    });
+    var data = await resp.json();
+    if (!resp.ok) {
+      throw new Error(data && data.error ? data.error : 'Payment service is unavailable. Try again or contact the park.');
+    }
+    var hostedUrl = data.hostedPaymentUrl || data.url || data.paymentUrl;
+    if (!hostedUrl) throw new Error('No payment URL returned. Contact the park.');
+
+    // Send the customer to the Helcim hosted checkout — they finish payment
+    // there and return to paid.html on success (configured in Helcim dashboard).
+    window.location.href = hostedUrl;
+  } catch (e) {
+    console.error(e);
+    err.classList.add('show');
+    err.textContent = e.message || 'Payment failed to initialize. Try again.';
+    btn.disabled = false;
+    btn.innerHTML = origBtn;
+    btn.querySelector('span').textContent = 'Pay $' + fmt(subtotal + tax + tipAmt);
+  }
+}
+
+function showError(heading, text) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('statusCard').className = 'status-card is-error';
+  document.getElementById('statusIcon').innerHTML = '<i class="fas fa-circle-exclamation"></i>';
+  document.getElementById('statusHeading').textContent = heading;
+  document.getElementById('statusText').textContent = text;
+  document.getElementById('statusState').style.display = 'block';
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function fmt(n) {
+  return (parseFloat(n) || 0).toFixed(2);
+}
+
+init();
+</script>
+
+</body>
+</html>

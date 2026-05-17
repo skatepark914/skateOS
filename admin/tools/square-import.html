@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Square Import</title>
+<script src="../config.js"></script>
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+  const CFG = window.APP_CONFIG || {};
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey, {
+    auth: { persistSession: true, autoRefreshToken: true }
+  });
+  window.dispatchEvent(new CustomEvent('sb-ready'));
+</script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;background:#f3f4f6;color:#1a1a1a;padding:24px;max-width:900px;margin:0 auto}
+  h1{font-size:1.5rem;margin-bottom:8px}
+  .sub{color:#666;margin-bottom:24px;font-size:.9rem}
+  .card{background:#fff;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.1);padding:20px;margin-bottom:16px}
+  .card h2{font-size:1rem;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .card .hint{color:#666;font-size:.85rem;margin-bottom:12px}
+  input[type=file]{display:block;width:100%;padding:12px;border:2px dashed #d1d5db;border-radius:8px;background:#f9fafb;cursor:pointer;font-size:.9rem}
+  input[type=file]:hover{border-color:#e11d48;background:#fff1f2}
+  button{padding:10px 18px;border:none;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;font-size:.9rem;background:#e11d48;color:#fff}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  button:hover:not(:disabled){background:#be123c}
+  .btn-secondary{background:#fff;color:#374151;border:1px solid #d1d5db}
+  .btn-secondary:hover:not(:disabled){background:#f3f4f6}
+  .status{margin-top:12px;padding:12px;border-radius:8px;font-size:.85rem;display:none}
+  .status.show{display:block}
+  .status.info{background:#eff6ff;color:#1e40af}
+  .status.success{background:#dcfce7;color:#166534}
+  .status.error{background:#fef2f2;color:#991b1b}
+  .row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin-top:12px}
+  .count{font-weight:700;color:#e11d48;font-size:1.2rem}
+  .login{text-align:center;padding:40px 20px}
+  .login input{display:block;width:100%;padding:12px;margin:8px 0;border:1px solid #d1d5db;border-radius:8px}
+  pre{background:#1a1a1a;color:#dcfce7;padding:12px;border-radius:6px;font-size:.75rem;max-height:200px;overflow:auto;margin-top:8px;font-family:'SF Mono',Menlo,monospace}
+</style>
+</head>
+<body>
+
+<h1>🛹 Square → 2ntr Import</h1>
+<p class="sub">Drop CSVs exported from Square Dashboard. This tool maps Square fields → our schema and upserts into Supabase. Safe to re-run — rows are matched on Square's ID and updated in place.</p>
+
+<div id="loginCard" class="card login" style="display:none">
+  <h2 style="justify-content:center">Sign in to import</h2>
+  <input type="email" id="loginEmail" placeholder="info@2ntr.com" autocomplete="username">
+  <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+  <button id="loginBtn">Sign In</button>
+  <div class="status" id="loginErr"></div>
+</div>
+
+<div id="app" style="display:none">
+
+  <div class="card">
+    <h2>📦 Items / Products</h2>
+    <div class="hint">Square path: <strong>Items &amp; Orders → Items → Actions → Export library</strong>. Expected columns: <code>Token, Item Name, Description, Price, SKU, Category, Enabled</code> and variants.</div>
+    <input type="file" id="itemsFile" accept=".csv">
+    <div class="row"><span></span><button id="itemsBtn" disabled>Import items</button></div>
+    <div class="status" id="itemsStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>👥 Customers</h2>
+    <div class="hint">Square path: <strong>Customers → Directory → Export → All customers → CSV</strong>. Expected columns: <code>First Name, Last Name, Email, Phone, Company, Notes</code>, address fields, birthday.</div>
+    <input type="file" id="customersFile" accept=".csv">
+    <div class="row"><span></span><button id="customersBtn" disabled>Import customers</button></div>
+    <div class="status" id="customersStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>💰 Transactions (12 months)</h2>
+    <div class="hint">Square path: <strong>Reporting → Transactions → Last 12 months → Export → CSV</strong>. Historical sales only — no card data touches us.</div>
+    <input type="file" id="salesFile" accept=".csv">
+    <div class="row"><span></span><button id="salesBtn" disabled>Import transactions</button></div>
+    <div class="status" id="salesStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>🧑‍💼 Team members</h2>
+    <div class="hint">Square path: <strong>Staff → Team → Export → CSV</strong>. This ONLY seeds the staff roster for reference — it does NOT create Supabase Auth users (that happens per-person with a real email invitation later).</div>
+    <input type="file" id="teamFile" accept=".csv">
+    <div class="row"><span></span><button id="teamBtn" disabled>Import team (reference only)</button></div>
+    <div class="status" id="teamStatus"></div>
+  </div>
+
+  <div class="card">
+    <h2>📊 Stats</h2>
+    <div id="stats" style="font-size:.9rem;color:#666">Loading…</div>
+    <div class="row" style="margin-top:16px"><span></span>
+      <button class="btn-secondary" id="refreshStatsBtn">Refresh</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var client, authToken;
+
+window.addEventListener('sb-ready', init);
+function init(){
+  client = window.supabaseClient;
+  client.auth.getSession().then(function(res){
+    var session = res && res.data && res.data.session;
+    if(session){ authToken = session.access_token; enterApp(); }
+    else showLogin();
+  });
+}
+
+function showLogin(){
+  document.getElementById('loginCard').style.display='block';
+  document.getElementById('app').style.display='none';
+  document.getElementById('loginBtn').onclick = doLogin;
+}
+function doLogin(){
+  var email = document.getElementById('loginEmail').value.trim();
+  var pass = document.getElementById('loginPass').value;
+  var err = document.getElementById('loginErr');
+  err.className = 'status'; err.textContent = '';
+  client.auth.signInWithPassword({email:email,password:pass}).then(function(res){
+    if(res.error) throw res.error;
+    authToken = res.data.session.access_token;
+    enterApp();
+  }).catch(function(e){
+    err.className='status show error'; err.textContent = e.message || 'Sign-in failed';
+  });
+}
+
+function enterApp(){
+  document.getElementById('loginCard').style.display='none';
+  document.getElementById('app').style.display='block';
+  bindImporter('items',    parseItems,    'products');
+  bindImporter('customers',parseCustomers,'customers');
+  bindImporter('sales',    parseSales,    'sales');
+  bindImporter('team',     parseTeam,     'staff (reference rows, no auth users)');
+  refreshStats();
+  document.getElementById('refreshStatsBtn').onclick = refreshStats;
+}
+
+function bindImporter(kind, parser, label){
+  var fileEl = document.getElementById(kind+'File');
+  var btn = document.getElementById(kind+'Btn');
+  var status = document.getElementById(kind+'Status');
+  var parsed = null;
+  fileEl.addEventListener('change', function(){
+    btn.disabled = true; status.className='status show info'; status.textContent='Parsing…';
+    var f = fileEl.files[0]; if(!f) return;
+    f.text().then(function(text){
+      try{
+        parsed = parser(text);
+        status.className='status show info';
+        status.innerHTML = 'Parsed <span class="count">'+parsed.length+'</span> rows. Click "Import" to upsert into '+label+'.';
+        btn.disabled = false;
+      } catch(e){
+        status.className='status show error'; status.textContent = 'Parse error: '+e.message;
+      }
+    });
+  });
+  btn.addEventListener('click', function(){
+    if(!parsed) return;
+    btn.disabled = true; status.className='status show info'; status.textContent='Importing '+parsed.length+' rows…';
+    runImport(kind, parsed).then(function(result){
+      status.className='status show success';
+      status.innerHTML = '✅ Imported <span class="count">'+result.inserted+'</span> new, updated '+result.updated+'. '+(result.errors?('<br>⚠️ '+result.errors+' errors (check console)'):'');
+      refreshStats();
+    }).catch(function(e){
+      status.className='status show error'; status.textContent = 'Import failed: '+e.message;
+    }).finally(function(){ btn.disabled = false; });
+  });
+}
+
+// ----- CSV parsing (handles quoted fields + embedded commas) -----
+function parseCSV(text){
+  var rows=[], row=[], field='', inQuotes=false;
+  for(var i=0;i<text.length;i++){
+    var c=text[i], n=text[i+1];
+    if(inQuotes){
+      if(c==='"'&&n==='"'){field+='"';i++;}
+      else if(c==='"'){inQuotes=false;}
+      else field+=c;
+    } else {
+      if(c==='"'){inQuotes=true;}
+      else if(c===','){row.push(field);field='';}
+      else if(c==='\n'){row.push(field);rows.push(row);row=[];field='';}
+      else if(c==='\r'){}
+      else field+=c;
+    }
+  }
+  if(field.length||row.length){row.push(field);rows.push(row);}
+  return rows;
+}
+function csvToObjects(text){
+  var rows=parseCSV(text).filter(function(r){return r.some(function(c){return c&&c.trim();});});
+  if(rows.length<2) return [];
+  var headers=rows[0].map(function(h){return h.trim();});
+  return rows.slice(1).map(function(r){
+    var o={}; headers.forEach(function(h,i){o[h]=r[i]||'';}); return o;
+  });
+}
+
+// ----- Square-specific parsers -----
+// Square "Item Library" export: one row per variation; we collapse to one product per SKU
+function parseItems(text){
+  var rows = csvToObjects(text);
+  var byKey = {};
+  rows.forEach(function(r){
+    var sku = (r['SKU']||r['Variation Name']||r['Item Name']||'').trim();
+    var name = (r['Item Name']||'').trim();
+    if(!name) return;
+    var price = parseFloat((r['Price']||'0').replace(/[$,]/g,''))||0;
+    var key = sku || name;
+    if(!byKey[key]){
+      byKey[key] = {
+        sku: sku || null,
+        name: name,
+        description: (r['Description']||'').trim() || null,
+        price: price,
+        cost: 0,
+        stock: parseInt(r['Current Quantity']||'0',10)||0,
+        status: (r['Enabled']||'Y').toUpperCase().indexOf('N')===0 ? 'inactive':'active',
+        square_catalog_id: (r['Token']||r['Item ID']||r['Variation ID']||'').trim() || null
+      };
+    }
+  });
+  return Object.values(byKey);
+}
+
+function parseCustomers(text){
+  var rows = csvToObjects(text);
+  return rows.map(function(r){
+    var first=(r['First Name']||'').trim();
+    var last=(r['Last Name']||r['Surname']||'').trim();
+    var name = (first+' '+last).trim() || (r['Company']||r['Email']||'Unknown').trim();
+    return {
+      name: name,
+      email: (r['Email']||r['Email Address']||'').trim()||null,
+      phone: (r['Phone']||r['Phone Number']||'').trim()||null,
+      dob: (r['Birthday']||r['DOB']||'').trim()||null,
+      address: (r['Address']||r['Street']||'').trim()||null,
+      city: (r['City']||'').trim()||null,
+      state: (r['State']||'NY').trim(),
+      zip: (r['ZIP']||r['Postal Code']||'').trim()||null,
+      notes: (r['Notes']||r['Note']||'').trim()||null,
+      square_customer_id: (r['Reference ID']||r['Customer ID']||'').trim()||null
+    };
+  }).filter(function(c){return c.name&&c.name!=='Unknown';});
+}
+
+function parseSales(text){
+  var rows = csvToObjects(text);
+  return rows.map(function(r){
+    var total = parseFloat((r['Total Collected']||r['Total']||r['Net Total']||'0').replace(/[$,]/g,''))||0;
+    return {
+      receipt_number: null,  // let DB auto-generate
+      subtotal: parseFloat((r['Gross Sales']||r['Subtotal']||'0').replace(/[$,]/g,''))||null,
+      tax: parseFloat((r['Tax']||'0').replace(/[$,]/g,''))||0,
+      discount: parseFloat((r['Discounts']||'0').replace(/[$,]/g,''))||0,
+      total: total,
+      payment_provider: 'square',
+      payment_id: (r['Transaction ID']||r['Payment ID']||'').trim()||null,
+      payment_method: (r['Source']||r['Payment Method']||'card').trim(),
+      status: total<0 ? 'refunded' : 'completed',
+      created_at: (r['Date']||r['Transaction Date']||new Date().toISOString()).trim()
+    };
+  }).filter(function(s){return s.total!==0;});
+}
+
+function parseTeam(text){
+  var rows = csvToObjects(text);
+  return rows.map(function(r){
+    var first=(r['First Name']||'').trim();
+    var last=(r['Last Name']||'').trim();
+    return {
+      display_name: ((first+' '+last).trim() || r['Name'] || r['Email']||'Unknown'),
+      email: (r['Email']||'').trim(),
+      role: 'staff',
+      active: true
+    };
+  }).filter(function(t){return t.email;});
+}
+
+// ----- Import execution -----
+function runImport(kind, rows){
+  var table = kind === 'items' ? 'products'
+           : kind === 'customers' ? 'customers'
+           : kind === 'sales' ? 'sales'
+           : kind === 'team' ? 'staff_import_queue'  // NOT real staff — see below
+           : null;
+  if(!table) return Promise.reject(new Error('unknown kind'));
+  // Team imports are special: we CAN'T insert staff rows without a paired auth.users entry.
+  // Instead, we write to a queue table the owner can use to invite users later.
+  if(kind === 'team') return queueStaffImport(rows);
+  var conflictCol = kind === 'items' ? 'square_catalog_id'
+                 : kind === 'customers' ? 'square_customer_id'
+                 : null; // sales: no dedupe key, accept duplicates
+  return supaUpsert(table, rows, conflictCol).then(function(r){
+    return {inserted: r.inserted||0, updated: r.updated||0, errors: r.errors||0};
+  });
+}
+
+function queueStaffImport(rows){
+  // Store in localStorage as a to-invite list the owner can review in the admin
+  var existing = JSON.parse(localStorage.getItem('staff_invite_queue')||'[]');
+  var merged = existing.concat(rows).filter(function(r,i,a){
+    return a.findIndex(function(x){return x.email===r.email;})===i;
+  });
+  localStorage.setItem('staff_invite_queue', JSON.stringify(merged));
+  return Promise.resolve({inserted: rows.length, updated: 0, errors: 0, queued: true});
+}
+
+function supaUpsert(table, rows, conflictCol){
+  // Use fetch directly so we can control the 'Prefer: resolution=merge-duplicates' header for upsert
+  var url = CFG.supabaseUrl + '/rest/v1/' + table + (conflictCol ? '?on_conflict='+conflictCol : '');
+  var chunks = [], size = 500;
+  for(var i=0;i<rows.length;i+=size) chunks.push(rows.slice(i,i+size));
+  var inserted = 0, errors = 0;
+  return chunks.reduce(function(p, chunk){
+    return p.then(function(){
+      return fetch(url, {
+        method: 'POST',
+        headers: {
+          'apikey': CFG.supabaseKey,
+          'Authorization': 'Bearer '+authToken,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal' + (conflictCol ? ',resolution=merge-duplicates' : '')
+        },
+        body: JSON.stringify(chunk)
+      }).then(function(r){
+        if(!r.ok){
+          return r.text().then(function(t){
+            console.error(table+' import error:', t);
+            errors += chunk.length;
+          });
+        }
+        inserted += chunk.length;
+      });
+    });
+  }, Promise.resolve()).then(function(){
+    return {inserted: inserted, updated: 0, errors: errors};
+  });
+}
+
+function refreshStats(){
+  var stats = document.getElementById('stats');
+  stats.textContent = 'Loading…';
+  Promise.all([
+    count('products'), count('customers'), count('sales'), count('subscriptions'), count('checkins'), count('lessons')
+  ]).then(function(counts){
+    stats.innerHTML = '<div>Products: <strong>'+counts[0]+'</strong> · Customers: <strong>'+counts[1]+'</strong> · Sales: <strong>'+counts[2]+'</strong></div>'
+      + '<div>Memberships: <strong>'+counts[3]+'</strong> · Check-ins: <strong>'+counts[4]+'</strong> · Lessons: <strong>'+counts[5]+'</strong></div>';
+  });
+}
+function count(table){
+  return fetch(CFG.supabaseUrl+'/rest/v1/'+table+'?select=id', {
+    headers: {
+      'apikey': CFG.supabaseKey,
+      'Authorization': 'Bearer '+authToken,
+      'Prefer': 'count=exact',
+      'Range': '0-0'
+    }
+  }).then(function(r){
+    var range = r.headers.get('content-range') || '';
+    var m = range.match(/\/(\d+|\*)/);
+    return m ? (m[1]==='*' ? 0 : parseInt(m[1],10)) : 0;
+  }).catch(function(){ return '?'; });
+}
+</script>
+
+</body>
+</html>

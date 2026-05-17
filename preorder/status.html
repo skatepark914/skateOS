@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre-order status | 2nd Nature</title>
+<meta name="description" content="Check the status of your 2nd Nature pre-order — deposit, supplier order, and balance updates in real time.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="https://2ntr.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Knewave&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    color:#14161a;background:#faf8f3;line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none;}
+  .hand{font-family:'Knewave','Permanent Marker',cursive;font-weight:400;}
+  .header{
+    background:#faf8f3;padding:24px 28px 6px;text-align:center;
+  }
+  .logo{display:inline-block;font-size:clamp(2.2rem,5vw,3.4rem);color:#14161a;line-height:.9;}
+  .logo .nd{font-size:.42em;vertical-align:.55em;margin:0 .04em 0 .08em;}
+  .nav-back{
+    margin-top:16px;font-size:.86rem;font-weight:600;
+    display:inline-block;border-bottom:2px solid transparent;padding:4px 0;
+  }
+  .nav-back:hover{border-color:#14161a;}
+  .wrap{max-width:720px;margin:0 auto;padding:24px 28px 60px;}
+  .card{
+    background:#fff;border:1px solid #e6e3da;border-radius:10px;
+    padding:24px;margin-bottom:18px;
+  }
+  h1.hand{font-size:clamp(1.8rem,4vw,2.4rem);color:#14161a;line-height:1;margin-bottom:14px;}
+  .pill{
+    display:inline-flex;align-items:center;gap:6px;
+    padding:6px 14px;border-radius:999px;
+    font-size:.82rem;font-weight:700;letter-spacing:.02em;
+  }
+  .pill.green{background:#dcfce7;color:#166534;}
+  .pill.red{background:#fee2e2;color:#991b1b;}
+  .pill.amber{background:#fef3c7;color:#92400e;}
+  .pill.gray{background:#f3f4f6;color:#4b5563;}
+  .timeline{list-style:none;padding:0;margin:0;}
+  .timeline li{
+    display:flex;gap:14px;padding:14px 0;
+    border-bottom:1px solid #f3f4f6;
+  }
+  .timeline li:last-child{border-bottom:none;}
+  .timeline .icon{
+    width:34px;height:34px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1rem;color:white;flex-shrink:0;
+  }
+  .timeline .icon.done{background:#15803d;}
+  .timeline .icon.now{background:#e11d48;animation:pulse 2s infinite;}
+  .timeline .icon.todo{background:#d1d5db;}
+  @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.55;}}
+  .timeline .body{flex:1;}
+  .timeline .body h4{
+    font-size:1rem;font-weight:700;color:#14161a;line-height:1.3;
+  }
+  .timeline .body p{font-size:.86rem;color:#4b5563;margin-top:2px;}
+  .timeline .body .ts{
+    font-size:.74rem;color:#9ca3af;margin-top:4px;
+    text-transform:uppercase;letter-spacing:.04em;font-weight:700;
+  }
+  table{width:100%;border-collapse:collapse;font-size:.88rem;}
+  th{
+    text-align:left;padding:8px 10px;
+    border-bottom:2px solid #e6e3da;
+    font-size:.74rem;color:#6b7280;text-transform:uppercase;letter-spacing:.04em;font-weight:700;
+  }
+  td{padding:10px;border-bottom:1px solid #f3f4f6;}
+  tr:last-child td{border-bottom:none;}
+  .totals{
+    background:#fff;border:2px solid #14161a;border-radius:10px;
+    padding:18px 22px;margin-top:18px;
+  }
+  .totals .row{display:flex;justify-content:space-between;align-items:baseline;font-size:.92rem;color:#4b5563;margin-bottom:8px;}
+  .totals .row.deposit{
+    border-top:2px dashed #e6e3da;padding-top:10px;margin-top:10px;
+    font-size:1.05rem;font-weight:800;
+  }
+  .totals .row.deposit.paid{color:#15803d;}
+  .totals .row.deposit.due{color:#e11d48;}
+  .totals .row.balance{font-size:.94rem;font-weight:700;color:#14161a;}
+  .totals .row.balance.collected{color:#15803d;}
+  .empty{
+    text-align:center;padding:50px 20px;
+    color:#6b7280;font-size:.95rem;
+  }
+  .empty .big{font-size:3rem;margin-bottom:14px;}
+  .help{
+    background:#f0f9ff;border-left:4px solid #0891b2;
+    padding:14px 18px;border-radius:8px;font-size:.86rem;
+    color:#0e7490;margin-top:18px;
+  }
+  .help a{color:#0891b2;text-decoration:underline;font-weight:600;}
+  footer{text-align:center;padding:30px 28px;font-size:.74rem;color:#9ca3af;}
+</style>
+</head>
+<body>
+  <header class="header">
+    <a href="https://www.2ntr.com" class="logo hand" aria-label="2nd Nature home">2<span class="nd">ND</span>nature</a>
+    <div><a href="index.html" class="nav-back">← Back to pre-order shop</a></div>
+  </header>
+
+  <main class="wrap">
+    <div id="content">
+      <div class="card empty">
+        <div class="big">⏳</div>
+        <div>Loading your pre-order…</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 2nd Nature Skate · 1 Highland Industrial Park, Peekskill, NY 10566 · <a href="https://www.2ntr.com">2ntr.com</a>
+  </footer>
+
+<script>
+  // ── Public status lookup — calls the SECURITY DEFINER RPC
+  // (preorder_status_lookup) added in migration 048. Anon-permissioned but
+  // returns ONLY the public-safe fields (no admin notes, no internal
+  // workflow status). UUID in the URL is the access token — unguessable.
+  var SUPABASE_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+
+  function escHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function money(n){
+    return '$' + (Number(n)||0).toFixed(2);
+  }
+  function fmtDate(iso){
+    if(!iso) return '';
+    try {
+      var d = new Date(iso);
+      return d.toLocaleDateString(undefined,{month:'long',day:'numeric',year:'numeric'}) + ' · ' + d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+    } catch(e){ return iso; }
+  }
+
+  // Validate the UUID format up front so we don't waste a roundtrip on
+  // garbage input.
+  function isUuid(s){
+    return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s||'');
+  }
+
+  function renderEmpty(message){
+    document.getElementById('content').innerHTML =
+      '<div class="card empty">'
+      + '<div class="big">📭</div>'
+      + '<div style="font-size:1.05rem;font-weight:700;color:#14161a;margin-bottom:6px;">'+escHtml(message||"We couldn\'t find that order")+'</div>'
+      + '<div style="margin-top:8px;">Double-check the link from your confirmation email, or <a href="mailto:info@2ntr.com" style="color:#e11d48;text-decoration:underline;">email info@2ntr.com</a> with your name and we\'ll look it up.</div>'
+      + '</div>';
+  }
+
+  function renderStatus(d){
+    var subDate = fmtDate(d.submitted_at);
+    var depositPaid = d.deposit_status === 'paid';
+    var balancePaid = d.balance_status === 'paid' || d.balance_status === 'collected';
+    var supplierOrdered = !!d.supplier_ordered_at;
+    var totals = d.totals || {};
+    var items = d.items || [];
+
+    var html = '';
+
+    // Header
+    var headerName = d.first_name ? "Hey, " + escHtml(d.first_name) + " 🛹" : "Your pre-order";
+    html += '<div class="card">';
+    html += '<h1 class="hand">'+headerName+'</h1>';
+    html += '<p style="color:#4b5563;font-size:.96rem;">Submitted <strong style="color:#14161a;">'+subDate+'</strong> · '+items.length+' item'+(items.length===1?'':'s')+' · '+money(totals.subtotal||0)+'</p>';
+    html += '</div>';
+
+    // Status timeline — 4 stages, each lit based on actual data
+    html += '<div class="card">';
+    html += '<h2 style="font-size:1.1rem;margin-bottom:14px;color:#14161a;">Status</h2>';
+    html += '<ul class="timeline">';
+
+    // 1. Order received
+    html += stage('done', '✓', 'Order received', 'We got your pre-order. Look out for a text from us shortly with your deposit link.', subDate);
+
+    // 2. Deposit
+    if(depositPaid){
+      html += stage('done', '✓', '50% deposit paid', 'Thanks! Your spot is locked in — we\'ll order your gear from the supplier this week.', fmtDate(d.deposit_paid_at));
+    } else {
+      html += stage('now', '💳', '50% deposit pending', 'We\'ll text you a secure card link to pay '+money(totals.deposit_50||0)+' to lock in your order. Replies welcome — info@2ntr.com or (914) 402-4624.', '');
+    }
+
+    // 3. Supplier order
+    if(supplierOrdered){
+      html += stage('done', '📦', 'Supplier order placed', 'We sent your gear to the supplier. Most orders arrive in 1-2 weeks. We\'ll text the moment it lands.', fmtDate(d.supplier_ordered_at));
+    } else if(depositPaid){
+      html += stage('now', '📦', 'Supplier order this week', 'Your deposit is in. We bundle pre-orders and ship them to suppliers Monday morning.', '');
+    } else {
+      html += stage('todo', '📦', 'Supplier order', 'Once your deposit lands we\'ll send the bulk order to the supplier.', '');
+    }
+
+    // 4. Balance + pickup/ship
+    if(balancePaid){
+      html += stage('done', '🛹', 'Balance collected · order complete', 'You\'re all set. Thanks for skating with us!', fmtDate(d.balance_paid_at));
+    } else if(supplierOrdered){
+      var balText = d.is_shipping
+        ? 'Once your gear arrives at the shop, we\'ll text you to collect the remaining '+money(totals.balance_50||0)+' + actual shipping cost. Then we ship it to you.'
+        : 'Once your gear arrives at the shop, we\'ll text you to collect the remaining '+money(totals.balance_50||0)+' on pickup.';
+      html += stage('now', '🛹', 'Balance + '+(d.is_shipping?'shipping':'pickup'), balText, '');
+    } else {
+      html += stage('todo', '🛹', 'Balance + '+(d.is_shipping?'shipping':'pickup'),
+        d.is_shipping
+          ? 'Once your gear arrives, you\'ll pay '+money(totals.balance_50||0)+' + shipping and we ship.'
+          : 'Once your gear arrives, you\'ll pay '+money(totals.balance_50||0)+' on pickup.',
+        '');
+    }
+
+    html += '</ul></div>';
+
+    // Items + totals
+    html += '<div class="card">';
+    html += '<h2 style="font-size:1.1rem;margin-bottom:14px;color:#14161a;">Order details</h2>';
+    html += '<table>';
+    html += '<thead><tr><th>Item</th><th style="text-align:center;">Qty</th><th style="text-align:right;">Each</th><th style="text-align:right;">Line</th></tr></thead>';
+    html += '<tbody>';
+    items.forEach(function(it){
+      var nameCell = '<strong>'+escHtml(it.brand||'')+'</strong> '+escHtml(it.name||'');
+      if(it.size) nameCell += '<br><span style="color:#9ca3af;font-size:.78rem;">size '+escHtml(it.size)+'</span>';
+      html += '<tr>';
+      html += '<td>'+nameCell+'</td>';
+      html += '<td style="text-align:center;">'+(it.qty||1)+'</td>';
+      html += '<td style="text-align:right;">'+money(it.unit_price||0)+'</td>';
+      html += '<td style="text-align:right;font-weight:700;">'+money(it.line_total||0)+'</td>';
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+
+    html += '<div class="totals">';
+    html += '<div class="row"><span>Subtotal</span><span>'+money(totals.subtotal||0)+'</span></div>';
+    html += '<div class="row deposit '+(depositPaid?'paid':'due')+'"><span>💳 50% deposit '+(depositPaid?'· PAID':'· DUE NOW')+'</span><span>'+money(totals.deposit_50||0)+'</span></div>';
+    html += '<div class="row balance '+(balancePaid?'collected':'')+'"><span>'+(d.is_shipping?'Balance + shipping':'Balance on pickup')+(balancePaid?' · COLLECTED':'')+'</span><span>'+money(totals.balance_50||0)+'</span></div>';
+    html += '</div>';
+    html += '</div>';
+
+    // Help block
+    html += '<div class="help">';
+    html += '<strong>Questions or changes?</strong> Reply to your confirmation email, message us at <a href="mailto:info@2ntr.com">info@2ntr.com</a>, or call <a href="tel:+19144024624">(914) 402-4624</a>. Cancellations before Sunday 6pm ET get a full deposit refund.';
+    html += '</div>';
+
+    document.getElementById('content').innerHTML = html;
+  }
+
+  function stage(state, icon, title, subtitle, ts){
+    var html = '<li>';
+    html += '<div class="icon '+state+'">'+icon+'</div>';
+    html += '<div class="body">';
+    html += '<h4>'+escHtml(title)+'</h4>';
+    if(subtitle) html += '<p>'+escHtml(subtitle)+'</p>';
+    if(ts) html += '<div class="ts">'+escHtml(ts)+'</div>';
+    html += '</div>';
+    html += '</li>';
+    return html;
+  }
+
+  // Boot
+  (async function(){
+    var url = new URL(location.href);
+    var id = url.searchParams.get('id');
+    if(!id || !isUuid(id)){
+      renderEmpty(id ? 'That link doesn\'t look like a valid order ID.' : 'No order ID in this link.');
+      return;
+    }
+    try {
+      var res = await fetch(SUPABASE_URL+'/rest/v1/rpc/preorder_status_lookup', {
+        method:'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer '+SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ p_id: id })
+      });
+      if(!res.ok){
+        // 404 from PostgREST means RPC doesn't exist (migration 048 not applied)
+        var msg = (await res.text().catch(function(){return '';})) || ('HTTP '+res.status);
+        if(/Could not find|does not exist/i.test(msg)){
+          renderEmpty("Status lookup isn't fully set up yet. Email info@2ntr.com and we'll send you an update.");
+          return;
+        }
+        throw new Error(msg);
+      }
+      var data = await res.json();
+      if(!data || data.found === false){
+        renderEmpty("We couldn't find that order. The link may be invalid or the order may have been cancelled.");
+        return;
+      }
+      renderStatus(data);
+    } catch(e){
+      console.error('Status lookup failed:', e);
+      renderEmpty('Something went wrong loading your order. Please try again or email info@2ntr.com.');
+    }
+  })();
+</script>
+</body>
+</html>

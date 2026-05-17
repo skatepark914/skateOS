@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Update for Jon — Doug × Jon — Hudson Valley AI</title>
+<meta name="description" content="Where this thing landed — side-project version, new pages, new sequencing. From Doug to Jon Marchand.">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.65;-webkit-font-smoothing:antialiased;}
+  a{color:#e11d48;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar strong{color:#fb7185;}
+  .topbar a{color:#fb7185;}
+
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;}
+  .nav-back{font-size:.86rem;color:#404040;font-weight:600;text-decoration:none;}
+
+  .wrap{max-width:780px;margin:0 auto;padding:50px 28px 60px;}
+  .from-line{font-size:.82rem;color:#737373;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+  h1.title{font-size:clamp(1.8rem,3.6vw,2.4rem);font-weight:900;letter-spacing:-0.022em;line-height:1.1;margin-bottom:8px;}
+  .meta{font-size:.86rem;color:#737373;margin-bottom:36px;display:flex;flex-wrap:wrap;gap:16px;}
+  .meta strong{color:#0a0a0a;}
+
+  .toc{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:18px 24px;margin-bottom:24px;}
+  .toc h2{font-size:.74rem;text-transform:uppercase;letter-spacing:.12em;color:#737373;font-weight:700;margin-bottom:10px;}
+  .toc ol{list-style:decimal;padding-left:20px;}
+  .toc li{margin-bottom:5px;font-size:.92rem;}
+  .toc a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  .toc a:hover{color:#e11d48;text-decoration:underline;}
+
+  section.doc{background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:30px;margin-bottom:18px;scroll-margin-top:80px;}
+  section.doc h2{font-size:1.4rem;font-weight:800;letter-spacing:-0.018em;margin-bottom:14px;}
+  section.doc h3{font-size:1.05rem;font-weight:700;margin:20px 0 8px;color:#0a0a0a;}
+  section.doc p{color:#404040;font-size:.95rem;margin-bottom:12px;}
+  section.doc ul{margin:8px 0 14px 22px;color:#404040;font-size:.94rem;}
+  section.doc li{margin-bottom:5px;}
+  section.doc strong{color:#0a0a0a;}
+  section.doc code{font-family:ui-monospace,monospace;font-size:.84rem;background:#f3f4f6;padding:1px 5px;border-radius:3px;color:#0a0a0a;}
+  section.doc table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem;}
+  section.doc th{text-align:left;background:#0a0a0a;color:#fafaf9;padding:10px 12px;font-weight:700;font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;}
+  section.doc td{padding:10px 12px;border-bottom:1px solid #f3f4f6;color:#404040;}
+
+  .pull{background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;margin:14px 0;font-size:.92rem;}
+  .pull strong{color:#e11d48;}
+
+  .reply-card{
+    background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;
+    border-radius:14px;padding:32px;margin-top:30px;text-align:center;
+  }
+  .reply-card h2{color:#fafaf9;font-size:1.4rem;font-weight:800;margin-bottom:10px;}
+  .reply-card p{color:#a3a3a3;margin-bottom:18px;}
+  .reply-card .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:12px 24px;background:#fb7185;color:#0a0a0a;border-radius:8px;
+    font-weight:700;text-decoration:none;
+  }
+  .reply-card .btn:hover{background:#fda4af;}
+  .reply-card .secondary{margin-top:14px;font-size:.86rem;color:#737373;}
+  .reply-card .secondary a{color:#fb7185;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">🔒 <strong>PRIVATE LINK</strong> · For Jon Marchand · v2 (scaled-down, side-project) · Not search-indexed · <a href="index.html">Public site →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <a class="nav-back" href="index.html">← Public site</a>
+</nav>
+
+<div class="wrap">
+  <div class="from-line">From: Doug Brown · For: Jon Marchand</div>
+  <h1 class="title">The pitch finally landed.</h1>
+  <div class="meta">
+    <span><strong>Date:</strong> 2026-05-10 (v3 · ownership-first)</span>
+    <span><strong>Reply by:</strong> end of week works · grab a coffee whenever</span>
+  </div>
+
+  <p style="font-size:1.05rem;color:#404040;margin-bottom:14px;">Jon — third version of this letter (sorry — but the strategy needed a real pivot before going public). <strong>Short version: I figured out the pitch.</strong> The first version was "let's form an LLC + buy E&amp;O insurance + do SOC 2 + run it like a real firm." Wrong shape. The second version was "two friends doing this on the side for warm leads." Honest but not sellable — nobody pays $20k to a side project.</p>
+  <p style="font-size:1.05rem;color:#404040;margin-bottom:24px;">The pitch that actually works: <strong>"We build software you own."</strong> Source code transferred to you. Deployed on YOUR infrastructure. Pay once. No SaaS subscription you can't escape. We're a small, principal-led consultancy in the Hudson Valley positioned <em>against</em> legacy SaaS (Mindbody, Square, Jobber, ServiceTitan) — operators are tired of being held hostage by vendors, and the AI-velocity shift means a 2-person team can credibly deliver custom software that ownership-conscious SMBs would happily pay $15-25k for.</p>
+  <p style="font-size:1rem;color:#404040;margin-bottom:36px;">Below: the positioning, where the site lives, what's been built, the cold-call kit + Rock Club as top target, the DecisionLayer integration (which fits the ownership pitch perfectly), and what I need from you. Coffee at Cold Spring or video whenever.</p>
+
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#shift">What changed since my last note</a></li>
+      <li><a href="#urls">The four URLs to bookmark</a></li>
+      <li><a href="#scenarios">Three scenarios — pick one</a></li>
+      <li><a href="#legal">Legal floor — consulting AND SaaS</a></li>
+      <li><a href="#built">What's actually built now</a></li>
+      <li><a href="#sales">The cold-call kit · Rock Club is top</a></li>
+      <li><a href="#decisionlayer">DecisionLayer integration</a></li>
+      <li><a href="#skateos">skateOS — full developer briefing</a></li>
+      <li><a href="#sprint">What you'd do on a real Sprint</a></li>
+      <li><a href="#asks">What I need from you to start</a></li>
+    </ol>
+  </div>
+
+  <section class="doc" id="shift">
+    <h2>1. How the positioning evolved (three versions, current one is right)</h2>
+    <p><strong>v1:</strong> "Hudson Valley AI LLC — full-service IT department, SOC 2 attested, E&amp;O insured." Wrong shape — we don't have any of that, and pretending we do builds a sales pitch we can't deliver on.</p>
+    <p><strong>v2:</strong> "Two friends doing a few projects on the side for warm leads." Honest but unsellable — nobody pays $20k to a "side project." It frames us as smaller than we should be claiming.</p>
+    <p><strong>v3 (current):</strong> <strong>"We build software you own."</strong> Hudson Valley AI is a principal-led software + security consultancy. We sell custom-built production software that we deploy on the CLIENT'S infrastructure with source code transferred to them. We're positioned against legacy SaaS lock-in, not against agencies. The full pitch is at <a href="/ownership/">consult.skateos.com/ownership/</a> — 6-min read, recommend reading it before anything else here.</p>
+    <p>Why this works where the others didn't:</p>
+    <ul>
+      <li><strong>Ownership is a real market trend.</strong> SMBs are exhausted by Mindbody/ServiceTitan/Square price hikes and roadmap lock-in. They want their data on their servers. That's a meaningful wedge.</li>
+      <li><strong>AI-velocity dev makes the build economics work.</strong> A custom multi-tenant SaaS that would've cost $200k and 12 months 5 years ago is now a 4-week Production Sprint at $20k. The price/value ratio is structurally different.</li>
+      <li><strong>It positions us against the right competitors.</strong> Not against agencies (where we lose on scale). Against legacy SaaS (where we win on ownership).</li>
+      <li><strong>It justifies the price tag.</strong> Nobody pays $15-25k for "software like Mindbody but built by 2 guys." People pay $15-25k for "software like Mindbody but I own it forever and Mindbody can't hold my data hostage."</li>
+    </ul>
+    <div class="pull"><strong>Why this matters for you:</strong> the lift on your side is small. When a Production Sprint customer signs, you do the security look-over in the last week of the project. ~3-5 hours per project, paid out of the project fee. If we hit 3 Sprints in year 1, that's ~$3-5k to you for ~15 hours. No LLC paperwork, no insurance broker calls, no SOC 2 prep work needed — that stuff matters at scale, and we're not pretending we're there yet.</p>
+  </section>
+
+  <section class="doc" id="urls">
+    <h2>2. The four URLs to bookmark</h2>
+    <p>The site grew into a few distinct surfaces. Here's what each is for:</p>
+    <table>
+      <thead><tr><th>URL</th><th>What it is</th><th>Audience</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><a href="https://consult.skateos.com/" target="_blank"><code>consult.skateos.com/</code></a></td>
+          <td>Main public consulting site — ownership-first positioning, 4 packages, security/process/compare pages, work portfolio. Hero reads "Software you can ship. Source code you own."</td>
+          <td>Anyone we send the link to</td>
+        </tr>
+        <tr style="background:#fff5f7;">
+          <td><a href="https://consult.skateos.com/ownership/" target="_blank"><code>consult.skateos.com/ownership/</code></a> ⭐</td>
+          <td><strong>The full ownership pitch.</strong> 6-min essay arguing why we hand customers the keys instead of renting software back to them — SaaS lock-in math, 5-year TCO, "are you a candidate" filter, the honest version of "why now." This is the URL I'll text/email prospects when they ask why we're different.</td>
+          <td>Serious prospects · LinkedIn / email signature · proposal documents</td>
+        </tr>
+        <tr>
+          <td><a href="https://consult.skateos.com/garage/" target="_blank"><code>consult.skateos.com/garage/</code></a></td>
+          <td>Stripped-down single-page version — even more honest, "no LLC / no insurance / no SOC 2" sidebar, includes the $0-35 legal floor table for both consulting AND SaaS</td>
+          <td>For when the main site feels too polished — link this to the friend-of-a-friend who'd appreciate the truly bare version</td>
+        </tr>
+        <tr>
+          <td><a href="https://consult.skateos.com/admin/" target="_blank"><code>consult.skateos.com/admin/</code></a></td>
+          <td>Password-gated internal hub. Plan scenarios, cold-call list, ready-to-send emails, Rock Club waiver mock. Password: <code>hvai-2026</code></td>
+          <td>You + me only</td>
+        </tr>
+        <tr>
+          <td><a href="https://skateos.com/consulting/" target="_blank"><code>skateos.com/consulting/</code></a></td>
+          <td>Mirror of the main site at a skateos.com path — for SEO crossover from the main skateos.com domain</td>
+          <td>Search engines / anyone who finds skateos.com first</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>Both <code>consult.skateos.com</code> and <code>skateos.com/consulting</code> are Cloudflare Workers static-asset deploys. Auto-SSL. Zero hosting cost. All four surfaces are deployed and live as of this update.</p>
+  </section>
+
+  <section class="doc" id="scenarios">
+    <h2>3. Three scenarios — pick one</h2>
+    <p>The internal plan page lays out three sizes. Pick which one we're actually committing to — the rest of the operating model flexes off this:</p>
+    <table>
+      <thead><tr><th>Tier</th><th>Year-1 revenue</th><th>OPEX</th><th>Time / wk each</th><th>Per partner net</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A · 🏚 Garage</strong></td><td>≤$30k</td><td>$0-35</td><td>3-5 hrs</td><td>~$15k</td></tr>
+        <tr><td><strong>B · 🏪 Small biz</strong></td><td>~$100k</td><td>~$5k</td><td>10-15 hrs</td><td>~$47k</td></tr>
+        <tr><td><strong>C · 🏢 Full scale</strong></td><td>$1M+</td><td>~$180k</td><td>Full-time</td><td>~$410k</td></tr>
+      </tbody>
+    </table>
+    <p><strong>My vote: A.</strong> Spend $0-35 total (one DBA filing for the name, optional). Take 2-4 warm-lead projects this year. If those convert and customers ask for more, we revisit B for year 2. The graduation to C only makes sense after 5+ delivered projects + sustained pipeline + at least one of us willing to leave a day job. I think we shouldn't pretend we're at B/C until we've actually proven A.</p>
+    <p>Full breakdown of all three: <a href="admin/plan.html"><code>consult.skateos.com/admin/plan.html</code></a> · password <code>hvai-2026</code></p>
+  </section>
+
+  <section class="doc" id="legal">
+    <h2>4. Legal floor — consulting AND SaaS</h2>
+    <p>This is the question I get asked a lot. Short version: it's <strong>$0-35</strong> for one-off consulting, and basically <strong>the same plus a free NY tax registration</strong> if we add recurring SaaS revenue.</p>
+
+    <h3>One-off consulting (Spike / Sprint / Look-Over / Fix-it)</h3>
+    <ul>
+      <li>Operate as "Doug Brown, consulting" — $0. No registration needed if invoicing under legal name.</li>
+      <li>OR file a DBA / Certificate of Assumed Name with Westchester County Clerk to invoice as "Hudson Valley AI" — $25-35, 30 min online.</li>
+      <li>Engagement letter signed before paid work — one page, DIY, no lawyer needed at this volume.</li>
+      <li>EIN from IRS — free, optional, takes 5 min.</li>
+      <li>Quarterly estimated tax if income exceeds $1k — Form 1040-ES.</li>
+      <li><strong>NOT legally required: E&amp;O insurance, LLC, lawyer-drafted MSA, SOC 2, workers comp, local permit, sales tax registration.</strong></li>
+    </ul>
+
+    <h3>If we ALSO charge recurring SaaS (e.g. $299/mo skateOS hosting)</h3>
+    <ul>
+      <li>Same $0-35 base.</li>
+      <li><strong>+ NY Certificate of Authority</strong> (free, 30 min online) — NY has taxed SaaS as "prewritten software" since 2018, so we must collect/remit sales tax on recurring SaaS fees to NY customers.</li>
+      <li>+ Collect 8.375% NY sales tax (Westchester rate) on top of the $299/mo, remit quarterly via Sales Tax Web File. 5 min/quarter.</li>
+      <li>+ Written Terms of Service customer click-accepts (NY auto-renewal law 2023). DIY template.</li>
+      <li>+ Written Privacy Policy (NY SHIELD Act). DIY template.</li>
+      <li><strong>That's it for "legally required."</strong> Everything else (LLC, E&amp;O, cyber liability, DPA, BAA) is recommended but not required.</li>
+    </ul>
+    <div class="pull"><strong>Where SaaS actually gets risky:</strong> not paperwork — exposure. The day we sign the SECOND SaaS customer is the right day to file an LLC + get E&amp;O + cyber quotes. Not because it's required, but because asymmetric protection becomes worth the price at recurring revenue. Full breakdown on the public garage page at <a href="garage/">consult.skateos.com/garage/</a>.</div>
+  </section>
+
+  <section class="doc" id="built">
+    <h2>5. What's actually built now</h2>
+    <h3>Public-facing site</h3>
+    <ul>
+      <li>10 pages (index, products, work, security, process, compare, intake, terms, privacy, case-skateos) — all consistently side-project voice</li>
+      <li>Anti-spam intake form with Resend email delivery via Supabase Edge Function</li>
+      <li>OG meta tags + sitemap + robots</li>
+      <li>Comparison vs agencies / NYC firms / offshore / freelancers / no-code</li>
+      <li>Cross-linked DecisionLayer mentions on index + work + security + products</li>
+    </ul>
+
+    <h3>Internal admin hub (password <code>hvai-2026</code>)</h3>
+    <ul>
+      <li><strong>Plan scenarios page</strong> — A/B/C tier picker, side-by-side comparison, my recommendation. Full operating-expense breakdown for each tier.</li>
+      <li><strong>Cold-call list</strong> — 50 specific real Westchester businesses sorted into 5 tiers by ICP fit. Tier A = recreation with waivers (best match for our offer + DecisionLayer angle). Each row has name, location, sector, why-they-fit, contact angle, fit score.</li>
+      <li><strong>Cold-email kit</strong> — 5 ready-to-send emails for the top Tier-A targets (Rock Club / Air Riderz / Bananas Axe Cabana / Crazy Paint / Old Salem Farm). Each one researched for the specific business with the specific software pain. 7 objection handlers. Send cadence.</li>
+      <li><strong>Rock Club waiver mock</strong> — printable letter-size liability waiver with the DecisionLayer arbitration clause highlighted as paragraph 6. The first-meeting handout.</li>
+    </ul>
+
+    <h3>Cloudflare Workers — both deployed</h3>
+    <ul>
+      <li><code>skateos-consult</code> serving <code>consult.skateos.com</code> (23 files)</li>
+      <li><code>skateos-marketing</code> serving <code>skateos.com</code> + mirror at <code>skateos.com/consulting/</code> (34 files)</li>
+    </ul>
+  </section>
+
+  <section class="doc" id="sales">
+    <h2>6. The cold-call kit · Rock Club is top</h2>
+    <p>Researched 50 real Westchester businesses for cold outreach, sorted by ICP fit:</p>
+    <ul>
+      <li><strong>Tier A — Recreation with waivers</strong> (climbing gyms, trampoline parks, axe-throwing, paintball, equestrian) — strongest match because DecisionLayer angle hits hardest and skateOS pattern transfers directly</li>
+      <li><strong>Tier B — Service trades</strong> (tree care, HVAC, plumbing, pest control) — Branch Manager pattern fits</li>
+      <li><strong>Tier C — Boutique fitness</strong> (Pilates, yoga, martial arts, dance) — Mindbody refugees</li>
+      <li><strong>Tier D — Healthcare-adjacent</strong> (PT, chiro, vet) — booking + intake pain</li>
+      <li><strong>Tier E — Other</strong> (day camps, wedding venues, real estate brokerages)</li>
+    </ul>
+
+    <h3>Top candidate: The Rock Club, New Rochelle</h3>
+    <p>17,000 sqft indie climbing gym, est. 2006, single location, owner-led, heavy waiver/minor/party volume. Almost certainly running Rock Gym Pro with the well-documented community complaints about lost belay certs + brutal group booking. DecisionLayer arbitration clause is the natural pitch for their liability waivers.</p>
+    <p><strong>5 cold emails are queued and ready to send</strong> — researched for the specific business, with a 30-second homework question that signals we did our homework, and a first-meeting deliverable for each. Copy-to-clipboard buttons baked in. Send cadence: 1-2 per day starting Monday, follow-up sweep at day 8-12.</p>
+    <p><strong>Question for you:</strong> Right now my name's on every email. Want yours added as a co-sender on the Security Look-Over outreach (which is the angle for the higher-stakes targets like Bananas Axe Cabana where the DecisionLayer + security pitch combines)? Or stay quiet behind the scenes until a real meeting books? Both are fine — your call.</p>
+  </section>
+
+  <section class="doc" id="decisionlayer">
+    <h2>7. DecisionLayer integration</h2>
+    <p>You met Liberty McAteer at the park — he built <a href="https://decisionlayer.ai" target="_blank">DecisionLayer.ai</a>, the AI arbitration platform. Online dispute resolution: ~$500 and 45-90 days vs. $100k+ and 18+ months of court. He's piloting it in 2nd Nature's own waivers (simulated $35k injury case ruled for the operator — receipts on file).</p>
+    <p>I've woven this into the consulting site as a <strong>standard inclusion on every Production Sprint</strong>: any client of ours who needs customer-facing contracts, waivers, or terms gets the DecisionLayer arbitration clause baked in by default at no extra cost. Optional on Spike / Fix-it.</p>
+    <p><strong>Why this matters:</strong> it's a real differentiator nobody else in the local consulting market offers. Most agencies ship clients out with a 2002-era "we'll see you in court" arbitration clause copy-pasted from a template. We ship with AI arbitration baked in from day one. Cited explicitly on index, work, security, and products pages.</p>
+    <p>Relationship status: we're an early-adopter integration partner, not a paid affiliate. Liberty wants to list 2ntr as "in process" in his fundraising deck; we list DecisionLayer as our partner integration. Symbiotic. No money changes hands.</p>
+  </section>
+
+  <section class="doc" id="skateos">
+    <h2>8. skateOS — full developer briefing</h2>
+    <p>This is what you'd be auditing on the Security Look-Over for any client of ours (and probably worth a free internal pass on skateOS itself as our first case study).</p>
+
+    <h3>Stack</h3>
+    <ul>
+      <li>Postgres on Supabase (project ref <code>zecurmlenxyxanqucrga</code>)</li>
+      <li>Frontend: vanilla JS SPA at <a href="https://app.skateos.com" target="_blank">app.skateos.com</a> (Cloudflare Worker static assets)</li>
+      <li>Marketing: skateos.com, shop.skateos.com, book.skateos.com, preorder.skateos.com, consult.skateos.com — all Cloudflare Workers</li>
+      <li>Mobile: React Native / Expo (iPad-targeted, not yet shipped to App Store)</li>
+      <li>Edge Functions: 17 Deno-based functions on Supabase (<code>send-email</code> via Resend, <code>send-sms</code> via Twilio, helcim-charge / -invoice / -pay-init / -webhook for payments, smartwaiver-lookup / -webhook for liability waivers, daily-digest, weekly-preorder-digest, weekly-backup, backup-cleanup, send-lesson-reminders / -followups / send-renewal-reminders / send-overdue-rentals / birthday-greetings)</li>
+    </ul>
+
+    <h3>Schema</h3>
+    <p>~60 tables. Multi-tenant via <code>tenant_id</code> columns + RLS. 61 migrations in the canonical sequence (006 → 061). Each is idempotent.</p>
+
+    <h3>Schedules (pg_cron)</h3>
+    <p>Hourly lesson reminders, daily renewal reminders, daily overdue-rental reminders, daily birthday greetings, daily auto-checkout cron, daily auto-resume-paused-subs cron, daily digest at 8am ET, weekly pre-order digest, weekly backup. All trigger Edge Functions via <code>pg_net.http_post</code>.</p>
+
+    <h3>Webhooks</h3>
+    <ul>
+      <li>Helcim → <code>helcim-webhook</code> (payment events). Verifier-token signed.</li>
+      <li>Smartwaiver → <code>smartwaiver-webhook</code> (waiver completion).</li>
+    </ul>
+
+    <h3>Security posture (high-level)</h3>
+    <ul>
+      <li>RLS at DB layer for tenant isolation. JWT auth via Supabase. Magic-link sign-in for customer self-serve portal (no password storage).</li>
+      <li>Card data never touches our servers — Helcim handles all PCI scope, we store only transaction IDs.</li>
+      <li>Webhook signature verification on every incoming payload (Helcim + Smartwaiver).</li>
+      <li>Audit log via Postgres trigger captures every INSERT/UPDATE/DELETE on business tables with actor identity.</li>
+      <li>Customer portal isolation enforced via <code>current_customer_id() = customer_id</code> in RLS policies.</li>
+      <li>CAN-SPAM + TCPA compliant email/SMS opt-out handling (server-side filtered, per-message unsubscribe footer).</li>
+      <li>Honeypot anti-spam on public forms.</li>
+      <li>Encryption at rest (Supabase default) + TLS via Cloudflare with HSTS.</li>
+    </ul>
+    <p>Full posture published at <a href="security.html">consult.skateos.com/security</a> — same plain-English framing as the rest of the site.</p>
+  </section>
+
+  <section class="doc" id="sprint">
+    <h2>9. What you'd actually do on a real Sprint</h2>
+    <p>To be concrete about the scope of work on a Production Sprint (the $20k / 4-week package):</p>
+    <ul>
+      <li><strong>Week 4 of every Sprint:</strong> 3-5 hours of security look-over on the deliverable before it ships to the client</li>
+      <li>Code review for OWASP Top 10 + common misconfigurations + hardcoded secrets</li>
+      <li>External attack-surface check on the live URL — authentication bypass, IDOR, injection</li>
+      <li>Configuration audit — access rules, secrets, logging, backups</li>
+      <li>Written 1-page report with findings + severity ratings</li>
+      <li>Critical + high findings fixed before delivery</li>
+    </ul>
+    <p>On the standalone <strong>$5k Security Look-Over</strong> package the scope is the same but unconnected to a build — clients bring us existing code and we give them a prioritized findings list. No formal pen-test report (we explicitly DON'T sell that — wrong shape for our current scale).</p>
+    <p><strong>Your take per project:</strong> for the Production Sprint security review, I'd cover ~$1.5k of the $20k fee to you (call it $300-500/hr for the few hours of work). For the standalone Look-Over, ~$3.5k of $5k to you, $1.5k to me for project mgmt / scoping. Open to adjusting — these are starting points.</p>
+  </section>
+
+  <section class="doc" id="asks">
+    <h2>10. What I need from you to start</h2>
+    <p>Concrete, finite asks. None of this requires LLC paperwork or contracts — just signal that you're in:</p>
+    <ol>
+      <li><strong>Verbal yes</strong> that you're up for being co-credited on the public site as the security side of this — your name is already on it but tell me if you want it removed or framed differently. <a href="index.html#team">Index page team section</a>.</li>
+      <li><strong>Bio / photo</strong> for the public site. Currently I've written a placeholder; happy to replace with whatever you want public.</li>
+      <li><strong>Co-sender preference</strong> on cold emails — your name on the Security-Look-Over-flavored ones, or stay quiet until a meeting books? <a href="admin/cold-emails.html">Email kit</a>.</li>
+      <li><strong>Read the Rock Club waiver mock</strong> — tell me if the DecisionLayer paragraph 6 reads right legally to you, or if I'm fumbling something. <a href="admin/waiver-mock.html">Waiver mock</a>.</li>
+      <li><strong>Scenario sign-off</strong> — A, B, or C? My vote is A. <a href="admin/plan.html">Plan scenarios</a>.</li>
+    </ol>
+    <p>That's it. No LLC. No insurance. No partnership equity discussion (not needed at A — we just split per-project on a handshake). If we hit two projects in and want to formalize, we can revisit then.</p>
+  </section>
+
+  <section class="doc" id="questions">
+    <h2>Bonus: open questions for you</h2>
+    <ol>
+      <li>Want a coffee at Cold Spring or video this week? I'll come to you.</li>
+      <li>Any Hudson Valley security-community contacts who'd be a good warm-lead source (firms running OSCP-style internal red teams who'd refer fellow practitioners)?</li>
+      <li>Anything in the skateOS security posture that immediately makes you wince? I'd rather hear it from you than from a customer.</li>
+      <li>If we hit two SaaS customers and need to file an LLC, do you want it as a Hudson Valley AI LLC formed jointly, or each of us as our own sole props with a contract framework? (Tax + liability implications either way — I'm fine deferring this until it's actually relevant.)</li>
+    </ol>
+  </section>
+
+  <section class="doc" id="skateos">
+    <h2>6. skateOS — full developer briefing</h2>
+    <p>This is what you'd be auditing if we use skateOS as our first customer (which I think we should — real production code, real customers, real attack surface).</p>
+
+    <h3>Stack</h3>
+    <ul>
+      <li>Postgres on Supabase (project ref <code>zecurmlenxyxanqucrga</code>)</li>
+      <li>Frontend: vanilla JS SPA at <a href="https://app.skateos.com" target="_blank">app.skateos.com</a> (Cloudflare Worker static assets)</li>
+      <li>Marketing: skateos.com, shop.skateos.com, book.skateos.com, preorder.skateos.com, consult.skateos.com — all Cloudflare Workers</li>
+      <li>Mobile: React Native / Expo (iPad-targeted, not yet shipped to App Store)</li>
+      <li>Edge Functions: 17 Deno-based functions on Supabase (<code>send-email</code> via Resend, <code>send-sms</code> via Twilio, helcim-charge / -invoice / -pay-init / -webhook for payments, smartwaiver-lookup / -webhook for liability waivers, daily-digest, weekly-preorder-digest, weekly-backup, backup-cleanup, send-lesson-reminders / -followups / send-renewal-reminders / send-overdue-rentals / birthday-greetings)</li>
+    </ul>
+
+    <h3>Schema</h3>
+    <p>~60 tables across customers, sales, sale_items, lessons, lesson_attendees, subscriptions, products, categories, equipment, equipment_loans, mobile_runs, bus_inventory, inventory_locations, inventory_transfers, incidents, audit_log, app_settings, staff, time_entries, timesheet_approvals, team_messages, forms, form_submissions, gift_cards, gift_card_transactions, loyalty_transactions, loyalty_config, daily_reconciliations, affiliate_programs, affiliate_codes, affiliate_earnings, affiliate_redemptions, webhook_log, preorder_products, tenants, user_tenants. Multi-tenant via <code>tenant_id</code> columns + RLS.</p>
+    <p>61 migrations in the canonical sequence (006 → 061). Each is idempotent. Bundled superset at <code>admin/migrations/_apply_pending_045_to_061.sql</code>.</p>
+
+    <h3>Schedules (pg_cron)</h3>
+    <p>Hourly lesson reminders, daily renewal reminders, daily overdue-rental reminders, daily birthday greetings, daily auto-checkout cron, daily auto-resume-paused-subs cron, daily digest at 8am ET, weekly pre-order digest, weekly backup. All trigger Edge Functions via <code>pg_net.http_post</code>.</p>
+
+    <h3>Webhooks</h3>
+    <ul>
+      <li>Helcim → <code>helcim-webhook</code> (payment events). Verifier-token signed.</li>
+      <li>Smartwaiver → <code>smartwaiver-webhook</code> (waiver completion).</li>
+    </ul>
+  </section>
+
+  <section class="doc" id="security">
+    <h2>7. Security choices — request for review</h2>
+    <p>Here's what I picked and why. Tell me what I'm wrong about. <a href="security.html">Full posture published here.</a></p>
+
+    <h3>1. Supabase as auth + DB</h3>
+    <p>Picked because of native Postgres RLS (Row Level Security). Multi-tenant isolation enforced at the database level — even if a Postgres query escapes the application layer, RLS prevents reading/writing other tenants' data (when the strict-mode policies are turned on in mig 009 part B, which I've held back until app code is fully <code>tenant_id</code>-aware on every INSERT). Auth via JWT, magic-link sign-in for the customer self-serve portal (no password storage, no breach surface).</p>
+
+    <h3>2. Card data never touches our servers</h3>
+    <p>Helcim handles all PCI scope. We store only the <code>transactionId</code> returned by Helcim, never the card number. HelcimPay.js iframe captures cards in-browser, posts to Helcim, sends us a token. PCI scope = SAQ-A or lower.</p>
+
+    <h3>3. Webhook signature verification</h3>
+    <p>Both Helcim and Smartwaiver webhooks verify a shared secret token before acting on any payload. Stored in <code>supabase secrets</code> (server-side only). Never in client code.</p>
+
+    <h3>4. CAN-SPAM + TCPA compliance built in</h3>
+    <ul>
+      <li><code>customers.email_opt_out_at</code> column (mig 035) + public unsubscribe.html page + the <code>email_opt_out(uuid)</code> SECURITY DEFINER RPC anyone can call without auth (one-click unsubscribe per CAN-SPAM)</li>
+      <li>Tag-based SMS opt-out (<code>sms_opt_out</code>, <code>no_sms</code>, <code>do_not_text</code>) with <code>_isSmsOptedOut(c)</code> helper. Honored by every send path.</li>
+      <li>Marketing campaigns filter out opt-outs server-side BEFORE the recipient list is built. Per-message unsubscribe footer auto-appended.</li>
+      <li>Receipts and lesson reminders skip the opt-out gate — those are transactional, exempt from CAN-SPAM commercial-message requirements.</li>
+    </ul>
+
+    <h3>5. Audit log via Postgres trigger</h3>
+    <p>Migration 001 installs an <code>audit_log</code> table + a generic trigger that captures every INSERT/UPDATE/DELETE on every business table with <code>actor_email</code> resolved from <code>auth.uid()</code>. Owner can review changes by table/actor/date. Surfaces a forensic trail for any "who changed what" question.</p>
+
+    <h3>6. Customer self-serve portal isolation</h3>
+    <p>Mig 019 installs RLS policies so an authenticated customer can read ONLY their own customer record / sales / lessons / loyalty / checkins via <code>current_customer_id() = customer_id</code>. The <code>portal_summary</code> RPC is SECURITY DEFINER but rigorously scoped — no cross-customer leakage even on bugs.</p>
+
+    <h3>7. HTTPS / TLS via Cloudflare</h3>
+    <p>All Workers + custom domains use auto-provisioned SSL certs. HSTS headers via Cloudflare. No HTTP fallback.</p>
+
+    <h3>8. API key management</h3>
+    <p>Edge Function secrets via <code>supabase secrets</code>. Never in client code. Rotation possible via Supabase dashboard. Recently audited list:</p>
+    <ul>
+      <li><code>RESEND_API_KEY</code></li>
+      <li><code>TWILIO_ACCOUNT_SID</code> / <code>TWILIO_AUTH_TOKEN</code> / <code>TWILIO_FROM_NUMBER</code></li>
+      <li><code>HELCIM_API_TOKEN</code> (currently a placeholder pending real wiring)</li>
+      <li><code>HELCIM_WEBHOOK_VERIFIER_TOKEN</code> (real, openssl-rand-generated)</li>
+      <li><code>SMARTWAIVER_API_KEY</code> / <code>SMARTWAIVER_WEBHOOK_SECRET</code> (pending Doug-side setup)</li>
+    </ul>
+    <div class="pull"><strong>Disclosure:</strong> Some of these were recently exposed in error and need rotation — that's on the punch list.</div>
+
+    <h3>9. Honeypot anti-spam on public forms</h3>
+    <p>Invisible <code>&lt;input&gt;</code> field positioned offscreen on the consulting intake form + the public booking forms. Bots fill it; real users don't. Silent fake-success on filled honeypot so bots think the spam landed without retrying.</p>
+
+    <h3>10. Encrypted at rest</h3>
+    <p>Supabase Postgres + S3-equivalent backups encrypted at rest by default. Backups via <code>weekly-backup</code> Edge Function to off-site object store.</p>
+  </section>
+
+  <section class="doc" id="asks">
+    <h2>8. What I'd want from you on the audit side</h2>
+    <ul>
+      <li>Penetration test the customer self-serve portal — can a signed-in customer escape their own scope?</li>
+      <li>Review the RLS policies — are there gaps in mig 009 / 019 / etc?</li>
+      <li>Audit the Edge Functions for input validation. Especially helcim-webhook (which auto-creates customer records on payment — could a malicious payload create a fake customer?)</li>
+      <li>Review secret rotation procedures. The recent exposure means we need a tighter lifecycle.</li>
+      <li>DevSecOps review: how do we keep migrations from drifting? Right now Doug runs them manually in the SQL editor. Is there a safer path?</li>
+      <li>Backup recovery test. Can we actually restore from the weekly backup, or is it bit-rot waiting to happen?</li>
+      <li>Webhook replay protection. We verify signatures but don't currently track replay attacks. Worth adding?</li>
+      <li>Multi-tenant strict-RLS rollout (mig 009 part B). I've held this back because the app code isn't fully <code>tenant_id</code>-aware on every INSERT yet. What's your call on the safe sequence to flip it on?</li>
+    </ul>
+  </section>
+
+  <section class="doc" id="questions">
+    <h2>9. Open questions for you</h2>
+    <ol>
+      <li>Comfortable with 50/50 equity split? Or do you want it weighted differently based on first-6-months effort?</li>
+      <li>Branding direction — <code>Hudson Valley AI</code>, <code>HVAI</code>, <code>Hudson Valley Build</code>, <code>Hudson Valley Cyber</code>, something else?</li>
+      <li>Do you want to be the named expert on the marketing ("Jon Marchand · Hudson Valley AI's CISO") or stay quieter behind the scenes?</li>
+      <li>What's the right insurance package for our combined liability? You've been through E&amp;O before — point me at a broker that's not a rip-off?</li>
+      <li>Skill territory — anywhere I'd be stepping on yours, or vice versa? I want to be precise about who owns what before we sign anything with a client.</li>
+      <li>Hudson Valley AI as a separate LLC, or roll under Doug's existing structure? Implications for personal liability, taxes, etc?</li>
+      <li>Office / co-working space in Peekskill / Cold Spring / Beacon — useful for client meetings? Or stay virtual-first?</li>
+      <li>How aggressive on pen-test / compliance work in the first 90 days? It's higher-margin but also higher-risk. Mix is up to you.</li>
+    </ol>
+  </section>
+
+  <div class="reply-card">
+    <h2>Next step — coffee or video</h2>
+    <p>5 finite asks above. Pick whichever ones you want to weigh in on. Or just text me a "yes, in" and we'll figure out the rest over coffee.</p>
+    <a href="mailto:doug@2ntr.com?subject=Hudson%20Valley%20AI%20update%20%E2%80%94%20my%20answers&amp;body=Doug%20%E2%80%94%20I%20read%20the%20update%20at%20https%3A%2F%2Fconsult.skateos.com%2Fpartnership-pitch.html.%20My%20answers%20to%20your%205%20asks%3A%0A%0A1.%20Co-credited%20on%20the%20public%20site%3F%20%5Byes%20%2F%20no%20%2F%20frame%20differently%5D%0A2.%20Bio%20%2B%20photo%3A%20%5Bsending%20separately%2C%20or%3A%5D%0A3.%20Co-sender%20on%20cold%20emails%3F%20%5Byes%20on%20Security%20Look-Over%20angle%20%2F%20quiet%20until%20a%20meeting%20books%5D%0A4.%20Waiver%20mock%20%E2%80%94%20DecisionLayer%20clause%20reads%3A%20%5Bgood%20%2F%20here's%20what%20to%20fix%5D%0A5.%20Scenario%3A%20%5BA%20%2F%20B%20%2F%20C%5D%0A%0AOpen%20questions%20from%20me%3A%0A-%20%5Banything%20you%20want%20to%20raise%5D%0A%0A%E2%80%94%20Jon" class="btn">📧 Reply with my answers (pre-filled draft) →</a>
+    <div class="secondary">Or text / call direct: <a href="mailto:doug@2ntr.com?subject=HVAI%20update">doug@2ntr.com</a> · <a href="tel:+19144024624" style="color:#fb7185;">(914) 402-4624</a></div>
+    <div class="secondary" style="margin-top:8px;">Bookmark the admin hub: <a href="admin/" style="color:#fb7185;">consult.skateos.com/admin/</a> · password <code style="background:#262626;padding:1px 6px;border-radius:3px;color:#fb7185;">hvai-2026</code></div>
+  </div>
+
+  <p style="margin-top:30px;font-size:.92rem;color:#737373;font-style:italic;text-align:center;">— Doug<br>doug@2ntr.com · (914) 402-4624 · <a href="index.html" style="color:#737373;">consult.skateos.com</a></p>
+</div>
+
+<footer>© 2026 Doug Brown + Jon Marchand · Hudson Valley · Side project · Private link for Jon · <a href="index.html">Public site</a></footer>
+
+</body>
+</html>

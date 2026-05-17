@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2nd Nature — Building Our Own System</title>
+<style>
+  @page { size: letter; margin: 0.75in; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 24px;
+    color: #1a1a1a;
+    line-height: 1.55;
+    font-size: 15px;
+  }
+  .badge {
+    display: inline-block;
+    background: #e11d48;
+    color: white;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  h1 {
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 0 0 8px;
+    color: #1a1a1a;
+  }
+  .subtitle {
+    font-size: 17px;
+    color: #666;
+    margin-bottom: 36px;
+    font-weight: 400;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 36px;
+    margin-bottom: 12px;
+    color: #1a1a1a;
+    border-bottom: 2px solid #e11d48;
+    padding-bottom: 8px;
+    display: inline-block;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  p { margin: 10px 0; }
+  ol li, ul li { margin: 6px 0; }
+  strong { color: #1a1a1a; }
+  em.accent { color: #e11d48; font-style: normal; font-weight: 600; }
+  .hero {
+    background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%);
+    padding: 22px 26px;
+    border-radius: 10px;
+    margin: 24px 0;
+    border-left: 4px solid #e11d48;
+  }
+  .hero p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 500;
+    color: #1a1a1a;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 14px;
+  }
+  th {
+    text-align: left;
+    background: #fef2f2;
+    padding: 10px 12px;
+    font-weight: 700;
+    color: #1a1a1a;
+    border-bottom: 2px solid #e11d48;
+  }
+  td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+  }
+  td.label { font-weight: 500; }
+  td.sq { color: #666; }
+  td.new { color: #0a7c3e; font-weight: 600; }
+  tr.totals td {
+    background: #fef2f2;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 12px;
+  }
+  tr.savings td {
+    background: #dcfce7;
+    color: #0a7c3e;
+    font-weight: 700;
+    font-size: 16px;
+    padding: 14px 12px;
+  }
+  .note {
+    font-size: 13px;
+    color: #666;
+    font-style: italic;
+    margin-top: 4px;
+  }
+  .timeline {
+    background: #fafafa;
+    border-radius: 8px;
+    padding: 18px 24px;
+    margin: 16px 0;
+  }
+  .timeline-item {
+    display: flex;
+    gap: 16px;
+    margin: 14px 0;
+  }
+  .timeline-when {
+    flex: 0 0 140px;
+    font-weight: 700;
+    color: #e11d48;
+    font-size: 13px;
+  }
+  .timeline-what {
+    flex: 1;
+    font-size: 14px;
+  }
+  .tldr {
+    background: #1a1a1a;
+    color: white;
+    padding: 22px 26px;
+    border-radius: 10px;
+    margin: 32px 0 24px;
+  }
+  .tldr h2 {
+    color: white;
+    border-bottom-color: #e11d48;
+    margin-top: 0;
+  }
+  .tldr ul { margin: 8px 0; padding-left: 22px; }
+  .tldr li { margin: 8px 0; }
+  .ps {
+    background: #fef3c7;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin-top: 32px;
+    font-size: 14px;
+    font-style: italic;
+    border-left: 3px solid #f59e0b;
+  }
+  .footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid #ddd;
+    font-size: 13px;
+    color: #999;
+    text-align: center;
+  }
+  @media print {
+    body { margin: 0; padding: 0; }
+    .no-print { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<span class="badge">🛹 Team Update</span>
+<h1>We're building our own system.</h1>
+<p class="subtitle">Replacing Square with something built for a skate park — by us, for us.</p>
+
+<div class="hero">
+  <p>Same job for you day-to-day. Better tools. Way less money going to processing fees. And features Square literally can't do.</p>
+</div>
+
+<h2>Why we're doing this</h2>
+<ol>
+  <li><strong>Square is expensive.</strong> We're paying around <em class="accent">$775/month in card-processing fees</em> — roughly <em class="accent">$9,300/year</em> going to Square.</li>
+  <li><strong>We don't own our data.</strong> Our customers, sales history, and memberships all live inside Square's system. If their prices jump, we're stuck.</li>
+  <li><strong>Square doesn't do what a skate park needs.</strong> No real punch cards. No lesson calendar. No birthday-party bookings. No waiver integration. We've been working around it for years.</li>
+</ol>
+
+<h2>What this means for you</h2>
+<p><strong>Mostly nothing is changing about your shift.</strong> You'll still check people in, ring up day passes and retail, run the cash drawer, and process card payments.</p>
+
+<h3>What will change</h3>
+<ul>
+  <li><strong>Your own login</strong> — email + password per person, instead of the shared iPad login. If someone leaves, we deactivate their account, not change the password for everyone.</li>
+  <li><strong>Face ID sign-in</strong> once we're on the new app — no typing passwords.</li>
+  <li><strong>Faster check-ins</strong> — search a skater, tap "Check In," done. Pulls waiver status from Smartwaiver automatically.</li>
+  <li><strong>Real member QR cards</strong> — scannable cards for one-tap check-in.</li>
+  <li><strong>Mobile payments</strong> — Tap to Pay on iPhone means instructors can take payment for a lesson right there at the bowl, no card reader.</li>
+</ul>
+
+<h2>The money side — monthly ops</h2>
+<p>Here's what we're paying Square today vs. what the new system will cost us:</p>
+
+<table>
+  <tr>
+    <th>What we pay for</th>
+    <th>Square (now)</th>
+    <th>New system</th>
+  </tr>
+  <tr>
+    <td class="label">Card processing fees</td>
+    <td class="sq">~$775/mo</td>
+    <td class="new">~$525/mo</td>
+  </tr>
+  <tr>
+    <td class="label">Software / features</td>
+    <td class="sq">$0–165/mo</td>
+    <td class="new">$25/mo</td>
+  </tr>
+  <tr>
+    <td class="label">Backups, email, SMS</td>
+    <td class="sq">(bundled)</td>
+    <td class="new">~$35/mo</td>
+  </tr>
+  <tr>
+    <td class="label">Cyber insurance</td>
+    <td class="sq">$0</td>
+    <td class="new">~$50/mo</td>
+  </tr>
+  <tr class="totals">
+    <td>Total per month</td>
+    <td>~$775–940</td>
+    <td>~$635</td>
+  </tr>
+  <tr class="totals">
+    <td>Total per year</td>
+    <td>~$9,300–11,300</td>
+    <td>~$7,600</td>
+  </tr>
+  <tr class="savings">
+    <td>Annual savings</td>
+    <td colspan="2">~$1,700–3,700 per year — forever</td>
+  </tr>
+</table>
+
+<p class="note">Savings <strong>grow as we grow.</strong> Every extra $1,000 in revenue through Square costs us another $26 in fees. Through the new system: $8.80.</p>
+
+<h2>Hardware — one-time</h2>
+<p>Most of what we have carries over. We're only replacing the pieces that are locked to Square.</p>
+
+<table>
+  <tr>
+    <th>Item</th>
+    <th>Cost</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td class="label">Helcim Smart Terminal</td>
+    <td class="new">$329</td>
+    <td class="sq">Replaces Square Reader / Stand</td>
+  </tr>
+  <tr>
+    <td class="label">Initial member QR cards (500)</td>
+    <td class="new">$60</td>
+    <td class="sq">Printed + laminated</td>
+  </tr>
+  <tr>
+    <td class="label">iPad stand (generic)</td>
+    <td class="new">$40</td>
+    <td class="sq">If we keep our iPad off the Square Stand</td>
+  </tr>
+  <tr class="totals">
+    <td>Total hardware</td>
+    <td>~$430</td>
+    <td></td>
+  </tr>
+</table>
+
+<h3 style="color:#0a7c3e;">What we keep</h3>
+<ul>
+  <li>The iPad itself</li>
+  <li>The receipt printer (if it's Epson or Star — generic ESC/POS, works with anything)</li>
+  <li>The cash drawer (dumb metal box that kicks when the printer tells it to)</li>
+  <li>Any barcode scanner</li>
+</ul>
+
+<h3>What we sell on eBay after the switch</h3>
+<ul>
+  <li>Square Stand — ~$80</li>
+  <li>Square Reader — ~$25 each</li>
+  <li>Square Terminal if we have one — ~$150</li>
+</ul>
+
+<p class="note"><strong>Net hardware cost after reselling:</strong> ~$200–300 all-in. That's one week of processing-fee savings.</p>
+
+<h2>How it's rolling out</h2>
+<p>No "flip the switch and hope." We're doing this carefully.</p>
+
+<div class="timeline">
+  <div class="timeline-item">
+    <div class="timeline-when">Now → early June</div>
+    <div class="timeline-what">Building. You'll see small changes in the background but nothing that affects your shift.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-when">Early-to-mid June</div>
+    <div class="timeline-what"><strong>Soft launch.</strong> The new system runs alongside Square for a couple weeks. We reconcile totals at end of day. Fix anything weird.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-when">Late June / early July</div>
+    <div class="timeline-what">Once we're confident, Square is unplugged.</div>
+  </div>
+  <div class="timeline-item">
+    <div class="timeline-when">Training</div>
+    <div class="timeline-what">~15 minutes per person. It's simpler than Square.</div>
+  </div>
+</div>
+
+<h2>The meeting</h2>
+<p>We'll go over the screens, answer questions, and I'll show you exactly what your day-to-day is going to look like. <strong>Bring anything that currently annoys you about Square</strong> — if it's solvable, we solve it.</p>
+
+<div class="tldr">
+  <h2>TL;DR</h2>
+  <ul>
+    <li>We're replacing Square with a custom system built for skate parks.</li>
+    <li>Saves us <strong>$1,700–3,700/year</strong> on fees — and grows with revenue.</li>
+    <li>Hardware refresh costs <strong>~$200–300 net</strong> (pays for itself in a week).</li>
+    <li>You get better tools: Face ID, mobile payments, real member cards, lesson calendar.</li>
+    <li>Gradual rollout, no bad surprise days.</li>
+    <li>Training takes 15 minutes.</li>
+  </ul>
+</div>
+
+<div class="ps">
+  <strong>P.S.</strong> The new system is owned by us. Our customers, our sales history, our memberships — all ours. Nothing can be held hostage by a vendor. That's the real reason we're doing this. The cost savings are the bonus.
+</div>
+
+<p style="margin-top: 32px;">Questions before the meeting, hit me up directly.</p>
+<p><strong>— Doug</strong></p>
+
+<div class="footer">
+  2nd Nature Skatepark · 1 Highland Industrial Park · Peekskill, NY 10566
+</div>
+
+</body>
+</html>

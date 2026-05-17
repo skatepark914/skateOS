@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Are we open? | 2nd Nature Park</title>
+<meta name="description" content="Live status — is the skatepark open right now? Today's hours + capacity + emergency closures.">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="https://2ntr.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Knewave&family=Permanent+Marker&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;
+    color:#14161a;background:#faf8f3;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;display:flex;flex-direction:column;
+  }
+  a{color:inherit;text-decoration:none;}
+  .hand{font-family:'Knewave','Permanent Marker',cursive;font-weight:400;}
+  header{padding:24px 28px 4px;text-align:center;}
+  .logo{display:inline-block;font-size:clamp(2rem,4.5vw,3rem);color:#14161a;line-height:.9;}
+  .logo .nd{font-size:.42em;vertical-align:.55em;margin:0 .04em 0 .08em;}
+  main{flex:1;display:flex;align-items:center;justify-content:center;padding:30px 18px;}
+  .wrap{max-width:560px;width:100%;}
+  .status-card{
+    background:white;border-radius:18px;padding:36px 28px;
+    text-align:center;border:3px solid #14161a;
+    box-shadow:0 8px 32px rgba(0,0,0,.06);
+  }
+  .status-card.open{border-color:#15803d;}
+  .status-card.closed{border-color:#dc2626;}
+  .status-card.warn{border-color:#d97706;}
+  .status-card .label{
+    font-size:.86rem;text-transform:uppercase;letter-spacing:.16em;
+    color:#6b7280;margin-bottom:8px;font-weight:700;
+  }
+  .status-card .big{
+    font-size:clamp(2.6rem,7vw,4rem);font-weight:900;line-height:1;
+    margin-bottom:14px;letter-spacing:-.02em;
+  }
+  .status-card.open .big{color:#15803d;}
+  .status-card.closed .big{color:#dc2626;}
+  .status-card.warn .big{color:#d97706;}
+  .status-card .sub{
+    font-size:1.05rem;color:#374151;margin-bottom:20px;line-height:1.5;
+  }
+  .status-card .sub strong{color:#14161a;}
+  .meta-row{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:14px;margin-top:18px;text-align:center;
+  }
+  .meta-row .cell{
+    background:#faf8f3;border-radius:10px;padding:14px 12px;
+  }
+  .meta-row .cell .ml{
+    font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;
+    color:#6b7280;font-weight:700;margin-bottom:4px;
+  }
+  .meta-row .cell .mv{font-size:1.1rem;font-weight:800;color:#14161a;}
+  .meta-row .cell.warn .mv{color:#d97706;}
+  .meta-row .cell.full .mv{color:#dc2626;}
+  .alert{
+    padding:14px 18px;border-radius:10px;font-size:.94rem;line-height:1.4;
+    margin-top:16px;text-align:left;
+  }
+  .alert.danger{background:#fee2e2;border-left:4px solid #dc2626;color:#991b1b;}
+  .alert.warn{background:#fef3c7;border-left:4px solid #d97706;color:#92400e;}
+  .alert.info{background:#f0f9ff;border-left:4px solid #0891b2;color:#0e7490;}
+  .alert strong{font-weight:800;}
+  .week-hours{
+    margin-top:24px;padding:16px;background:white;border-radius:12px;
+    border:1px solid #e6e3da;font-size:.92rem;
+  }
+  .week-hours h3{
+    font-size:.74rem;text-transform:uppercase;letter-spacing:.06em;
+    color:#6b7280;font-weight:700;margin-bottom:10px;
+  }
+  .week-hours .row{
+    display:flex;justify-content:space-between;padding:6px 0;
+    border-bottom:1px solid #f3f4f6;
+  }
+  .week-hours .row:last-child{border-bottom:none;}
+  .week-hours .row.today{background:#fef3c7;font-weight:700;color:#92400e;padding-left:8px;padding-right:8px;border-radius:4px;border:none;}
+  .actions{
+    margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+  }
+  .btn{
+    background:#14161a;color:white;border:none;
+    padding:12px 22px;border-radius:999px;
+    font-size:.94rem;font-weight:700;letter-spacing:.02em;
+    cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn:hover{background:#e11d48;}
+  .btn.outline{background:transparent;color:#14161a;border:2px solid #14161a;padding:10px 20px;}
+  .btn.outline:hover{background:#14161a;color:white;}
+  footer{
+    text-align:center;padding:24px 18px;font-size:.78rem;color:#9ca3af;
+  }
+  footer a{color:inherit;text-decoration:underline;}
+  .refresh-pill{
+    display:inline-block;font-size:.74rem;color:#9ca3af;margin-top:14px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <a href="https://www.2ntr.com" class="logo hand" aria-label="2nd Nature home">2<span class="nd">ND</span>nature</a>
+  </header>
+
+  <main>
+    <div class="wrap" id="wrap">
+      <div class="status-card" id="card">
+        <div class="label">Loading…</div>
+        <div class="big" id="bigStatus">⏳</div>
+        <div class="sub">Checking park status…</div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div id="footerInfo">2nd Nature Park · live status</div>
+    <div style="margin-top:6px;">
+      <a id="footerHome" href="https://www.2ntr.com">2ntr.com</a> ·
+      <a id="footerPhone" href="">call</a> ·
+      <a id="footerMap" href="" target="_blank">directions</a>
+    </div>
+  </footer>
+
+<script>
+  // ── Public park-status page ───────────────────────────────────────
+  // Pulls live state via the SECURITY DEFINER `public_park_status()` RPC
+  // (migration 051). Anon-callable, returns whitelist-only fields. No
+  // PII / no sensitive admin data leaks back.
+  var SUPABASE_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+
+  function escHtml(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function fmtTime(t24){
+    if(!t24) return '';
+    var parts = String(t24).split(':');
+    var h = parseInt(parts[0], 10), m = parseInt(parts[1]||'0', 10);
+    if(isNaN(h)) return t24;
+    var pad = function(n){return String(n).padStart(2,'0');};
+    var ampm = h >= 12 ? 'pm' : 'am';
+    var h12 = ((h+11)%12)+1;
+    return h12 + (m>0 ? ':'+pad(m) : '') + ampm;
+  }
+
+  function fmtRelTime(iso){
+    if(!iso) return '';
+    try {
+      var d = new Date(iso);
+      var diffMin = Math.round((d.getTime() - Date.now()) / 60000);
+      if(diffMin < 60) return 'in ' + diffMin + ' min';
+      if(diffMin < 60*24) return 'in ' + Math.round(diffMin/60) + 'h';
+      return d.toLocaleString([], {weekday:'short', month:'short', day:'numeric', hour:'numeric'});
+    } catch(e){ return iso; }
+  }
+
+  function render(d){
+    var card = document.getElementById('card');
+    var wrap = document.getElementById('wrap');
+
+    // Determine card class + headline
+    var cls = 'status-card';
+    var label, big, sub = '';
+    if(d.emergency){
+      cls += ' closed';
+      label = '🚨 emergency closure';
+      big = 'CLOSED';
+      sub = d.emergency_reason
+        ? '<strong>' + escHtml(d.emergency_reason) + '</strong>'
+        : 'Park is temporarily closed.';
+      if(d.emergency_until){
+        sub += '<br>Reopens ' + escHtml(fmtRelTime(d.emergency_until)) + '.';
+      }
+    } else if(d.is_closed_today){
+      cls += ' closed';
+      label = d.holiday_name ? '🎉 holiday closure' : '🚪 closed today';
+      big = 'CLOSED';
+      sub = d.holiday_name
+        ? 'Closed for <strong>' + escHtml(d.holiday_name) + '</strong>.'
+        : 'We\'re closed today. Check the weekly schedule below 👇';
+    } else if(d.status === 'open'){
+      cls += ' open';
+      label = '🛹 open right now';
+      big = 'OPEN';
+      sub = 'Today: <strong>' + fmtTime(d.today_open) + ' – ' + fmtTime(d.today_close) + '</strong>';
+      // Capacity warning
+      if(d.capacity_max > 0 && d.capacity_current >= d.capacity_max){
+        cls += ' warn'; sub += '<br>⚠ <strong>At capacity</strong> — call ahead.';
+      } else if(d.capacity_max > 0 && d.capacity_current >= d.capacity_max * 0.8){
+        sub += '<br>⚡ <strong>Busy</strong> — ' + d.capacity_current + ' of ' + d.capacity_max + ' in the park.';
+      }
+    } else if(d.status === 'opens_later'){
+      cls += ' warn';
+      label = '⏰ opens later today';
+      big = 'OPENING SOON';
+      sub = 'Today: <strong>' + fmtTime(d.today_open) + ' – ' + fmtTime(d.today_close) + '</strong>';
+    } else if(d.status === 'closed_for_today'){
+      cls += ' closed';
+      label = '🌙 closed for the day';
+      big = 'CLOSED';
+      sub = 'Today\'s session ended at ' + fmtTime(d.today_close) + '. Schedule below 👇';
+    } else {
+      cls += ' closed';
+      label = '🚪 status';
+      big = 'CHECK BACK';
+      sub = 'Hours unavailable — call us or check 2ntr.com.';
+    }
+
+    var html = '<div class="' + cls + '">';
+    html += '<div class="label">' + label + '</div>';
+    html += '<div class="big">' + big + '</div>';
+    html += '<div class="sub">' + sub + '</div>';
+
+    // Capacity meta (only when configured + not in emergency)
+    if(!d.emergency && d.capacity_max > 0){
+      var capPct = d.capacity_max > 0 ? Math.min(100, d.capacity_current / d.capacity_max * 100) : 0;
+      var capCls = capPct >= 100 ? 'full' : capPct >= 80 ? 'warn' : '';
+      html += '<div class="meta-row">';
+      html += '<div class="cell ' + capCls + '"><div class="ml">In the park</div><div class="mv">' + d.capacity_current + ' / ' + d.capacity_max + '</div></div>';
+      if(d.is_open && d.today_close){
+        html += '<div class="cell"><div class="ml">Closes</div><div class="mv">' + fmtTime(d.today_close) + '</div></div>';
+      }
+      html += '</div>';
+    }
+
+    html += '</div>';
+
+    // Action buttons
+    html += '<div class="actions">';
+    html += '<a href="https://www.2ntr.com" class="btn"><span>2ntr.com</span></a>';
+    if(d.biz_phone){
+      html += '<a href="tel:' + escHtml(d.biz_phone) + '" class="btn outline"><span>📞 ' + escHtml(d.biz_phone) + '</span></a>';
+    }
+    if(d.biz_addr){
+      html += '<a href="https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.biz_addr) + '" target="_blank" class="btn outline"><span>📍 directions</span></a>';
+    }
+    html += '</div>';
+
+    // Weekly hours (only when not emergency)
+    if(!d.emergency && d.hours && typeof d.hours === 'object'){
+      html += '<div class="week-hours">';
+      html += '<h3>This week</h3>';
+      var dowOrder = ['mon','tue','wed','thu','fri','sat','sun'];
+      var dowNames = { mon:'Monday', tue:'Tuesday', wed:'Wednesday', thu:'Thursday', fri:'Friday', sat:'Saturday', sun:'Sunday' };
+      dowOrder.forEach(function(dow){
+        var hr = d.hours[dow];
+        var isToday = dow === d.today_dow;
+        var hrText = (hr && hr.open && hr.close) ? (fmtTime(hr.open) + ' – ' + fmtTime(hr.close)) : 'closed';
+        html += '<div class="row' + (isToday ? ' today' : '') + '">';
+        html += '<span>' + dowNames[dow] + (isToday ? ' · today' : '') + '</span>';
+        html += '<span>' + hrText + '</span>';
+        html += '</div>';
+      });
+      html += '</div>';
+    }
+
+    html += '<div class="refresh-pill">Auto-refreshes every 60 seconds · last update just now</div>';
+
+    wrap.innerHTML = html;
+
+    // Footer info
+    var fi = document.getElementById('footerInfo');
+    if(fi && d.biz_name){ fi.textContent = d.biz_name + ' · live status'; }
+    var fp = document.getElementById('footerPhone');
+    if(fp && d.biz_phone){ fp.href = 'tel:' + d.biz_phone; fp.textContent = d.biz_phone; }
+    else if(fp){ fp.style.display = 'none'; }
+    var fm = document.getElementById('footerMap');
+    if(fm && d.biz_addr){ fm.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(d.biz_addr); }
+    else if(fm){ fm.style.display = 'none'; }
+  }
+
+  function renderError(msg){
+    var wrap = document.getElementById('wrap');
+    wrap.innerHTML = '<div class="status-card"><div class="label">⚠ status unavailable</div>'
+      + '<div class="big">—</div>'
+      + '<div class="sub">' + escHtml(msg||'Couldn\'t load park status. Try refreshing or call us.') + '</div>'
+      + '<div class="actions"><a href="https://www.2ntr.com" class="btn">2ntr.com</a></div>'
+      + '</div>';
+  }
+
+  async function loadStatus(){
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/public_park_status', {
+        method:'POST',
+        headers: {
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+          'Content-Type': 'application/json'
+        },
+        body: '{}'
+      });
+      if(!res.ok){
+        var msg = await res.text().catch(function(){return '';});
+        if(/Could not find|does not exist/i.test(msg)){
+          renderError('Status RPC isn\'t set up yet.');
+          return;
+        }
+        throw new Error(msg || ('HTTP ' + res.status));
+      }
+      var data = await res.json();
+      render(data);
+    } catch(e){
+      console.error('Status load failed:', e);
+      renderError(e.message);
+    }
+  }
+
+  loadStatus();
+  // Auto-refresh every 60s so the page stays live without a manual reload
+  setInterval(loadStatus, 60000);
+</script>
+</body>
+</html>

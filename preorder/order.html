@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre-order form · 2nd Nature</title>
+<meta name="description" content="Submit your pre-order. Locked-in pricing, Sunday midnight cutoff, 2-week shipping.">
+<link rel="icon" href="https://2ntr.com/favicon.ico">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    color:#14161a;background:#fafaf7;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:#e11d48;text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  .countdown-bar{background:#14161a;color:#fff;text-align:center;padding:10px 16px;font-size:.82rem;font-weight:600;letter-spacing:.02em;border-bottom:2px solid #e11d48;}
+  .countdown-bar strong{color:#e11d48;}
+
+  .site-header{background:#fff;border-bottom:1px solid #e6e6e1;padding:18px 20px;}
+  .site-header .inner{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;}
+  .site-header .logo{font-size:1.4rem;font-weight:900;letter-spacing:-.02em;}
+  .site-header .logo .accent{color:#e11d48;}
+  .site-header nav{display:flex;gap:24px;font-size:.9rem;font-weight:600;}
+
+  .container{max-width:780px;margin:0 auto;padding:40px 20px;}
+  .back{font-size:.88rem;color:#6b7280;margin-bottom:18px;display:inline-block;}
+  .back:hover{color:#e11d48;}
+
+  .brand-banner{
+    background:#fff;border:1px solid #e6e6e1;border-radius:14px;
+    padding:24px 28px;margin-bottom:24px;
+    display:flex;align-items:center;gap:18px;flex-wrap:wrap;
+  }
+  .brand-banner .icon{
+    width:64px;height:64px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.6rem;font-weight:900;color:#fff;flex-shrink:0;
+  }
+  .brand-banner .body{flex:1;min-width:200px;}
+  .brand-banner h1{font-size:1.5rem;font-weight:800;letter-spacing:-.01em;margin-bottom:4px;}
+  .brand-banner .terms{font-size:.85rem;color:#4b5563;}
+  .brand-banner .terms strong{color:#15803d;}
+
+  .form-card{
+    background:#fff;border:1px solid #e6e6e1;border-radius:14px;
+    padding:28px 30px;
+  }
+  .form-card h2{font-size:1.15rem;font-weight:800;margin-bottom:6px;}
+  .form-card .sub{color:#6b7280;font-size:.88rem;margin-bottom:22px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+  .form-group{display:flex;flex-direction:column;gap:5px;}
+  .form-group.full{grid-column:1 / -1;}
+  .form-group label{font-size:.8rem;font-weight:700;color:#14161a;}
+  .form-group .req{color:#e11d48;}
+  .form-group input,.form-group select,.form-group textarea{
+    padding:11px 14px;border:1px solid #d1d5db;border-radius:8px;
+    font-family:inherit;font-size:.95rem;
+    transition:border-color .12s,box-shadow .12s;
+    background:#fff;
+  }
+  .form-group input:focus,.form-group select:focus,.form-group textarea:focus{
+    outline:0;border-color:#e11d48;box-shadow:0 0 0 3px rgba(225,29,72,.12);
+  }
+  .form-group textarea{resize:vertical;min-height:80px;}
+  .form-group .hint{font-size:.74rem;color:#6b7280;margin-top:2px;}
+
+  .terms-box{
+    background:#fef3c7;border:1px solid #fde68a;border-radius:10px;
+    padding:14px 18px;margin:18px 0 22px;
+    font-size:.85rem;color:#92400e;line-height:1.5;
+  }
+  .terms-box strong{display:block;margin-bottom:6px;color:#78350f;}
+  .terms-box ul{margin:0;padding-left:20px;}
+  .terms-box li{margin-bottom:3px;}
+
+  .submit-row{display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;}
+  .btn{
+    padding:12px 22px;border:none;border-radius:8px;
+    font-family:inherit;font-size:.95rem;font-weight:700;
+    cursor:pointer;transition:background .12s;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:#e11d48;color:#fff;}
+  .btn-primary:hover{background:#be123c;}
+  .btn-outline{background:#fff;color:#14161a;border:1px solid #d1d5db;}
+  .btn-outline:hover{background:#fafaf7;}
+
+  footer{background:#14161a;color:#9ca3af;padding:24px 20px;text-align:center;font-size:.78rem;margin-top:40px;}
+  footer a{color:#fff;}
+
+  @media(max-width:640px){
+    .form-row{grid-template-columns:1fr;}
+    .container{padding:24px 16px;}
+    .form-card{padding:22px 18px;}
+    .brand-banner{padding:18px 20px;}
+  }
+</style>
+</head>
+<body>
+  <div class="countdown-bar">
+    🎁 <strong>PRE-ORDER SALE ENDS</strong> Sunday at midnight ET ·
+    Submit before deadline to lock in pricing
+  </div>
+
+  <header class="site-header">
+    <div class="inner">
+      <div class="logo">🛹 2nd Nature <span class="accent">Skate</span></div>
+      <nav>
+        <a href="https://2ntr.com">Home</a>
+        <a href="index.html">Pre-order</a>
+        <a href="https://2ntr.com/contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <a href="index.html" class="back">← Back to brands</a>
+
+    <div class="brand-banner" id="brandBanner">
+      <div class="icon" id="brandIcon" style="background:#14161a;">??</div>
+      <div class="body">
+        <h1 id="brandName">Pre-order</h1>
+        <div class="terms" id="brandTerms">Tell us what you want — we'll text you the pricing + deposit link within a few hours.</div>
+      </div>
+    </div>
+
+    <form class="form-card" id="orderForm" onsubmit="return submitOrder(event);">
+      <h2>Pre-order request</h2>
+      <p class="sub">Tell us what you want — even if you're not sure of the exact SKU. We'll text back with availability + pricing within a few hours.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your name <span class="req">*</span></label>
+          <input type="text" name="name" required placeholder="Tommy K">
+        </div>
+        <div class="form-group">
+          <label>Phone <span class="req">*</span></label>
+          <input type="tel" name="phone" required placeholder="(914) 555-1234">
+          <div class="hint">We text you the pricing + deposit link.</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Email <span class="req">*</span></label>
+          <input type="email" name="email" required placeholder="tommy@example.com">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>What do you want? <span class="req">*</span></label>
+          <textarea name="items" required placeholder="e.g. 2× S1 Lifer helmet, size M, black · OR · 1× Vinyl 1.1 deck, 8.25, blue colorway · OR · just describe what you're looking for"></textarea>
+          <div class="hint">Brand · model · size · color · quantity. If you don't know exact SKUs, just describe what you want — we'll figure it out.</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Pickup or ship?</label>
+          <select name="fulfillment">
+            <option value="pickup">Pickup at the shop</option>
+            <option value="local">Local Peekskill / Westchester delivery (free)</option>
+            <option value="ship">Ship — actual cost, no markup</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Budget (optional)</label>
+          <input type="text" name="budget" placeholder="$200 or unsure">
+          <div class="hint">Helps us suggest options if you're flexible.</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group full">
+          <label>Anything else?</label>
+          <textarea name="notes" placeholder="Special requests, deadlines, gift?, etc." rows="2"></textarea>
+        </div>
+      </div>
+
+      <div class="terms-box">
+        <strong>By submitting this pre-order request</strong>
+        <ul>
+          <li><strong>Pricing locked</strong> at this week's pre-order discount when you submit before Sunday at midnight ET.</li>
+          <li><strong>50% deposit</strong> due to confirm — we'll text you a payment link.</li>
+          <li><strong>Up to 2 weeks</strong> to ship — most arrive faster.</li>
+          <li><strong>Cancel free</strong> until Sunday at 6pm ET (we lock the order with the supplier after that).</li>
+          <li>Questions? Text <a href="sms:+19144024624">(914) 402-4624</a> or email <a href="mailto:info@2ntr.com">info@2ntr.com</a>.</li>
+        </ul>
+      </div>
+
+      <div class="submit-row">
+        <a href="index.html" class="btn btn-outline">Cancel</a>
+        <button type="submit" class="btn btn-primary">📨 Submit pre-order →</button>
+      </div>
+    </form>
+
+    <div id="successCard" style="display:none;background:#dcfce7;border:1px solid #86efac;border-radius:14px;padding:32px;text-align:center;margin-top:20px;">
+      <div style="font-size:3rem;margin-bottom:12px;">✓</div>
+      <h2 style="font-size:1.4rem;font-weight:800;color:#14532d;margin-bottom:10px;">Pre-order submitted!</h2>
+      <p style="color:#166534;margin-bottom:14px;">We'll text you within a few hours with pricing + the deposit link. Thanks for skating with us 🛹</p>
+      <a href="index.html" class="btn btn-outline">← Back to brands</a>
+    </div>
+
+  </div>
+
+  <footer>
+    <a href="https://2ntr.com">2nd Nature Skate</a> · 1 Highland Industrial Park, Peekskill, NY · <a href="mailto:info@2ntr.com">info@2ntr.com</a> · <a href="tel:+19144024624">(914) 402-4624</a>
+  </footer>
+
+<script>
+  // ── Brand banner — pre-fill from URL param ?brand=xxx ──────────
+  var brands = {
+    's1-helmets':       { name:'S1 Helmets',          icon:'S1',     color:'#1f2128', terms:'<strong>25% off · free ship 6+</strong> · all sizes restocked · pre-order pricing locked until Sunday midnight ET' },
+    'vinyl-skateboards':{ name:'Vinyl Skateboards',   icon:'VINYL',  color:'#92400e', terms:'<strong>1.1 Drop · limited stock</strong> · 8% off at 12 boards / 12% off at 24 · order by Sunday midnight' },
+    'toa-distribution': { name:'TOA Distribution',     icon:'TOA',    color:'#0f172a', terms:'<strong>Spring/Summer prebook</strong> · Theories · Hopps · Traffic · Picture Show completes' },
+    'sidewalk':         { name:'Sidewalk Distribution',icon:'SW',     color:'#9d174d', terms:'<strong>Distributor pricing</strong> · mix &amp; match decks + hardware' },
+    'gx1000':           { name:'GX1000 SU26',          icon:'GX',     color:'#1e3a8a', terms:'<strong>Notify me list</strong> · SU26 drop confirmed · expected in 1-2 weeks' },
+    'custom':           { name:'Custom request',      icon:'?',      color:'#dc2626', terms:'<strong>Tell us what you need</strong> — we work with 30+ brands and distributors' }
+  };
+  function getParam(k){ var u = new URL(location.href); return u.searchParams.get(k); }
+  function applyBrand(){
+    var b = getParam('brand') || 'custom';
+    var info = brands[b] || brands['custom'];
+    document.getElementById('brandName').textContent = info.name;
+    document.getElementById('brandIcon').textContent = info.icon;
+    document.getElementById('brandIcon').style.background = info.color;
+    document.getElementById('brandTerms').innerHTML = info.terms;
+    document.title = info.name + ' · pre-order · 2nd Nature';
+  }
+  applyBrand();
+
+  // ── Submit handler ─────────────────────────────────────────────
+  // Uses mailto fallback to email info@2ntr.com directly. No Supabase
+  // dependency for the public site — keeps it deployable anywhere
+  // without backend setup. Doug receives every submission as an email.
+  function submitOrder(ev){
+    ev.preventDefault();
+    var form = ev.target;
+    var data = new FormData(form);
+    var brand = getParam('brand') || 'custom';
+    var brandName = (brands[brand] && brands[brand].name) || 'Custom request';
+
+    var lines = [];
+    lines.push('Pre-order request · ' + brandName);
+    lines.push('═══════════════════════════════════════');
+    lines.push('Submitted: ' + new Date().toLocaleString());
+    lines.push('Brand: ' + brandName);
+    lines.push('');
+    lines.push('Customer:');
+    lines.push('  Name: '  + (data.get('name')  || '—'));
+    lines.push('  Phone: ' + (data.get('phone') || '—'));
+    lines.push('  Email: ' + (data.get('email') || '—'));
+    lines.push('');
+    lines.push('Order:');
+    lines.push((data.get('items') || '—'));
+    lines.push('');
+    lines.push('Fulfillment: ' + (data.get('fulfillment') || 'pickup'));
+    lines.push('Budget: ' + (data.get('budget') || '—'));
+    if(data.get('notes')){
+      lines.push('');
+      lines.push('Notes:');
+      lines.push(data.get('notes'));
+    }
+    lines.push('');
+    lines.push('— Submitted via preorder.2ntr.com');
+
+    var subject = 'Pre-order: ' + brandName + ' · ' + (data.get('name') || 'Unknown');
+    var body = lines.join('\n');
+    var mailto = 'mailto:info@2ntr.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    // Fire mailto — opens user's mail client. Best path because:
+    //  (a) zero backend setup (works anywhere this site is hosted)
+    //  (b) Doug gets the email immediately
+    //  (c) customer gets a copy via their sent folder
+    //  (d) no PII through our server
+    window.location.href = mailto;
+
+    // Show success card after a brief delay (most mail clients take ~1s to open)
+    setTimeout(function(){
+      form.style.display = 'none';
+      document.getElementById('successCard').style.display = 'block';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }, 1200);
+    return false;
+  }
+</script>
+</body>
+</html>

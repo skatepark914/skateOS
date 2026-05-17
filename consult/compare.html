@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hudson Valley AI vs. agencies, freelancers, offshore</title>
+<meta name="description" content="Side-by-side: Hudson Valley AI vs traditional agency, NYC firm, offshore, freelancer, DIY no-code. Honest comparison.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<meta property="og:title" content="Hudson Valley AI vs. the alternatives">
+<meta property="og:description" content="Side-by-side comparison: agency vs NYC firm vs offshore vs freelancer vs DIY.">
+<meta property="og:image" content="https://consult.skateos.com/og.png">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:#0a0a0a;background:#fafaf9;line-height:1.6;-webkit-font-smoothing:antialiased;}
+  a{color:inherit;text-decoration:none;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:1200px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;}
+  h1{font-size:clamp(2rem,4.4vw,3.2rem);font-weight:900;letter-spacing:-0.024em;line-height:1.05;margin-bottom:14px;}
+  h1 .accent{color:#e11d48;}
+  .subtitle{font-size:1.15rem;color:#404040;max-width:720px;margin-bottom:36px;}
+
+  /* Honest disclaimer */
+  .disclaimer{
+    background:#fef3c7;border-left:3px solid #d97706;padding:14px 18px;border-radius:6px;
+    margin-bottom:30px;font-size:.86rem;color:#7c2d12;
+  }
+  .disclaimer strong{color:#7c2d12;}
+
+  /* Comparison table */
+  .compare-wrap{overflow-x:auto;margin-bottom:30px;border:1px solid #e5e5e0;border-radius:14px;background:#fff;}
+  table.compare{width:100%;border-collapse:collapse;font-size:.88rem;min-width:920px;}
+  table.compare th, table.compare td{padding:14px 16px;border-bottom:1px solid #f3f4f6;text-align:left;vertical-align:top;}
+  table.compare thead th{
+    background:#0a0a0a;color:#fafaf9;font-weight:700;font-size:.74rem;
+    text-transform:uppercase;letter-spacing:.06em;border:none;
+    position:sticky;top:0;
+  }
+  table.compare thead th.us{background:#e11d48;color:#fff;}
+  table.compare th:first-child, table.compare td:first-child{
+    font-weight:700;color:#0a0a0a;background:#fafaf9;width:160px;font-size:.84rem;
+  }
+  table.compare td.us{background:#fff5f7;font-weight:600;color:#0a0a0a;}
+  table.compare td .y{color:#15803d;font-weight:700;}
+  table.compare td .n{color:#dc2626;font-weight:700;}
+  table.compare td .m{color:#d97706;font-weight:700;}
+  table.compare tbody tr:hover{background:#fafaf9;}
+  table.compare tbody tr:hover td.us{background:#fed7e3;}
+
+  .scroll-hint{font-size:.78rem;color:#737373;text-align:center;margin-bottom:14px;font-style:italic;}
+  @media(min-width:980px){.scroll-hint{display:none;}}
+
+  /* Key differentiator cards */
+  .diffs{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:30px 0;
+  }
+  .diff{
+    background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:22px;
+  }
+  .diff .ic{font-size:1.6rem;margin-bottom:10px;display:block;}
+  .diff h3{font-size:1.05rem;font-weight:800;letter-spacing:-0.012em;margin-bottom:6px;}
+  .diff p{font-size:.86rem;color:#404040;line-height:1.55;}
+
+  /* When to pick someone else section */
+  .alt-card{
+    background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:24px;margin-bottom:14px;
+    display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start;
+  }
+  .alt-card .ic{font-size:2rem;}
+  .alt-card h3{font-size:1.15rem;font-weight:800;margin-bottom:4px;}
+  .alt-card p{font-size:.92rem;color:#404040;line-height:1.55;}
+  .alt-card strong{color:#0a0a0a;}
+
+  .cta-bottom{background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:36px;margin-top:40px;text-align:center;}
+  .cta-bottom h2{color:#fafaf9;font-size:1.6rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;}
+  .cta-bottom .btn{display:inline-block;padding:12px 24px;background:#fb7185;color:#fafaf9;border-radius:8px;font-weight:700;}
+  .cta-bottom .btn:hover{background:#be123c;}
+  .cta-bottom .btn-out{display:inline-block;padding:12px 24px;background:transparent;color:#a3a3a3;border:1.5px solid #525252;border-radius:8px;font-weight:700;margin-left:8px;}
+  .cta-bottom .btn-out:hover{background:#262626;color:#fafaf9;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Principal-led software + security consultancy · <a href="security.html">How we handle security →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="products.html">Products</a>
+    <a href="work.html">Work</a>
+    <a href="security.html">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html" class="active">Compare</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Reach out →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Compare</div>
+  <h1>How we compare. <span class="accent">Honestly.</span></h1>
+  <p class="subtitle">Five common alternatives for getting custom software built. Side-by-side, no marketing fluff. Hudson Valley AI fits certain shapes of project well — for other shapes, a freelancer, a no-code stack, or a larger agency is the smarter pick. Here's how to tell.</p>
+
+  <div class="disclaimer"><strong>Honesty note:</strong> The "agency" / "NYC firm" / "offshore" columns reflect the typical experience folks describe to us. Some are great. The numbers are rough industry ranges — yours may vary. We're more concrete about ourselves than we are about the alternatives, which is the inherent bias of any comparison page. Read accordingly.</p>
+
+  <div class="scroll-hint">↔ scroll the table sideways</div>
+
+  <div class="compare-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="us">Hudson Valley AI</th>
+          <th>Local agency</th>
+          <th>NYC firm</th>
+          <th>Offshore team</th>
+          <th>Solo freelancer</th>
+          <th>No-code DIY</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Time to live URL</td>
+          <td class="us"><span class="y">Day 1</span></td>
+          <td>4–8 weeks</td>
+          <td>6–12 weeks</td>
+          <td>8–16 weeks</td>
+          <td>2–4 weeks</td>
+          <td>2–14 days</td>
+        </tr>
+        <tr>
+          <td>Project minimum</td>
+          <td class="us"><strong>$5,000</strong></td>
+          <td>$15k–$50k</td>
+          <td>$50k–$250k</td>
+          <td>$10k–$30k</td>
+          <td>$2k–$10k</td>
+          <td>$0–$300/mo</td>
+        </tr>
+        <tr>
+          <td>Hourly equivalent</td>
+          <td class="us">~$200/hr<br><span style="font-size:.74rem;color:#737373;">but billed fixed-scope</span></td>
+          <td>$150–$300/hr</td>
+          <td>$300–$600/hr</td>
+          <td>$30–$80/hr</td>
+          <td>$80–$200/hr</td>
+          <td>n/a</td>
+        </tr>
+        <tr>
+          <td>Project manager between you &amp; the work</td>
+          <td class="us"><span class="n">No — direct line</span></td>
+          <td>Yes (always)</td>
+          <td>Yes + account exec</td>
+          <td>Yes + handoffs</td>
+          <td>No</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>You own the source code</td>
+          <td class="us"><span class="y">Yes, day one</span></td>
+          <td>Usually yes</td>
+          <td>Usually yes</td>
+          <td>Sometimes contested</td>
+          <td>Yes</td>
+          <td>No (locked into platform)</td>
+        </tr>
+        <tr>
+          <td>Security review included</td>
+          <td class="us"><span class="y">Yes — Jon does a look-over on every Sprint</span></td>
+          <td>Sometimes; extra cost</td>
+          <td>Yes; extra cost ($30k+)</td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">Rarely</span></td>
+          <td>Platform-dependent</td>
+        </tr>
+        <tr>
+          <td>Time-zone alignment</td>
+          <td class="us"><span class="y">ET, same as you</span></td>
+          <td>Same TZ</td>
+          <td>Same TZ</td>
+          <td><span class="n">8–12hr off</span></td>
+          <td>Variable</td>
+          <td>n/a</td>
+        </tr>
+        <tr>
+          <td>Communication latency</td>
+          <td class="us"><span class="y">Hours, in business day</span></td>
+          <td>1–2 days</td>
+          <td>2–5 days (PM filter)</td>
+          <td>1–2 days (TZ + handoffs)</td>
+          <td>Hours–days</td>
+          <td>Self-serve docs</td>
+        </tr>
+        <tr>
+          <td>Engagement letter / contract</td>
+          <td class="us">One-page scope &amp; terms</td>
+          <td>Multi-page MSA</td>
+          <td>Multi-page MSA (often onerous)</td>
+          <td>Variable quality</td>
+          <td>Often handshake</td>
+          <td>Click-through TOS</td>
+        </tr>
+        <tr>
+          <td>Mid-project scope changes</td>
+          <td class="us"><strong>Day-of, w/ written change order</strong></td>
+          <td>1–2 weeks (sprint cycle)</td>
+          <td>2–4 weeks (committee)</td>
+          <td>1–3 weeks (handoff lag)</td>
+          <td>Day-of</td>
+          <td>If platform allows</td>
+        </tr>
+        <tr>
+          <td>Maintenance after launch</td>
+          <td class="us"><span class="y">30 days included; retainer optional</span></td>
+          <td>Retainer required</td>
+          <td>Retainer required</td>
+          <td>Often abandoned</td>
+          <td>If freelancer available</td>
+          <td>Self-managed</td>
+        </tr>
+        <tr>
+          <td>Hits a deadline because?</td>
+          <td class="us">Daily ship cadence</td>
+          <td>Sprint plan</td>
+          <td>Steerco governance</td>
+          <td>Scope crunch</td>
+          <td>Discipline</td>
+          <td>n/a</td>
+        </tr>
+        <tr>
+          <td>Misses a deadline because?</td>
+          <td class="us">Honest scope creep convo + change order</td>
+          <td>Scope creep + sprint slips</td>
+          <td>Internal handoffs + politics</td>
+          <td>TZ + miscommunication</td>
+          <td>Life happens</td>
+          <td>You hit the platform's limit</td>
+        </tr>
+        <tr>
+          <td>Local Hudson Valley presence</td>
+          <td class="us"><span class="y">Yes</span></td>
+          <td>Sometimes</td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td>Maybe</td>
+          <td>n/a</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.018em;margin-top:30px;margin-bottom:14px;">Where we win</h2>
+
+  <div class="diffs">
+    <div class="diff">
+      <span class="ic">⚡</span>
+      <h3>Day 1 live URL</h3>
+      <p>While agencies are still in discovery / Figma cycles, we have working software you can show people. Bias to ship over plan.</p>
+    </div>
+    <div class="diff">
+      <span class="ic">🎯</span>
+      <h3>Direct line to us</h3>
+      <p>You talk to Doug + Jon. The same two people who scope your project ship your project. No PM between you and the work.</p>
+    </div>
+    <div class="diff">
+      <span class="ic">🛡</span>
+      <h3>Security baked in</h3>
+      <p>Every Production Sprint includes Jon doing a security look-over before delivery. You don't have to remember to ask for it.</p>
+    </div>
+    <div class="diff">
+      <span class="ic">📦</span>
+      <h3>You own everything</h3>
+      <p>Source code transferred day one. No vendor lock-in, no licensing tricks, no "we'll send the repo when you pay the final invoice" games.</p>
+    </div>
+  </div>
+
+  <h2 style="font-size:1.6rem;font-weight:800;letter-spacing:-0.018em;margin-top:40px;margin-bottom:8px;">When you should pick someone else</h2>
+  <p style="color:#404040;font-size:.95rem;margin-bottom:24px;">Honesty matters more than closing every deal. If any of these describe your situation, save us both time and pick the right tool.</p>
+
+  <div class="alt-card">
+    <span class="ic">🎨</span>
+    <div>
+      <h3>You need a brand-only design firm</h3>
+      <p>If your project is "redesign our logo + brand identity + marketing site" and you don't need code, hire a <strong>brand studio</strong>. We do design that supports the software we build, but we're not a brand agency.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">📱</span>
+    <div>
+      <h3>You need native mobile-first iOS/Android with deep platform features</h3>
+      <p>We build mobile (React Native / Expo) but for highly-platform-specific work — ARKit, deep iOS integrations, App Store optimization at scale — a <strong>specialist mobile shop</strong> is a better fit.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">🧪</span>
+    <div>
+      <h3>You need cutting-edge ML research or training</h3>
+      <p>We integrate AI (Claude, GPT, etc.) into production software very well. We don't train custom models from scratch. For that, find an <strong>ML research consultancy</strong>.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">💰</span>
+    <div>
+      <h3>Your budget is under $3,000</h3>
+      <p>Below that we're not the cheapest path. Try a <strong>solo freelancer on Upwork</strong> or a <strong>no-code platform</strong> (Webflow, Bubble, Glide — $0–$300/mo).</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">🏢</span>
+    <div>
+      <h3>You need a full IT department, 24/7 on-call support, or a formal compliance attestation</h3>
+      <p>Our scope is project-based software + security work. Continuous follow-the-sun managed-services or formal compliance programs are a different shape of engagement. Hire a <strong>managed-services firm</strong> or a <strong>tier-1 consultancy</strong> for those.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">⏰</span>
+    <div>
+      <h3>You want it built tomorrow with no input from you</h3>
+      <p>Even our Spike package needs you available for ~30 minutes of decisions on day 1. If you can't show up at all, we can't help. Try a <strong>fully-managed no-code platform</strong> instead.</p>
+    </div>
+  </div>
+
+  <!-- ─── SECOND COMPARISON · vs LEGACY SaaS PRODUCTS ─────────────── -->
+  <h2 style="font-size:clamp(1.7rem,3vw,2.4rem);font-weight:900;letter-spacing:-0.022em;margin-top:50px;margin-bottom:10px;">Our products vs. <span style="color:#e11d48;">legacy SaaS.</span></h2>
+  <p class="subtitle" style="margin-bottom:24px;">The other comparison that matters: if you're considering buying skateOS or Branch Manager (deploy-your-own model) instead of staying on Mindbody / Square / Jobber / ServiceTitan, here's the head-to-head. This is the ownership-vs-rental decision, not the build-vs-buy decision.</p>
+
+  <div class="disclaimer"><strong>Honesty note:</strong> The legacy columns reflect what real customers report after years on those platforms. Some operators have great experiences with the legacy products — your mileage may vary by vertical, size, and what specific features you need.</div>
+
+  <div class="scroll-hint">↔ scroll the table sideways</div>
+
+  <div class="compare-wrap">
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="us">skateOS / Branch Manager<br><span style="font-weight:500;font-size:.74rem;opacity:.85;">deploy-your-own</span></th>
+          <th>Mindbody</th>
+          <th>Square POS</th>
+          <th>Jobber</th>
+          <th>ServiceTitan</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Pricing model</td>
+          <td class="us">$15-25k one-time<br><span style="font-size:.74rem;color:#737373;">+ ~$50/mo infra</span></td>
+          <td>$129-499/mo + add-ons</td>
+          <td>$0-$165/mo + 2.6% per swipe + add-ons</td>
+          <td>$59-$349/mo</td>
+          <td>$500-$2000+/mo</td>
+        </tr>
+        <tr>
+          <td>5-year TCO (typical mid-size operator)</td>
+          <td class="us"><strong>~$23-46k</strong></td>
+          <td>~$30-50k</td>
+          <td>~$30-40k (+ markup on processing)</td>
+          <td>~$20-35k</td>
+          <td>$60-150k+</td>
+        </tr>
+        <tr>
+          <td>Source code yours</td>
+          <td class="us"><span class="y">Yes — in your git repo</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+        </tr>
+        <tr>
+          <td>Database in your control</td>
+          <td class="us"><span class="y">Yes — your Supabase</span></td>
+          <td><span class="n">No — on their servers</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+        </tr>
+        <tr>
+          <td>Annual price hikes</td>
+          <td class="us"><span class="y">None — you own it</span></td>
+          <td>Routine, ~10-15%/yr</td>
+          <td>Variable, mostly via add-ons + processing</td>
+          <td>~10%/yr</td>
+          <td>~15-25%/yr (PE-owned)</td>
+        </tr>
+        <tr>
+          <td>Vendor lock-in (data export)</td>
+          <td class="us"><span class="y">None — standard SQL export</span></td>
+          <td>Painful · CSV export with paid plan</td>
+          <td>OK · CSV export available</td>
+          <td>OK · API + CSV</td>
+          <td>Painful · enterprise contract terms</td>
+        </tr>
+        <tr>
+          <td>Payment processing markup</td>
+          <td class="us"><span class="y">None — direct merchant (Helcim 2.0-2.3% effective)</span></td>
+          <td>Markup on Square / Stripe</td>
+          <td>2.6% + $0.10 published; effective 2.7-2.9%</td>
+          <td>Markup on Stripe (Jobber Payments)</td>
+          <td>Substantial markup</td>
+        </tr>
+        <tr>
+          <td>Custom feature you ask for</td>
+          <td class="us"><span class="y">1-week Fix-it Sprint, $3k</span></td>
+          <td>Roadmap ticket; months or never</td>
+          <td>Not customizable</td>
+          <td>Roadmap ticket</td>
+          <td>Custom dev billed at enterprise rate</td>
+        </tr>
+        <tr>
+          <td>Vertical-specific knowledge</td>
+          <td class="us"><span class="y">Built BY a skate-park / tree-care owner</span></td>
+          <td>Generic wellness/studio</td>
+          <td>Generic retail / restaurant</td>
+          <td>Generic field-service</td>
+          <td>HVAC-first; tree-care force-fit</td>
+        </tr>
+        <tr>
+          <td>Multi-location expansion</td>
+          <td class="us"><span class="y">Multi-tenant by default — new location = new tenant</span></td>
+          <td>Per-location billing + management headache</td>
+          <td>Multi-location at higher tier</td>
+          <td>Per-location billing</td>
+          <td>Multi-location native (paid)</td>
+        </tr>
+        <tr>
+          <td>If the vendor disappears tomorrow</td>
+          <td class="us"><span class="y">You keep running</span></td>
+          <td><span class="n">You scramble to export and migrate</span></td>
+          <td><span class="n">Same</span></td>
+          <td><span class="n">Same</span></td>
+          <td><span class="n">Same</span></td>
+        </tr>
+        <tr>
+          <td>AI-arbitration clause baked into customer contracts</td>
+          <td class="us"><span class="y">Yes — DecisionLayer standard inclusion</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+        </tr>
+        <tr>
+          <td>You can fire your vendor without losing your business</td>
+          <td class="us"><span class="y">Yes — software keeps running</span></td>
+          <td><span class="n">No — your data is theirs</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+          <td><span class="n">No</span></td>
+        </tr>
+        <tr>
+          <td>Time to live</td>
+          <td class="us">3-5 weeks (deploy)</td>
+          <td>2-4 weeks setup</td>
+          <td>Same-day signup</td>
+          <td>1-2 weeks</td>
+          <td>2-6 months (enterprise impl)</td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td class="us">$500k+/yr operators tired of SaaS lock-in</td>
+          <td>Yoga studio, gym, salon</td>
+          <td>Quick-launch small retail / restaurant</td>
+          <td>Generic field-service crew</td>
+          <td>Enterprise field-service (HVAC, electrical)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 style="font-size:1.5rem;font-weight:800;letter-spacing:-0.018em;margin-top:36px;margin-bottom:10px;">When you should stay on legacy SaaS</h2>
+  <p style="color:#404040;font-size:.95rem;margin-bottom:24px;">We're not interested in switching customers who are well-served by what they have. Specifically:</p>
+
+  <div class="alt-card">
+    <span class="ic">📉</span>
+    <div>
+      <h3>You're paying &lt;$100/mo total in software, with low transaction volume</h3>
+      <p>The legacy SaaS bill is too small to justify a $15-25k deploy fee. Stay on what you have. We'll be a fit later when your bill — and your ambition — grows.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">🆕</span>
+    <div>
+      <h3>You're a brand-new business still figuring out the workflow</h3>
+      <p>Build on legacy SaaS first. They've solved 80% of the "what does a typical business in this vertical need" question. Once your workflow is settled and you've hit specific limitations, then look at ownership.</p>
+    </div>
+  </div>
+
+  <div class="alt-card">
+    <span class="ic">🤷</span>
+    <div>
+      <h3>Your current SaaS works fine and isn't actively costing you</h3>
+      <p>If you're not in pain — no price-hike fatigue, no missing-feature frustration, no data-sovereignty concern — there's no urgency to switch. Bookmark us for when the pain shows up.</p>
+    </div>
+  </div>
+
+  <div class="cta-bottom">
+    <h2>Still think we're the right fit?</h2>
+    <p>Quick form. We'll get back to you in a day or two.</p>
+    <div>
+      <a href="intake.html" class="btn">⚡ Start the intake</a>
+      <a href="savings/" class="btn-out">💰 Run the savings math first</a>
+      <a href="ownership/" class="btn-out">📖 Read the ownership case</a>
+      <a href="mailto:doug@2ntr.com?subject=Intro%20chat" class="btn-out">📧 Email instead</a>
+    </div>
+  </div>
+</div>
+
+<footer>© 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="security.html">Security</a> · <a href="work.html">Work</a> · <a href="products.html">Products</a> · <a href="privacy.html">Privacy</a></footer>
+
+</body>
+</html>

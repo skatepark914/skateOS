@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incident Report — 2nd Nature Park</title>
+<!-- =====================================================================
+     SKATEPARK INCIDENT REPORT
+     Adapted from BM's onboarding/incident-report.html — skate-shaped:
+       - skater (often minor) instead of employee
+       - park-area instead of job site
+       - rented gear vs own gear
+       - retention 7 yrs (insurance liability), not 5 yrs (OSHA)
+     Use case: any skater fall, near miss, equipment failure, theft,
+     fight, medical event, or property damage. Fill out within 24 hrs,
+     keep on file 7 years for insurance / liability.
+     Print form: hit "Print Report" → save as PDF or to paper.
+===================================================================== -->
+<style>
+  :root {
+    --rose:       #e11d48;
+    --rose-dark:  #be123c;
+    --rose-light: #ffe4e6;
+    --ink:        #14161a;
+    --ink-soft:   #555a63;
+    --line:       #e6e6e1;
+    --bg:         #f6f6f4;
+    --warn-bg:    #fef3c7;
+    --warn-fg:    #92400e;
+    --danger-bg:  #fee2e2;
+    --danger-fg:  #991b1b;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    background: #fff;
+    color: var(--ink);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .header { text-align:center; margin-bottom: 18px; }
+  .header h1 {
+    font-size: 22px;
+    color: var(--rose-dark);
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+  }
+  .sub  { font-size: 13px; color: var(--ink-soft); }
+  .legal {
+    font-size: 11px;
+    color: var(--ink-soft);
+    text-align: center;
+    margin: 12px auto 22px;
+    padding: 10px 14px;
+    background: var(--warn-bg);
+    color: var(--warn-fg);
+    border-radius: 8px;
+    max-width: 600px;
+  }
+  fieldset {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 18px;
+    margin-bottom: 14px;
+  }
+  legend {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--rose-dark);
+    padding: 0 8px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .row { display: flex; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+  .row > div { flex: 1; min-width: 180px; }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  input, textarea, select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--ink);
+    background: #fff;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: 2px solid var(--rose);
+    outline-offset: -1px;
+    border-color: var(--rose);
+  }
+  textarea { min-height: 90px; resize: vertical; }
+  .check-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .check-row input { width: 16px; height: 16px; flex-shrink: 0; }
+  .grid-checks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 16px;
+  }
+  .sig-line {
+    border-bottom: 1px solid var(--ink);
+    display: inline-block;
+    min-width: 220px;
+    height: 22px;
+    margin: 0 8px;
+    vertical-align: bottom;
+  }
+  .sig-section {
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 2.4;
+  }
+  .btn-primary {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: var(--rose);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 18px;
+    letter-spacing: 0.02em;
+  }
+  .btn-primary:hover { background: var(--rose-dark); }
+  .btn-ghost {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  .btn-ghost:hover { background: var(--bg); }
+  .footer {
+    text-align: center;
+    font-size: 10px;
+    color: var(--ink-soft);
+    margin-top: 26px;
+    line-height: 1.6;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+  .danger-callout {
+    padding: 12px 14px;
+    background: var(--danger-bg);
+    color: var(--danger-fg);
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  @media print {
+    .btn-primary, .btn-ghost, .legal { display: none; }
+    body { padding: 12px; font-size: 11px; max-width: 100%; }
+    fieldset { page-break-inside: avoid; padding: 10px 12px; }
+    input, textarea, select {
+      border: none;
+      border-bottom: 1px solid #999;
+      border-radius: 0;
+      padding: 4px 0;
+      background: transparent;
+    }
+    .header h1 { color: #000; }
+    legend { color: #000; }
+    .danger-callout { background: #fff; border: 1px solid #000; color: #000; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Skatepark Incident / Injury Report</h1>
+  <div class="sub">2nd Nature Park · Peekskill, NY · Liability / Insurance Record</div>
+</div>
+
+<div class="legal">
+  ⚠ Complete <strong>within 24 hours</strong> of the incident. Retain on file <strong>7 years</strong> per general liability standard. Have the skater (or guardian, if minor) sign before they leave the park.
+</div>
+
+<form id="incident-form" onsubmit="event.preventDefault(); window.print();">
+
+  <!-- ─── INCIDENT DETAILS ─── -->
+  <fieldset>
+    <legend>Incident details</legend>
+    <div class="row">
+      <div><label>Date of incident</label><input type="date" id="i-date" required></div>
+      <div><label>Time</label><input type="time" id="i-time" required></div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Park area</label>
+        <select id="i-area">
+          <option value="">— Select —</option>
+          <option>Street section</option>
+          <option>Bowl / deep end</option>
+          <option>Mini ramp</option>
+          <option>Snake run</option>
+          <option>Beginner / flat area</option>
+          <option>Lobby / front desk</option>
+          <option>Restrooms</option>
+          <option>Parking lot</option>
+          <option>Outside park</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label>Lighting / conditions</label>
+        <select id="i-cond">
+          <option>Normal</option>
+          <option>Crowded session</option>
+          <option>Wet / slippery surface</option>
+          <option>Equipment in transit</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div><label>Specific spot (if applicable)</label><input type="text" id="i-spot" placeholder="e.g. 6-foot quarter-pipe coping, top of ledge, deck of bowl"></div>
+  </fieldset>
+
+  <!-- ─── INJURED SKATER ─── -->
+  <fieldset>
+    <legend>Injured skater</legend>
+    <div class="row">
+      <div><label>Skater name</label><input type="text" id="s-name" required></div>
+      <div><label>Date of birth</label><input type="date" id="s-dob"></div>
+    </div>
+    <div class="row">
+      <div><label>Age</label><input type="number" id="s-age" min="2" max="100"></div>
+      <div>
+        <label>Skill level</label>
+        <select id="s-skill">
+          <option>First time</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+          <option>Pro / sponsored</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div><label>Phone</label><input type="tel" id="s-phone" placeholder="(914) 555-0123"></div>
+      <div>
+        <label>Pass / status</label>
+        <select id="s-pass">
+          <option>Day pass</option>
+          <option>Punch card</option>
+          <option>Monthly member</option>
+          <option>Annual member</option>
+          <option>Lesson student</option>
+          <option>Birthday party guest</option>
+          <option>Comped / industry</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+      <div>
+        <label>Waiver on file?</label>
+        <select id="s-waiver">
+          <option>YES — on file (Smartwaiver)</option>
+          <option>YES — paper waiver attached</option>
+          <option>NO — investigate why</option>
+        </select>
+      </div>
+      <div>
+        <label>Helmet worn?</label>
+        <select id="s-helmet">
+          <option>Yes — own helmet</option>
+          <option>Yes — rented from us</option>
+          <option>No</option>
+          <option>Helmet was provided but not worn correctly</option>
+        </select>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- ─── GUARDIAN (only if minor) ─── -->
+  <fieldset>
+    <legend>Parent / Guardian (if skater is under 18)</legend>
+    <div class="row">
+      <div><label>Guardian name</label><input type="text" id="g-name"></div>
+      <div><label>Relationship</label><input type="text" id="g-rel" placeholder="e.g. mother, father, grandparent"></div>
+    </div>
+    <div class="row">
+      <div><label>Guardian phone</label><input type="tel" id="g-phone"></div>
+      <div><label>Guardian on-site at incident?</label>
+        <select id="g-onsite"><option>Yes</option><option>No</option></select>
+      </div>
+    </div>
+    <div><label>Time guardian was contacted</label><input type="time" id="g-contacted-time"></div>
+  </fieldset>
+
+  <!-- ─── TYPE OF INCIDENT ─── -->
+  <fieldset>
+    <legend>Type of incident (check all that apply)</legend>
+    <div class="grid-checks">
+      <div class="check-row"><input type="checkbox" id="t-fall"> <label for="t-fall" style="margin:0;">Fall / slam</label></div>
+      <div class="check-row"><input type="checkbox" id="t-collision"> <label for="t-collision" style="margin:0;">Collision (skater-skater)</label></div>
+      <div class="check-row"><input type="checkbox" id="t-cut"> <label for="t-cut" style="margin:0;">Cut / scrape / road rash</label></div>
+      <div class="check-row"><input type="checkbox" id="t-fracture"> <label for="t-fracture" style="margin:0;">Possible fracture / sprain</label></div>
+      <div class="check-row"><input type="checkbox" id="t-head"> <label for="t-head" style="margin:0;">Head impact</label></div>
+      <div class="check-row"><input type="checkbox" id="t-knockout"> <label for="t-knockout" style="margin:0;">Loss of consciousness</label></div>
+      <div class="check-row"><input type="checkbox" id="t-near"> <label for="t-near" style="margin:0;">Near miss (no injury)</label></div>
+      <div class="check-row"><input type="checkbox" id="t-equip"> <label for="t-equip" style="margin:0;">Equipment failure (board, ramp, rental)</label></div>
+      <div class="check-row"><input type="checkbox" id="t-medical"> <label for="t-medical" style="margin:0;">Medical event (seizure, asthma, allergic reaction, etc.)</label></div>
+      <div class="check-row"><input type="checkbox" id="t-fight"> <label for="t-fight" style="margin:0;">Altercation / fight</label></div>
+      <div class="check-row"><input type="checkbox" id="t-theft"> <label for="t-theft" style="margin:0;">Theft / lost property</label></div>
+      <div class="check-row"><input type="checkbox" id="t-property"> <label for="t-property" style="margin:0;">Property damage (park or skater's gear)</label></div>
+      <div class="check-row"><input type="checkbox" id="t-other"> <label for="t-other" style="margin:0;">Other (describe below)</label></div>
+    </div>
+    <div style="margin-top:10px;"><label>Body part injured (if applicable)</label><input type="text" id="i-bodypart" placeholder="e.g. left wrist, chin, right knee"></div>
+    <div style="margin-top:10px;"><label>Equipment involved</label><input type="text" id="i-equip" placeholder="e.g. own deck, rented helmet, mini-ramp coping, vending machine"></div>
+  </fieldset>
+
+  <!-- ─── DESCRIPTION ─── -->
+  <fieldset>
+    <legend>Description — what happened?</legend>
+    <textarea id="i-desc" placeholder="Be specific: where the skater was, what they were attempting, what went wrong, who else was involved." required></textarea>
+  </fieldset>
+
+  <!-- ─── MEDICAL TREATMENT ─── -->
+  <fieldset>
+    <legend>Medical treatment</legend>
+    <div class="grid-checks">
+      <div class="check-row"><input type="checkbox" id="m-none"> <label for="m-none" style="margin:0;">No treatment needed (skater walked away)</label></div>
+      <div class="check-row"><input type="checkbox" id="m-firstaid"> <label for="m-firstaid" style="margin:0;">First aid on site (bandage, ice, etc.)</label></div>
+      <div class="check-row"><input type="checkbox" id="m-rest"> <label for="m-rest" style="margin:0;">Skater rested, sat out remainder of session</label></div>
+      <div class="check-row"><input type="checkbox" id="m-parent-took"> <label for="m-parent-took" style="margin:0;">Parent took to urgent care / doctor</label></div>
+      <div class="check-row"><input type="checkbox" id="m-er"> <label for="m-er" style="margin:0;">Sent to ER / hospital</label></div>
+      <div class="check-row"><input type="checkbox" id="m-911"> <label for="m-911" style="margin:0;">911 called / EMS responded</label></div>
+    </div>
+    <div style="margin-top:10px;"><label>Hospital / urgent care name</label><input type="text" id="m-where" placeholder="e.g. Hudson Valley Hospital, NewYork-Presbyterian"></div>
+    <div style="margin-top:10px;"><label>EMS arrival time (if 911 called)</label><input type="time" id="m-ems-time"></div>
+  </fieldset>
+
+  <!-- ─── WITNESSES ─── -->
+  <fieldset>
+    <legend>Witnesses</legend>
+    <div><label>Witness 1 — Name &amp; phone</label><input type="text" id="w1"></div>
+    <div style="margin-top:8px;"><label>Witness 2 — Name &amp; phone</label><input type="text" id="w2"></div>
+    <div style="margin-top:8px;"><label>Staff member who responded</label><input type="text" id="w-staff"></div>
+  </fieldset>
+
+  <!-- ─── CORRECTIVE ACTION ─── -->
+  <fieldset>
+    <legend>Corrective action</legend>
+    <label>What will be done to prevent this from happening again?</label>
+    <textarea id="c-action" placeholder="e.g. Repaired loose coping, added warning signage, stocked more first-aid supplies, briefed staff on response protocol."></textarea>
+    <div style="margin-top:8px;"><label>Action owner</label><input type="text" id="c-owner" placeholder="Name of person responsible"></div>
+    <div style="margin-top:8px;"><label>Action deadline</label><input type="date" id="c-deadline"></div>
+  </fieldset>
+
+  <!-- ─── PHOTOS / EVIDENCE ─── -->
+  <fieldset>
+    <legend>Photos / evidence</legend>
+    <div style="font-size:13px;color:var(--ink-soft);margin-bottom:8px;">
+      Attach photos of the location, injury (with skater/guardian permission), and damaged equipment. Stored locally on the staff device — do not upload anywhere without parent consent if minor.
+    </div>
+    <input type="file" multiple accept="image/*" id="i-photos">
+  </fieldset>
+
+  <!-- ─── SIGNATURES ─── -->
+  <fieldset>
+    <legend>Signatures</legend>
+    <div class="sig-section">
+      <div>Skater (or guardian if minor): <span class="sig-line"></span> Date: <span class="sig-line" style="min-width:120px"></span></div>
+      <div>Print name: <span class="sig-line"></span></div>
+      <div>Staff who completed report: <span class="sig-line"></span> Date: <span class="sig-line" style="min-width:120px"></span></div>
+      <div>Owner / manager review: <span class="sig-line"></span> Date: <span class="sig-line" style="min-width:120px"></span></div>
+    </div>
+  </fieldset>
+
+  <div id="save-status" style="display:none;padding:12px;border-radius:8px;margin-top:14px;text-align:center;font-weight:700;"></div>
+
+  <div style="display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;">
+    <button type="button" id="btn-save" class="btn-primary" style="flex:2;min-width:200px;" onclick="saveIncident()">💾 Save to records</button>
+    <button type="button" class="btn-primary" style="flex:1;min-width:140px;background:#374151;" onclick="window.print()">🖨 Print</button>
+  </div>
+  <button type="button" class="btn-ghost" onclick="if(confirm('Clear all fields?'))window.location.reload()">Clear form</button>
+</form>
+
+<div class="footer">
+  2nd Nature Park · Peekskill, NY · info@2ntr.com<br>
+  Retain for 7 years per general-liability record-keeping standard.<br>
+  For 911 emergencies dial <strong>911</strong>. For non-emergency police: Peekskill PD <strong>(914) 737-8000</strong>.
+</div>
+
+<!-- ─── Supabase save logic (eval config.js, restore session, POST incident) ─── -->
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+  const cfgScript = await fetch('../config.js').then(r => r.text());
+  // eval config.js into window.APP_CONFIG (it sets window.APP_CONFIG = {...})
+  new Function(cfgScript)();
+  const CFG = window.APP_CONFIG;
+  window.supabaseClient = createClient(CFG.supabaseUrl, CFG.supabaseKey, {
+    auth: { persistSession: true, autoRefreshToken: true }
+  });
+</script>
+<script>
+  // Pre-fill date + time with "now"
+  (function(){
+    var now = new Date();
+    var pad = function(n){ return n<10 ? '0'+n : ''+n; };
+    document.getElementById('i-date').value = now.getFullYear()+'-'+pad(now.getMonth()+1)+'-'+pad(now.getDate());
+    document.getElementById('i-time').value = pad(now.getHours())+':'+pad(now.getMinutes());
+    document.getElementById('s-dob').addEventListener('change', function(){
+      var dob = new Date(this.value);
+      if (isNaN(dob)) return;
+      var age = Math.floor((Date.now() - dob.getTime()) / (365.25*86400000));
+      document.getElementById('s-age').value = age;
+    });
+  })();
+
+  // ── Save handler ──
+  async function saveIncident(){
+    var statusEl = document.getElementById('save-status');
+    var btn = document.getElementById('btn-save');
+    function showStatus(msg, kind){
+      statusEl.style.display = 'block';
+      statusEl.textContent = msg;
+      var palette = { ok:['#dcfce7','#166534'], err:['#fee2e2','#991b1b'], info:['#dbeafe','#1e40af'] }[kind || 'info'];
+      statusEl.style.background = palette[0];
+      statusEl.style.color      = palette[1];
+    }
+
+    // Wait for Supabase client to load
+    var tries = 0;
+    while (!window.supabaseClient && tries < 30) { await new Promise(r => setTimeout(r, 100)); tries++; }
+    if (!window.supabaseClient) { showStatus('Could not load Supabase. Refresh and try again.', 'err'); return; }
+    var sb = window.supabaseClient;
+
+    // Confirm we have an authenticated session
+    var sessionRes = await sb.auth.getSession();
+    if (!sessionRes.data.session) {
+      showStatus('You need to be signed into the admin first. Open admin/index.html in another tab, sign in, then come back.', 'err');
+      return;
+    }
+
+    // Validate required
+    var date = document.getElementById('i-date').value;
+    var time = document.getElementById('i-time').value;
+    var skater = document.getElementById('s-name').value.trim();
+    var desc = document.getElementById('i-desc').value.trim();
+    if (!date || !time) { showStatus('Date and time are required.', 'err'); return; }
+    if (!skater)        { showStatus('Skater name is required.', 'err'); return; }
+    if (!desc)          { showStatus('Description is required.', 'err'); return; }
+
+    btn.disabled = true; btn.textContent = '💾 Saving…';
+
+    // Gather incident_types from checkboxes
+    var typeMap = {
+      't-fall':'fall','t-collision':'collision','t-cut':'cut','t-fracture':'fracture',
+      't-head':'head_impact','t-knockout':'loss_of_consciousness','t-near':'near_miss',
+      't-equip':'equipment_failure','t-medical':'medical_event','t-fight':'altercation',
+      't-theft':'theft','t-property':'property_damage','t-other':'other'
+    };
+    var types = Object.keys(typeMap).filter(function(k){ return document.getElementById(k).checked; }).map(function(k){ return typeMap[k]; });
+
+    // Severity ladder — pick highest checked
+    var sevLadder = [
+      ['m-911','ems_911'],['m-er','er'],['m-parent-took','urgent_care'],
+      ['m-rest','first_aid'],['m-firstaid','first_aid'],['m-none','none']
+    ];
+    var severity = 'none';
+    for (var i = 0; i < sevLadder.length; i++) {
+      if (document.getElementById(sevLadder[i][0]).checked) { severity = sevLadder[i][1]; break; }
+    }
+
+    // waiver_status
+    var waiverRaw = document.getElementById('s-waiver').value || '';
+    var waiverStatus = waiverRaw.indexOf('Smartwaiver') >= 0 ? 'on_file_smartwaiver'
+                     : waiverRaw.indexOf('paper')        >= 0 ? 'on_file_paper'
+                     : waiverRaw.indexOf('NO')           >= 0 ? 'missing'
+                     : null;
+
+    // helmet_status
+    var helmetRaw = document.getElementById('s-helmet').value || '';
+    var helmetStatus = helmetRaw.indexOf('own helmet')   >= 0 ? 'own'
+                     : helmetRaw.indexOf('rented')       >= 0 ? 'rented'
+                     : helmetRaw.indexOf('not worn')     >= 0 ? 'incorrect'
+                     : helmetRaw === 'No'                       ? 'none'
+                     : null;
+
+    // Compose row
+    var occurredAt = new Date(date + 'T' + time + ':00').toISOString();
+    var dob = document.getElementById('s-dob').value || null;
+    var age = parseInt(document.getElementById('s-age').value, 10) || null;
+    var guardianContacted = document.getElementById('g-contacted-time').value;
+    var guardianContactedAt = guardianContacted ? new Date(date + 'T' + guardianContacted + ':00').toISOString() : null;
+    var emsTime = document.getElementById('m-ems-time').value;
+    var emsArrivalAt = emsTime ? new Date(date + 'T' + emsTime + ':00').toISOString() : null;
+    var deadline = document.getElementById('c-deadline').value || null;
+
+    var row = {
+      occurred_at:        occurredAt,
+      park_area:          document.getElementById('i-area').value || null,
+      spot_detail:        document.getElementById('i-spot').value.trim() || null,
+      conditions:         document.getElementById('i-cond').value || null,
+      skater_name:        skater,
+      skater_dob:         dob,
+      skater_age:         age,
+      skater_phone:       document.getElementById('s-phone').value.trim() || null,
+      skater_skill_level: document.getElementById('s-skill').value || null,
+      pass_type:          document.getElementById('s-pass').value || null,
+      waiver_status:      waiverStatus,
+      helmet_status:      helmetStatus,
+      guardian_name:      document.getElementById('g-name').value.trim() || null,
+      guardian_relation:  document.getElementById('g-rel').value.trim() || null,
+      guardian_phone:     document.getElementById('g-phone').value.trim() || null,
+      guardian_on_site:   (function(){ var v = document.getElementById('g-onsite').value; return v === 'Yes' ? true : v === 'No' ? false : null; })(),
+      guardian_contacted_at: guardianContactedAt,
+      incident_types:     types,
+      body_part_injured:  document.getElementById('i-bodypart').value.trim() || null,
+      equipment_involved: document.getElementById('i-equip').value.trim() || null,
+      description:        desc,
+      severity:           severity,
+      hospital_name:      document.getElementById('m-where').value.trim() || null,
+      ems_arrival_at:     emsArrivalAt,
+      corrective_action:  document.getElementById('c-action').value.trim() || null,
+      action_owner:       document.getElementById('c-owner').value.trim() || null,
+      action_deadline:    deadline,
+      data: {
+        witness_1:    document.getElementById('w1').value.trim() || null,
+        witness_2:    document.getElementById('w2').value.trim() || null,
+        staff_responder: document.getElementById('w-staff').value.trim() || null
+      }
+    };
+
+    var ins = await sb.from('incidents').insert(row).select('id').maybeSingle();
+    btn.disabled = false; btn.textContent = '💾 Save to records';
+    if (ins.error) { showStatus('Save failed: ' + ins.error.message, 'err'); return; }
+    var newId = ins.data && ins.data.id;
+    showStatus('✓ Saved. Record ID: ' + (newId ? newId.slice(0,8).toUpperCase() : '—') + '. You can now print or close this tab.', 'ok');
+    btn.textContent = '✓ Saved';
+    btn.disabled = true;
+
+    // ── Severe-incident auto-notify ─────────────────────────────────
+    // For ER/EMS-911 events, fire an email to the owner via send-email
+    // Edge Function. Non-fatal on failure — the DB row is the system of record.
+    if (severity === 'er' || severity === 'ems_911') {
+      try {
+        var url = CFG.supabaseUrl + '/functions/v1/send-email';
+        var ownerEmail = CFG.bizEmail || 'info@2ntr.com';
+        var subj = '🚨 Severe incident at ' + (CFG.bizName || '2nd Nature Park') + ' — ' + skater;
+        var bodyHtml = '<div style="font-family:ui-sans-serif,system-ui,sans-serif;max-width:560px;color:#14161a;">'
+          + '<div style="background:#dc2626;color:#fff;padding:18px;border-radius:10px 10px 0 0;text-align:center;">'
+          +   '<div style="font-size:18px;font-weight:800;">SEVERE INCIDENT LOGGED</div>'
+          +   '<div style="font-size:13px;opacity:.85;margin-top:4px;">' + (severity === 'ems_911' ? '911 / EMS dispatched' : 'Sent to ER / hospital') + '</div>'
+          + '</div>'
+          + '<div style="padding:18px;border:1px solid #fee2e2;border-top:none;border-radius:0 0 10px 10px;">'
+          +   '<table style="width:100%;font-size:14px;border-collapse:collapse;">'
+          +     '<tr><td style="padding:6px 0;color:#6b7280;">Skater:</td><td style="padding:6px 0;font-weight:700;">' + escapeAttr(skater) + (age?' ('+age+')':'') + '</td></tr>'
+          +     '<tr><td style="padding:6px 0;color:#6b7280;">When:</td><td style="padding:6px 0;">' + new Date(occurredAt).toLocaleString() + '</td></tr>'
+          +     '<tr><td style="padding:6px 0;color:#6b7280;">Where:</td><td style="padding:6px 0;">' + escapeAttr(row.park_area || '—') + '</td></tr>'
+          +     '<tr><td style="padding:6px 0;color:#6b7280;">Types:</td><td style="padding:6px 0;">' + escapeAttr(types.join(', ') || '—') + '</td></tr>'
+          +     (row.body_part_injured ? '<tr><td style="padding:6px 0;color:#6b7280;">Body part:</td><td style="padding:6px 0;">' + escapeAttr(row.body_part_injured) + '</td></tr>' : '')
+          +     (row.hospital_name ? '<tr><td style="padding:6px 0;color:#6b7280;">Hospital:</td><td style="padding:6px 0;">' + escapeAttr(row.hospital_name) + '</td></tr>' : '')
+          +     (row.guardian_name ? '<tr><td style="padding:6px 0;color:#6b7280;">Guardian:</td><td style="padding:6px 0;">' + escapeAttr(row.guardian_name) + (row.guardian_phone?' · '+escapeAttr(row.guardian_phone):'') + '</td></tr>' : '')
+          +   '</table>'
+          +   '<div style="margin-top:14px;padding:12px;background:#f9fafb;border-radius:8px;font-size:13px;line-height:1.5;">'
+          +     '<strong>Description:</strong><br>' + escapeAttr(desc).replace(/\n/g,'<br>')
+          +   '</div>'
+          +   '<div style="margin-top:14px;font-size:12px;color:#6b7280;">Record ID: ' + (newId || '—').slice(0,8).toUpperCase() + ' · Open the admin panel → Incidents to review.</div>'
+          + '</div></div>';
+
+        await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + (sessionRes.data.session.access_token || CFG.supabaseKey),
+            'apikey': CFG.supabaseKey,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            to: ownerEmail,
+            subject: subj,
+            html: bodyHtml,
+            tags: [{name:'type',value:'incident_severe'},{name:'incident_id',value:newId||''}]
+          })
+        });
+        // Also fire SMS to owner if Twilio is set up + bizPhone exists.
+        // Fail silently — DB row is the system of record.
+        try {
+          var ownerPhone = CFG.bizPhone || '';
+          var e164 = ownerPhone && ownerPhone.startsWith('+') ? ownerPhone : ('+1' + String(ownerPhone || '').replace(/\D/g, ''));
+          if (e164.length > 4) {
+            var smsBody = '🚨 SEVERE INCIDENT at 2nd Nature — ' + skater + (age?' ('+age+')':'') + (severity === 'ems_911' ? ', 911/EMS' : ', ER') + '. ' + (row.park_area || '') + '. Open admin → Incidents.';
+            await fetch(CFG.supabaseUrl + '/functions/v1/send-sms', {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + (sessionRes.data.session.access_token || CFG.supabaseKey),
+                'apikey': CFG.supabaseKey,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ to: e164, body: smsBody })
+            });
+          }
+        } catch (smsErr) {
+          console.warn('Severe-incident SMS failed:', smsErr);
+        }
+        showStatus('✓ Saved + owner notified (email + SMS).', 'ok');
+      } catch (e) {
+        // Save succeeded; only the email failed. Show a softer warning.
+        console.warn('Severe-incident email failed:', e);
+        showStatus('✓ Saved. Record ID: ' + (newId || '—').slice(0,8).toUpperCase() + ' (notify failed silently — check Resend/Twilio setup).', 'info');
+      }
+    }
+  }
+  function escapeAttr(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(ch){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]; }); }
+  window.saveIncident = saveIncident;
+</script>
+
+</body>
+</html>

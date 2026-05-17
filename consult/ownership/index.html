@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Own your software · the case for ownership over SaaS — Hudson Valley AI</title>
+<meta name="description" content="Why we hand customers the keys to their software instead of renting it back to them. The honest case for ownership over the legacy SaaS lock-in model.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="canonical" href="https://consult.skateos.com/ownership/">
+<meta property="og:title" content="Own your software · the case for ownership over SaaS">
+<meta property="og:description" content="Why we hand customers the keys instead of renting software back to them. The honest case for ownership.">
+<meta property="og:image" content="https://consult.skateos.com/og.png">
+<meta property="og:url" content="https://consult.skateos.com/ownership/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0a0a0a; --ink-soft:#404040; --muted:#737373;
+    --bg:#fafaf9; --card:#fff; --line:#e5e5e0; --accent:#e11d48;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;color:var(--ink);background:var(--bg);line-height:1.7;-webkit-font-smoothing:antialiased;}
+  a{color:var(--accent);}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{background:#fff;border-bottom:1px solid var(--line);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:50px 28px 60px;}
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+
+  h1.hero{font-size:clamp(2.2rem,5vw,3.4rem);font-weight:900;letter-spacing:-0.028em;line-height:1.05;margin-bottom:14px;}
+  h1.hero .accent{color:var(--accent);}
+  .subtitle{font-size:1.15rem;color:var(--ink-soft);max-width:680px;margin-bottom:36px;line-height:1.55;}
+
+  h2{font-size:clamp(1.5rem,2.8vw,2rem);font-weight:800;letter-spacing:-0.02em;line-height:1.2;margin:48px 0 14px;color:var(--ink);}
+  h2 .accent{color:var(--accent);}
+
+  h3{font-size:1.15rem;font-weight:800;margin:24px 0 8px;color:var(--ink);letter-spacing:-0.012em;}
+
+  p{margin-bottom:14px;color:var(--ink-soft);font-size:1rem;}
+  p strong{color:var(--ink);}
+  ul, ol{margin:10px 0 16px 24px;color:var(--ink-soft);font-size:.98rem;}
+  li{margin-bottom:6px;}
+  li strong{color:var(--ink);}
+
+  .lede{font-size:1.1rem;color:var(--ink);font-weight:500;margin-bottom:24px;line-height:1.55;}
+
+  .pull{background:#fef2f2;border-left:4px solid var(--accent);padding:18px 22px;border-radius:8px;margin:20px 0;font-size:1rem;color:#0a0a0a;}
+  .pull strong{color:#9f1239;}
+
+  .dark-pull{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;padding:30px 32px;border-radius:14px;margin:30px 0;}
+  .dark-pull p{color:#d4d4d4;font-size:1.05rem;line-height:1.6;}
+  .dark-pull p:last-child{margin-bottom:0;}
+  .dark-pull strong{color:#fb7185;}
+
+  .math-box{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:24px 28px;margin:24px 0;}
+  .math-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:.96rem;color:var(--ink-soft);}
+  .math-row:last-child{border-bottom:none;border-top:2px solid var(--ink);font-weight:800;color:var(--ink);font-size:1.05rem;padding-top:14px;margin-top:6px;}
+  .math-row .v{font-family:ui-monospace,monospace;font-weight:700;color:var(--ink);}
+  .math-row .v.win{color:#15803d;}
+  .math-row .v.lose{color:#dc2626;}
+
+  .checks{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px 28px;margin:24px 0;}
+  .checks h3{margin-top:0;}
+  .checks ul{list-style:none;margin:0;padding:0;}
+  .checks li{padding:8px 0 8px 28px;position:relative;font-size:.96rem;color:var(--ink-soft);border-bottom:1px dotted var(--line);}
+  .checks li:last-child{border-bottom:none;}
+  .checks li.yes::before{content:'✓';position:absolute;left:0;color:#15803d;font-weight:900;font-size:1.1rem;}
+  .checks li.no::before{content:'✗';position:absolute;left:0;color:#9f1239;font-weight:900;font-size:1.1rem;}
+  .checks li strong{color:var(--ink);}
+
+  .cta-bar{background:linear-gradient(135deg,#0a0a0a,#1a1a1a);color:#fafaf9;border-radius:14px;padding:40px 36px;margin:40px 0;text-align:center;}
+  .cta-bar h2{color:#fafaf9;margin-top:0;}
+  .cta-bar p{color:#a3a3a3;margin-bottom:20px;}
+  .cta-bar .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+  .cta-bar a{padding:12px 24px;border-radius:8px;font-weight:700;text-decoration:none;display:inline-block;font-size:.94rem;}
+  .cta-bar a.primary{background:#fb7185;color:#0a0a0a;}
+  .cta-bar a.primary:hover{background:#fff;}
+  .cta-bar a.alt{background:transparent;color:#fafaf9;border:1.5px solid #525252;}
+  .cta-bar a.alt:hover{background:#262626;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid var(--line);background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Software your business <em>actually owns</em> · <a href="/">Back to overview →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="/"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="/#services">Services</a>
+    <a href="/products.html">Products</a>
+    <a href="/work.html">Work</a>
+    <a href="/security.html">Security</a>
+    <a href="/process.html">Process</a>
+    <a href="/compare.html">Compare</a>
+    <a href="/#faq">FAQ</a>
+  </div>
+  <a href="/intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="/">Hudson Valley AI</a> / Why ownership</div>
+
+  <h1 class="hero">Own your <span class="accent">software.</span></h1>
+  <p class="subtitle">The case for owning the software your business runs on — instead of renting it back from a SaaS vendor who can raise prices, get acquired, sunset features, or hold your data hostage. Honest version. Read time: 6 minutes.</p>
+
+  <p class="lede">Most SaaS pricing models are designed to extract maximum value from you over time. The vendor wins when you can't leave. <strong>That model is starting to break</strong> — and Hudson Valley AI is built on the other side of the break.</p>
+
+  <!-- 1 -->
+  <h2>1. The SaaS lock-in trade was always asymmetric.</h2>
+
+  <p>When you signed up for Mindbody, ServiceTitan, Jobber, or Square POS, you made an implicit trade: <strong>you got working software on day one, the vendor got the right to charge you forever and to change the terms.</strong> When the trade was new and the alternatives were "hire a developer for $200/hour or build it yourself with Filemaker," that asymmetry was worth eating.</p>
+
+  <p>Two things have changed since then:</p>
+  <ol>
+    <li><strong>The SaaS vendors started exercising the asymmetry.</strong> Annual price hikes of 20-40% are routine. Mid-tier features get moved into "Pro" plans. Acquisitions (PE rollups, IPOs) consistently make products worse for SMB customers. Lock-in becomes the explicit revenue strategy because it's the easiest growth lever.</li>
+    <li><strong>The cost of building custom software collapsed.</strong> AI-assisted development means a small team can ship a production multi-tenant SaaS in weeks, not years. The build-vs-buy math that justified renting Mindbody at $200/month doesn't justify it anymore — you can get something better, built for your specific vertical, and own it.</li>
+  </ol>
+
+  <p>The result: ownership isn't a niche enthusiast position anymore. It's becoming the rational economic default for owner-led SMBs who do the math.</p>
+
+  <!-- 2 -->
+  <h2>2. What "ownership" actually means.</h2>
+
+  <p>When we say "you own the software," it's not marketing. It's a specific list of things you have that you wouldn't have under a SaaS contract:</p>
+
+  <div class="checks">
+    <h3>What ownership gives you</h3>
+    <ul>
+      <li class="yes"><strong>Source code, transferred to your git repository.</strong> Full history. You can read it, audit it, modify it, hire any developer to extend it. You're not locked into us.</li>
+      <li class="yes"><strong>The database, on your Supabase project</strong> (or your AWS RDS, or your Postgres on a server you control). Your customer data is in your account, accessible by you, exportable any moment.</li>
+      <li class="yes"><strong>The cloud accounts.</strong> You own the Cloudflare account, the Stripe account, the Resend account, the Twilio account. You pay them directly. We have access only while we're working for you.</li>
+      <li class="yes"><strong>The customizations.</strong> Anything we built specifically for your business is yours. We don't relicense your custom workflow to your competitor.</li>
+      <li class="yes"><strong>The contracts your customers sign.</strong> Including the DecisionLayer AI arbitration clause when applicable — that's a feature, not a per-seat license fee.</li>
+      <li class="yes"><strong>The right to walk away from us forever.</strong> If we annoy you, or if a better firm comes along, you fire us. Your system keeps running. Your customers don't notice.</li>
+    </ul>
+  </div>
+
+  <div class="checks">
+    <h3>What ownership doesn't give you (be honest)</h3>
+    <ul>
+      <li class="no"><strong>Zero responsibility for the system.</strong> You'll own a Supabase account that has a bill, a domain that needs renewing, an admin password that matters. We can handle these for you (maintenance retainer) or you can have your existing IT person do it. But "set it and forget it" isn't a free thing.</li>
+      <li class="no"><strong>Free upgrades forever.</strong> When we ship a new version with significant feature additions, you'll have the choice to pull the upgrade (free if you have a maintenance retainer, paid Fix-it Sprint if you don't). SaaS gives you upgrades automatically — at the cost of pricing power and roadmap control.</li>
+      <li class="no"><strong>A 24/7 support center.</strong> If something breaks at 11pm on a Saturday, you call us, but we're not a managed-services firm. Most operators just don't need that. For some, this is a real reason to stay on hosted SaaS.</li>
+    </ul>
+  </div>
+
+  <!-- 3 -->
+  <h2>3. The five-year math.</h2>
+
+  <p>The honest TCO comparison for a typical mid-size operator (skatepark with 200 daily visits, or tree-care company with 6 crew):</p>
+
+  <div class="math-box">
+    <h3 style="margin-top:0;margin-bottom:14px;">Legacy SaaS over 5 years</h3>
+    <div class="math-row"><span>Mindbody / ServiceTitan / Square POS subscription</span><span class="v">$200/mo × 60 = <strong style="color:#dc2626;">$12,000</strong></span></div>
+    <div class="math-row"><span>Add-ons (Smartwaiver, Square Marketing, Stripe Atlas, payroll integrations)</span><span class="v">$80/mo × 60 = <strong style="color:#dc2626;">$4,800</strong></span></div>
+    <div class="math-row"><span>Two annual price hikes (15% each, compounding)</span><span class="v lose">+$3,200</span></div>
+    <div class="math-row"><span>Payment-processing markup vs direct merchant pricing (avg 0.4% on $500k/yr revenue)</span><span class="v lose">+$10,000</span></div>
+    <div class="math-row"><span><strong>Total 5-year cost</strong></span><span class="v lose">$30,000</span></div>
+  </div>
+
+  <div class="math-box">
+    <h3 style="margin-top:0;margin-bottom:14px;">Deploy-your-own (skateOS or Branch Manager)</h3>
+    <div class="math-row"><span>One-time deployment (year 1)</span><span class="v">$15-25k</span></div>
+    <div class="math-row"><span>Cloud infrastructure (Supabase + Cloudflare + Resend + Twilio, paid directly to vendors)</span><span class="v">~$50-100/mo × 60 = $3-6k</span></div>
+    <div class="math-row"><span>Maintenance retainer (optional)</span><span class="v">$1-3k/yr × 5 = $5-15k</span></div>
+    <div class="math-row"><span>Payment processing (direct merchant Helcim/Stripe — no SaaS markup)</span><span class="v win">$0 markup</span></div>
+    <div class="math-row"><span><strong>Total 5-year cost</strong></span><span class="v win">$23-46k (avg $30k)</span></div>
+  </div>
+
+  <p>Year-by-year, deploy-your-own is more expensive up front (the $15-25k year-1 hump) but breaks even somewhere around year 3-4, and the gap widens every year after that. <strong>By year 7-10 you're saving $10-30k/year vs. the legacy bill.</strong></p>
+
+  <p style="text-align:center;margin:24px 0;"><a href="/savings/" style="display:inline-block;padding:14px 28px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-weight:700;text-decoration:none;font-size:.94rem;">💰 Run the numbers for your business →</a></p>
+
+  <p>But the real math isn't dollars. It's <em>what you can do with the software</em>. Custom workflow that legacy can't accommodate? Trivial on owned software, impossible on Mindbody. Multi-location expansion? Already multi-tenant. A weird industry-specific feature your competitors don't have? Your engineer adds it in a week. <strong>The optionality of owning the software you run on is the real value — TCO is just the table-stakes argument.</strong></p>
+
+  <!-- 4 -->
+  <h2>4. Hosted is fine. It's just not the same product.</h2>
+
+  <p>We offer hosted as a starter option for two real reasons:</p>
+  <ol>
+    <li><strong>Some operators don't want to run their own infrastructure.</strong> They don't have a technical co-founder, they don't want to learn what a Supabase project is, and they value "set it up and walk away" more than "own forever." Honest position. We respect it.</li>
+    <li><strong>Hosted is a low-friction on-ramp.</strong> A 30-day free trial on our hosted instance lets a prospect get a feel for the software without committing to deploy infrastructure. On day 30 they choose: convert to deploy-your-own, or stay hosted.</li>
+  </ol>
+
+  <p>But be honest about what hosted is and isn't:</p>
+
+  <div class="pull">
+    <strong>Hosted is SaaS-with-better-vibes, not ownership.</strong> When you're on our hosted tenant, your data is on our Supabase project. We have access. We control the upgrade cycle. We can theoretically raise prices (we won't unless economics force it, but we <em>could</em>). The whole point of ownership is to be in a position where you don't have to trust your vendor's good intentions — and on hosted, you do.
+  </div>
+
+  <p>That said: hosted with us is a much better trade than hosted with Mindbody, because (a) you can convert to deploy-your-own anytime and your data comes with you, (b) we're a 2-principal shop with no PE owner pressuring us to optimize ARPU, and (c) hosted is $299/mo, not $200/mo plus 8 add-on subscriptions plus payment-processing markup. But it's still hosted. The deploy-your-own path is where the actual ownership story lives.</p>
+
+  <!-- 5 -->
+  <h2>5. Are you a candidate?</h2>
+
+  <p>Honest filter. We're not the right answer for everyone.</p>
+
+  <div class="checks">
+    <h3>You probably ARE a candidate if…</h3>
+    <ul>
+      <li class="yes">You've been on Mindbody / Square POS / Jobber / ServiceTitan for 2+ years and feel the lock-in</li>
+      <li class="yes">You've hit a missing feature you've been asking for that the vendor won't ship</li>
+      <li class="yes">You're growing to multiple locations and the software is making it harder, not easier</li>
+      <li class="yes">You have or could hire someone semi-technical (or have us on retainer) to handle infra-level concerns</li>
+      <li class="yes">Your business does ≥$500k/yr revenue (so the $15-25k deploy fee is a reasonable percentage of revenue)</li>
+      <li class="yes">You care about data sovereignty — your industry, your customers, your insurer, or you personally care about it</li>
+      <li class="yes">You're an owner-operator who reads contracts and notices line items, not a corporate buyer doing procurement</li>
+    </ul>
+  </div>
+
+  <div class="checks">
+    <h3>You probably are NOT a candidate if…</h3>
+    <ul>
+      <li class="no">Your business is brand new and you're still figuring out the workflow — start on hosted SaaS, switch later</li>
+      <li class="no">You're under $250k/yr revenue — the legacy SaaS bill is too small to justify the deploy fee</li>
+      <li class="no">You have no internal technical capability AND don't want to pay a maintenance retainer</li>
+      <li class="no">You need a managed-services firm with 24/7 on-call — that's a different product, hire a real MSP</li>
+      <li class="no">You're in a highly regulated vertical (HIPAA, PCI Level 1) and need a SOC 2 attestation — talk to us anyway, but we'll likely refer you elsewhere</li>
+      <li class="no">Your legacy SaaS works well enough and isn't actively costing you — stay on it, no urgency</li>
+    </ul>
+  </div>
+
+  <!-- 6 -->
+  <h2>6. The honest "why now" pitch.</h2>
+
+  <div class="dark-pull">
+    <p>Most prospects we talk to are either <em>in pain</em> (a price hike, a missed feature, a multi-location wall, a vendor pivot) or <em>not yet</em>. We can't sell to "not yet" — and we don't try to. We're patient.</p>
+    <p>But if you're in pain, the deploy-your-own model genuinely beats the legacy SaaS model in your specific situation. Not because we built better software than Mindbody (we didn't, in feature count). <strong>Because we built software you own, in a vertical where the legacy options weren't built by people who understand what you do.</strong></p>
+    <p>The 30-day free trial costs you nothing. The discovery call costs you nothing. If we're not a fit we'll say so. That's the offer.</p>
+  </div>
+
+  <div class="cta-bar">
+    <h2 style="color:#fafaf9;">Want to talk about this for your operation?</h2>
+    <p>15-minute walkthrough, or jump straight to a 30-day free trial. Either path leads to a real conversation about whether ownership makes sense for you specifically.</p>
+    <div class="btns">
+      <a href="/intake.html" class="primary">⚡ Start an engagement</a>
+      <a href="mailto:doug@2ntr.com?subject=Ownership%20question&amp;body=Hi%20Doug%20%E2%80%94%20I%20read%20the%20ownership%20page.%20Question%2Fcontext%3A%0A%0A%0A%0AAvailability%20for%20a%2015-min%20call%3A" class="alt">📧 Quick question first</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  © 2026 Hudson Valley AI · Hudson Valley, NY · <a href="/">Home</a> · <a href="/security.html">Security</a> · <a href="/products.html">Products</a> · <a href="/work.html">Work</a> · <a href="/privacy.html">Privacy</a> · <a href="/terms.html">Terms</a>
+</footer>
+
+</body>
+</html>

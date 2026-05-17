@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pre-order Sale | 2nd Nature</title>
+<meta name="description" content="Limited pre-order sale on S1 Helmets, GX1000 Summer 26, Theories, Snack, Magenta + more. Submit by Sunday midnight ET. 50% deposit · balance on pickup.">
+<meta property="og:title" content="2nd Nature · Pre-order Sale">
+<meta property="og:description" content="Latest drops · pre-order pricing · Sunday midnight cutoff · 50% deposit holds the order">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#faf8f3">
+<link rel="icon" href="https://2ntr.com/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Knewave&family=Permanent+Marker&family=Caveat+Brush&display=swap" rel="stylesheet">
+<style>
+  /* ── Reset + base ─────────────────────────────────────────────
+     Modeled directly on www.2ntr.com/shop/skate-shop/<id>:
+     • cream/off-white background (#faf8f3)
+     • bold handwritten brush logo + headings (Permanent Marker)
+     • clean sans-serif body
+     • centered nav row · sidebar + product grid layout · grayish image squares
+  */
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Roboto,Arial,sans-serif;
+    color:#14161a;
+    background:#faf8f3;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  img{max-width:100%;display:block;}
+  a{color:inherit;text-decoration:none;}
+  button{font-family:inherit;cursor:pointer;}
+
+  /* Handwritten brush — for logo + headings + product names */
+  .hand{font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;font-weight:400;letter-spacing:.005em;}
+
+  /* ── Countdown bar (top of page, stays sticky) ────────────── */
+  .countdown-bar{
+    background:#14161a;color:#fff;
+    text-align:center;padding:10px 16px;
+    font-size:.78rem;font-weight:600;letter-spacing:.03em;
+    position:sticky;top:0;z-index:100;
+  }
+  .countdown-bar strong{color:#f8a4ba;letter-spacing:.06em;}
+  .countdown-bar #countdown-clock{
+    font-variant-numeric:tabular-nums;font-weight:800;color:#fff;
+    background:rgba(255,255,255,.12);padding:2px 9px;border-radius:8px;
+    margin-left:6px;
+  }
+
+  /* ── Header (matches 2ntr.com exactly) ──────────────────────
+     • Big handwritten logo CENTERED
+     • Top-right "Shop All" outlined pill + search/account/cart icons
+     • Centered nav row below the logo
+  */
+  .site-header{background:#faf8f3;padding:24px 28px 6px;}
+  .site-header .top{
+    max-width:1280px;margin:0 auto;
+    position:relative;display:flex;align-items:center;justify-content:center;
+    min-height:78px;
+  }
+  .site-header .logo{
+    display:inline-block;
+    font-size:clamp(2.6rem,5.5vw,4rem);
+    color:#14161a;line-height:.9;
+    text-align:center;
+  }
+  .site-header .logo .nd{
+    font-size:.42em;
+    vertical-align:.55em;
+    margin:0 .04em 0 .08em;
+    text-transform:uppercase;
+    letter-spacing:.02em;
+  }
+  .site-header .actions{
+    position:absolute;right:0;top:50%;transform:translateY(-50%);
+    display:flex;align-items:center;gap:10px;
+  }
+  .site-header .actions .pill{
+    background:transparent;color:#14161a;
+    border:2px solid #14161a;
+    padding:9px 22px;border-radius:999px;
+    font-size:.86rem;font-weight:700;letter-spacing:.02em;
+    transition:background .15s,color .15s;
+  }
+  .site-header .actions .pill:hover{background:#14161a;color:#fff;}
+  .site-header .actions .icon-btn{
+    background:transparent;border:none;padding:8px;
+    color:#14161a;font-size:1.1rem;
+    width:38px;height:38px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    transition:background .15s;position:relative;
+  }
+  .site-header .actions .icon-btn:hover{background:rgba(20,22,26,.08);}
+  .site-header .actions .badge{
+    position:absolute;top:-2px;right:-2px;
+    background:#14161a;color:#fff;
+    width:18px;height:18px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:.65rem;font-weight:800;
+    border:2px solid #faf8f3;
+  }
+
+  /* Centered nav row */
+  .site-nav{
+    max-width:1280px;margin:0 auto;padding:18px 28px 24px;
+    display:flex;justify-content:center;flex-wrap:wrap;gap:36px;
+    border-bottom:1px solid #e6e3da;
+  }
+  .site-nav a{
+    color:#14161a;
+    font-size:.92rem;font-weight:500;letter-spacing:.005em;
+    padding:6px 0;border-bottom:2px solid transparent;
+    transition:border-color .15s;
+  }
+  .site-nav a:hover,.site-nav a.current{border-color:#14161a;}
+
+  /* ── Page heading + breadcrumb ─────────────────────────── */
+  .page-wrap{max-width:1280px;margin:0 auto;padding:34px 28px 60px;}
+  .breadcrumb{
+    font-size:.92rem;color:#14161a;margin-bottom:24px;
+  }
+  .breadcrumb a{font-weight:700;}
+  .breadcrumb a:hover{text-decoration:underline;}
+  .breadcrumb .sep{margin:0 10px;color:#9ca3af;}
+  .breadcrumb .current{color:#4b5563;}
+
+  /* ── Two-column layout: sidebar + main grid ──────────────── */
+  .layout{
+    display:grid;
+    grid-template-columns:230px 1fr;
+    gap:48px;
+    align-items:flex-start;
+  }
+
+  /* Sidebar */
+  .sidebar h4{
+    font-size:1.05rem;font-weight:700;letter-spacing:-.01em;
+    margin-bottom:14px;color:#14161a;
+  }
+  .sidebar ul{list-style:none;font-size:.94rem;color:#14161a;}
+  .sidebar li{padding:5px 0;}
+  .sidebar li.parent{font-weight:700;}
+  .sidebar li.child{padding-left:18px;}
+  .sidebar a{transition:color .12s;}
+  .sidebar a:hover{color:#e11d48;}
+  .sidebar a.current{font-weight:700;}
+  .sidebar hr{
+    border:none;border-top:1px solid #e6e3da;
+    margin:18px 0;
+  }
+  .sidebar details{padding:8px 0;}
+  .sidebar details summary{
+    cursor:pointer;list-style:none;
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:.94rem;font-weight:600;color:#14161a;
+    padding:6px 0;
+  }
+  .sidebar details summary::-webkit-details-marker{display:none;}
+  .sidebar details summary::after{
+    content:'▾';color:#14161a;font-size:.7rem;
+    transition:transform .15s;
+  }
+  .sidebar details[open] summary::after{transform:rotate(180deg);}
+  .sidebar details > div{padding:8px 0 4px;font-size:.84rem;color:#4b5563;}
+
+  /* Main column */
+  .main h1{
+    font-size:clamp(2rem,4vw,2.6rem);
+    color:#14161a;margin-bottom:6px;
+    line-height:1;
+  }
+  .main .results-count{
+    font-size:.94rem;color:#4b5563;margin-bottom:24px;
+  }
+  .main .toolbar{
+    display:flex;justify-content:flex-end;gap:14px;flex-wrap:wrap;
+    margin-bottom:28px;
+  }
+  .main .toolbar .select{
+    border:1.5px solid #14161a;
+    padding:11px 18px;border-radius:6px;
+    background:#faf8f3;
+    font-size:.88rem;font-weight:500;color:#14161a;
+    display:flex;align-items:center;gap:14px;cursor:pointer;
+    min-width:180px;justify-content:space-between;
+  }
+  .main .toolbar .select:hover{background:#fff;}
+  .main .toolbar .select::after{content:'▾';font-size:.7rem;}
+  /* Native select fallback */
+  .main .toolbar select{
+    border:1.5px solid #14161a;
+    padding:11px 18px;border-radius:6px;
+    background:#faf8f3;
+    font-size:.88rem;font-weight:500;color:#14161a;
+    cursor:pointer;min-width:180px;
+    -webkit-appearance:none;-moz-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%2314161a' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;
+    background-position:right 16px center;
+    padding-right:38px;
+  }
+  .main .toolbar select:hover{background-color:#fff;}
+
+  /* Product grid */
+  .product-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+    gap:36px 28px;
+  }
+  .product-card{
+    cursor:pointer;
+    display:flex;flex-direction:column;
+    transition:transform .2s;position:relative;
+  }
+  .product-card:hover{transform:translateY(-3px);}
+  .product-card .image{
+    aspect-ratio:1/1;
+    background:#ededeb center/contain no-repeat;
+    border-radius:6px;
+    position:relative;overflow:hidden;
+  }
+  .product-card .image::after{
+    content:'';position:absolute;inset:0;
+    background:rgba(0,0,0,0);
+    transition:background .15s;
+  }
+  .product-card:hover .image::after{background:rgba(0,0,0,.04);}
+  .product-card .ribbon{
+    position:absolute;top:10px;left:10px;
+    background:#14161a;color:#fff;
+    padding:4px 9px;border-radius:3px;
+    font-size:.6rem;font-weight:800;
+    letter-spacing:.1em;text-transform:uppercase;
+    z-index:2;
+  }
+  .product-card .ribbon.sale{background:#e11d48;}
+  .product-card .ribbon.coming{background:#9ca3af;}
+  .product-card .name{
+    margin-top:14px;
+    font-size:1.1rem;line-height:1.2;color:#14161a;
+    /* Handwritten product name like 2ntr.com */
+    font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;
+    font-weight:400;letter-spacing:.005em;
+    /* Clamp 2 lines */
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+    min-height:2.6em;
+  }
+  .product-card .price-row{
+    margin-top:6px;
+    display:flex;align-items:baseline;gap:10px;
+    font-size:.96rem;
+  }
+  .product-card .retail{color:#9ca3af;text-decoration:line-through;font-size:.86rem;}
+  .product-card .price{font-weight:600;color:#14161a;}
+  .product-card .price.sale{color:#e11d48;font-weight:700;}
+  .product-card .add-btn{
+    position:absolute;top:10px;right:10px;
+    background:#14161a;color:#fff;
+    border:none;border-radius:999px;
+    width:36px;height:36px;
+    display:flex;align-items:center;justify-content:center;
+    font-size:1.2rem;font-weight:700;line-height:1;
+    transition:transform .15s,background .15s,opacity .15s;
+    opacity:0;transform:scale(.85);
+  }
+  .product-card:hover .add-btn{opacity:1;transform:scale(1);}
+  .product-card .add-btn:hover{background:#e11d48;}
+  .product-card.in-cart .add-btn{
+    opacity:1;background:#15803d;transform:scale(1);
+    pointer-events:none;
+  }
+  .product-card.in-cart .add-btn::after{content:'✓';font-size:1rem;}
+
+  /* ── Pre-order policy callout (replaces the pink hero) ──── */
+  .policy-banner{
+    background:#fff;
+    border:2px solid #14161a;border-radius:10px;
+    padding:20px 24px;margin-bottom:34px;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;
+  }
+  .policy-banner .left{flex:1;min-width:280px;}
+  .policy-banner h2{
+    font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;
+    font-size:1.7rem;color:#14161a;line-height:1;margin-bottom:6px;
+  }
+  .policy-banner p{font-size:.92rem;color:#4b5563;line-height:1.55;}
+  .policy-banner p strong{color:#14161a;}
+  .policy-banner .pills{display:flex;gap:10px;flex-wrap:wrap;}
+  .policy-banner .pills span{
+    background:#faf8f3;border:1px solid #e6e3da;
+    padding:7px 14px;border-radius:999px;
+    font-size:.78rem;font-weight:600;color:#14161a;
+  }
+
+  /* ── Product detail modal (matches 2ntr.com per-product page aesthetic) ──
+     Click any product card → modal with bigger image, brand, name, price,
+     size selector, qty input, then "Add to pre-order" button. Replaces
+     the straight-to-cart click pattern.
+  */
+  .pd-backdrop{
+    position:fixed;inset:0;background:rgba(20,22,26,.55);
+    z-index:200;opacity:0;pointer-events:none;
+    transition:opacity .22s;
+  }
+  .pd-backdrop.open{opacity:1;pointer-events:auto;}
+  .pd-modal{
+    position:fixed;top:50%;left:50%;
+    transform:translate(-50%,-50%) scale(.97);
+    background:#faf8f3;border-radius:14px;
+    z-index:201;width:min(900px,calc(100vw - 32px));
+    max-height:calc(100vh - 32px);overflow-y:auto;
+    box-shadow:0 24px 80px rgba(0,0,0,.18);
+    opacity:0;pointer-events:none;
+    transition:opacity .25s,transform .25s;
+  }
+  .pd-modal.open{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:auto;}
+  .pd-modal .close{
+    position:absolute;top:14px;right:14px;
+    background:white;border:1px solid #e6e3da;
+    width:36px;height:36px;border-radius:50%;
+    font-size:1.2rem;color:#14161a;cursor:pointer;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+    z-index:2;
+  }
+  .pd-modal .close:hover{background:#14161a;color:white;border-color:#14161a;}
+  .pd-modal .grid{
+    display:grid;grid-template-columns:1.1fr 1fr;gap:0;
+    align-items:stretch;
+  }
+  .pd-modal .imgwrap{
+    background:#ededeb;
+    aspect-ratio:1/1;
+    background-size:contain;background-repeat:no-repeat;background-position:center;
+    border-radius:14px 0 0 14px;
+    position:relative;
+  }
+  .pd-modal .ribbon{
+    position:absolute;top:18px;left:18px;
+    background:#14161a;color:white;
+    padding:5px 12px;border-radius:4px;
+    font-size:.66rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  }
+  .pd-modal .ribbon.sale{background:#e11d48;}
+  .pd-modal .ribbon.coming{background:#9ca3af;}
+  .pd-modal .crumb{
+    font-size:.84rem;color:#14161a;margin-bottom:14px;
+  }
+  .pd-modal .crumb a{font-weight:700;cursor:pointer;}
+  .pd-modal .crumb a:hover{text-decoration:underline;}
+  .pd-modal .crumb .sep{margin:0 8px;color:#9ca3af;}
+  .pd-modal .info{
+    padding:36px 30px;
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .pd-modal .brand{
+    font-size:.74rem;color:#9ca3af;letter-spacing:.16em;
+    text-transform:uppercase;font-weight:700;
+  }
+  .pd-modal h2{
+    font-family:'Knewave','Permanent Marker',cursive;
+    font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:400;
+    color:#14161a;line-height:1;letter-spacing:.005em;
+  }
+  .pd-modal .price-row{
+    display:flex;align-items:baseline;gap:14px;
+    font-size:1.5rem;font-weight:800;color:#14161a;
+  }
+  .pd-modal .price-row .retail{
+    font-size:1.05rem;font-weight:500;color:#9ca3af;text-decoration:line-through;
+  }
+  .pd-modal .price-row .saved{
+    font-size:.78rem;font-weight:700;color:#15803d;
+    background:#dcfce7;padding:4px 10px;border-radius:999px;
+  }
+  .pd-modal .opt{
+    display:flex;flex-direction:column;gap:6px;
+  }
+  .pd-modal .opt label{
+    font-size:.78rem;font-weight:700;color:#14161a;
+    text-transform:uppercase;letter-spacing:.04em;
+  }
+  .pd-modal .opt label .req{color:#e11d48;margin-left:4px;}
+  .pd-modal .opt .sizes{display:flex;gap:8px;flex-wrap:wrap;}
+  .pd-modal .opt .sizes button{
+    background:white;border:2px solid #e6e3da;
+    padding:9px 18px;border-radius:6px;cursor:pointer;
+    font-size:.92rem;font-weight:700;color:#14161a;
+    min-width:54px;
+    transition:border-color .12s,background .12s;
+  }
+  .pd-modal .opt .sizes button:hover{border-color:#14161a;}
+  .pd-modal .opt .sizes button.active{background:#14161a;color:white;border-color:#14161a;}
+  .pd-modal .opt .qty{display:flex;align-items:center;gap:0;width:fit-content;border:2px solid #e6e3da;border-radius:6px;overflow:hidden;}
+  .pd-modal .opt .qty button{
+    background:white;border:none;width:42px;height:42px;font-size:1.2rem;font-weight:700;cursor:pointer;
+    color:#14161a;
+  }
+  .pd-modal .opt .qty button:hover{background:#14161a;color:white;}
+  .pd-modal .opt .qty input{
+    border:none;width:60px;text-align:center;font-size:1rem;font-weight:700;background:white;
+    -moz-appearance:textfield;-webkit-appearance:none;outline:none;height:42px;
+  }
+  .pd-modal .opt .qty input::-webkit-outer-spin-button,
+  .pd-modal .opt .qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .pd-modal .add{
+    background:#14161a;color:white;border:none;
+    padding:14px;border-radius:8px;
+    font-size:.95rem;font-weight:800;letter-spacing:.04em;
+    cursor:pointer;transition:background .12s;
+    margin-top:6px;
+  }
+  .pd-modal .add:hover{background:#e11d48;}
+  .pd-modal .add.in-cart{background:#15803d;}
+  .pd-modal .terms{
+    font-size:.78rem;color:#6b7280;line-height:1.5;
+    padding-top:14px;border-top:1px solid #e6e3da;
+  }
+  .pd-modal .terms strong{color:#14161a;}
+  @media(max-width:760px){
+    .pd-modal .grid{grid-template-columns:1fr;}
+    .pd-modal .imgwrap{border-radius:14px 14px 0 0;}
+    .pd-modal .info{padding:24px 20px;}
+  }
+
+  /* ── Cart drawer ──────────────────────────────────────── */
+  .cart-drawer-backdrop{
+    position:fixed;inset:0;
+    background:rgba(20,22,26,.5);
+    z-index:200;opacity:0;pointer-events:none;
+    transition:opacity .25s;
+  }
+  .cart-drawer-backdrop.open{opacity:1;pointer-events:auto;}
+  .cart-drawer{
+    position:fixed;top:0;right:0;bottom:0;
+    width:min(440px,100vw);
+    background:#faf8f3;z-index:201;
+    transform:translateX(100%);
+    transition:transform .3s cubic-bezier(.4,0,.2,1);
+    display:flex;flex-direction:column;
+    box-shadow:-12px 0 40px rgba(0,0,0,.1);
+  }
+  .cart-drawer.open{transform:translateX(0);}
+  .cart-drawer .head{
+    padding:20px 24px;
+    border-bottom:1px solid #e6e3da;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .cart-drawer .head h3{
+    font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;
+    font-size:1.4rem;font-weight:400;color:#14161a;line-height:1;
+  }
+  .cart-drawer .close{
+    background:transparent;border:none;font-size:1.5rem;
+    color:#6b7280;width:36px;height:36px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:50%;
+  }
+  .cart-drawer .close:hover{background:rgba(20,22,26,.08);color:#14161a;}
+  .cart-drawer .items{flex:1;overflow-y:auto;padding:8px 0;}
+  .cart-drawer .item{
+    display:flex;gap:12px;padding:14px 24px;
+    border-bottom:1px solid #e6e3da;
+  }
+  .cart-drawer .item .thumb{
+    width:64px;height:64px;border-radius:4px;
+    background:#ededeb center/cover no-repeat;
+    flex-shrink:0;
+  }
+  .cart-drawer .item .info{flex:1;min-width:0;}
+  .cart-drawer .item .info .b{font-size:.65rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.08em;font-weight:700;}
+  .cart-drawer .item .info .n{font-size:.85rem;font-weight:600;line-height:1.3;margin-top:2px;}
+  .cart-drawer .item .info .p{font-size:.85rem;font-weight:700;margin-top:4px;}
+  .cart-drawer .item .info .opts{
+    margin-top:8px;display:flex;gap:6px;align-items:center;font-size:.78rem;
+  }
+  .cart-drawer .item .info .opts label{color:#6b7280;}
+  .cart-drawer .item .info .opts select,
+  .cart-drawer .item .info .opts input{
+    padding:3px 6px;border:1px solid #e6e3da;border-radius:4px;
+    font-family:inherit;font-size:.78rem;background:#fff;
+  }
+  .cart-drawer .item .remove{
+    background:transparent;border:none;
+    color:#9ca3af;font-size:1.1rem;align-self:flex-start;
+  }
+  .cart-drawer .item .remove:hover{color:#e11d48;}
+  .cart-drawer .empty{padding:60px 24px;text-align:center;color:#6b7280;font-size:.9rem;}
+  .cart-drawer .empty .big{font-size:3rem;margin-bottom:10px;}
+  .cart-drawer .summary{
+    padding:20px 24px;
+    border-top:1px solid #e6e3da;background:#fff;
+  }
+  .cart-drawer .summary .row{
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-bottom:6px;font-size:.88rem;color:#6b7280;
+  }
+  .cart-drawer .summary .total{
+    border-top:2px dashed #e6e3da;padding-top:10px;
+    display:flex;justify-content:space-between;align-items:baseline;
+    margin-top:6px;margin-bottom:4px;
+  }
+  .cart-drawer .summary .total .label{font-weight:800;color:#14161a;font-size:.94rem;}
+  .cart-drawer .summary .total .v{
+    font-size:1.5rem;font-weight:800;
+    color:#e11d48;letter-spacing:-.01em;
+  }
+  .cart-drawer .summary .balance{
+    display:flex;justify-content:space-between;
+    font-size:.85rem;font-weight:600;color:#14161a;
+    margin-top:4px;margin-bottom:14px;
+  }
+  .cart-drawer .summary .balance .hint{color:#9ca3af;font-weight:400;font-size:.78rem;}
+  .cart-drawer .summary .checkout{
+    width:100%;background:#14161a;color:#fff;
+    padding:14px;border:none;border-radius:6px;
+    font-size:.95rem;font-weight:700;letter-spacing:.02em;
+    transition:background .12s;
+  }
+  .cart-drawer .summary .checkout:hover{background:#e11d48;}
+  .cart-drawer .summary .terms-mini{
+    font-size:.72rem;color:#6b7280;text-align:center;
+    margin-top:10px;line-height:1.4;
+  }
+
+  /* ── How it works (compact strip below products) ───────── */
+  .how{
+    background:#14161a;color:#fff;
+    padding:60px 28px;margin-top:60px;
+  }
+  .how .inner{max-width:1080px;margin:0 auto;}
+  .how h2{
+    font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;
+    font-size:clamp(1.6rem,3vw,2.4rem);font-weight:400;
+    text-align:center;margin-bottom:36px;line-height:1;
+  }
+  .how .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:24px;
+  }
+  .how .step{text-align:center;padding:8px;}
+  .how .step .num{
+    background:#e11d48;color:#fff;
+    width:48px;height:48px;border-radius:50%;
+    display:inline-flex;align-items:center;justify-content:center;
+    font-weight:900;font-size:1.2rem;margin-bottom:14px;
+  }
+  .how .step h3{font-size:1.05rem;font-weight:800;margin-bottom:6px;}
+  .how .step p{color:#9ca3af;font-size:.88rem;line-height:1.5;}
+
+  /* ── FAQ ──────────────────────────────────────────────── */
+  .faq{max-width:880px;margin:0 auto;padding:60px 28px;}
+  .faq h2{
+    font-family:'Knewave','Permanent Marker','Caveat Brush',cursive;
+    font-size:clamp(1.6rem,3vw,2.4rem);font-weight:400;
+    text-align:center;margin-bottom:32px;line-height:1;
+  }
+  .faq-item{border-bottom:1px solid #e6e3da;padding:18px 0;}
+  .faq-item summary{
+    cursor:pointer;font-weight:700;font-size:1rem;
+    list-style:none;display:flex;justify-content:space-between;gap:12px;
+  }
+  .faq-item summary::-webkit-details-marker{display:none;}
+  .faq-item summary::after{content:'+';color:#e11d48;font-size:1.4rem;line-height:1;}
+  .faq-item[open] summary::after{content:'−';}
+  .faq-item p{color:#4b5563;font-size:.92rem;line-height:1.6;margin-top:10px;}
+  .faq-item ul{margin:8px 0 8px 20px;line-height:1.7;font-size:.92rem;color:#4b5563;}
+
+  /* ── Footer ─────────────────────────────────────────── */
+  footer{
+    background:#fff;border-top:1px solid #e6e3da;
+    padding:34px 28px;text-align:center;
+  }
+  footer .links{
+    display:flex;gap:24px;justify-content:center;flex-wrap:wrap;
+    margin-bottom:14px;font-size:.85rem;font-weight:600;
+  }
+  footer .links a{color:#14161a;}
+  footer .links a:hover{color:#e11d48;}
+  footer .copy{font-size:.74rem;color:#9ca3af;}
+
+  /* ── Responsive ─────────────────────────────────────── */
+  @media(max-width:980px){
+    .layout{grid-template-columns:1fr;gap:30px;}
+    .sidebar{order:2;}
+    .main{order:1;}
+  }
+  @media(max-width:700px){
+    .site-header{padding:16px 18px 4px;}
+    .site-header .actions .pill{display:none;}
+    .site-nav{gap:18px 22px;padding:14px 18px 18px;}
+    .site-nav a{font-size:.86rem;}
+    .page-wrap{padding:24px 18px 50px;}
+    .product-grid{gap:24px 18px;grid-template-columns:repeat(2,1fr);}
+    .product-card .name{font-size:.95rem;min-height:2.4em;}
+    .product-card .add-btn{opacity:1;transform:scale(1);}
+    .policy-banner{flex-direction:column;align-items:flex-start;}
+    .how{padding:40px 18px;}
+    .faq{padding:40px 18px;}
+  }
+</style>
+</head>
+<body>
+
+  <!-- ─── Sticky countdown bar ─────────────────────────────── -->
+  <div class="countdown-bar">
+    <strong>PRE-ORDER SALE ENDS</strong> Sunday at midnight ET
+    <span id="countdown-clock">—</span>
+  </div>
+
+  <!-- ─── Header — modeled exactly off 2ntr.com ───────────── -->
+  <header class="site-header">
+    <div class="top">
+      <a href="https://www.2ntr.com" class="logo hand" aria-label="2nd Nature home" id="brandLogo">
+        2<span class="nd">ND</span>nature
+      </a>
+      <!-- Logo image swap: if /2ntr-logo.png (or .svg) exists, the script
+           below loads it on probe-success and replaces the rendered text.
+           Drop the real file from Doug's brand kit at preorder/2ntr-logo.png
+           and it'll just work — no code change needed. -->
+      <script>
+        (function(){
+          var img = new Image();
+          img.onload = function(){
+            var a = document.getElementById('brandLogo');
+            if(!a) return;
+            a.innerHTML = '<img src="2ntr-logo.png" alt="2nd Nature" style="max-height:78px;width:auto;display:block;">';
+            a.classList.remove('hand');
+            a.style.fontSize = '0';
+          };
+          img.src = '2ntr-logo.png';
+        })();
+      </script>
+      <div class="actions">
+        <a href="https://www.2ntr.com/shop" class="pill">Shop All</a>
+        <a href="https://www.2ntr.com/search" class="icon-btn" aria-label="Search">🔍</a>
+        <a href="https://www.2ntr.com/account" class="icon-btn" aria-label="Account">👤</a>
+        <button class="icon-btn" onclick="openCart()" aria-label="Pre-order cart">
+          🛒<span class="badge" id="cartBadge" style="display:none;">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Centered nav row matches 2ntr.com exactly. All non-preorder
+       links go back to the proper 2ntr.com routes. -->
+  <nav class="site-nav">
+    <a href="https://www.2ntr.com/about-us">About Us</a>
+    <a href="https://www.2ntr.com/skate">Skate</a>
+    <a href="https://www.2ntr.com/membership">Membership</a>
+    <a href="https://www.2ntr.com/lessons">Lessons</a>
+    <a href="https://www.2ntr.com/camps">Camps</a>
+    <a href="https://www.2ntr.com/events">Events</a>
+    <a href="https://www.2ntr.com/parties">Parties</a>
+    <a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Skate Shop</a>
+    <a href="https://www.2ntr.com/gift-cards">Gift cards</a>
+  </nav>
+
+  <!-- ─── Main page wrapper ───────────────────────────────── -->
+  <div class="page-wrap">
+
+    <!-- Breadcrumb (Skate Shop → Pre-order Sale) -->
+    <div class="breadcrumb">
+      <a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Skate Shop</a>
+      <span class="sep">&gt;</span>
+      <span class="current">Pre-order Sale</span>
+    </div>
+
+    <!-- Two-column layout: sidebar categories + main grid -->
+    <div class="layout">
+
+      <!-- ─── Sidebar — categories link back to 2ntr.com -->
+      <aside class="sidebar">
+        <h4>Browse by category</h4>
+        <ul>
+          <li class="parent"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Skate Shop</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Decks</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Trucks</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Wheels</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Completes</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Accessories</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Sub Kit</a></li>
+          <li class="child"><a href="https://www.2ntr.com/shop/skate-shop/4NDEJBJH6NPP5N2IXIYRNTPK">Safety Gear</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/shop">Apparel</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/lessons">Private Lessons</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/skate">Park Admission</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/membership">Membership</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/parties">Birthday Parties</a></li>
+          <li class="parent"><a href="https://www.2ntr.com/lessons">Group lesson</a></li>
+        </ul>
+        <hr>
+        <details>
+          <summary>Pre-order filter</summary>
+          <div>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:.86rem;font-weight:500;color:#14161a;">
+              <label style="cursor:pointer;"><input type="radio" name="cat" checked onclick="filterBy('all')"> All <span style="color:#9ca3af;" id="ct-all">(15)</span></label>
+              <label style="cursor:pointer;"><input type="radio" name="cat" onclick="filterBy('decks')"> Decks <span style="color:#9ca3af;" id="ct-decks"></span></label>
+              <label style="cursor:pointer;"><input type="radio" name="cat" onclick="filterBy('helmets')"> Helmets <span style="color:#9ca3af;" id="ct-helmets"></span></label>
+              <label style="cursor:pointer;"><input type="radio" name="cat" onclick="filterBy('apparel')"> Apparel <span style="color:#9ca3af;" id="ct-apparel"></span></label>
+            </div>
+          </div>
+        </details>
+        <details>
+          <summary>How to get it</summary>
+          <div>
+            Pickup at the shop · local Westchester delivery · or shipping anywhere (at-cost, we don't mark it up).
+          </div>
+        </details>
+        <details>
+          <summary>Availability</summary>
+          <div>
+            Most pre-orders land within 2 weeks. GX1000 SU26 drop ships in 1–2 weeks. Submit by Sunday midnight ET.
+          </div>
+        </details>
+      </aside>
+
+      <!-- ─── Main column — heading + policy + grid -->
+      <main class="main">
+        <h1 class="hand">Pre-order Sale</h1>
+        <div class="results-count" id="resultCount">15 results</div>
+
+        <!-- Pre-order policy banner -->
+        <div class="policy-banner">
+          <div class="left">
+            <h2>Latest drops · sweetheart pricing</h2>
+            <p>Tap any product to add. Submit by <strong>Sunday midnight ET</strong>. Pay <strong>50% deposit</strong> to lock in your order — balance due on pickup or +shipping when shipped. Cancel free until Sunday 6pm.</p>
+          </div>
+          <div class="pills">
+            <span>📦 Up to 2 weeks</span>
+            <span>💸 Beats retail</span>
+            <span>🛡️ 50% deposit</span>
+          </div>
+        </div>
+
+        <!-- Sort/show toolbar (visual only — matches 2ntr aesthetic) -->
+        <div class="toolbar">
+          <select onchange="filterBy(this.value)" aria-label="Filter category">
+            <option value="all">All categories</option>
+            <option value="decks">Decks</option>
+            <option value="helmets">Helmets</option>
+            <option value="apparel">Apparel</option>
+          </select>
+          <select onchange="setSort(this.value)" aria-label="Sort by">
+            <option value="featured">Featured</option>
+            <option value="sale">On sale first</option>
+            <option value="price-asc">Price: low → high</option>
+            <option value="price-desc">Price: high → low</option>
+          </select>
+        </div>
+
+        <!-- Product grid -->
+        <div class="product-grid" id="productGrid"></div>
+      </main>
+    </div>
+  </div>
+
+  <!-- ─── How it works ─────────────────────────────────────── -->
+  <section class="how">
+    <div class="inner">
+      <h2>How pre-order works</h2>
+      <div class="grid">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Tap to add</h3>
+          <p>Click any product to add it. Pick size + qty in the cart.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Submit by Sunday</h3>
+          <p>Lock in pricing. We send the bulk order to suppliers Monday morning.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Pay 50% deposit</h3>
+          <p>Within hours we text a secure card link. Pay 50% to lock in — refundable until Sunday 6pm ET.</p>
+        </div>
+        <div class="step">
+          <div class="num">4</div>
+          <h3>Balance on pickup / arrival</h3>
+          <p>Most orders land within 2 weeks. Pay the remaining 50% on pickup — or 50% + shipping when shipped.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FAQ ──────────────────────────────────────────────── -->
+  <section class="faq">
+    <h2>FAQ</h2>
+    <details class="faq-item">
+      <summary>Why pre-order vs walking in?</summary>
+      <p>Pre-order gets you the latest drops at supplier-direct pricing — typically 8-25% off retail. Plus you get first dibs on limited drops (GX1000 SU26, Theories prebook) before they hit the floor.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What if you sell out before my order ships?</summary>
+      <p>You're locked in once you submit before Sunday midnight. We've already pre-ordered against the projected demand — your specific items are reserved.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Can I pick up at the shop?</summary>
+      <p>Yes — pickup is the default. 1 Highland Industrial Park, Peekskill, NY 10566. Local Westchester delivery is free. Shipping anywhere else is at-cost (no markup).</p>
+    </details>
+    <details class="faq-item">
+      <summary>How do I pay? (50% deposit · 50% on pickup or +shipping)</summary>
+      <p><strong>Two payments:</strong></p>
+      <ul>
+        <li><strong>50% deposit due now</strong> — locks in pricing + reserves your gear. Within hours of submitting we text a secure card link (Helcim). Venmo + Zelle work too.</li>
+        <li><strong>Remaining 50% when your gear is ready</strong> — at pickup that's the flat balance. If you chose shipping, the second payment is 50% balance + actual shipping cost.</li>
+      </ul>
+      <p>Cancel anytime before Sunday 6pm ET for a full deposit refund. After that the deposit is non-refundable since we've placed the bulk supplier order.</p>
+    </details>
+    <details class="faq-item">
+      <summary>What if my order doesn't arrive in 2 weeks?</summary>
+      <p>Most orders ship within 1 week — 2 is a generous outer bound. We text the moment your stuff lands. If it's been 2+ weeks with no update, your full deposit is refundable.</p>
+    </details>
+    <details class="faq-item">
+      <summary>Sizes / colors not listed — can I request?</summary>
+      <p>Absolutely. Type the size/color you want when you submit. We'll text you back with availability + final pricing.</p>
+    </details>
+  </section>
+
+  <!-- ─── Footer ───────────────────────────────────────────── -->
+  <footer>
+    <div style="max-width:880px;margin:0 auto 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;text-align:left;padding:0 14px;">
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Shop</div>
+        <a href="https://shop.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">🛒 Skate Shop</a>
+        <a href="https://preorder.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">🛹 Pre-orders</a>
+        <a href="https://www.2ntr.com/gift-cards" style="display:block;font-size:.86rem;font-weight:600;color:#14161a;">🎁 Gift cards</a>
+      </div>
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Park</div>
+        <a href="https://book.skateos.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">🎓 Book a lesson</a>
+        <a href="https://www.2ntr.com/membership" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">🪪 Memberships</a>
+        <a href="https://www.2ntr.com/parties" style="display:block;font-size:.86rem;font-weight:600;color:#14161a;">🎂 Birthday parties</a>
+      </div>
+      <div>
+        <div style="font-size:.7rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:8px;">Visit + contact</div>
+        <a href="https://www.2ntr.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">2ntr.com</a>
+        <a href="mailto:info@2ntr.com" style="display:block;font-size:.86rem;font-weight:600;margin-bottom:4px;color:#14161a;">✉ info@2ntr.com</a>
+        <a href="tel:+19144024624" style="display:block;font-size:.86rem;font-weight:600;color:#14161a;">📞 (914) 402-4624</a>
+      </div>
+    </div>
+    <div class="copy">
+      © 2026 2nd Nature Skate · 1 Highland Industrial Park, Peekskill, NY 10566 · Pre-order powered by skateOS
+    </div>
+  </footer>
+
+  <!-- ─── Product detail modal ─────────────────────────────── -->
+  <div class="pd-backdrop" id="pdBackdrop" onclick="closeProductDetail()"></div>
+  <aside class="pd-modal" id="pdModal" role="dialog" aria-label="Product detail"></aside>
+
+  <!-- ─── Cart drawer ─────────────────────────────────────── -->
+  <div class="cart-drawer-backdrop" id="cartBackdrop" onclick="closeCart()"></div>
+  <aside class="cart-drawer" id="cartDrawer">
+    <div class="head">
+      <h3>Your pre-order</h3>
+      <button class="close" onclick="closeCart()" aria-label="Close">×</button>
+    </div>
+    <div class="items" id="cartItems">
+      <div class="empty">
+        <div class="big">🛒</div>
+        <div>Your pre-order is empty.</div>
+        <div style="font-size:.78rem;color:#9ca3af;margin-top:6px;">Tap any product to add.</div>
+      </div>
+    </div>
+    <div class="summary" id="cartSummary" style="display:none;">
+      <div class="row">
+        <span>Order subtotal</span>
+        <span id="cartSubtotal">$0</span>
+      </div>
+      <div class="total">
+        <span class="label">💳 Deposit due today</span>
+        <span class="v" id="cartDeposit">$0</span>
+      </div>
+      <div class="balance">
+        <span>Balance on pickup<span class="hint"> (or +shipping if shipped)</span></span>
+        <span id="cartBalance">$0</span>
+      </div>
+      <button class="checkout" onclick="checkoutPreOrder()">Submit pre-order →</button>
+      <div class="terms-mini">
+        Pay 50% deposit now · balance on pickup (or +shipping when shipped).<br>
+        Cancel free until Sunday 6pm ET — full deposit refund.
+      </div>
+    </div>
+  </aside>
+
+<script>
+  // ── Product catalog ─────────────────────────────────────
+  // Primary source: Supabase `preorder_products` table (migration 049). Doug
+  // edits via Supabase Table Editor (or future admin UI) — no redeploys
+  // needed to add/remove products. Fallback to the hardcoded array below if:
+  //   • Migration 049 isn't applied (table missing)
+  //   • Network blip or RLS misconfig
+  //   • Doug temporarily empties the table
+  // The fallback ensures the catalog never goes blank.
+  var PRODUCTS_FALLBACK = [
+    // ── S1 Helmets — 25% off restock ─────────────
+    { id:'s1-lifer-black-matte',  brand:'S1',     name:'Lifer Helmet · Black Matte',          price:79.99, retail:79.99, sale:true, category:'helmets', image:'https://cdn11.bigcommerce.com/s-yn3wzm/images/stencil/500x500/products/147/3623/S1_Lifer_Skateboard_Helmet_34_view__66963.1687909292.jpg?c=2' },
+    { id:'s1-lifer-white-gloss',  brand:'S1',     name:'Lifer Helmet · White Gloss',          price:79.99, retail:79.99, sale:true, category:'helmets', image:'https://cdn11.bigcommerce.com/s-yn3wzm/images/stencil/500x500/products/166/2556/Lifer_WhiteGloss_34__48956.1710591970.jpg?c=2' },
+    { id:'s1-lifer-purple-matte', brand:'S1',     name:'Lifer Helmet · Purple Matte',         price:79.99, retail:79.99, sale:true, category:'helmets', image:'https://cdn11.bigcommerce.com/s-yn3wzm/images/stencil/500x500/products/164/1050/Lifer_PurpleMatte_34__67769.1685582094.jpg?c=2' },
+    { id:'s1-lifer-glitter',      brand:'S1',     name:'Lifer Helmet · Black Gloss Glitter',  price:89.99, retail:89.99, sale:true, category:'helmets', image:'https://cdn11.bigcommerce.com/s-yn3wzm/images/stencil/500x500/products/146/1722/Lifer_BlackGlitter3_34__26996.1710317937.jpg?c=2' },
+    { id:'s1-retro-lifer-hosoi',  brand:'S1',     name:'Retro Lifer · Hosoi Black Leopard',   price:89.99, retail:89.99, sale:true, category:'helmets', image:'https://cdn11.bigcommerce.com/s-yn3wzm/images/stencil/500x500/products/551/4103/black_leopard_retro_-_hosoi_collection-s1-helmets_-_Cropped__08004.1764026502.jpg?c=2' },
+
+    // ── GX1000 SU26 — coming in 1-2 weeks ──
+    { id:'gx-skydive-825',          brand:'GX1000',   name:'Sky Dive Willow · 8.25"',        price:78,  retail:78,  sale:false, category:'decks',   image:'https://gx1000.com/cdn/shop/files/GX1000SU226Board10Bottom_large.jpg?v=1778251647', soon:true },
+    { id:'gx-skydive-850',          brand:'GX1000',   name:'Sky Dive Willow · 8.50"',        price:78,  retail:78,  sale:false, category:'decks',   image:'https://gx1000.com/cdn/shop/files/GX1000SU226Board10Bottom_8c29e685-6c6b-406e-9537-aed7a2764d0a_large.jpg?v=1778251672', soon:true },
+    { id:'gx-viking-natural-825',   brand:'GX1000',   name:'Viking Willow Natural · 8.25"',  price:78,  retail:78,  sale:false, category:'decks',   image:'https://gx1000.com/cdn/shop/files/GX1000SU226Board11Bottom_large.jpg?v=1778251710', soon:true },
+    { id:'gx-ranch-jacket',         brand:'GX1000',   name:'Ranch Jacket · Black',           price:148, retail:148, sale:false, category:'apparel', image:'https://gx1000.com/cdn/shop/files/GX1000SummerSMS1front_large.jpg?v=1778030511', soon:true },
+    { id:'gx-leaf-hoodie',          brand:'GX1000',   name:'Leaf Hoodie · Black',            price:120, retail:120, sale:false, category:'apparel', image:'https://gx1000.com/cdn/shop/files/GX1000SummerSMS16front_large.jpg?v=1777425189', soon:true },
+
+    // ── Theories Distribution prebook — ~12% off ──
+    { id:'theories-nyle-lovett',     brand:'Theories',      name:'Nyle Lovett "Champ" Pro Deck',         price:75.95, retail:75.95, sale:true, category:'decks', image:'https://www.theoriesofatlantis.com/cdn/shop/files/THEORIES-NYLE-LOVETT-CHAMP-SKATEBOARD-DECK-BOTTOM.jpg?v=1773614098&width=800' },
+    { id:'theories-tentacles',       brand:'Theories',      name:'Tentacles of Destruction Deck',        price:73.95, retail:73.95, sale:true, category:'decks', image:'https://www.theoriesofatlantis.com/cdn/shop/files/THEORIES-TENTACLES-SKATEBOARD-DECK-BOTTOM.jpg?v=1773614032&width=800' },
+    { id:'killing-floor-wainwright', brand:'Killing Floor', name:'Danny Wainwright Guest Deck',          price:73.95, retail:73.95, sale:true, category:'decks', image:'https://www.theoriesofatlantis.com/cdn/shop/files/killing-floor-danny-wainwright-skateboard-deck-main.jpg?v=1774285751&width=800' },
+    { id:'snack-gatekeeper',         brand:'Snack',         name:'Gatekeeper Black Deck',                price:76,    retail:76,    sale:true, category:'decks', image:'https://www.theoriesofatlantis.com/cdn/shop/files/Snack-Skateboards-GateKeeper-Deck.jpg?v=1776185187&width=800' },
+    { id:'magenta-rooftop',          brand:'Magenta',       name:'Leo Valls × Glen Fox Rooftop Deck',    price:82.50, retail:82.50, sale:true, category:'decks', image:'https://www.theoriesofatlantis.com/cdn/shop/files/MAGENTA-SKATEBOARDS-LEO-VALLS-ROOFTOP-SERIES-DECK-BOTTOM.jpg?v=1777313506&width=800' }
+  ];
+
+  // Hardcoded fallback uses retail-as-display-price — when DB-driven mode is
+  // active (mig 049 + table populated), we use the DB's `price` directly
+  // since Doug controls the per-product price there.
+  PRODUCTS_FALLBACK.forEach(function(p){
+    if(p.sale && p.brand === 'S1'){
+      p.preOrderPrice = +(p.retail * 0.75).toFixed(2);
+    } else if(p.sale){
+      p.preOrderPrice = +(p.retail * 0.88).toFixed(2);
+    } else {
+      p.preOrderPrice = p.retail;
+    }
+  });
+
+  // PRODUCTS holds the live catalog — populated by loadCatalog() at boot.
+  // Initially seeded with the fallback so the page renders SOMETHING even
+  // before the Supabase fetch completes (or if it fails entirely).
+  var PRODUCTS = PRODUCTS_FALLBACK.slice();
+
+  // Fetch the real catalog from Supabase. Replaces PRODUCTS on success.
+  // Anon-readable per migration 049 RLS (filtered to active=true).
+  async function loadCatalog(){
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/preorder_products?active=eq.true&order=sort_order.asc,brand.asc,name.asc&select=id,brand,name,price,retail,sale,soon,category,image', {
+        headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer '+SUPABASE_ANON_KEY }
+      });
+      if(!res.ok) return;
+      var rows = await res.json();
+      if(!rows || !rows.length) return;
+      // Coerce numeric fields (PostgREST returns numerics as strings sometimes)
+      // + map to the existing PRODUCTS shape (price → preOrderPrice).
+      PRODUCTS = rows.map(function(r){
+        return {
+          id: r.id, brand: r.brand, name: r.name,
+          price: Number(r.price), retail: Number(r.retail),
+          preOrderPrice: Number(r.price),
+          sale: !!r.sale, soon: !!r.soon,
+          category: r.category, image: r.image
+        };
+      });
+      // Re-render with the real catalog
+      renderProducts();
+    } catch(e){
+      // Silent fallback — fallback array stays as-is. Don't surface errors
+      // to customers; they shouldn't see "the catalog failed to load."
+      console.warn('Catalog fetch failed, using fallback:', e);
+    }
+  }
+
+  // ── State ──────────────────────────────────────────────
+  var cart = JSON.parse(localStorage.getItem('preorder_cart') || '[]');
+  var currentFilter = 'all';
+  var currentSort = 'featured';
+
+  function saveCart(){
+    localStorage.setItem('preorder_cart', JSON.stringify(cart));
+    renderCart();
+    renderProducts();
+  }
+
+  function addToCart(productId){
+    var p = PRODUCTS.find(function(x){return x.id === productId;});
+    if(!p) return;
+    var existing = cart.find(function(c){return c.id === productId;});
+    if(existing){ existing.qty++; } else { cart.push({id:productId, qty:1, size:'', notes:''}); }
+    saveCart();
+    openCart();
+  }
+
+  function removeFromCart(productId){
+    cart = cart.filter(function(c){return c.id !== productId;});
+    saveCart();
+  }
+
+  function updateCartItem(productId, field, value){
+    var it = cart.find(function(c){return c.id === productId;});
+    if(!it) return;
+    if(field === 'qty'){ it.qty = Math.max(1, parseInt(value, 10) || 1); }
+    else if(field === 'size'){ it.size = value; }
+    else if(field === 'notes'){ it.notes = value; }
+    saveCart();
+  }
+
+  function openCart(){
+    document.getElementById('cartBackdrop').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+  }
+  function closeCart(){
+    document.getElementById('cartBackdrop').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+  }
+
+  // ── Product detail modal — bigger image + size selector + qty + add ──
+  // Matches the 2ntr.com per-product page aesthetic. Default click on a
+  // product card opens THIS instead of straight-adding to cart. The "+"
+  // floating button on each card still does direct quick-add for users
+  // who already know what they want.
+  var _pdSelectedSize = '';
+  var _pdSelectedQty = 1;
+  var _pdProductId = null;
+
+  function openProductDetail(productId){
+    var p = PRODUCTS.find(function(x){return x.id === productId;});
+    if(!p) return;
+    _pdProductId = productId;
+    _pdSelectedSize = '';
+    _pdSelectedQty = 1;
+    var inCart = cart.some(function(c){return c.id === productId;});
+    var existingCart = cart.find(function(c){return c.id === productId;});
+    if(existingCart){ _pdSelectedSize = existingCart.size || ''; _pdSelectedQty = existingCart.qty || 1; }
+
+    var modal = document.getElementById('pdModal');
+    if(!modal) return;
+    var ribbon = '';
+    if(p.soon) ribbon = '<div class="ribbon coming">Coming · 1-2 wks</div>';
+    else if(p.sale) ribbon = '<div class="ribbon sale">Pre-order sale</div>';
+    else ribbon = '<div class="ribbon">Pre-order</div>';
+
+    var savings = (p.retail > p.preOrderPrice) ? (p.retail - p.preOrderPrice).toFixed(2) : 0;
+    var priceHtml = (p.preOrderPrice && p.preOrderPrice < p.retail)
+      ? '<span class="retail">$'+p.retail.toFixed(2)+'</span><span style="color:#e11d48;">$'+p.preOrderPrice.toFixed(2)+'</span><span class="saved">save $'+savings+'</span>'
+      : '<span>$'+(p.preOrderPrice||p.retail).toFixed(2)+'</span>';
+
+    // Size picker — helmets + apparel only. Decks + others skip the size opt.
+    var sizesHtml = '';
+    var sizeArr = [];
+    if(p.category === 'helmets'){
+      sizeArr = ['XS','S','M','L','XL'];
+    } else if(p.category === 'apparel'){
+      sizeArr = ['S','M','L','XL','XXL'];
+    }
+    if(sizeArr.length){
+      sizesHtml = '<div class="opt"><label>Size <span class="req">*</span></label><div class="sizes">';
+      sizeArr.forEach(function(sz){
+        var cls = sz === _pdSelectedSize ? 'active' : '';
+        sizesHtml += '<button type="button" class="'+cls+'" onclick="_pdPickSize(\''+sz+'\')">'+sz+'</button>';
+      });
+      sizesHtml += '</div></div>';
+    }
+
+    // Description placeholder — most catalog rows don't have descriptions yet.
+    // For coming-soon items, surface the wait-time as a soft description.
+    var descHtml = '';
+    if(p.soon){
+      descHtml = '<div style="font-size:.92rem;color:#4b5563;line-height:1.55;">Latest drop from '+escHtml(p.brand)+' — ships from supplier in <strong>1-2 weeks</strong> after the Sunday cutoff. Pre-order pricing locked in when you submit.</div>';
+    } else if(p.sale){
+      descHtml = '<div style="font-size:.92rem;color:#4b5563;line-height:1.55;">Pre-order sale pricing direct from the supplier — save '+(savings>0?'$'+savings:'')+' off retail when you submit by Sunday midnight ET.</div>';
+    }
+
+    var addLabel = inCart ? '✓ Update in cart' : 'Add to pre-order';
+    var addCls = inCart ? 'add in-cart' : 'add';
+
+    var html = ''
+      + '<button class="close" onclick="closeProductDetail()" aria-label="Close">×</button>'
+      + '<div class="grid">'
+      +   '<div class="imgwrap" style="background-image:url(\''+escHtmlForAttr(p.image)+'\');">'+ribbon+'</div>'
+      +   '<div class="info">'
+      +     '<div class="crumb"><a onclick="closeProductDetail()">Skate Shop</a> <span class="sep">›</span> <span style="color:#4b5563;">Pre-order Sale</span></div>'
+      +     '<div class="brand">'+escHtmlPd(p.brand)+'</div>'
+      +     '<h2>'+escHtmlPd(p.name)+'</h2>'
+      +     '<div class="price-row">'+priceHtml+'</div>'
+      +     descHtml
+      +     sizesHtml
+      +     '<div class="opt"><label>Quantity</label><div class="qty">'
+      +       '<button type="button" onclick="_pdAdjQty(-1)" aria-label="Decrease">−</button>'
+      +       '<input type="number" id="pdQtyInput" min="1" max="20" value="'+_pdSelectedQty+'" oninput="_pdSetQty(this.value)">'
+      +       '<button type="button" onclick="_pdAdjQty(1)" aria-label="Increase">+</button>'
+      +     '</div></div>'
+      +     '<button class="'+addCls+'" id="pdAddBtn" onclick="_pdAddToCart()">'+addLabel+'</button>'
+      +     '<div class="terms"><strong>Pay 50% now</strong> · '+(savings>0?'save $'+savings+' off retail · ':'')+'cancel free until Sunday 6pm ET. Balance on pickup or +shipping when shipped.</div>'
+      +   '</div>'
+      + '</div>';
+    modal.innerHTML = html;
+    document.getElementById('pdBackdrop').classList.add('open');
+    modal.classList.add('open');
+    // Lock body scroll while modal is open
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProductDetail(){
+    var bd = document.getElementById('pdBackdrop');
+    var modal = document.getElementById('pdModal');
+    if(bd) bd.classList.remove('open');
+    if(modal) modal.classList.remove('open');
+    document.body.style.overflow = '';
+    _pdProductId = null;
+  }
+
+  function _pdPickSize(sz){
+    _pdSelectedSize = sz;
+    document.querySelectorAll('.pd-modal .sizes button').forEach(function(b){
+      b.classList.toggle('active', b.textContent === sz);
+    });
+  }
+
+  function _pdAdjQty(delta){
+    var newQty = Math.max(1, Math.min(20, _pdSelectedQty + delta));
+    _pdSelectedQty = newQty;
+    var input = document.getElementById('pdQtyInput');
+    if(input) input.value = newQty;
+  }
+
+  function _pdSetQty(val){
+    var n = Math.max(1, Math.min(20, parseInt(val,10) || 1));
+    _pdSelectedQty = n;
+  }
+
+  // Add (or update) the cart line based on the modal's selected size + qty.
+  // Refuses if size is required (helmets/apparel) but unselected.
+  function _pdAddToCart(){
+    if(!_pdProductId) return;
+    var p = PRODUCTS.find(function(x){return x.id === _pdProductId;});
+    if(!p) return;
+    var sizeRequired = (p.category === 'helmets' || p.category === 'apparel');
+    if(sizeRequired && !_pdSelectedSize){
+      // Highlight the size row briefly to prompt the user
+      var btn = document.getElementById('pdAddBtn');
+      if(btn){
+        var orig = btn.textContent;
+        btn.textContent = '⚠ Pick a size first';
+        btn.style.background = '#dc2626';
+        setTimeout(function(){ btn.textContent = orig; btn.style.background = ''; }, 1600);
+      }
+      return;
+    }
+    var existing = cart.find(function(c){return c.id === _pdProductId;});
+    if(existing){
+      existing.qty = _pdSelectedQty;
+      if(_pdSelectedSize) existing.size = _pdSelectedSize;
+    } else {
+      cart.push({id:_pdProductId, qty:_pdSelectedQty, size:_pdSelectedSize, notes:''});
+    }
+    saveCart();
+    closeProductDetail();
+    openCart();
+  }
+
+  // Tiny escape helpers reused in the modal HTML build. Mirror the global
+  // escHtml + a quotes-safe variant for inline style attribute interpolation.
+  function escHtmlPd(s){
+    return String(s == null ? '' : s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+  function escHtmlForAttr(s){ return escHtmlPd(s); }
+
+  // Esc closes the modal (matches standard modal UX expectations)
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && _pdProductId){ closeProductDetail(); }
+  });
+
+  // ── Rendering ───────────────────────────────────────────
+  function renderProducts(){
+    var grid = document.getElementById('productGrid');
+    if(!grid) return;
+    var visible = PRODUCTS.filter(function(p){ return currentFilter === 'all' || p.category === currentFilter; });
+    // Sort
+    if(currentSort === 'sale')      visible.sort(function(a,b){return (b.sale?1:0) - (a.sale?1:0);});
+    if(currentSort === 'price-asc') visible.sort(function(a,b){return (a.preOrderPrice||a.retail) - (b.preOrderPrice||b.retail);});
+    if(currentSort === 'price-desc')visible.sort(function(a,b){return (b.preOrderPrice||b.retail) - (a.preOrderPrice||a.retail);});
+
+    grid.innerHTML = visible.map(function(p){
+      var inCart = cart.some(function(c){return c.id === p.id;});
+      var ribbon = '';
+      if(p.soon){
+        ribbon = '<div class="ribbon coming">Coming · 1-2 wks</div>';
+      } else if(p.sale){
+        ribbon = '<div class="ribbon sale">Pre-order sale</div>';
+      } else {
+        ribbon = '<div class="ribbon">Pre-order</div>';
+      }
+      var priceHtml = (p.preOrderPrice && p.preOrderPrice < p.retail)
+        ? '<span class="retail">$'+p.retail.toFixed(2)+'</span><span class="price sale">$'+p.preOrderPrice.toFixed(2)+'</span>'
+        : '<span class="price">$'+(p.preOrderPrice||p.retail).toFixed(2)+'</span>';
+      // Click → product detail modal (size + qty before cart). The "+" floating
+      // button bypasses the modal for power-users who know what they want.
+      return '<div class="product-card '+(inCart?'in-cart':'')+'" onclick="openProductDetail(\''+p.id+'\')">'
+        + '<div class="image" style="background-image:url(\''+p.image+'\');">'
+        +   ribbon
+        + '</div>'
+        + '<button class="add-btn" onclick="event.stopPropagation();addToCart(\''+p.id+'\');" aria-label="Quick add to pre-order">+</button>'
+        + '<div class="name">'+p.name+'</div>'
+        + '<div class="price-row">'+priceHtml+'</div>'
+        + '</div>';
+    }).join('');
+
+    var cnt = visible.length;
+    var cntEl = document.getElementById('resultCount');
+    if(cntEl) cntEl.textContent = cnt + ' result' + (cnt===1?'':'s');
+
+    // Update sidebar counts
+    var byCat = {all:PRODUCTS.length, decks:0, helmets:0, apparel:0};
+    PRODUCTS.forEach(function(p){ byCat[p.category] = (byCat[p.category]||0) + 1; });
+    Object.keys(byCat).forEach(function(k){
+      var el = document.getElementById('ct-'+k);
+      if(el) el.textContent = '('+byCat[k]+')';
+    });
+  }
+
+  function filterBy(category){
+    currentFilter = category;
+    renderProducts();
+    window.scrollTo({top:document.querySelector('.main').offsetTop - 80, behavior:'smooth'});
+  }
+
+  function setSort(value){
+    currentSort = value;
+    renderProducts();
+  }
+
+  function renderCart(){
+    var badge = document.getElementById('cartBadge');
+    var itemsEl = document.getElementById('cartItems');
+    var summaryEl = document.getElementById('cartSummary');
+    var subtotalEl = document.getElementById('cartSubtotal');
+    var depositEl = document.getElementById('cartDeposit');
+    var balanceEl = document.getElementById('cartBalance');
+    var totalQty = cart.reduce(function(a,c){return a+c.qty;}, 0);
+    badge.textContent = totalQty;
+    badge.style.display = totalQty > 0 ? '' : 'none';
+    if(!cart.length){
+      itemsEl.innerHTML = '<div class="empty"><div class="big">🛒</div><div>Your pre-order is empty.</div><div style="font-size:.78rem;color:#9ca3af;margin-top:6px;">Tap any product to add.</div></div>';
+      summaryEl.style.display = 'none';
+      return;
+    }
+    var total = 0;
+    itemsEl.innerHTML = cart.map(function(c){
+      var p = PRODUCTS.find(function(x){return x.id === c.id;});
+      if(!p) return '';
+      var price = (p.preOrderPrice || p.retail) * c.qty;
+      total += price;
+      var sizeOpts = '';
+      if(p.category === 'helmets'){
+        sizeOpts = '<select onchange="updateCartItem(\''+p.id+'\',\'size\',this.value)"><option value="">Size?</option><option value="XS">XS</option><option value="S">S</option><option value="M" '+(c.size==='M'?'selected':'')+'>M</option><option value="L" '+(c.size==='L'?'selected':'')+'>L</option><option value="XL" '+(c.size==='XL'?'selected':'')+'>XL</option></select>';
+      } else if(p.category === 'apparel'){
+        sizeOpts = '<select onchange="updateCartItem(\''+p.id+'\',\'size\',this.value)"><option value="">Size?</option><option value="S">S</option><option value="M" '+(c.size==='M'?'selected':'')+'>M</option><option value="L" '+(c.size==='L'?'selected':'')+'>L</option><option value="XL" '+(c.size==='XL'?'selected':'')+'>XL</option><option value="XXL">XXL</option></select>';
+      }
+      return '<div class="item">'
+        + '<div class="thumb" style="background-image:url(\''+p.image+'\');"></div>'
+        + '<div class="info">'
+        +   '<div class="b">'+p.brand+'</div>'
+        +   '<div class="n">'+p.name+'</div>'
+        +   '<div class="p">$'+(p.preOrderPrice||p.retail).toFixed(2)+' × '+c.qty+'</div>'
+        +   '<div class="opts">'
+        +     '<label>Qty</label><input type="number" min="1" max="20" value="'+c.qty+'" onchange="updateCartItem(\''+p.id+'\',\'qty\',this.value)" style="width:50px;">'
+        +     sizeOpts
+        +   '</div>'
+        + '</div>'
+        + '<button class="remove" onclick="removeFromCart(\''+p.id+'\')" aria-label="Remove">×</button>'
+        + '</div>';
+    }).join('');
+    var deposit = +(total * 0.5).toFixed(2);
+    var balance = +(total - deposit).toFixed(2);
+    if(subtotalEl) subtotalEl.textContent = '$' + total.toFixed(2);
+    if(depositEl)  depositEl.textContent  = '$' + deposit.toFixed(2);
+    if(balanceEl)  balanceEl.textContent  = '$' + balance.toFixed(2);
+    summaryEl.style.display = '';
+  }
+
+  // ── Supabase config (read-only anon, public form submission allowed) ──
+  // Submissions land in `form_submissions` with form_id pointing at the
+  // 'preorder-2026' form (created by migration 046). Doug sees them in
+  // the admin Forms page with one-click "Add as customer" + status workflow.
+  var SUPABASE_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+  var PREORDER_FORM_SLUG = 'preorder-2026';
+  var _preorderFormId = null;  // populated lazily on first submit attempt
+
+  function _sbHeaders(){
+    return {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json'
+    };
+  }
+
+  // Look up the preorder form's UUID by slug. Cached after first call.
+  // Returns null if migration 046 hasn't been applied yet (in which case
+  // we fall back to mailto-only without persisting).
+  async function _getPreorderFormId(){
+    if(_preorderFormId) return _preorderFormId;
+    try {
+      var url = SUPABASE_URL + '/rest/v1/forms?slug=eq.' + PREORDER_FORM_SLUG + '&select=id&limit=1';
+      var res = await fetch(url, { headers: _sbHeaders() });
+      if(!res.ok) return null;
+      var rows = await res.json();
+      if(rows && rows.length > 0){
+        _preorderFormId = rows[0].id;
+        return _preorderFormId;
+      }
+    } catch(e){
+      console.warn('Preorder form lookup failed:', e);
+    }
+    return null;
+  }
+
+  // POST submission to form_submissions. Best-effort — if it fails, the
+  // mailto still fires so the order doesn't silently disappear. Returns
+  // the inserted row's id (so the catalog can build a customer-facing
+  // status URL: /status.html?id=<uuid>) or null on any failure.
+  async function _persistPreorder(formId, payload){
+    try {
+      var url = SUPABASE_URL + '/rest/v1/form_submissions';
+      // Prefer: return=representation tells PostgREST to send the inserted row back
+      var headers = _sbHeaders();
+      headers['Prefer'] = 'return=representation';
+      var body = JSON.stringify({ form_id: formId, data: payload, status: 'new' });
+      var res = await fetch(url, { method:'POST', headers: headers, body: body });
+      if(!res.ok) return null;
+      var rows = await res.json().catch(function(){return null;});
+      if(rows && rows.length > 0) return { id: rows[0].id };
+      return { id: null };  // insert succeeded but PostgREST returned no body
+    } catch(e){
+      console.warn('Preorder persist failed:', e);
+      return null;
+    }
+  }
+
+  // ── Checkout — submit pre-order ──
+  // Two channels for redundancy: (1) write structured data to Supabase
+  // form_submissions so Doug has a queryable order log, (2) mailto fires
+  // a notification email. Payment policy: 50% deposit upfront via Helcim
+  // payment link Doug texts back; balance on pickup or +shipping.
+  async function checkoutPreOrder(){
+    if(!cart.length) return;
+    var subtotal = 0;
+    var itemLines = [];
+    var structuredItems = [];
+    cart.forEach(function(c){
+      var p = PRODUCTS.find(function(x){return x.id === c.id;});
+      if(!p) return;
+      var unit = (p.preOrderPrice || p.retail);
+      var sub = unit * c.qty;
+      subtotal += sub;
+      var sizeStr = c.size ? ' · size '+c.size : '';
+      itemLines.push('  • '+p.brand+' · '+p.name+sizeStr+' · qty '+c.qty+' · $'+unit.toFixed(2)+' ea = $'+sub.toFixed(2));
+      structuredItems.push({
+        product_id: p.id,
+        brand: p.brand,
+        name: p.name,
+        size: c.size || null,
+        qty: c.qty,
+        unit_price: unit,
+        retail_price: p.retail,
+        line_total: +sub.toFixed(2),
+        is_sale: !!p.sale,
+        coming_soon: !!p.soon
+      });
+    });
+    var deposit = +(subtotal * 0.5).toFixed(2);
+    var balance = +(subtotal - deposit).toFixed(2);
+
+    var contactName = prompt('Your name?');
+    if(!contactName) return;
+    var contactPhone = prompt('Phone? (we\'ll text you the deposit link within a few hours)');
+    if(!contactPhone) return;
+    var contactEmail = prompt('Email? (for the receipt)');
+    if(!contactEmail) return;
+    var fulfillment = prompt('Pickup at the shop OR ship? (type pickup / ship / local-delivery)', 'pickup') || 'pickup';
+    var fulfillmentLower = String(fulfillment).toLowerCase().trim();
+    var isShip = fulfillmentLower.indexOf('ship') === 0;
+    var isLocalDelivery = fulfillmentLower.indexOf('local') === 0 || fulfillmentLower.indexOf('delivery') === 0;
+    // Capture shipping/delivery address when needed. Stays as a single
+    // multi-line prompt to keep the flow simple — could split into per-field
+    // inputs in a future iteration. Refuses empty/cancel for ship flows since
+    // Doug literally can't fulfill without it.
+    var shippingAddr = '';
+    if(isShip || isLocalDelivery){
+      var addrPrompt = isShip
+        ? 'Shipping address?\n(Street + city + state + zip — e.g. 123 Main St, Peekskill NY 10566)'
+        : 'Delivery address?\n(Street + city + zip — must be in Westchester County for free local delivery)';
+      shippingAddr = prompt(addrPrompt, '') || '';
+      if(!shippingAddr.trim()){
+        if(!confirm("No address entered. We can't ship without one.\n\nClick OK to switch to PICKUP instead, or Cancel to go back and add address.")){
+          return;  // User wants to go back + re-enter
+        }
+        // Swap fulfillment to pickup since they chose to skip the address
+        fulfillment = 'pickup';
+        isShip = false;
+        isLocalDelivery = false;
+      }
+    }
+    var notes = prompt('Anything else? (deadlines, gift, special requests — optional)', '') || '';
+
+    // Persist to Supabase first (best-effort). The mailto is the redundant fallback.
+    var formId = await _getPreorderFormId();
+    var persistOk = false;
+    var submissionId = null;
+    if(formId){
+      var persistResult = await _persistPreorder(formId, {
+        submitted_at: new Date().toISOString(),
+        contact: {
+          name: contactName,
+          phone: contactPhone,
+          email: contactEmail
+        },
+        fulfillment: fulfillment,
+        is_shipping: isShip,
+        is_local_delivery: isLocalDelivery,
+        shipping_address: (isShip || isLocalDelivery) ? shippingAddr.trim() : null,
+        items: structuredItems,
+        totals: {
+          subtotal: +subtotal.toFixed(2),
+          deposit_50: deposit,
+          balance_50: balance
+        },
+        notes: notes,
+        deposit_status: 'pending',  // Doug flips to 'paid' once Helcim deposit lands
+        balance_status: 'pending',
+        source: 'preorder.skateos.com'
+      });
+      persistOk = !!persistResult;
+      submissionId = persistResult && persistResult.id;
+    }
+    var statusUrl = submissionId ? (location.origin + '/status.html?id=' + submissionId) : '';
+
+    var lines = [];
+    lines.push('Pre-order request');
+    lines.push('═══════════════════════════════════════');
+    lines.push('Submitted: ' + new Date().toLocaleString());
+    lines.push('');
+    lines.push('Items:');
+    itemLines.forEach(function(l){ lines.push(l); });
+    lines.push('');
+    lines.push('───────────────────────────────────────');
+    lines.push('  Subtotal:                $' + subtotal.toFixed(2));
+    lines.push('  💳 Deposit due now (50%): $' + deposit.toFixed(2) + '   ← TEXT HELCIM LINK');
+    lines.push('  Balance ' + (isShip ? '(+ shipping when shipped)' : 'on pickup') + ': $' + balance.toFixed(2));
+    lines.push('───────────────────────────────────────');
+    lines.push('');
+    lines.push('Contact:');
+    lines.push('  Name:        ' + contactName);
+    lines.push('  Phone:       ' + contactPhone);
+    lines.push('  Email:       ' + contactEmail);
+    lines.push('  Fulfillment: ' + fulfillment + (isShip ? ' (collect shipping cost with balance)' : ''));
+    if(shippingAddr.trim()){
+      lines.push('  ' + (isShip ? 'Ship to:' : 'Deliver to:'));
+      shippingAddr.split('\n').forEach(function(line){
+        lines.push('    ' + line);
+      });
+    }
+    if(notes) lines.push('  Notes:       ' + notes);
+    lines.push('');
+    lines.push('Action items for 2ntr:');
+    lines.push('  1. Verify pricing + availability with supplier');
+    lines.push('  2. Send Helcim payment link for $' + deposit.toFixed(2) + ' deposit');
+    lines.push('  3. On arrival, text customer + collect $' + balance.toFixed(2) + (isShip ? ' + shipping' : ' on pickup'));
+    lines.push('');
+    if(statusUrl){
+      lines.push('Customer status link (share with the customer):');
+      lines.push('  ' + statusUrl);
+      lines.push('');
+    }
+    lines.push('— Submitted via preorder.skateos.com');
+
+    var subject = 'Pre-order $' + subtotal.toFixed(2) + ' (deposit $' + deposit.toFixed(2) + ') · ' + contactName;
+    var body = lines.join('\n');
+    var mailto = 'mailto:info@2ntr.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    window.location.href = mailto;
+
+    setTimeout(function(){
+      var confirmMsg = '✅ Pre-order submitted!\n\n'
+        + 'Order subtotal: $' + subtotal.toFixed(2) + '\n'
+        + 'Deposit due now (50%): $' + deposit.toFixed(2) + '\n'
+        + 'Balance on ' + (isShip ? 'arrival (+ shipping)' : 'pickup') + ': $' + balance.toFixed(2) + '\n\n'
+        + (persistOk ? '✓ Order logged — ' : '')
+        + 'within a few hours we\'ll text you ' + contactPhone + ' with:\n'
+        + '  • Final pricing + availability confirmation\n'
+        + '  • A secure card link to pay the $' + deposit.toFixed(2) + ' deposit\n\n'
+        + 'Once your gear arrives we\'ll text again to collect the $' + balance.toFixed(2) + (isShip ? ' + shipping' : ' at pickup') + '.\n\n'
+        + 'Thanks for skating with us 🛹';
+      if(statusUrl){
+        confirmMsg += '\n\n📋 Track your order anytime:\n' + statusUrl;
+      }
+      alert(confirmMsg);
+      // Open the status page in a new tab so the customer has a bookmarkable URL
+      if(statusUrl){
+        try { window.open(statusUrl, '_blank'); } catch(e) {}
+      }
+      cart = [];
+      saveCart();
+      closeCart();
+    }, 1200);
+  }
+
+  // ── Countdown clock — Sunday 23:59:59 ET ────────────────
+  function updateCountdown(){
+    var now = new Date();
+    var nyParts = new Intl.DateTimeFormat('en-US', {timeZone:'America/New_York', weekday:'short', hour:'numeric', hour12:false}).formatToParts(now).reduce(function(a,p){a[p.type]=p.value;return a;}, {});
+    var dayMap = {Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+    var dayIdx = dayMap[nyParts.weekday] != null ? dayMap[nyParts.weekday] : now.getDay();
+    var hourIdx = parseInt(nyParts.hour, 10);
+    var daysUntilSunday = (7 - dayIdx) % 7;
+    if(daysUntilSunday === 0 && hourIdx >= 24) daysUntilSunday = 7;
+    var target = new Date(now);
+    target.setDate(target.getDate() + daysUntilSunday);
+    var nyDateParts = new Intl.DateTimeFormat('en-CA', {timeZone:'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'}).formatToParts(target);
+    var nyDateStr = nyDateParts.find(function(p){return p.type==='year';}).value + '-'
+                  + nyDateParts.find(function(p){return p.type==='month';}).value + '-'
+                  + nyDateParts.find(function(p){return p.type==='day';}).value;
+    var probe = new Date(nyDateStr + 'T12:00:00Z');
+    var nyHour = parseInt(new Intl.DateTimeFormat('en-US', {timeZone:'America/New_York', hour:'numeric', hour12:false}).format(probe), 10);
+    var etOffsetMin = (nyHour - 12) * 60;
+    var targetUTC = new Date(nyDateStr + 'T23:59:59Z');
+    targetUTC.setMinutes(targetUTC.getMinutes() - etOffsetMin);
+    var diff = targetUTC.getTime() - now.getTime();
+    var clock = document.getElementById('countdown-clock');
+    if(!clock) return;
+    if(diff <= 0){ clock.textContent = 'sale resets at midnight'; return; }
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor(diff / 3600000) % 24;
+    var m = Math.floor(diff / 60000) % 60;
+    var s = Math.floor(diff / 1000) % 60;
+    var pad = function(n){return String(n).padStart(2,'0');};
+    clock.textContent = (d > 0 ? d + 'd ' : '') + pad(h) + ':' + pad(m) + ':' + pad(s);
+  }
+
+  // ── Init ────────────────────────────────────────────────
+  renderProducts();    // initial render with fallback array (instant paint)
+  renderCart();
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+  loadCatalog();       // async: replaces PRODUCTS + re-renders if mig 049 applied
+</script>
+</body>
+</html>

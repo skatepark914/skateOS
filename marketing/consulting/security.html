@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How we handle security — Hudson Valley AI</title>
+<meta name="description" content="What we actually do to keep your systems and data safe. Plain English, no compliance theater.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%230a0a0a' rx='18'/%3E%3Ctext x='50' y='68' font-size='52' font-weight='900' text-anchor='middle' fill='%23fb7185' font-family='-apple-system,sans-serif'%3EHV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;
+    color:#0a0a0a;background:#fafaf9;line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  .topbar{background:#0a0a0a;color:#fafaf9;padding:10px 28px;font-size:.78rem;text-align:center;font-weight:600;}
+  .topbar a{color:#fb7185;text-decoration:underline;}
+
+  .nav{
+    background:#fff;border-bottom:1px solid #e5e5e0;padding:14px 28px;
+    display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;
+  }
+  .nav-logo{display:flex;align-items:center;gap:10px;font-weight:900;font-size:1.1rem;letter-spacing:-0.018em;color:#0a0a0a;text-decoration:none;}
+  .nav-logo .mark{width:32px;height:32px;background:#0a0a0a;color:#fb7185;border-radius:7px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:.94rem;}
+  .nav-links{display:flex;gap:24px;font-size:.92rem;font-weight:600;color:#404040;}
+  .nav-links a{text-decoration:none;}
+  .nav-links a:hover{color:#0a0a0a;}
+  .nav-links a.active{color:#e11d48;}
+  .nav-cta{padding:9px 18px;background:#0a0a0a;color:#fafaf9;border-radius:8px;font-size:.86rem;font-weight:700;text-decoration:none;}
+  .nav-cta:hover{background:#e11d48;}
+  @media(max-width:880px){.nav-links{display:none;}}
+
+  .wrap{max-width:780px;margin:0 auto;padding:50px 28px 60px;}
+
+  .breadcrumb{font-size:.86rem;color:#737373;margin-bottom:22px;}
+  .breadcrumb a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+  .breadcrumb a:hover{text-decoration:underline;}
+
+  h1{
+    font-size:clamp(1.9rem,3.8vw,2.6rem);font-weight:900;letter-spacing:-0.022em;
+    line-height:1.1;margin-bottom:12px;
+  }
+  .subtitle{font-size:1.05rem;color:#404040;margin-bottom:36px;}
+
+  .intro-card{
+    background:#fef9c3;border:1px solid #fde047;border-radius:12px;padding:22px 26px;margin-bottom:32px;
+  }
+  .intro-card h2{font-size:1rem;font-weight:800;margin-bottom:8px;}
+  .intro-card p{font-size:.95rem;color:#404040;margin:0;}
+
+  section.policy{
+    background:#fff;border:1px solid #e5e5e0;border-radius:12px;padding:28px 32px;margin-bottom:18px;
+  }
+  section.policy h2{
+    font-size:1.25rem;font-weight:800;letter-spacing:-0.015em;margin-bottom:12px;
+  }
+  section.policy h3{
+    font-size:.98rem;font-weight:700;margin:18px 0 6px;color:#0a0a0a;
+  }
+  section.policy p{margin-bottom:10px;color:#404040;font-size:.95rem;}
+  section.policy ul{margin:6px 0 12px 20px;color:#404040;font-size:.94rem;}
+  section.policy li{margin-bottom:5px;}
+  section.policy strong{color:#0a0a0a;}
+  section.policy .callout{
+    background:#fef2f2;border-left:3px solid #e11d48;padding:14px 18px;border-radius:6px;
+    margin:16px 0;font-size:.92rem;
+  }
+  section.policy .callout strong{color:#e11d48;}
+
+  .cta-bottom{
+    background:#0a0a0a;color:#fafaf9;border-radius:14px;padding:32px;margin-top:30px;text-align:center;
+  }
+  .cta-bottom h2{color:#fafaf9;font-size:1.4rem;font-weight:800;margin-bottom:10px;}
+  .cta-bottom p{color:#a3a3a3;margin-bottom:18px;font-size:.95rem;}
+  .cta-bottom .btn{
+    display:inline-block;padding:11px 22px;background:#fb7185;color:#fafaf9;border-radius:8px;
+    font-weight:700;text-decoration:none;font-size:.94rem;
+  }
+  .cta-bottom .btn:hover{background:#be123c;}
+
+  footer{padding:30px 28px;text-align:center;font-size:.78rem;color:#737373;border-top:1px solid #e5e5e0;background:#fff;}
+  footer a{color:#0a0a0a;font-weight:600;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">📍 Hudson Valley, NY · Principal-led software + security consultancy · <a href="index.html">Back to overview →</a></div>
+
+<nav class="nav">
+  <a class="nav-logo" href="index.html"><span class="mark">HV</span><span>Hudson Valley AI</span></a>
+  <div class="nav-links">
+    <a href="index.html#services">Services</a>
+    <a href="products.html">Products</a>
+    <a href="work.html">Work</a>
+    <a href="security.html" class="active">Security</a>
+    <a href="process.html">Process</a>
+    <a href="compare.html">Compare</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+  <a href="intake.html" class="nav-cta">Start an engagement →</a>
+</nav>
+
+<div class="wrap">
+  <div class="breadcrumb"><a href="index.html">Hudson Valley AI</a> / Security</div>
+
+  <h1>How we handle security</h1>
+  <p class="subtitle">Concrete practices, plain English. What we actually do for every client — reviewed by Jon (CISSP, OSCP) on every Production Sprint.</p>
+
+  <section class="policy">
+    <h2>The short version</h2>
+    <ul>
+      <li><strong>Hardware MFA</strong> on every account that touches your systems.</li>
+      <li><strong>Encryption everywhere</strong> — TLS in transit, AES-256 at rest, on every database we touch.</li>
+      <li><strong>Least privilege</strong> — we ask for the smallest amount of access we need, and we revoke it when we're done.</li>
+      <li><strong>No credit cards on our servers</strong> — payment processors handle card data in their iframes, we never touch it.</li>
+      <li><strong>Row-Level Security</strong> at the database layer for multi-tenant systems, so a bug in our code can't leak one customer's data to another.</li>
+      <li><strong>Secrets stay in secret managers</strong> — never in code, email, Slack, or screenshots.</li>
+      <li><strong>Backups that we've actually restored</strong> — a backup you've never tested is a hope, not a backup.</li>
+    </ul>
+    <p>The rest of this page is the longer version of each.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Access</h2>
+    <p>When we work on your systems we get accounts in your name, not shared logins. Hardware MFA (YubiKey or equivalent) on every account. We ask for the minimum permissions we need for the actual work — read-only when we can, write only on the tables/services we're actively changing.</p>
+    <p>When we're done, all access is revoked within 24 hours and credentials are rotated. You get a quick note confirming it's off.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Data &amp; encryption</h2>
+    <p>Everything in motion is over TLS 1.2 or higher (we disable older versions where we can). Everything at rest is encrypted at the storage layer — AES-256 on the database, AES-256 on object storage, encrypted backups with a separate key.</p>
+    <p>Sensitive data (payment cards, health info, anything regulated) gets stricter handling on a per-project basis. Payment card data <strong>never touches our infrastructure</strong> — we integrate with payment processors (Helcim, Stripe) that capture cards in their own iframe, and our database stores only their transaction reference.</p>
+    <p>At engagement end your data goes back to you and we destroy our copies within 30 days, or sooner on request. Backups containing your data wash out of our retention window within 90 days.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Infrastructure</h2>
+    <p>We deploy to providers we trust and can audit: <strong>Cloudflare, AWS, Supabase, Vercel.</strong> No shared hosting, no random VPS providers we can't verify.</p>
+    <ul>
+      <li><strong>Default-deny firewall</strong> — production databases aren't reachable from the public internet, only from app servers.</li>
+      <li><strong>WAF</strong> via Cloudflare on every public-facing site (OWASP Core Rule Set).</li>
+      <li><strong>Row-Level Security</strong> at the database layer for multi-tenant systems — Supabase's RLS or equivalent. Even if app-layer auth has a bug, the database refuses cross-tenant reads.</li>
+      <li><strong>Webhook signature verification</strong> on every incoming webhook so attackers can't fake them.</li>
+      <li><strong>Content Security Policy</strong> headers on production HTML to reduce XSS blast radius.</li>
+    </ul>
+  </section>
+
+  <section class="policy">
+    <h2>Secrets</h2>
+    <p>API keys, database passwords, signing tokens — stored only in real secret managers (Supabase secrets, AWS Secrets Manager, Cloudflare Workers secrets, 1Password). Never in code, config files, env files committed to git, email, chat, or screenshots.</p>
+    <p>Rotated when they should be rotated (quarterly minimum, immediately on suspected exposure). Audit-style git-history reviews surface accidentally-committed secrets that older codebases often carry — when we find them in client systems, we rotate first and document the finding for the audit trail.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Logging &amp; monitoring</h2>
+    <p>For projects we operate, we log the things that matter: authentication events, privileged actions, database changes on critical tables (with actor identity + old/new values), webhook deliveries, application errors.</p>
+    <p>Logs are kept long enough to be useful (90 days minimum, longer on request). Critical alerts page us via email + SMS. We're not a 24/7 SOC — if you need that, you need a different vendor — but for a side-project-scale problem on a non-critical system, we'll have eyes on it within hours, not days.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Backups</h2>
+    <p>For production databases: continuous WAL streaming plus daily snapshots. For object storage: versioned and cross-region replicated where the cost makes sense. For infrastructure: everything in version control.</p>
+    <p>We test restores periodically. A backup that's never been restored is a hope, not a backup.</p>
+  </section>
+
+  <section class="policy">
+    <h2>If something goes wrong</h2>
+    <p>If something looks wrong — confirmed breach, suspicious activity, anything that might be an incident — we'll:</p>
+    <ul>
+      <li>Acknowledge it fast (hours, not days).</li>
+      <li>Contain it — revoke credentials, isolate systems, whatever stops the bleeding.</li>
+      <li>Fix the root cause.</li>
+      <li>Tell you what happened, when, and what we did about it, in writing.</li>
+    </ul>
+    <p>For regulated data (HIPAA, GDPR) we follow the applicable notification timelines. Otherwise, we tell you as soon as we know there's something to tell.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Contract-layer security · AI arbitration</h2>
+    <p>Security isn't just code and infrastructure — it's also what happens when a customer disputes a charge, a user claims an injury, or a vendor sues. We bake <strong>AI arbitration</strong> into client contracts via our partnership with <a href="https://decisionlayer.ai" style="color:#1e40af;" target="_blank" rel="noopener">DecisionLayer</a> (built by Liberty McAteer). Disputes get resolved in ~45-90 days for ~$500 instead of $100k+ over 18+ months of court.</p>
+    <p>It's standard inclusion on every Production Sprint where the build has a customer-facing contract, waiver, or terms of service. We've already piloted the clause against our own waiver (simulated $35k injury claim — system ruled for the operator). The point: we ship clients out the door with a contract stack that handles disputes the new way, not the 2002 way. See <a href="work.html#decisionlayer">the DecisionLayer integration</a> in our work portfolio.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Scope of what we offer</h2>
+    <p>Worth being clear about what we do — and what's outside our scope so nobody buys the wrong thing:</p>
+    <ul>
+      <li><strong>In scope:</strong> Application-layer security reviews on every Production Sprint we deliver. Standalone Security Look-Over packages on existing codebases. Configuration audits, secrets-management hygiene, RLS / authentication / authorization review. HIPAA-aligned controls and BAAs on a per-engagement basis when in scope.</li>
+      <li><strong>Out of scope:</strong> 24/7 managed SOC operations, follow-the-sun on-call rotations, formal third-party penetration-test reports with auditor sign-off. If you need those, we'll point you to a managed-services firm or an accredited pen-test vendor.</li>
+    </ul>
+    <p>If you're not sure whether your project fits, send us a short note and we'll tell you straight.</p>
+  </section>
+
+  <section class="policy">
+    <h2>Found a security issue?</h2>
+    <p>If you've found a security problem in something we've built or operate:</p>
+    <ul>
+      <li><strong>Email:</strong> <a href="mailto:security@2ntr.com" style="color:#e11d48;">security@2ntr.com</a></li>
+      <li><strong>Direct:</strong> <a href="mailto:jon@2ntr.com" style="color:#e11d48;">jon@2ntr.com</a></li>
+      <li><strong>Phone:</strong> <a href="tel:+19144024624" style="color:#e11d48;">(914) 402-4624</a></li>
+    </ul>
+    <p>We'll acknowledge within 24 hours, give you an initial assessment within 72, and work with you on a sensible disclosure timeline. We don't threaten security researchers acting in good faith.</p>
+  </section>
+
+  <div class="cta-bottom">
+    <h2>Want a quick security look-over?</h2>
+    <p>$5k Security Look-Over: Jon reviews your stack for a week, surfaces what matters, writes you a prioritized list.</p>
+    <a href="intake.html?pkg=audit" class="btn">Reach out about a look-over →</a>
+  </div>
+</div>
+
+<footer>
+  © 2026 Hudson Valley AI · Hudson Valley, NY · <a href="index.html">Home</a> · <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="mailto:security@2ntr.com">security@2ntr.com</a>
+</footer>
+
+</body>
+</html>

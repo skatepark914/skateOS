@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skateOS — operating system for skateshops & skateparks</title>
+<meta name="description" content="The all-in-one ops platform for skateshops and skateparks. Check-ins, point of sale, lessons, memberships, mobile shop, and reports — built by skaters, for skaters.">
+<meta property="og:title" content="skateOS">
+<meta property="og:description" content="Operating system for skateshops and skateparks. Built by skaters.">
+<meta property="og:image" content="https://skateos.com/og.png">
+<meta property="og:url" content="https://skateos.com">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🛹%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --rose:       #e11d48;
+    --rose-dark:  #be123c;
+    --rose-light: #ffe4e6;
+    --ink:        #14161a;
+    --ink-soft:   #555a63;
+    --line:       #e6e6e1;
+    --bg:         #faf9f6;
+    --green:      #16a34a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+  }
+
+  /* Nav */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(250, 249, 246, 0.85);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .logo {
+    font-size: 18px; font-weight: 900; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .logo .accent { color: var(--rose); }
+  nav a {
+    color: var(--ink-soft); text-decoration: none;
+    font-size: 14px; font-weight: 600; margin-left: 22px;
+  }
+  nav a:hover { color: var(--rose); }
+  .nav-cta {
+    background: var(--rose); color: #fff !important;
+    padding: 8px 18px; border-radius: 999px;
+    margin-left: 14px;
+  }
+  .nav-cta:hover { background: var(--rose-dark) !important; }
+  @media (max-width: 600px) { nav .links { display: none; } }
+
+  /* Hero */
+  .hero {
+    padding: 80px 24px 60px;
+    max-width: 1100px; margin: 0 auto;
+    text-align: center;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--rose-light); color: var(--rose-dark);
+    border-radius: 999px;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.04em; text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-size: clamp(36px, 6vw, 64px);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 900;
+    margin-bottom: 18px;
+  }
+  h1 .grad {
+    background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .lede {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--ink-soft);
+    max-width: 680px; margin: 0 auto 34px;
+  }
+  .cta-row {
+    display: flex; gap: 12px;
+    justify-content: center; flex-wrap: wrap;
+  }
+  .btn {
+    padding: 14px 28px;
+    border-radius: 999px;
+    font-size: 15px; font-weight: 700;
+    text-decoration: none; cursor: pointer;
+    border: 0;
+    font-family: inherit;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: transform 0.1s, box-shadow 0.15s;
+  }
+  .btn-primary { background: var(--rose); color: #fff; box-shadow: 0 6px 24px rgba(225,29,72,0.3); }
+  .btn-primary:hover { background: var(--rose-dark); transform: translateY(-1px); }
+  .btn-ghost { background: #fff; color: var(--ink); border: 1px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--rose); color: var(--rose); }
+
+  /* Features */
+  section {
+    padding: 70px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-head {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .section-head .eyebrow {
+    color: var(--rose);
+    font-size: 13px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+  .section-head h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 900; letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-head p {
+    color: var(--ink-soft);
+    font-size: 17px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .feature-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 28px;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  }
+  .feature-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+    border-color: var(--rose-light);
+  }
+  .feature-icon {
+    font-size: 36px;
+    margin-bottom: 14px;
+  }
+  .feature-card h3 {
+    font-size: 18px; font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .feature-card p {
+    color: var(--ink-soft);
+    font-size: 14px;
+  }
+
+  /* Compare */
+  .compare {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .compare table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+  }
+  .compare th, .compare td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-size: 15px;
+  }
+  .compare th {
+    background: var(--bg);
+    font-weight: 800;
+    font-size: 13px; text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--ink-soft);
+  }
+  .compare td.win { color: var(--green); font-weight: 700; }
+  .compare td.lose { color: var(--ink-soft); }
+  .compare td:first-child { font-weight: 700; }
+
+  /* Stats / proof */
+  .proof {
+    background: linear-gradient(135deg, var(--rose-dark), var(--rose));
+    color: #fff;
+    text-align: center;
+  }
+  .proof h2 {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 900;
+    margin-bottom: 14px;
+    letter-spacing: -0.02em;
+  }
+  .proof p {
+    opacity: 0.9;
+    font-size: 17px;
+    max-width: 600px;
+    margin: 0 auto 28px;
+  }
+  .proof .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 28px;
+    margin-top: 32px;
+  }
+  .proof .stat-row .stat .n {
+    font-size: 44px; font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .proof .stat-row .stat .l {
+    opacity: 0.85;
+    font-size: 14px;
+    margin-top: 4px;
+  }
+
+  /* CTA */
+  .signup {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 48px 32px;
+    text-align: center;
+    max-width: 720px;
+    margin: 60px auto;
+  }
+  .signup h2 {
+    font-size: 28px; font-weight: 900;
+    letter-spacing: -0.02em; margin-bottom: 10px;
+  }
+  .signup p { color: var(--ink-soft); margin-bottom: 24px; }
+  .signup form {
+    display: flex; gap: 8px;
+    max-width: 460px; margin: 0 auto;
+    flex-wrap: wrap;
+  }
+  .signup input {
+    flex: 1; min-width: 220px;
+    padding: 14px 18px;
+    border: 1px solid var(--line); border-radius: 999px;
+    font-size: 15px; font-family: inherit;
+  }
+  .signup input:focus {
+    outline: 2px solid var(--rose); outline-offset: -1px;
+    border-color: var(--rose);
+  }
+  .signup-status { margin-top: 14px; font-size: 14px; }
+  .signup-status.ok  { color: var(--green); }
+  .signup-status.err { color: var(--rose); }
+
+  /* Footer */
+  footer {
+    background: var(--ink);
+    color: #aaa;
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 13px;
+  }
+  footer a { color: #fff; text-decoration: none; }
+  footer a:hover { color: var(--rose); }
+  footer .links { margin-bottom: 14px; }
+  footer .links a { margin: 0 14px; }
+
+  ::selection { background: var(--rose-light); color: var(--rose-dark); }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#top" class="logo" style="text-decoration:none;color:inherit;cursor:pointer;" title="Home">
+    🛹 <span>skate<span class="accent">OS</span></span>
+  </a>
+  <div class="links">
+    <a href="#top" title="Home" style="display:inline-flex;align-items:center;gap:4px;">🏠 Home</a>
+    <a href="#features">Features</a>
+    <a href="#compare">vs. Square</a>
+    <a href="/sales/">Pricing</a>
+    <a href="/2ntr/">2nd Nature</a>
+    <a class="nav-cta" href="#signup">Get early access</a>
+  </div>
+</nav>
+<div id="top" style="position:absolute;top:0;"></div>
+
+<header class="hero">
+  <div class="badge">In beta · onboarding founding shops & parks</div>
+  <h1>Operating system for <span class="grad">skateshops &amp; skateparks.</span></h1>
+  <p class="lede">
+    Check-ins, point of sale, lessons, memberships, loyalty, and a mobile bus shop —
+    one platform built by skaters, for skate ops.
+    Stop duct-taping Square + Mailchimp + Smartwaiver + Excel.
+  </p>
+  <div class="cta-row">
+    <a href="#signup" class="btn btn-primary">Get early access →</a>
+    <a href="#features" class="btn btn-ghost">See how it works</a>
+  </div>
+  <div style="margin-top:24px;font-size:13px;color:var(--ink-soft);">
+    Built in Peekskill NY · taking 5 founding shops + parks for beta
+  </div>
+
+  <div style="margin-top:30px;background:linear-gradient(135deg,#fff5f7,#ffe4e6);border:1.5px solid #fda4af;border-radius:14px;padding:18px 22px;max-width:640px;margin-left:auto;margin-right:auto;text-align:left;">
+    <div style="display:flex;align-items:flex-start;gap:14px;">
+      <div style="font-size:1.6rem;flex-shrink:0;">🏰</div>
+      <div style="flex:1;">
+        <div style="font-size:.96rem;font-weight:800;color:#9f1239;letter-spacing:-0.012em;margin-bottom:4px;">Own your skateOS instance — don't rent it forever.</div>
+        <div style="font-size:.84rem;color:#7c2d12;line-height:1.55;">Hudson Valley AI deploys skateOS on YOUR infrastructure with source code transferred to you. No SaaS lock-in. <a href="https://consult.skateos.com/ownership/" target="_blank" style="color:#9f1239;font-weight:700;">Read the case for ownership →</a> · <a href="https://consult.skateos.com/savings/" target="_blank" style="color:#9f1239;font-weight:700;">Calculate your savings →</a></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section id="features">
+  <div class="section-head">
+    <div class="eyebrow">Built for park ops</div>
+    <h2>Run the whole park from one screen.</h2>
+    <p>Front desk, shop, lessons, parties, pre-orders, mobile shop, payroll, marketing, customer self-serve. No duct tape.</p>
+  </div>
+  <div class="grid-3">
+    <div class="feature-card">
+      <div class="feature-icon">🛹</div>
+      <h3>Live Check-In</h3>
+      <p>QR member cards, voice search, real-time "in the park now" board, punch-card auto-decrement, waiver-first flow, family group detection, capacity warnings. Built for the iPad at the front desk.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">💳</div>
+      <h3>Point of Sale + Helcim</h3>
+      <p>Tap-to-pay via HelcimPay, hosted invoice links auto-emailed, automatic receipts, split payments, gift cards, comp/void/discount approval gates. Lower in-person fees than Square.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎓</div>
+      <h3>Lessons & camps</h3>
+      <p>Calendar with private/group/camp/event/birthday types, auto 24-hr SMS+email reminders, post-lesson follow-up with review request, full-screen camp roster check-in for counselors, conflict detection, skill tracker, recurrence builder.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🪪</div>
+      <h3>Memberships & punch cards</h3>
+      <p>Day pass / monthly / annual / punch card / industry comp. Pause-and-resume with auto-resume cron, renewal reminder cron, bulk-extend for closures, low-punch detection. Print laminate member cards with QR.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⭐</div>
+      <h3>Loyalty + tiers + perks</h3>
+      <p>Auto-earn on sales + check-ins + lessons attended. Bronze/Silver/Gold tiers with owner-tunable thresholds + perks. Gift points between members. Refund-aware (auto-reverses points on refunded sales). Atomic redeem.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📋</div>
+      <h3>Pre-order workflow</h3>
+      <p>White-label catalog at <code>preorder.&lt;yoursite&gt;.com</code>. Customer pre-orders with 50/50 deposit-on-submit + balance-on-pickup. Weekly Sunday-cutoff cron emails the supplier-rollup as a CSV. Status page, Helcim auto-payment-link, deposit-paid auto-flip via webhook.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🏆</div>
+      <h3>Affiliate / team riders</h3>
+      <p>Enroll customers as team riders with their own promo code. Auto-commission on every code-attributed sale. Public team page + per-rider profile + printable shop-wall poster with QR code. Power-user candidate detection identifies who'd be a good fit.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📧</div>
+      <h3>Marketing automation</h3>
+      <p>Pre-stocked campaign templates (welcome, birthday, low-punch, lapsed, Gold-tier appreciation, pre-order cutoff). Tag + tier + segment-based targeting. A/B test split with deterministic 50/50 hashing. CAN-SPAM opt-out compliant. Daily/weekly digest emails to owner.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚌</div>
+      <h3>Mobile bus shop</h3>
+      <p>Take a curated catalog to other parks. Inventory persists on the bus between runs. Sales auto-tag the active run. End-of-run reconcile flow with cash variance + per-product physical count. Bus inventory + base inventory tracked separately.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚨</div>
+      <h3>Incidents + safety</h3>
+      <p>Skater-shaped form: park area, helmet status, guardian contact, severity ladder. Auto-emails + texts the owner on ER/911. Searchable history for insurance. Reports card surfaces incident hotspots by park area.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🛡️</div>
+      <h3>Equipment / loaners</h3>
+      <p>Per-asset loaner tracking with signature pad + condition photo capture (before/after rental). Inspection cycle audit-stamps with overdue alert. Fleet status report card. Insurance-ready exports.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🕐</div>
+      <h3>Staff timesheets + chat</h3>
+      <p>Atomic clock-in/out via RPC, owner-approved weekly payroll, server-side audit trail. Mid-shift role switch (front desk → instructor mid-day). End-of-shift handoff modal with cash count. Internal team chat with assignable reminders.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">👤</div>
+      <h3>Customer self-serve portal</h3>
+      <p>Magic-link sign-in, no passwords. Customers see their loyalty + tier + visits + active passes + upcoming lessons + recent purchases + pre-orders + achievement badges. Edit profile. Cancel lesson. Print own member card. CAN-SPAM unsubscribe.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>30+ Reports cards</h3>
+      <p>Daily close-out with cash drawer count + Helcim deposit reconcile. Partner P&L splits, in-park heatmap, weekend mix, lesson cancellation reasons, refund rate by product, customer LTV distribution, MRR/churn trend, cash variance trend, equipment fleet status, instructor reliability + utilization. CSV exports throughout.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎁</div>
+      <h3>Gift cards</h3>
+      <p>Sell at POS with personalized message + recipient email. Public balance-check page (<code>/gift-card.html?code=…</code>). Bulk B2B sale flow for corporate / sponsor packages. Append-only ledger for forensic audit trail. Daily liability snapshot in owner digest.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📝</div>
+      <h3>Forms / booking landing</h3>
+      <p>Public-renderer form builder. Lesson intake / birthday-party inquiry / general contact / customer feedback templates. Each form gets a shareable URL. One-click "book lesson" / "add as customer" smart conversion from submissions.</p>
+    </div>
+  </div>
+</section>
+
+<section id="compare" class="compare">
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px;">
+    <div class="section-head">
+      <div class="eyebrow">vs. Square</div>
+      <h2>Built for parks, not for cafés.</h2>
+      <p>Square is fine if you sell coffee. Skateparks need different tools.</p>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th style="width:34%;">What you need</th>
+          <th>Square</th>
+          <th>Shopify</th>
+          <th>Mindbody</th>
+          <th style="background:var(--rose-light);color:var(--rose-dark);">skateOS</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>"Who's in the park right now?"</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">✗</td><td class="win">✓ Real-time</td></tr>
+        <tr><td>Punch-card auto-decrement on check-in</td><td class="lose">clunky</td><td class="lose">✗</td><td class="lose">paid add-on</td><td class="win">✓ Native</td></tr>
+        <tr><td>Smartwaiver integration</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">paid add-on</td><td class="win">✓ Built-in</td></tr>
+        <tr><td>Skatepark-shape memberships</td><td class="lose">generic</td><td class="lose">✗</td><td class="lose">fitness-shaped</td><td class="win">✓ Day / Monthly / Annual / Punch</td></tr>
+        <tr><td>Loyalty + tier perks editor</td><td class="lose">paid add-on</td><td class="lose">third-party app</td><td class="lose">paid add-on</td><td class="win">✓ Bronze/Silver/Gold native</td></tr>
+        <tr><td>Pre-order workflow with weekly cron</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">✗</td><td class="win">✓ End-to-end</td></tr>
+        <tr><td>Affiliate / team rider program</td><td class="lose">✗</td><td class="lose">third-party app</td><td class="lose">✗</td><td class="win">✓ Native + commission auto-earn</td></tr>
+        <tr><td>Mobile bus shop tracking</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">✗</td><td class="win">✓ Native</td></tr>
+        <tr><td>Lessons calendar (private/group/camp/birthday)</td><td class="lose">Square Appts (paid)</td><td class="lose">third-party</td><td class="win">✓</td><td class="win">✓ Native + camp roster screen</td></tr>
+        <tr><td>Skater incident reports + history</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">✗</td><td class="win">✓ Insurance-ready</td></tr>
+        <tr><td>Equipment loaner tracking + signature pad</td><td class="lose">✗</td><td class="lose">✗</td><td class="lose">✗</td><td class="win">✓ Native + photo capture</td></tr>
+        <tr><td>Customer self-serve portal</td><td class="lose">basic profile only</td><td class="lose">storefront only</td><td class="lose">limited</td><td class="win">✓ Magic-link, no passwords</td></tr>
+        <tr><td>Marketing automation + A/B test</td><td class="lose">paid add-on</td><td class="lose">third-party</td><td class="lose">limited</td><td class="win">✓ Native, segment + tier-based</td></tr>
+        <tr><td>Online retail shop</td><td class="lose">basic</td><td class="win">✓ best-in-class</td><td class="lose">✗</td><td class="win">✓ via Helcim invoice + roadmap</td></tr>
+        <tr><td>In-person card-present rate</td><td class="lose">2.7% + $0.05</td><td class="lose">2.7% + $0.05</td><td class="lose">2.9% + $0.30</td><td class="win">1.93% + $0.08</td></tr>
+        <tr><td>Monthly base price</td><td class="lose">$0 + add-ons stack fast</td><td class="lose">$39+/mo</td><td class="lose">$129+/mo</td><td class="win">flat per-shop, no add-ons</td></tr>
+        <tr><td>Built for skate ops specifically</td><td class="lose">cafés</td><td class="lose">e-commerce</td><td class="lose">yoga / fitness</td><td class="win">✓ skateshops + parks</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:13px;color:var(--ink-soft);text-align:center;margin-top:18px;line-height:1.6;">
+      Why not these others either:<br>
+      <strong>Lightspeed Retail</strong> — solid POS, but no lessons / waivers / mobile shop. You'd still bolt on 4 other tools.<br>
+      <strong>Toast</strong> — restaurant-shaped, expensive, irrelevant unless your shop has a kitchen.<br>
+      <strong>Booqable / Acuity</strong> — booking-only, no POS, no inventory. Half a solution.
+    </div>
+  </div>
+</section>
+
+<section class="proof">
+  <div style="max-width:1100px;margin:0 auto;padding:0 24px;">
+    <h2>Built by skaters, for skate ops.</h2>
+    <p>Designed from day one for the way shops and parks actually run — not retrofitted from a café POS or a yoga-studio booking app.</p>
+    <div class="stat-row">
+      <div class="stat"><div class="n">30+</div><div class="l">modules built</div></div>
+      <div class="stat"><div class="n">~$6k/yr</div><div class="l">saved vs Square fees</div></div>
+      <div class="stat"><div class="n">60s</div><div class="l">new-skater quickstart</div></div>
+      <div class="stat"><div class="n">50+</div><div class="l">DB migrations · all idempotent</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="signup">
+  <div class="signup">
+    <h2>Want it for your park?</h2>
+    <p>We're onboarding 5 parks for beta in 2026. Drop your email — we'll reach out when there's a slot.</p>
+    <form id="signupForm" onsubmit="return submitSignup(event)">
+      <input type="email" id="signupEmail" placeholder="you@yourpark.com" required autocomplete="email">
+      <button type="submit" class="btn btn-primary" id="signupBtn">Get on the list →</button>
+    </form>
+    <div id="signupStatus" class="signup-status"></div>
+    <div style="margin-top:18px;font-size:13px;color:var(--ink-soft);">
+      Or email <a href="mailto:skateosapp@gmail.com" style="color:var(--rose);text-decoration:none;font-weight:600;">skateosapp@gmail.com</a> directly.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="links">
+    <a href="https://2ntr.com">2nd Nature Park</a>
+    <a href="mailto:skateosapp@gmail.com">Contact</a>
+    <a href="#features">Features</a>
+  </div>
+  <div>
+    skate<span style="color:var(--rose);">OS</span> · operating system for skateparks · built by skaters
+  </div>
+  <div style="margin-top:8px;font-size:11px;color:#666;">
+    © 2026 skateOS. Live at 2nd Nature Park, Peekskill NY.
+  </div>
+</footer>
+
+<script>
+  function submitSignup(ev){
+    ev.preventDefault();
+    var email = document.getElementById('signupEmail').value.trim();
+    var btn = document.getElementById('signupBtn');
+    var statusEl = document.getElementById('signupStatus');
+    btn.disabled = true; btn.textContent = 'Sending…';
+
+    // For now, just open an email — no backend wired to skateos.com yet.
+    // (Doug: wire this to a Supabase form_submissions row or a Resend webhook later.)
+    var subject = 'skateOS beta interest';
+    var body = 'Hi — I run a skatepark and would like early access to skateOS.\n\nMy email: ' + email + '\n\nThanks!';
+    var mailto = 'mailto:skateosapp@gmail.com?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+    window.location.href = mailto;
+
+    statusEl.className = 'signup-status ok';
+    statusEl.textContent = '✓ Opening your email — hit send to reach us.';
+    setTimeout(function(){
+      btn.disabled = false; btn.textContent = 'Get on the list →';
+    }, 2500);
+    return false;
+  }
+</script>
+
+</body>
+</html>

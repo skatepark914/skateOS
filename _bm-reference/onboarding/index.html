@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Second Nature Tree Service — Onboarding</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:-apple-system,system-ui,'Segoe UI',sans-serif; background:#f8fafc; color:#0f172a; display:flex; height:100vh; overflow:hidden; }
+
+  /* Left: content area */
+  .content-pane { flex:1; overflow-y:auto; -webkit-overflow-scrolling:touch; }
+  .content-pane iframe { width:100%; height:100%; border:none; }
+  .content-pane .welcome { max-width:560px; margin:60px auto; padding:20px; text-align:center; }
+  .content-pane .welcome h1 { font-size:28px; font-weight:800; margin-bottom:8px; }
+  .content-pane .welcome p { font-size:15px; color:#64748b; line-height:1.6; margin-bottom:24px; }
+  .content-pane .welcome .start-btn { display:inline-block; padding:16px 40px; background:#1b5e20; color:#fff; border:none; border-radius:12px; font-size:17px; font-weight:700; cursor:pointer; text-decoration:none; }
+  .content-pane .welcome .start-btn:hover { background:#166534; }
+
+  /* Right: checklist sidebar */
+  .checklist { width:300px; background:#fff; border-left:1px solid #e2e8f0; display:flex; flex-direction:column; overflow-y:auto; flex-shrink:0; }
+  .cl-header { padding:16px 18px; border-bottom:1px solid #e2e8f0; }
+  .cl-header h2 { font-size:15px; font-weight:800; display:flex; align-items:center; gap:8px; }
+  .cl-header h2 .logo { width:28px; height:28px; background:#1b5e20; border-radius:6px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:14px; }
+  .cl-progress { margin-top:10px; }
+  .cl-progress-bar { background:#e2e8f0; border-radius:99px; height:5px; overflow:hidden; }
+  .cl-progress-fill { background:#1b5e20; height:100%; border-radius:99px; transition:width .4s ease; }
+  .cl-progress-text { font-size:11px; color:#94a3b8; margin-top:4px; }
+  .cl-emp { font-size:12px; color:#1b5e20; font-weight:600; margin-top:6px; }
+
+  .cl-section { font-size:10px; font-weight:700; color:#94a3b8; text-transform:uppercase; letter-spacing:.8px; padding:14px 18px 6px; }
+  .cl-items { flex:1; }
+
+  .cl-item { display:flex; align-items:center; gap:10px; padding:10px 18px; cursor:pointer; transition:background .15s; font-size:13px; border-left:3px solid transparent; }
+  .cl-item:hover { background:#f1f5f9; }
+  .cl-item.active { background:#f0fdf4; border-left-color:#1b5e20; font-weight:600; }
+  .cl-item.done { color:#94a3b8; }
+  .cl-check { width:22px; height:22px; border-radius:50%; border:2px solid #cbd5e1; display:flex; align-items:center; justify-content:center; font-size:11px; flex-shrink:0; }
+  .cl-item.done .cl-check { background:#1b5e20; border-color:#1b5e20; color:#fff; }
+  .cl-item.active .cl-check { border-color:#1b5e20; }
+  .cl-item-label { flex:1; }
+  .cl-item-meta { font-size:10px; color:#94a3b8; margin-top:1px; }
+  .cl-tag { font-size:9px; font-weight:700; padding:1px 5px; border-radius:3px; background:#fef2f2; color:#dc2626; }
+
+  .cl-footer { padding:12px 18px; border-top:1px solid #e2e8f0; font-size:11px; color:#94a3b8; text-align:center; }
+
+  /* Completion overlay */
+  .complete-banner { display:none; background:#f0fdf4; border:2px solid #22c55e; border-radius:12px; padding:28px; text-align:center; margin:40px auto; max-width:480px; }
+  .complete-banner h2 { color:#166534; font-size:20px; margin-top:8px; }
+  .complete-banner p { color:#15803d; font-size:14px; margin-top:6px; }
+  .complete-banner .print-btn { margin-top:14px; padding:10px 24px; background:#166534; color:#fff; border:none; border-radius:8px; font-weight:600; cursor:pointer; }
+
+  /* Mobile: stack vertically, checklist on top */
+  @media (max-width:768px) {
+    body { flex-direction:column-reverse; height:auto; overflow:auto; }
+    .checklist { width:100%; border-left:none; border-bottom:1px solid #e2e8f0; max-height:50vh; overflow-y:auto; }
+    .content-pane { min-height:60vh; }
+    .content-pane iframe { min-height:70vh; }
+  }
+
+  @media print {
+    .checklist { display:none; }
+    .content-pane { width:100%; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Content Area (left) -->
+<div class="content-pane" id="content-pane">
+  <div class="welcome" id="welcome">
+    <div style="font-size:56px;margin-bottom:12px;">🌳</div>
+    <h1>Welcome to Second Nature Tree</h1>
+    <p id="welcome-text">Complete each step in the checklist on the right. Click any step to begin.</p>
+    <button class="start-btn" onclick="loadStep('intake')">Start Onboarding →</button>
+  </div>
+</div>
+
+<!-- Checklist Sidebar (right) -->
+<div class="checklist">
+  <div class="cl-header">
+    <h2><span class="logo">🌳</span> Onboarding</h2>
+    <div class="cl-emp" id="cl-emp"></div>
+    <div class="cl-progress">
+      <div class="cl-progress-bar"><div class="cl-progress-fill" id="cl-bar"></div></div>
+      <div class="cl-progress-text" id="cl-pct">0 of 11 complete</div>
+    </div>
+  </div>
+
+  <div class="cl-items">
+    <!-- Getting Started -->
+    <div class="cl-section">Getting Started</div>
+    <div class="cl-item" data-step="intake" onclick="loadStep('intake')">
+      <div class="cl-check" id="ck-intake"></div>
+      <div><div class="cl-item-label">Employee Intake Form</div><div class="cl-item-meta">Personal info, pay rate, emergency contact</div></div>
+    </div>
+
+    <!-- Paperwork -->
+    <div class="cl-section">📄 Paperwork — Day 1</div>
+    <div class="cl-item" data-step="s1" onclick="loadStep('s1')">
+      <div class="cl-check" id="ck-s1"></div>
+      <div><div class="cl-item-label">I-9 Employment Eligibility</div><div class="cl-item-meta">2 min · <span class="cl-tag">FEDERAL</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s2" onclick="loadStep('s2')">
+      <div class="cl-check" id="ck-s2"></div>
+      <div><div class="cl-item-label">W-4 + IT-2104 Tax (Gusto)</div><div class="cl-item-meta">2 min · <span class="cl-tag">FEDERAL + NY</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s3" onclick="loadStep('s3')">
+      <div class="cl-check" id="ck-s3"></div>
+      <div><div class="cl-item-label">NY Wage Theft Notice</div><div class="cl-item-meta">1 min · <span class="cl-tag">NY STATE</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s4" onclick="loadStep('s4')">
+      <div class="cl-check" id="ck-s4"></div>
+      <div><div class="cl-item-label">Direct Deposit + Emergency</div><div class="cl-item-meta">2 min</div></div>
+    </div>
+
+    <!-- Safety Training -->
+    <div class="cl-section">⚠️ Safety Training</div>
+    <div class="cl-item" data-step="s5" onclick="loadStep('s5')">
+      <div class="cl-check" id="ck-s5"></div>
+      <div><div class="cl-item-label">PPE Training</div><div class="cl-item-meta">12 min video · <span class="cl-tag">OSHA</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s6" onclick="loadStep('s6')">
+      <div class="cl-check" id="ck-s6"></div>
+      <div><div class="cl-item-label">Fall Protection</div><div class="cl-item-meta">15 min video · <span class="cl-tag">OSHA</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s7" onclick="loadStep('s7')">
+      <div class="cl-check" id="ck-s7"></div>
+      <div><div class="cl-item-label">Electrical Hazard</div><div class="cl-item-meta">10 min video · <span class="cl-tag">OSHA</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s8" onclick="loadStep('s8')">
+      <div class="cl-check" id="ck-s8"></div>
+      <div><div class="cl-item-label">Hazard Communication</div><div class="cl-item-meta">8 min video · <span class="cl-tag">OSHA</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s9" onclick="loadStep('s9')">
+      <div class="cl-check" id="ck-s9"></div>
+      <div><div class="cl-item-label">NY Harassment Prevention</div><div class="cl-item-meta">20 min video · <span class="cl-tag">NY STATE</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s10" onclick="loadStep('s10')">
+      <div class="cl-check" id="ck-s10"></div>
+      <div><div class="cl-item-label">Emergency Action Plan</div><div class="cl-item-meta">5 min · <span class="cl-tag">OSHA</span></div></div>
+    </div>
+    <div class="cl-item" data-step="s11" onclick="loadStep('s11')">
+      <div class="cl-check" id="ck-s11"></div>
+      <div><div class="cl-item-label">PPE Issued & Fitted</div><div class="cl-item-meta">Crew lead verifies</div></div>
+    </div>
+
+    <!-- Documents -->
+    <div class="cl-section">📋 Documents</div>
+    <div class="cl-item" data-step="handbook" onclick="loadStep('handbook')">
+      <div class="cl-check" id="ck-handbook"></div>
+      <div><div class="cl-item-label">Employee Handbook</div><div class="cl-item-meta">Review & acknowledge</div></div>
+    </div>
+    <div class="cl-item" data-step="service-agreement" onclick="loadStep('service-agreement')">
+      <div class="cl-check" id="ck-service-agreement"></div>
+      <div><div class="cl-item-label">Employment Agreement</div><div class="cl-item-meta">Review & sign</div></div>
+    </div>
+
+    <!-- Role Training -->
+    <div class="cl-section">🎓 Role Training</div>
+    <div class="cl-item" data-step="role-training" onclick="loadStep('role-training')">
+      <div class="cl-check" id="ck-role-training"></div>
+      <div><div class="cl-item-label" id="role-training-label">Role-Specific Training</div><div class="cl-item-meta">Based on your position</div></div>
+    </div>
+  </div>
+
+  <div class="cl-footer">
+    Second Nature Tree Service<br>1 Highland Industrial Park, Peekskill, NY
+  </div>
+</div>
+
+<script>
+var STEPS = ['intake','s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11','handbook','service-agreement','role-training'];
+var state = JSON.parse(localStorage.getItem('onboard-v3') || '{}');
+var activeStep = null;
+
+// Step → page URL mapping
+var STEP_PAGES = {
+  'intake': 'new-hire.html',
+  's3': 'wage-theft-notice.html',
+  'handbook': 'employee-handbook.html',
+  'service-agreement': 'employment-agreement.html',
+  'role-training': null, // set dynamically based on role
+};
+
+// Step → inline content for steps that don't have their own page
+var STEP_CONTENT = {
+  's1': function() {
+    return '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+      + '<h2 style="font-size:20px;margin-bottom:12px;">I-9 Employment Eligibility</h2>'
+      + '<p style="color:#64748b;margin-bottom:16px;">Federal law requires every employee to prove they\'re authorized to work in the U.S.</p>'
+      + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+      + '<h3 style="font-size:15px;margin-bottom:10px;">What to bring:</h3>'
+      + '<ul style="margin-left:20px;line-height:2;color:#334155;"><li>Driver\'s license + Social Security card, <strong>OR</strong></li><li>Valid U.S. passport</li></ul>'
+      + '<p style="margin-top:12px;font-size:13px;color:#64748b;">Must be completed within 3 business days of first day.</p>'
+      + '<p style="margin-top:12px;"><a href="https://www.uscis.gov/i-9" target="_blank" style="color:#1b5e20;font-weight:600;">📄 Download I-9 Form from USCIS →</a></p>'
+      + '</div>'
+      + '<div style="background:#fef2f2;border-left:3px solid #dc2626;padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:#7f1d1d;">⚠️ You must physically verify the employee\'s ID documents. A photocopy or video is not sufficient.</div>'
+      + signoffHTML('s1', 'I-9 completed — original IDs examined in person', true)
+      + '</div>';
+  },
+  's2': function() {
+    return '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+      + '<h2 style="font-size:20px;margin-bottom:12px;">W-4 + IT-2104 Tax Withholding</h2>'
+      + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+      + '<p style="margin-bottom:12px;"><strong>Gusto handles W-4, IT-2104, and Direct Deposit automatically.</strong></p>'
+      + '<ul style="margin-left:20px;line-height:2;color:#334155;"><li>Doug sends Gusto invitation email</li><li>Employee sets up account — W-4, state tax, bank info</li><li>Everything filed electronically</li></ul>'
+      + '<p style="margin-top:12px;"><a href="https://app.gusto.com" target="_blank" style="color:#1b5e20;font-weight:600;">🔗 Open Gusto →</a></p>'
+      + '</div>'
+      + '<div style="background:#f0fdf4;border-left:3px solid #16a34a;padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:#14532d;">Gusto handles: W-4, IT-2104, direct deposit, pay stubs, tax filings.</div>'
+      + signoffHTML('s2', 'Gusto account set up — W-4, state tax, and bank info completed', false)
+      + '</div>';
+  },
+  's4': function() {
+    return '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+      + '<h2 style="font-size:20px;margin-bottom:12px;">Direct Deposit + Emergency Contact</h2>'
+      + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+      + '<ul style="margin-left:20px;line-height:2;color:#334155;"><li><strong>Direct Deposit:</strong> Handled in Gusto (step 2)</li><li><strong>Emergency Contact:</strong> Collected in intake form</li></ul>'
+      + '</div>'
+      + signoffHTML('s4', 'Direct deposit and emergency contact submitted', false)
+      + '</div>';
+  },
+  's5': function() { return trainingStep('s5', 'PPE Training', 'dKAeQaod7Dw', '<li>Hard hat (Class E) — always on site</li><li>Safety glasses + face shield (when running saw)</li><li>Hearing protection (chipper/chainsaw)</li><li>Chainsaw chaps — always when operating</li><li>Steel-toe boots</li><li>Cut-resistant gloves</li>', 'PPE is provided by the company at no cost. Steel-toe boots: employee provides their own (can be worn off-site per OSHA 1910.132(h)).', 'I watched the PPE video and understand the requirements'); },
+  's6': function() { return trainingStep('s6', 'Fall Protection', 'el6rdee5jAo', '<li>Fall protection required at <strong>6 feet</strong></li><li>Climbing saddle + climbing line = fall protection in tree</li><li>Bucket truck: full body harness + lanyard</li><li>Inspect all gear daily — no exceptions</li>', 'Falls are the #1 killer of tree workers. 45% of all fatalities.', 'I completed fall protection training including hands-on demo'); },
+  's7': function() { return trainingStep('s7', 'Electrical Hazard Awareness', 'ILGSn9Rx8f8', '<li><strong>10 feet minimum</strong> from any power line</li><li>Only utility company works within 10 feet</li><li>Assume ALL lines are energized</li><li>Con Ed: (914) 681-6500 · NYSEG: (800) 572-1131</li>', 'Electrocution is the #2 cause of death in tree care.', 'I will never work within 10 feet of a power line'); },
+  's8': function() { return trainingStep('s8', 'Hazard Communication', 'yRGLMigkWMA', '<li>We use: bar oil, 2-cycle fuel, hydraulic fluid</li><li>SDS binder is on the truck</li><li>Never remove labels or use unmarked containers</li><li>No smoking within 20 feet of fuel</li>', null, 'I know where the SDS binder is and understand chemical handling'); },
+  's9': function() { return trainingStep('s9', 'NY Sexual Harassment Prevention', '6NsBN42B80Q', '<li>All NY employers must provide at hire + annually</li><li>Zero tolerance policy</li><li>Report to Doug Brown (owner) — no retaliation</li><li>External: NY Division of Human Rights (888) 392-3644</li>', null, 'I completed NY sexual harassment prevention training'); },
+  's10': function() {
+    return '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+      + '<h2 style="font-size:20px;margin-bottom:12px;">Emergency Action Plan</h2>'
+      + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+      + '<h3 style="font-size:15px;margin-bottom:10px;">Save these numbers in your phone:</h3>'
+      + '<ul style="margin-left:20px;line-height:2.2;color:#334155;font-size:15px;"><li><strong>911</strong> — call first, always</li><li><strong>Doug Brown:</strong> (914) 391-5233</li><li><strong>Hudson Valley Hospital:</strong> (914) 737-9000</li><li><strong>Poison Control:</strong> (800) 222-1222</li></ul>'
+      + '<p style="margin-top:12px;font-size:14px;"><strong>First aid kit + fire extinguisher</strong> on every truck. Check location daily.</p>'
+      + '</div>'
+      + signoffHTML('s10', 'I saved emergency numbers and know first aid kit locations', true)
+      + '</div>';
+  },
+  's11': function() {
+    return '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+      + '<h2 style="font-size:20px;margin-bottom:12px;">PPE Issued & Fitted</h2>'
+      + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+      + '<h3 style="font-size:15px;margin-bottom:10px;">Crew lead: verify all PPE issued and fits:</h3>'
+      + '<ul style="margin-left:20px;line-height:2;color:#334155;"><li>☐ Hard hat (Class E)</li><li>☐ Safety glasses</li><li>☐ Ear protection</li><li>☐ Work gloves</li><li>☐ Steel-toe boots</li><li>☐ Chainsaw chaps</li><li>☐ High-vis vest</li></ul>'
+      + '</div>'
+      + signoffHTML('s11', 'All PPE issued, fitted, and in good condition', true, 'Crew Lead name')
+      + '</div>';
+  },
+};
+
+function signoffHTML(id, ackText, hasTrainer, trainerLabel) {
+  var emp = getEmp();
+  var empName = emp.fullName || '';
+  var canvasId = 'sig-canvas-' + id;
+  return '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;margin-top:16px;">'
+    + '<div style="font-size:13px;font-weight:700;color:#475569;margin-bottom:10px;">\u270e Sign Off</div>'
+    + '<label style="display:flex;align-items:flex-start;gap:8px;font-size:13px;cursor:pointer;margin-bottom:10px;"><input type="checkbox" id="' + id + 'ack" style="margin-top:2px;width:16px;height:16px;accent-color:#1b5e20;"> ' + ackText + '</label>'
+    + '<canvas id="' + canvasId + '" width="700" height="180" style="width:100%;height:120px;border:2px solid #1a3c12;border-radius:8px;background:#fff;touch-action:none;cursor:crosshair;display:block;margin-bottom:6px;"></canvas>'
+    + '<button type="button" onclick="clearSigCanvas(\'' + canvasId + '\')" style="padding:3px 10px;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:5px;font-size:11px;color:#64748b;cursor:pointer;margin-bottom:8px;">Clear</button>'
+    + '<input type="text" id="' + id + 'sig" value="' + empName + '" placeholder="Print full name" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:14px;margin-bottom:8px;">'
+    + (hasTrainer ? '<input type="text" id="' + id + 'trainer" placeholder="' + (trainerLabel || 'Trainer/Manager name') + '" style="width:100%;padding:10px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:14px;margin-bottom:8px;">' : '')
+    + '<label style="display:flex;align-items:flex-start;gap:8px;font-size:11px;color:#64748b;cursor:pointer;margin-bottom:10px;"><input type="checkbox" id="' + id + 'consent" style="margin-top:1px;width:14px;height:14px;accent-color:#1b5e20;flex-shrink:0;"> I consent to signing electronically per the federal ESIGN Act.</label>'
+    + '<button onclick="completeStep(\'' + id + '\')" style="width:100%;padding:12px;background:#1b5e20;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;">Sign & Complete \u2192</button>'
+    + '</div>';
+}
+
+function clearSigCanvas(canvasId) {
+  var c = document.getElementById(canvasId);
+  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+}
+
+function initSigCanvas(canvasId) {
+  var canvas = document.getElementById(canvasId);
+  if (!canvas || canvas._inited) return;
+  canvas._inited = true;
+  var ctx = canvas.getContext('2d');
+  ctx.strokeStyle = '#1a3c12'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  var drawing = false;
+  function pos(e) {
+    var r = canvas.getBoundingClientRect();
+    var sx = canvas.width / r.width, sy = canvas.height / r.height;
+    var cx = e.touches ? e.touches[0].clientX : e.clientX;
+    var cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: (cx - r.left) * sx, y: (cy - r.top) * sy };
+  }
+  canvas.addEventListener('mousedown', function(e) { drawing = true; ctx.beginPath(); var p = pos(e); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mousemove', function(e) { if (!drawing) return; var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y); });
+  canvas.addEventListener('mouseup', function() { drawing = false; });
+  canvas.addEventListener('mouseleave', function() { drawing = false; });
+  canvas.addEventListener('touchstart', function(e) { e.preventDefault(); drawing = true; ctx.beginPath(); var p = pos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchmove', function(e) { e.preventDefault(); if (!drawing) return; var p = pos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(p.x, p.y); }, { passive: false });
+  canvas.addEventListener('touchend', function() { drawing = false; });
+}
+
+function isSigEmpty(canvasId) {
+  var c = document.getElementById(canvasId);
+  if (!c) return true;
+  var data = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+  for (var i = 3; i < data.length; i += 4) { if (data[i] > 0) return false; }
+  return true;
+}
+
+function trainingStep(id, title, youtubeId, items, callout, ackText) {
+  var html = '<div style="max-width:600px;margin:40px auto;padding:20px;">'
+    + '<h2 style="font-size:20px;margin-bottom:16px;">' + title + '</h2>'
+    + '<iframe style="width:100%;aspect-ratio:16/9;border-radius:8px;border:none;margin-bottom:16px;background:#000;" src="https://www.youtube.com/embed/' + youtubeId + '" allowfullscreen loading="lazy"></iframe>'
+    + '<div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e2e8f0;margin-bottom:16px;">'
+    + '<ul style="margin-left:20px;line-height:2;color:#334155;">' + items + '</ul>'
+    + '</div>';
+  if (callout) {
+    html += '<div style="background:#fef2f2;border-left:3px solid #dc2626;padding:12px 16px;border-radius:0 8px 8px 0;margin-bottom:16px;font-size:13px;color:#7f1d1d;">⚠️ ' + callout + '</div>';
+  }
+  html += signoffHTML(id, ackText, true);
+  html += '</div>';
+  return html;
+}
+
+function getEmp() {
+  try { return JSON.parse(localStorage.getItem('new-hire-data') || '{}'); } catch(e) { return {}; }
+}
+
+function loadStep(step) {
+  activeStep = step;
+
+  // Highlight active in sidebar
+  document.querySelectorAll('.cl-item').forEach(function(el) {
+    el.classList.toggle('active', el.dataset.step === step);
+  });
+
+  var pane = document.getElementById('content-pane');
+
+  // External pages load in iframe
+  if (STEP_PAGES[step]) {
+    pane.innerHTML = '<iframe src="' + STEP_PAGES[step] + '" id="step-iframe"></iframe>';
+    return;
+  }
+
+  // Role training — pick the right page based on role
+  if (step === 'role-training') {
+    var emp = getEmp();
+    var roleMap = { groundsperson: 'training-groundsperson.html', climber: 'training-climber.html', crew_lead: 'training-crewlead.html', operator: 'training-groundsperson.html' };
+    var url = roleMap[emp.role] || 'training-groundsperson.html';
+    pane.innerHTML = '<iframe src="' + url + '" id="step-iframe"></iframe>';
+    return;
+  }
+
+  // Inline content
+  if (STEP_CONTENT[step]) {
+    pane.innerHTML = STEP_CONTENT[step]();
+    setTimeout(function() { initSigCanvas('sig-canvas-' + step); }, 100);
+    return;
+  }
+
+  pane.innerHTML = '<div style="padding:40px;text-align:center;color:#94a3b8;">Select a step from the checklist.</div>';
+}
+
+function completeStep(id) {
+  var ack = document.getElementById(id + 'ack');
+  var sig = document.getElementById(id + 'sig');
+  var trainer = document.getElementById(id + 'trainer');
+  var consent = document.getElementById(id + 'consent');
+  var canvasId = 'sig-canvas-' + id;
+  if (!ack || !ack.checked) { alert('Check the acknowledgment box first.'); return; }
+  if (isSigEmpty(canvasId)) { alert('Please draw your signature above.'); return; }
+  if (!sig || !sig.value.trim()) { alert('Type your full name.'); return; }
+  if (consent && !consent.checked) { alert('Please check the consent box.'); return; }
+  if (trainer && !trainer.value.trim()) { alert('Trainer/Manager must also sign.'); return; }
+  var canvas = document.getElementById(canvasId);
+  var sigPNG = canvas ? canvas.toDataURL('image/png') : '';
+  state[id] = { name: sig.value.trim(), trainer: trainer ? trainer.value.trim() : '', date: new Date().toISOString(), signaturePNG: sigPNG };
+  localStorage.setItem('onboard-v3', JSON.stringify(state));
+  renderChecklist();
+
+  // Auto-advance to next step
+  var idx = STEPS.indexOf(id);
+  if (idx >= 0 && idx < STEPS.length - 1) {
+    var next = STEPS[idx + 1];
+    if (!state[next]) {
+      setTimeout(function() { loadStep(next); }, 400);
+    }
+  }
+}
+
+function renderChecklist() {
+  var count = 0;
+  STEPS.forEach(function(step) {
+    var el = document.getElementById('ck-' + step);
+    var item = document.querySelector('[data-step="' + step + '"]');
+    if (state[step]) {
+      if (el) { el.style.background = '#1b5e20'; el.style.borderColor = '#1b5e20'; el.style.color = '#fff'; el.textContent = '✓'; }
+      if (item) item.classList.add('done');
+      count++;
+    } else {
+      if (el) { el.style.background = ''; el.style.borderColor = ''; el.style.color = ''; el.textContent = ''; }
+      if (item) item.classList.remove('done');
+    }
+  });
+
+  // Check intake form separately
+  var emp = getEmp();
+  if (emp.fullName) {
+    state['intake'] = state['intake'] || { name: emp.fullName, date: emp.createdAt || new Date().toISOString() };
+    var ck = document.getElementById('ck-intake');
+    if (ck) { ck.style.background = '#1b5e20'; ck.style.borderColor = '#1b5e20'; ck.style.color = '#fff'; ck.textContent = '✓'; }
+    var item = document.querySelector('[data-step="intake"]');
+    if (item) item.classList.add('done');
+    if (!count || count === 0) count = 1; // at least intake is done
+    // Show name
+    document.getElementById('cl-emp').textContent = emp.fullName + ' — ' + (emp.role || '').replace('_', ' ');
+    // Update role training label
+    var roleLabel = document.getElementById('role-training-label');
+    if (roleLabel) {
+      var roleNames = { groundsperson: 'Groundsperson', climber: 'Climber', crew_lead: 'Crew Lead', operator: 'Operator' };
+      roleLabel.textContent = (roleNames[emp.role] || 'Role') + ' Training';
+    }
+  }
+
+  // Recount
+  count = 0;
+  STEPS.forEach(function(s) { if (state[s]) count++; });
+
+  var total = STEPS.length;
+  var pct = Math.round((count / total) * 100);
+  document.getElementById('cl-bar').style.width = pct + '%';
+  document.getElementById('cl-pct').textContent = count + ' of ' + total + ' complete · ' + pct + '%';
+}
+
+// Listen for messages from iframed pages (intake form completion, etc.)
+window.addEventListener('message', function(e) {
+  if (e.data === 'intake-complete' || e.data === 'step-complete') {
+    renderChecklist();
+  }
+});
+
+// Also poll localStorage for changes from iframe (cross-origin won't postMessage)
+setInterval(function() {
+  var emp = getEmp();
+  var currentEmpName = document.getElementById('cl-emp').textContent;
+  if (emp.fullName && !currentEmpName) {
+    renderChecklist();
+  }
+}, 2000);
+
+// Initial render
+renderChecklist();
+
+// If no employee data, start with intake
+var _initEmp = getEmp();
+if (!_initEmp.fullName) {
+  document.getElementById('welcome-text').textContent = 'Start by filling out the employee intake form.';
+}
+</script>
+</body>
+</html>
