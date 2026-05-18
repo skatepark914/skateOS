@@ -89,29 +89,56 @@ serve(async (req) => {
   if (!waiverId) return new Response("Missing waiver id", { status: 400 });
 
   try {
-    // Fetch the full waiver record so we have email + signed_at
+    // Fetch the full waiver record so we have email + name + signed_at
     const full = await fetchWaiver(waiverId);
     const w = full?.waiver || full;
-    const email = (w?.participants?.[0]?.email || w?.email || "").toString().toLowerCase().trim();
+    const p = w?.participants?.[0] || {};
+    const email = (p.email || w?.email || "").toString().toLowerCase().trim();
+    const firstName = (p.firstName || p.first || w?.first || "").toString().trim();
+    const lastName = (p.lastName || p.last || w?.last || "").toString().trim();
+    const fullName = `${firstName} ${lastName}`.trim();
     if (!email) return new Response(JSON.stringify({ ok: true, note: "no email on waiver, skipped" }), { status: 200 });
 
     const sb = admin();
-    const update = {
+    const waiverPayload = {
       waiver_id: w?.waiverId || w?.id || waiverId,
       waiver_signed_at: w?.createdOn || w?.signedDate || new Date().toISOString(),
       waiver_pdf_url: w?.pdf || null,
     };
 
-    // Upsert into customers — only update if a customer with this email exists.
-    const { data, error } = await sb
+    // Try to update existing customer first
+    const { data: updated, error: updateErr } = await sb
       .from("customers")
-      .update(update)
+      .update(waiverPayload)
       .eq("email", email)
       .select("id, name");
 
-    if (error) throw error;
+    if (updateErr) throw updateErr;
 
-    return new Response(JSON.stringify({ ok: true, matched: data?.length || 0, email }), {
+    let matched = updated?.length || 0;
+    let created = false;
+
+    // If no existing customer with this email, create a stub from waiver data.
+    // The cashier can flesh out phone/DOB/etc later via the admin UI.
+    // NOTE: customers.name is a GENERATED column from first_name + last_name —
+    // insert into those split columns, not `name`.
+    if (matched === 0 && (firstName || lastName)) {
+      const { data: inserted, error: insertErr } = await sb
+        .from("customers")
+        .insert({
+          ...waiverPayload,
+          first_name: firstName || null,
+          last_name: lastName || null,
+          email,
+          notes: `[Auto-created from Smartwaiver waiver on ${new Date().toISOString().slice(0,10)}]`,
+        })
+        .select("id, name");
+      if (insertErr) throw insertErr;
+      matched = inserted?.length || 0;
+      created = true;
+    }
+
+    return new Response(JSON.stringify({ ok: true, matched, created, email }), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
