@@ -55,7 +55,7 @@ BEGIN
 END $$;
 
 -- ─── 2. Enable strict RLS on every business table ──────────
-DO $$
+DO $mig63$
 DECLARE
   t TEXT;
   tables TEXT[] := ARRAY[
@@ -140,4 +140,4 @@ BEGIN
   RAISE NOTICE '      EXECUTE format(''DROP POLICY IF EXISTS tenant_isolation_write  ON %%I'', t);';
   RAISE NOTICE '    END LOOP; END $$;';
   RAISE NOTICE '════════════════════════════════════════';
-END $$;
+END $mig63$;
