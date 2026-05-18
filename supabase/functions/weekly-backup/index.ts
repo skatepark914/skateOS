@@ -33,13 +33,47 @@ import { S3Client, PutObjectCommand } from 'https://esm.sh/@aws-sdk/client-s3@3'
 
 // Tables to back up (in dependency order for potential restore).
 // Schema can be recreated from migrations/001_init.sql; we only back up data.
+// All public tables (48 as of mig 071). Listed in rough dependency order
+// for restore — parent tables first, then dependents, audit_log last so
+// it doesn't bloat partial-restore decisions. Single-tenant tenants/staff
+// at top so a fresh project can replay the data.
 const TABLES = [
-  'staff', 'categories', 'products', 'inventory_log', 'serial_numbers',
-  'customers', 'subscriptions', 'checkins', 'lessons',
+  // Foundation
+  'tenants', 'user_tenants', 'staff', 'app_settings',
+  // Catalog + categorization
+  'categories', 'products', 'serial_numbers',
+  // Customers + their relations
+  'customers', 'subscriptions', 'checkins',
+  // Lessons + multi-attendee
+  'lessons', 'lesson_attendees',
+  // Sales pipeline
   'sales', 'sale_items',
   'invoices', 'invoice_items',
   'orders', 'order_items',
-  'audit_log'
+  // Loyalty / promos / gift cards
+  'loyalty_config', 'loyalty_transactions', 'promo_codes',
+  'gift_cards', 'gift_card_transactions',
+  // Forms + agreements
+  'forms', 'form_submissions', 'agreements',
+  // Equipment / inventory ops
+  'equipment', 'equipment_loans', 'inventory_log',
+  'mobile_runs', 'mobile_run_inventory',
+  // Affiliate / team rider program
+  'affiliate_programs', 'affiliate_codes',
+  'affiliate_earnings', 'affiliate_redemptions',
+  // Brivo access control
+  'brivo_access_log', 'brivo_event_passes', 'tenant_brivo_config',
+  // Vision Box (Frigate)
+  'frigate_cameras', 'frigate_events',
+  // Pre-order / retail order
+  'preorder_products',
+  // Park ops
+  'incidents', 'daily_reconciliations',
+  'time_entries', 'timesheet_approvals',
+  'team_messages',
+  'webhook_log',
+  // Audit trail — last, biggest
+  'audit_log',
 ];
 
 Deno.serve(async (_req) => {
