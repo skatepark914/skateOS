@@ -48,18 +48,40 @@ async function fetchWaiver(id: string) {
 serve(async (req) => {
   if (req.method !== "POST") return new Response("Only POST", { status: 405 });
 
-  // Verify shared secret if configured
+  // Verify shared secret if configured.
+  // Smartwaiver delivers the webhook private key as a `secret` form field
+  // OR `?key=` query param OR `x-webhook-secret` header — accept any of them.
   const expectedSecret = Deno.env.get("SMARTWAIVER_WEBHOOK_SECRET");
-  if (expectedSecret) {
-    const got = req.headers.get("x-webhook-secret") || "";
-    if (got !== expectedSecret) {
-      return new Response("Unauthorized", { status: 401 });
+
+  // Parse body — Smartwaiver sends application/x-www-form-urlencoded by default;
+  // JSON is supported for clients that opt in. Handle both.
+  let body: Record<string, any> = {};
+  const ct = (req.headers.get("content-type") || "").toLowerCase();
+  try {
+    if (ct.includes("application/json")) {
+      body = await req.json();
+    } else {
+      // form-urlencoded OR multipart — read raw + URLSearchParams
+      const raw = await req.text();
+      const params = new URLSearchParams(raw);
+      body = Object.fromEntries(params.entries());
     }
+  } catch {
+    return new Response("Invalid body", { status: 400 });
   }
 
-  let body: any;
-  try { body = await req.json(); } catch {
-    return new Response("Invalid JSON", { status: 400 });
+  // Auth — accept secret from header, form field, or query param
+  if (expectedSecret) {
+    const url = new URL(req.url);
+    const got = req.headers.get("x-webhook-secret")
+      || body?.secret
+      || body?.key
+      || url.searchParams.get("secret")
+      || url.searchParams.get("key")
+      || "";
+    if (got !== expectedSecret) {
+      return new Response(`Unauthorized (no matching secret in header/body/query)`, { status: 401 });
+    }
   }
 
   // Smartwaiver webhook payload typically contains { unique_id, event, waiverId, ... }
