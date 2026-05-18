@@ -2,8 +2,13 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "skateos-admin",
   "compatibility_date": "2026-05-18",
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": ".",
     "not_found_handling": "single-page-application"
-  }
+  },
+  "routes": [
+    { "pattern": "app.skateos.com", "custom_domain": true }
+  ]
 }

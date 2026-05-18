@@ -2,8 +2,14 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "skateos-marketing",
   "compatibility_date": "2026-05-18",
+  "workers_dev": true,
+  "preview_urls": true,
   "assets": {
     "directory": ".",
     "not_found_handling": "404-page"
-  }
+  },
+  "routes": [
+    { "pattern": "skateos.com", "custom_domain": true },
+    { "pattern": "www.skateos.com", "custom_domain": true }
+  ]
 }
