@@ -215,10 +215,12 @@ If all 4 happen, the whole stack is live.
 
 ### Deploying updates to the public sites
 ```bash
+# 🖥️ TERMINAL — pushes to skateos.com / www.skateos.com (Cloudflare Workers)
 cd ~/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/marketing
-netlify deploy --prod --dir . --site 2c6535a3-70a5-47fd-91e2-f875306aee01
+npx wrangler deploy
 ```
-This deploys both `/2ntr` and `/sales` subpaths along with the root.
+This deploys `/`, `/locked`, `/2ntr`, and `/sales` subpaths.
+For admin (`app.skateos.com`) substitute `admin` for `marketing` in the cd.
 
 ---
 

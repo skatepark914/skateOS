@@ -29,10 +29,11 @@ features fail silently or with friendly "Is migration X applied?" toasts.
 
 **How:**
 ```sh
+# 🖥️ TERMINAL — deploys admin SPA to app.skateos.com via Cloudflare Workers
 cd /Users/2ndnature/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/admin
-netlify deploy --prod --dir . --site b46cf6b7-1581-452e-9b7f-5c8b188ded6c
+npx wrangler deploy
 ```
-(If `.netlify` is mis-linked, `rm -rf .netlify` first then re-run.)
+(Hosting moved off Netlify → Cloudflare Workers on 2026-05-18. wrangler.jsonc in admin/ + marketing/ holds the config including custom-domain bindings.)
 
 ### 3. Configure Helcim payments (REAL token)
 
@@ -215,16 +216,18 @@ cd /Users/2ndnature/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/admin
 bash deploy-functions.sh
 ```
 
-### Re-deploy admin web
+### Re-deploy admin web (app.skateos.com)
 ```sh
+# 🖥️ TERMINAL
 cd /Users/2ndnature/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/admin
-netlify deploy --prod --dir . --site b46cf6b7-1581-452e-9b7f-5c8b188ded6c
+npx wrangler deploy
 ```
 
-### Re-deploy marketing site (when needed)
+### Re-deploy marketing site (skateos.com)
 ```sh
+# 🖥️ TERMINAL
 cd /Users/2ndnature/Desktop/Skate/SKATE-TO-MIGRATE/Claude-2ntr-skatepark/marketing
-netlify deploy --prod --dir . --site 2c6535a3-70a5-47fd-91e2-f875306aee01
+npx wrangler deploy
 ```
 
 ---

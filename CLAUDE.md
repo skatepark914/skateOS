@@ -27,6 +27,39 @@ Owner: Doug Brown + Jon DiCarlo (50/50). Email: info@2ntr.com.
 - **End with a "what's next" list** when paused for input.
 - **Branch Manager / Smart Lawn = reference-only.** Read patterns, write skate-shaped equivalents in this repo. Never `import`, never copy whole files.
 
+## Session log — 2026-05-18 (Netlify → Cloudflare migration)
+
+Netlify team paused for credit-limit overage → all 3 sites 404. Doug: "if i havent paid yet and we can migrate now? how long til it will work. why not just switch?" Picked Cloudflare Pages over paying $19/mo Netlify Pro.
+
+| Surface | Deliverable |
+|---|---|
+| GitHub repo | `github.com/skatepark914/skateOS` created + initial push (464 objects, 2.76 MiB). `.gitignore` written to exclude `.DS_Store`, `.netlify/`, `.wrangler/`, `node_modules/`, `*-dist/`, `.env*`. Repo description set + homepage URL set to skateos.com. |
+| `marketing/wrangler.jsonc` | New Cloudflare Workers static-assets config. `assets.directory = "."`, `not_found_handling = "404-page"`. Two `custom_domain` routes: `skateos.com` + `www.skateos.com`. `workers_dev = true` keeps the .workers.dev fallback URL alive for testing. |
+| `marketing/.assetsignore` | Excludes `.wrangler/**`, `.netlify/**`, `*.md`, build artifacts from public deploy. |
+| `admin/wrangler.jsonc` | Same model but `not_found_handling = "single-page-application"` so unknown routes serve `index.html` (SPA routing works). One `custom_domain` route: `app.skateos.com`. |
+| `admin/.assetsignore` | Excludes `migrations/**`, `scripts/**`, `*.sh`, `*.bak`, `*.md` so SQL migrations + provisioning scripts aren't publicly served. |
+| GoDaddy nameservers | Already swapped to Cloudflare (`cheryl.ns.cloudflare.com` / `jakub.ns.cloudflare.com`) on 2026-05-06, discovered via `GET /zones?name=skateos.com`. No DNS work needed. |
+| Deploy commands | `cd marketing && npx wrangler deploy` and `cd admin && npx wrangler deploy`. Replace the old `netlify deploy` commands in DOUG-TODO.md + TUTORIAL.md. |
+| Smoke test | 9 URLs return 200 — `skateos.com`, `www.skateos.com`, `skateos.com/{locked,2ntr,sales}`, `app.skateos.com`, `app.skateos.com/join`, both `.workers.dev` fallbacks. |
+
+### Doug to do
+
+1. **Confirm admin login works** — open `https://app.skateos.com` → sign in → verify Supabase auth + data loads
+2. **Cancel Netlify upgrade plan** (if you started one) — Cloudflare Workers free tier covers this load forever
+3. **Marketing on Netlify is dead** — both old projects (`skateos` `2c6535a3-...` + `skateos-app` `b46cf6b7-...`) can be deleted from Netlify dashboard once you've verified Cloudflare works
+
+### Live URLs (for handoffs)
+
+| | URL | Behind |
+|---|---|---|
+| Marketing | https://skateos.com | Cloudflare Worker `skateos-marketing` |
+| Marketing (www) | https://www.skateos.com | same |
+| Admin SPA | https://app.skateos.com | Cloudflare Worker `skateos-admin` (SPA fallback enabled) |
+| Workers.dev fallback (marketing) | https://skateos-marketing.icy-field-9c38.workers.dev | same Worker |
+| Workers.dev fallback (admin) | https://skateos-admin.icy-field-9c38.workers.dev | same Worker |
+
+---
+
 ## Session log — 2026-05-15 capstone (Per-tenant Brivo webhook URLs)
 
 Doug: _"yes, ALWAYS KEEP GOING WHEN MAKES SENSE it in your memory"_ — saved the directive to memory + kept building.
