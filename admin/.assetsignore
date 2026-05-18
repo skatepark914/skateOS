@@ -1,0 +1,10 @@
+.wrangler/**
+.netlify/**
+node_modules/**
+*.sh
+*.bak
+_diag-*.js
+admin-dist/**
+migrations/**
+scripts/**
+*.md
