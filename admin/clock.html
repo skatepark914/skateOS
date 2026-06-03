@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#6abb1e">
+<title>Clock action — skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: 'Inter', -apple-system, sans-serif; background: #0d1325; color: #fff; -webkit-tap-highlight-color: transparent; }
+.wrap { min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px; text-align: center; }
+.brand { font-size: .78rem; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; color: #6abb1e; margin-bottom: 12px; }
+.title { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; }
+.sub { font-size: .96rem; color: rgba(255,255,255,.7); margin-bottom: 28px; }
+.icon { font-size: 4rem; margin-bottom: 18px; line-height: 1; }
+.btn { background: #6abb1e; color: #fff; font-weight: 900; font-size: 1.05rem; padding: 16px 38px; border-radius: 999px; border: none; cursor: pointer; font-family: inherit; }
+.btn:disabled { background: #4a5060; cursor: not-allowed; }
+.err { color: #ff8484; font-size: .9rem; margin-top: 10px; }
+.ok  { color: #b6f8a3; font-size: .9rem; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Staff Clock</div>
+  <div class="icon" id="icon">⏱</div>
+  <div class="title" id="title">Loading…</div>
+  <div class="sub" id="sub">&nbsp;</div>
+  <button class="btn" id="actBtn" style="display:none;" onclick="doAction()">Confirm</button>
+  <div class="ok" id="ok"></div>
+  <div class="err" id="err"></div>
+</div>
+
+<script>
+var CFG = window.APP_CONFIG || {};
+var SUPA_URL = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var SUPA_KEY = CFG.supabaseKey || '';
+var qp = new URLSearchParams(location.search);
+var token = qp.get('t') || '';
+var actionExpected = qp.get('action') || ''; // 'in' or 'out' — for display only
+
+function setUI(title, sub, icon){
+  document.getElementById('title').textContent = title;
+  document.getElementById('sub').textContent   = sub || '';
+  if (icon) document.getElementById('icon').textContent = icon;
+}
+
+if (!token) {
+  setUI('Missing link token', 'Please tap the door again to get a fresh link.', '⚠️');
+} else if (actionExpected === 'in') {
+  setUI('Clock in?', 'Tap below to start your shift.', '🟢');
+  document.getElementById('actBtn').textContent = 'Clock me in';
+  document.getElementById('actBtn').style.display = 'inline-block';
+} else if (actionExpected === 'out') {
+  setUI('Clock out?', 'Tap below to end your shift.', '🛑');
+  document.getElementById('actBtn').textContent = 'Clock me out';
+  document.getElementById('actBtn').style.display = 'inline-block';
+} else {
+  setUI('Clock action', 'Tap below to record this.', '⏱');
+  document.getElementById('actBtn').style.display = 'inline-block';
+}
+
+function doAction(){
+  var btn = document.getElementById('actBtn');
+  btn.disabled = true; btn.textContent = '…';
+  fetch(SUPA_URL + '/rest/v1/rpc/consume_staff_clock_token', {
+    method: 'POST',
+    headers: { 'Content-Type':'application/json', 'apikey':SUPA_KEY, 'Authorization':'Bearer ' + SUPA_KEY },
+    body: JSON.stringify({ p_token: token })
+  }).then(function(r){ return r.json(); }).then(function(j){
+    if (!j || j.ok === false) {
+      document.getElementById('err').textContent = (j && j.error) || 'Could not record action.';
+      btn.disabled = false; btn.textContent = 'Try again';
+      return;
+    }
+    setUI(j.action === 'in' ? 'You\'re clocked in.' : 'You\'re clocked out.',
+          'Have a good shift.', j.action === 'in' ? '✅' : '👋');
+    btn.style.display = 'none';
+    document.getElementById('ok').textContent = 'Recorded at ' + new Date().toLocaleTimeString();
+  }).catch(function(){
+    document.getElementById('err').textContent = 'Network error — try again or use a computer.';
+    btn.disabled = false; btn.textContent = 'Retry';
+  });
+}
+</script>
+</body>
+</html>
