@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Email setup · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 28px; }
+h2 { font-size: 1.25rem; font-weight: 700; margin-top: 40px; margin-bottom: 14px; color: #1a1a1a; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; }
+h2 .num { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .9rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+h3 { font-size: 1rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; color: #1a1a1a; letter-spacing: -.01em; }
+p { color: #2c3138; margin-bottom: 12px; font-size: .96rem; }
+
+.callout { background: #fff7e1; border: 1px solid #f5dba6; border-radius: 12px; padding: 16px 20px; margin: 16px 0; color: #5c4d1a; font-size: .94rem; }
+.callout strong { color: #1a1a1a; font-weight: 700; }
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 14px 18px; color: #006148; font-size: .94rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+.warn { background: #fef0ee; border: 1px solid #f5c2bb; border-radius: 12px; padding: 14px 18px; color: #b53030; font-size: .94rem; margin: 14px 0; }
+.warn strong { color: #8a2424; font-weight: 700; }
+
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+.step { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+.step:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0; margin-top: 2px; }
+.step-body strong { display: block; color: #1a1a1a; font-weight: 700; margin-bottom: 4px; }
+.step-body { font-size: .94rem; color: #2c3138; }
+.step-body code { background: #f0f2f5; padding: 1px 6px; border-radius: 4px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: .9em; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-weight: 700; font-size: .92rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-green { background: #00b388; color: #fff; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+.copyable { background: #1a1a1a; color: #fff; border-radius: 10px; padding: 14px 60px 14px 18px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: .88rem; word-break: break-all; position: relative; margin: 8px 0; line-height: 1.4; }
+.copyable .copy-btn { position: absolute; right: 8px; top: 8px; background: rgba(255,255,255,.15); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: .74rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.copyable .copy-btn:hover { background: rgba(255,255,255,.25); }
+.copyable .copy-btn.copied { background: #00b388; }
+
+/* DNS check results */
+.check { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+.check .check-icon { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; flex-shrink: 0; font-size: .82rem; margin-top: 2px; }
+.check.ok .check-icon { background: #00b388; }
+.check.bad .check-icon { background: #b53030; }
+.check.warn .check-icon { background: #b89000; }
+.check.idle .check-icon { background: #d1d6dc; color: #6a737d; }
+.check .check-label { flex: 1; font-size: .94rem; color: #1a1a1a; font-weight: 600; }
+.check .check-label small { display: block; color: #6a737d; font-weight: 400; font-size: .82rem; margin-top: 4px; font-family: 'SF Mono', monospace; word-break: break-all; }
+.check .check-label small.fix { color: #b53030; font-family: inherit; }
+
+.dns-table { width: 100%; border-collapse: collapse; font-size: .88rem; margin: 10px 0; }
+.dns-table th { background: #f7f8fa; padding: 10px 12px; text-align: left; font-weight: 700; font-size: .74rem; text-transform: uppercase; letter-spacing: .6px; color: #4a525c; }
+.dns-table td { padding: 10px 12px; border-bottom: 1px solid #f0f2f5; font-family: 'SF Mono', monospace; font-size: .8rem; vertical-align: top; word-break: break-all; }
+.dns-table tr:last-child td { border-bottom: none; }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d6dc; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; opacity: 0; transition: opacity .2s, transform .2s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+.toast.err { background: #b53030; }
+
+.foot { margin-top: 50px; padding-top: 22px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: .82rem; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; letter-spacing: -.01em; }
+.field input { width: 100%; background: #fff; border: 1px solid #d1d6dc; border-radius: 8px; padding: 12px 14px; font-size: .95rem; font-family: inherit; color: #1a1a1a; }
+.field input:focus { outline: none; border-color: #1a1a1a; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Email Setup</div>
+  <h1>Wire up email for 2ntr.com</h1>
+  <p class="lead">Without DNS verification, every email skateOS sends — receipts, lesson reminders, renewal nudges, birthday greetings — lands in spam. This page walks you through the ~15 min setup once. Live DNS check at the bottom tells you when records have propagated.</p>
+
+  <div class="warn">
+    <strong>Why this matters:</strong> 80% of skateOS's CRM features depend on emails landing in inboxes. If DNS isn't verified, customers stop seeing receipts and you look unprofessional. Same-day fix in GoDaddy + Resend.
+  </div>
+
+  <h2><span class="num">1</span>Sign up for Resend (if not done)</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Create a Resend account</strong>Go to <a href="https://resend.com/signup" target="_blank" style="color:#007a5a;font-weight:700;">resend.com/signup</a>. Free up to 3,000 emails/month — more than enough for 2nd Nature.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Skip onboarding survey if asked</strong>"Build an app" → "Just send me the dashboard" works.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>Add 2ntr.com domain in Resend</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Navigate to <a href="https://resend.com/domains" target="_blank" style="color:#007a5a;font-weight:700;">resend.com/domains</a></strong>Click "Add Domain".</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Enter "2ntr.com" — no subdomain</strong>This lets you send from any address @2ntr.com (info@, hello@, support@).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Region: pick US East (Virginia)</strong>Closest to your customers. Lower latency on send.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Resend shows you 3 DNS records</strong>SPF (TXT), DKIM (TXT or CNAME), DMARC (TXT). Leave this tab open — you'll need the exact values for the next step.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">3</span>Add DNS records in GoDaddy</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Open <a href="https://dcc.godaddy.com/control/portfolio" target="_blank" style="color:#007a5a;font-weight:700;">GoDaddy DNS management</a></strong>Find 2ntr.com → click DNS / Manage DNS.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>For each Resend record, click "Add New Record"</strong>Match the Type (TXT or CNAME), Name (sometimes called Host), and Value (sometimes called Data or Points To) exactly. TTL leave at default (1 hour).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Common gotchas</strong>
+        <ul style="list-style:none;padding-left:0;margin-top:6px;">
+          <li style="padding:4px 0 4px 18px;position:relative;font-size:.88rem;"><span style="position:absolute;left:0;font-weight:800;">→</span>If Resend's "Name" is <code>resend._domainkey</code>, GoDaddy might want you to type just <code>resend._domainkey</code> (not the full <code>resend._domainkey.2ntr.com</code>). Don't include the domain suffix.</li>
+          <li style="padding:4px 0 4px 18px;position:relative;font-size:.88rem;"><span style="position:absolute;left:0;font-weight:800;">→</span>If Resend's "Name" is just <code>@</code> or blank, in GoDaddy use <code>@</code> for the root domain.</li>
+          <li style="padding:4px 0 4px 18px;position:relative;font-size:.88rem;"><span style="position:absolute;left:0;font-weight:800;">→</span>SPF: if you already have a TXT record starting with <code>v=spf1</code>, don't add another one. Edit the existing one to add <code>include:_spf.resend.com</code> before <code>~all</code>.</li>
+          <li style="padding:4px 0 4px 18px;position:relative;font-size:.88rem;"><span style="position:absolute;left:0;font-weight:800;">→</span>Save after each record.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Wait 5-15 min for propagation</strong>GoDaddy says "instant" but it's usually 5-15 min. Use the DNS check below to verify.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">4</span>Verify in Resend</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Back in Resend → Domains → 2ntr.com</strong>Click "Verify DNS records". If all 3 show green ✓, you're done.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>If any are red ✕</strong>Wait another 5 min and click "Verify" again. DNS can be slow. If still red after 20 min, double-check the record values in GoDaddy match Resend exactly.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">5</span>Live DNS check (this page)</h2>
+  <p>I can probe your current DNS records via Cloudflare's public DNS-over-HTTPS. Click below to see what's actually live on the internet right now for 2ntr.com.</p>
+  <div class="card">
+    <div class="btn-row" style="margin-bottom:14px;">
+      <button class="btn btn-prim" onclick="checkDns()">↻ Check 2ntr.com DNS</button>
+    </div>
+    <div id="dnsResults">
+      <div class="check idle">
+        <div class="check-icon">–</div>
+        <div class="check-label">Click "Check DNS" to probe<small>SPF · DKIM · DMARC</small></div>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">6</span>Send a test email (when verified)</h2>
+  <p>Once Resend shows all 3 records green, fire a test email through skateOS to confirm the full pipeline.</p>
+  <div class="card">
+    <div class="field">
+      <label>Test recipient (your email)</label>
+      <input type="email" id="testEmail" placeholder="info@2ntr.com" value="info@2ntr.com">
+    </div>
+    <button class="btn btn-green" onclick="sendTestEmail()">📧 Send test email</button>
+    <div id="testResult" style="margin-top:14px;"></div>
+  </div>
+
+  <h2><span class="num">7</span>Set the Resend API key in Supabase</h2>
+  <div class="card">
+    <p style="margin-bottom:12px;">Skip this if already done. Once Resend shows your domain verified, generate an API key + put it in Supabase secrets.</p>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>In Resend: <a href="https://resend.com/api-keys" target="_blank" style="color:#007a5a;font-weight:700;">resend.com/api-keys</a></strong>Click "Create API Key" → name "skateOS" → permission "Full access" → copy the key (starts with <code>re_</code>).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Run in your Terminal:</strong>
+        <div class="copyable">
+          <span id="cmdVal">supabase secrets set RESEND_API_KEY=re_YOUR_KEY_HERE --project-ref zecurmlenxyxanqucrga</span>
+          <button class="copy-btn" onclick="copyTxt('cmdVal', this)">Copy</button>
+        </div>
+        Replace <code>re_YOUR_KEY_HERE</code> with the key from Resend.
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <a href="/launch-ready.html">← Launch Readiness</a> · <a href="/cutover.html">Cutover Playbook</a> · <a href="/index.html">Admin</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 2800);
+}
+function copyTxt(id, btn){
+  var el = document.getElementById(id);
+  var txt = el ? (el.textContent||'') : '';
+  if(!txt) return;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){
+      if(btn){ btn.textContent = '✓ Copied'; btn.classList.add('copied'); setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600); }
+    });
+  }
+}
+
+// Use Cloudflare's DNS-over-HTTPS to probe records
+async function dohQuery(name, type){
+  try {
+    var url = 'https://cloudflare-dns.com/dns-query?name=' + encodeURIComponent(name) + '&type=' + encodeURIComponent(type);
+    var r = await fetch(url, { headers: { 'Accept': 'application/dns-json' } });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return await r.json();
+  } catch(e) { return { Status: -1, error: e.message }; }
+}
+
+function renderCheck(label, status, detail){
+  return '<div class="check ' + status + '">'
+    + '<div class="check-icon">' + (status === 'ok' ? '✓' : status === 'bad' ? '✕' : status === 'warn' ? '!' : '–') + '</div>'
+    + '<div class="check-label">' + label + (detail ? '<small' + (status === 'bad' ? ' class="fix"' : '') + '>' + detail + '</small>' : '') + '</div>'
+    + '</div>';
+}
+
+async function checkDns(){
+  var box = document.getElementById('dnsResults');
+  box.innerHTML = '<div class="check idle"><div class="check-icon"><span class="spinner"></span></div><div class="check-label">Checking DNS records via Cloudflare DoH…</div></div>';
+
+  var html = '';
+
+  // SPF — TXT record on root domain containing v=spf1
+  var spf = await dohQuery('2ntr.com', 'TXT');
+  if(spf.Status !== 0){
+    html += renderCheck('SPF (root domain TXT)', 'bad', 'DNS query failed: ' + (spf.error || 'status ' + spf.Status));
+  } else {
+    var spfRecord = null;
+    (spf.Answer || []).forEach(function(a){
+      var data = (a.data || '').replace(/^"|"$/g, '').replace(/" "/g, '');
+      if(data.indexOf('v=spf1') >= 0) spfRecord = data;
+    });
+    if(!spfRecord){
+      html += renderCheck('SPF (root domain TXT)', 'bad', 'No SPF record found. Add a TXT record at @ with value: v=spf1 include:_spf.resend.com ~all');
+    } else if(spfRecord.indexOf('_spf.resend.com') >= 0){
+      html += renderCheck('SPF (root domain TXT)', 'ok', spfRecord);
+    } else {
+      html += renderCheck('SPF (root domain TXT)', 'warn', 'SPF exists but missing Resend include. Edit to add include:_spf.resend.com before ~all. Current: ' + spfRecord);
+    }
+  }
+
+  // DKIM — Resend uses resend._domainkey subdomain
+  var dkim = await dohQuery('resend._domainkey.2ntr.com', 'TXT');
+  if(dkim.Status !== 0 && dkim.Status !== 3){
+    html += renderCheck('DKIM (resend._domainkey TXT)', 'bad', 'DNS query failed: ' + (dkim.error || 'status ' + dkim.Status));
+  } else if((dkim.Answer || []).length === 0){
+    // Try CNAME variant
+    var dkimC = await dohQuery('resend._domainkey.2ntr.com', 'CNAME');
+    if((dkimC.Answer || []).length > 0){
+      html += renderCheck('DKIM (resend._domainkey CNAME)', 'ok', (dkimC.Answer[0].data || ''));
+    } else {
+      html += renderCheck('DKIM (resend._domainkey)', 'bad', 'Not found. Add the DKIM record Resend provided (usually a TXT or CNAME at resend._domainkey).');
+    }
+  } else {
+    var dkimData = (dkim.Answer[0].data || '').replace(/^"|"$/g, '');
+    if(dkimData.length > 80){
+      html += renderCheck('DKIM (resend._domainkey TXT)', 'ok', dkimData.slice(0, 80) + '… (looks valid)');
+    } else {
+      html += renderCheck('DKIM (resend._domainkey TXT)', 'warn', 'Found but short value (' + dkimData.length + ' chars). DKIM keys are usually 200+ chars. Verify in GoDaddy: ' + dkimData);
+    }
+  }
+
+  // DMARC — TXT at _dmarc subdomain
+  var dmarc = await dohQuery('_dmarc.2ntr.com', 'TXT');
+  if(dmarc.Status !== 0 && dmarc.Status !== 3){
+    html += renderCheck('DMARC (_dmarc TXT)', 'warn', 'DNS query failed: ' + (dmarc.error || 'status ' + dmarc.Status));
+  } else if((dmarc.Answer || []).length === 0){
+    html += renderCheck('DMARC (_dmarc TXT)', 'warn', 'Not found. Optional but improves deliverability. Resend suggested value: v=DMARC1; p=none;');
+  } else {
+    var dmarcData = (dmarc.Answer[0].data || '').replace(/^"|"$/g, '');
+    if(dmarcData.indexOf('v=DMARC1') >= 0){
+      html += renderCheck('DMARC (_dmarc TXT)', 'ok', dmarcData);
+    } else {
+      html += renderCheck('DMARC (_dmarc TXT)', 'warn', 'Record exists but doesn\'t look like DMARC: ' + dmarcData);
+    }
+  }
+
+  // MX records — informational
+  var mx = await dohQuery('2ntr.com', 'MX');
+  if(mx.Status === 0 && (mx.Answer || []).length > 0){
+    var mxList = mx.Answer.map(function(a){ return (a.data || '').replace(/^"|"$/g, ''); }).join(', ');
+    html += renderCheck('MX (incoming mail · informational only)', 'ok', mxList.slice(0, 120));
+  }
+
+  box.innerHTML = html;
+}
+
+async function sendTestEmail(){
+  var to = (document.getElementById('testEmail').value || '').trim();
+  if(!to){ toast('Enter an email address first', 'err'); return; }
+  var result = document.getElementById('testResult');
+  result.innerHTML = '<div class="check idle"><div class="check-icon"><span class="spinner"></span></div><div class="check-label">Sending via send-email Edge Function…</div></div>';
+  try {
+    var r = await fetch(SUPA + '/functions/v1/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + KEY },
+      body: JSON.stringify({
+        to: to,
+        subject: 'skateOS email setup test — ' + new Date().toLocaleString(),
+        html: '<div style="font-family:system-ui;max-width:480px;margin:0 auto;padding:24px;color:#1a1a1a;"><h2 style="margin:0 0 12px;">✅ Email pipeline works</h2><p>If you see this, Resend is wired and DNS is verified. Receipts + lesson reminders + birthday greetings will land in inboxes from now on.</p><p style="font-size:.84rem;color:#6a737d;">Sent via skateOS Email Setup at ' + new Date().toLocaleString() + '</p></div>',
+        text: 'skateOS email setup test — pipeline works.',
+        from: 'info@2ntr.com'
+      })
+    });
+    var j = await r.json();
+    if(j.ok || j.id){
+      result.innerHTML = '<div class="check ok"><div class="check-icon">✓</div><div class="check-label">Sent — check inbox<small>Resend message id: ' + (j.id || '(no id returned)') + '. If it lands in spam, DNS records may still be propagating. Wait 15 min and try again.</small></div></div>';
+    } else {
+      result.innerHTML = '<div class="check bad"><div class="check-icon">✕</div><div class="check-label">Send failed<small>' + (j.error || JSON.stringify(j)).slice(0, 200) + '</small></div></div>';
+    }
+  } catch(e) {
+    result.innerHTML = '<div class="check bad"><div class="check-icon">✕</div><div class="check-label">Network error<small>' + e.message + '</small></div></div>';
+  }
+}
+
+// Auto-check on load
+checkDns();
+</script>
+</body>
+</html>

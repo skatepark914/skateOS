@@ -1,0 +1,30 @@
+{
+  // Desktop bridge — "Local Query" MCP connector.
+  //
+  // WHY THIS EXISTS: a Cloudflare Worker cannot read your Mac's disk. So we use the
+  // SYNC model: a Mac-side script (sync-imessage.py) reads recent messages and POSTs
+  // them to this Worker's /ingest endpoint, which stores them in the Worker's OWN D1
+  // database (isolated — nothing touches the skateOS or BM Supabase). Mobile Claude
+  // then queries that D1 through MCP tools. Because the data is already synced to the
+  // cloud, queries work even when the Mac is asleep.
+  //
+  // Email is intentionally NOT synced here — use the Gmail connector at claude.ai
+  // instead (it's already cross-device and avoids copying mail to a second place).
+  //
+  // ONE-TIME SETUP before first deploy:
+  //   cd desktop-bridge && npx wrangler d1 create desktop-bridge
+  //   → paste the printed database_id into the binding below.
+  "name": "desktop-bridge",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "durable_objects": { "bindings": [{ "name": "DESK_MCP", "class_name": "DeskMCP" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["DeskMCP"] }],
+  "d1_databases": [
+    {
+      "binding": "DESK_DB",
+      "database_name": "desktop-bridge",
+      "database_id": "PASTE_D1_DATABASE_ID_HERE"
+    }
+  ]
+}

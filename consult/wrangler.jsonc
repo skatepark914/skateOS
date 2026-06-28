@@ -1,0 +1,7 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "skateos-consult",
+  "compatibility_date": "2026-05-24",
+  "assets": { "directory": ".", "not_found_handling": "404-page" },
+  "routes": [{ "pattern": "consult.skateos.com", "custom_domain": true }]
+}

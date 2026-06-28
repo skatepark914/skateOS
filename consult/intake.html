@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Project intake — Doug Brown</title>
+<title>Project intake — Hudson Valley AI</title>
 <meta name="description" content="Skip discovery. Tell me what you're building. I'll have a kickoff scheduled within 24 hours.">
 <meta name="theme-color" content="#0a0a0a">
 <meta name="robots" content="noindex">
@@ -243,28 +243,34 @@
         <label>Preferred engagement <span class="req">*</span></label>
         <div class="pkg-grid">
           <label class="pkg-card">
-            <input type="radio" name="package" value="spike" required>
-            <div class="pkg-name">⚡ Spike</div>
-            <div class="pkg-price">$5,000</div>
-            <div class="pkg-detail">1-week MVP · live URL by day 1</div>
+            <input type="radio" name="package" value="hourly" required>
+            <div class="pkg-name">⏱️ À la carte</div>
+            <div class="pkg-price">$175/hr</div>
+            <div class="pkg-detail">AI/token costs included</div>
           </label>
           <label class="pkg-card">
-            <input type="radio" name="package" value="sprint">
-            <div class="pkg-name">🚀 Production Sprint</div>
-            <div class="pkg-price">$20,000</div>
-            <div class="pkg-detail">4-week production MVP</div>
+            <input type="radio" name="package" value="small">
+            <div class="pkg-name">🛠️ Small project</div>
+            <div class="pkg-price">Let's scope it</div>
+            <div class="pkg-detail">A tool, a fix, an automation</div>
           </label>
           <label class="pkg-card">
-            <input type="radio" name="package" value="partner">
-            <div class="pkg-name">🤝 Build Partner</div>
-            <div class="pkg-price">$15k/mo</div>
-            <div class="pkg-detail">Ongoing · 3-mo minimum</div>
+            <input type="radio" name="package" value="project">
+            <div class="pkg-name">📐 Bigger project</div>
+            <div class="pkg-price">Project pricing</div>
+            <div class="pkg-detail">We'll land on a fair number together</div>
           </label>
           <label class="pkg-card">
-            <input type="radio" name="package" value="custom">
-            <div class="pkg-name">📐 Custom</div>
-            <div class="pkg-price">Talk</div>
-            <div class="pkg-detail">Different shape · we'll scope it</div>
+            <input type="radio" name="package" value="server">
+            <div class="pkg-name">🖥️ Custom server install</div>
+            <div class="pkg-price">from ~$1,200</div>
+            <div class="pkg-detail">Your own Mac mini · own it all</div>
+          </label>
+          <label class="pkg-card">
+            <input type="radio" name="package" value="explore">
+            <div class="pkg-name">🧠 Just exploring</div>
+            <div class="pkg-price">No pressure</div>
+            <div class="pkg-detail">Not sure yet — let's chat</div>
           </label>
         </div>
       </div>
@@ -285,12 +291,11 @@
         <label>Budget range <span class="hint">(rough is fine)</span></label>
         <select id="budget">
           <option value="">— pick a range —</option>
-          <option value="under-5k">Under $5k</option>
-          <option value="5k-10k">$5k – $10k</option>
-          <option value="10k-25k">$10k – $25k</option>
-          <option value="25k-50k">$25k – $50k</option>
-          <option value="50k-plus">$50k+</option>
-          <option value="ongoing">Ongoing / retainer mode</option>
+          <option value="hourly">Just hourly ($175/hr)</option>
+          <option value="under-500">Under $500</option>
+          <option value="500-2k">$500 – $2k</option>
+          <option value="2k-plus">$2k+</option>
+          <option value="not-sure">Not sure yet</option>
           <option value="not-sure">Not sure yet — need a quote</option>
         </select>
       </div>
@@ -408,7 +413,7 @@
     }
 
     // Build a nicely-formatted email body for Doug's inbox
-    var pkgLabels = {spike:'⚡ Spike — $5k / 1wk', sprint:'🚀 Production Sprint — $20k / 4wk', partner:'🤝 Build Partner — $15k/mo', custom:'📐 Custom scope'};
+    var pkgLabels = {hourly:'⏱️ À la carte — $175/hr', small:'🛠️ Small project', project:'📐 Bigger project — project pricing', server:'🖥️ Custom server install (from ~$1,200)', explore:'🧠 Just exploring'};
     var stageLabels = {idea:'💡 Idea only', prototype:'🔧 Working prototype', 'existing-software':'📦 Existing software', migration:'🔄 Migrating off Square/Mindbody/etc', stalled:'😩 Stalled project', other:'🤷 Something else'};
     var subject = '🚀 New intake · ' + (data.package ? pkgLabels[data.package].split(' ')[1] + ' · ' : '') + data.name + (data.company ? ' (' + data.company + ')' : '');
 

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Party Registration — 2nd Nature Park</title>
+<meta name="description" content="Request a birthday party at 2nd Nature Park, Peekskill NY. Submit your details and we'll review + confirm.">
+<style>
+  :root{--rose:#e11d48;--rose-dark:#be123c;--ink:#0f1115;--ink-soft:#5b5f66;--bg:#faf9f6;--line:#e7e7e2;--ok:#16a34a;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Inter,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
+  .wrap{max-width:680px;margin:0 auto;padding:24px 18px 80px;}
+  .banner{position:relative;border-radius:18px;overflow:hidden;margin-bottom:22px;}
+  .banner img{width:100%;height:200px;object-fit:cover;object-position:center 42%;display:block;}
+  .banner .ov{position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,9,14,.62),rgba(8,9,14,.1));display:flex;align-items:center;padding:0 26px;color:#fff;}
+  .banner .eyebrow{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.92}
+  .banner h1{font-size:clamp(22px,4vw,32px);font-weight:900;letter-spacing:-.02em;margin-top:4px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 6px 24px rgba(0,0,0,.05);}
+  .lede{color:var(--ink-soft);font-size:.95rem;margin-bottom:18px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  @media(max-width:520px){.grid{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column}
+  .field.full{grid-column:1/-1}
+  label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:5px}
+  label .req{color:var(--rose)}
+  input,select,textarea{width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;font-size:1rem;font-family:inherit;background:#fff}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,.12)}
+  textarea{min-height:80px;resize:vertical}
+  .submit{width:100%;margin-top:18px;padding:16px;border:none;border-radius:13px;background:var(--rose);color:#fff;font-weight:800;font-size:1.05rem;cursor:pointer}
+  .submit:hover{background:var(--rose-dark)} .submit:disabled{opacity:.6}
+  .approve-note{font-size:.82rem;color:var(--ink-soft);margin-top:12px;text-align:center}
+  .ok{display:none;text-align:center;padding:20px}
+  .ok .chk{font-size:46px}.ok h2{font-size:1.4rem;font-weight:900;margin:8px 0 6px}.ok p{color:var(--ink-soft)}
+  .err{display:none;color:var(--rose);font-size:.88rem;margin-top:10px;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="banner">
+    <img src="/2ntr/assets/park-community.jpg" alt="Birthday party at 2nd Nature Park">
+    <div class="ov"><div><div class="eyebrow">2nd Nature Park · Peekskill, NY</div><h1>Book a birthday party 🎉</h1></div></div>
+  </div>
+
+  <div class="card" id="formCard">
+    <p class="lede">Tell us about your party and we'll review availability + confirm by email/text. <strong>This is a request</strong> — your date isn't locked until we approve it.</p>
+    <form id="partyForm">
+      <div class="grid">
+        <div class="field"><label>Your name <span class="req">*</span></label><input id="parent" required></div>
+        <div class="field"><label>Phone <span class="req">*</span></label><input id="phone" type="tel" required placeholder="(914) 555-0100"></div>
+        <div class="field full"><label>Email <span class="req">*</span></label><input id="email" type="email" required></div>
+        <div class="field"><label>Birthday kid's name</label><input id="kid"></div>
+        <div class="field"><label>Turning age</label><input id="age" inputmode="numeric"></div>
+        <div class="field"><label>Preferred date <span class="req">*</span></label><input id="date" type="date" required></div>
+        <div class="field"><label>Preferred time</label><input id="time" type="time"></div>
+        <div class="field"><label>How many guests?</label><input id="guests" inputmode="numeric" placeholder="e.g. 12"></div>
+        <div class="field"><label>Package</label>
+          <select id="package">
+            <option value="">Not sure yet — recommend one</option>
+            <option>Basic — 2 hr park + party area</option>
+            <option>Standard — 2 hr + pizza + drinks</option>
+            <option>Deluxe — 2 hr + pizza + instructor + loaner gear</option>
+          </select>
+        </div>
+        <div class="field full"><label>Add-ons / notes</label><textarea id="notes" placeholder="Helmet rentals, beginner group, food allergies, etc."></textarea></div>
+      </div>
+      <button class="submit" id="submitBtn" type="submit">Request my party date →</button>
+      <div class="approve-note">🔒 We review every request for availability before confirming. No charge now.</div>
+      <div class="err" id="err"></div>
+    </form>
+  </div>
+
+  <div class="card ok" id="okCard">
+    <div class="chk">🎉</div>
+    <h2>Request received!</h2>
+    <p>Thanks — we've got your party request and will review availability, then reach out by email/text to confirm and take a deposit. Questions? Call/text <strong>(914) 402-4624</strong>.</p>
+  </div>
+</div>
+
+<script>
+  var SUPA="https://zecurmlenxyxanqucrga.supabase.co";
+  var ANON="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8";
+  var FORM_ID="16adaae5-2bed-4c66-b90f-3a3d00a6797c";
+  var TENANT="e0b18a66-112b-4c3b-8b7a-97ed60b92c97";
+  var v=function(id){return document.getElementById(id).value.trim();};
+
+  document.getElementById('partyForm').addEventListener('submit',function(e){
+    e.preventDefault();
+    var btn=document.getElementById('submitBtn'), err=document.getElementById('err');
+    err.style.display='none'; btn.disabled=true; btn.textContent='Sending…';
+    var data={
+      parent_name:v('parent'), phone:v('phone'), email:v('email'),
+      birthday_kid:v('kid'), turning_age:v('age'),
+      preferred_date:v('date'), preferred_time:v('time'),
+      guest_count:v('guests'), package:v('package'), notes:v('notes'),
+      kind:'birthday_party_registration', source:'skateos.com/2ntr/party'
+    };
+    fetch(SUPA+'/rest/v1/form_submissions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json',apikey:ANON,Authorization:'Bearer '+ANON,Prefer:'return=minimal'},
+      body:JSON.stringify({form_id:FORM_ID, tenant_id:TENANT, data:data})
+    }).then(function(r){
+      if(!r.ok) return r.text().then(function(t){throw new Error(t||('HTTP '+r.status));});
+      document.getElementById('formCard').style.display='none';
+      document.getElementById('okCard').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    }).catch(function(ex){
+      err.textContent='Something went wrong — please call/text (914) 402-4624 or try again. ('+(ex.message||'error').slice(0,80)+')';
+      err.style.display='block'; btn.disabled=false; btn.textContent='Request my party date →';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Square cancellation playbook · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/tokens.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f6f7f9; color: #0e0e10; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 30px 24px 80px; }
+  .brand { display: inline-block; font-size: .74rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 12px; }
+  h1 { font-size: 2rem; font-weight: 900; line-height: 1.05; margin-bottom: 8px; letter-spacing: -0.025em; }
+  .lead { font-size: 1.05rem; color: #4a525c; margin-bottom: 28px; line-height: 1.5; }
+  .savings-card {
+    background: linear-gradient(135deg, #0e0e10 0%, #2d3748 100%);
+    color: #fff;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 600px) { .savings-card { grid-template-columns: 1fr; } }
+  .savings-card h2 { font-size: 1rem; font-weight: 700; opacity: 0.8; margin-bottom: 10px; }
+  .savings-card .v { font-size: 2.4rem; font-weight: 900; letter-spacing: -0.02em; }
+  .savings-card .v .small { font-size: 1rem; font-weight: 600; opacity: 0.7; }
+  .savings-card .sub { font-size: .82rem; opacity: 0.65; margin-top: 4px; }
+
+  table.steps { width: 100%; border-collapse: separate; border-spacing: 0; background: #fff; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 3px rgba(20,24,30,.06); margin-bottom: 24px; }
+  table.steps th, table.steps td { padding: 14px 16px; border-bottom: 1px solid #e6e7ea; text-align: left; vertical-align: top; font-size: .92rem; }
+  table.steps th { background: #f6f7f9; font-size: .72rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; color: #4a525c; }
+  table.steps tr:last-child td { border-bottom: none; }
+  table.steps tr.keep td { background: #fff8e6; }
+  table.steps td.amount { font-weight: 800; white-space: nowrap; }
+  table.steps td.action { font-weight: 600; white-space: nowrap; }
+  .pill { display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: .68rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+  .pill-cancel { background: #fef0ee; color: #b91c1c; }
+  .pill-keep { background: #fff8e6; color: #b88200; }
+  .replacement { color: #4a525c; font-size: .8rem; margin-top: 3px; }
+  .replacement strong { color: #007a52; }
+
+  .step-card {
+    background: #fff;
+    border: 1px solid #e6e7ea;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .step-card .n {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #0e0e10; color: #fff;
+    font-weight: 800; font-size: .92rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card .body strong { display: block; font-size: 1rem; margin-bottom: 4px; }
+  .step-card .body p { font-size: .9rem; color: #4a525c; }
+  .step-card a { color: #d11a2a; font-weight: 700; }
+
+  h2.section { font-size: 1.25rem; font-weight: 800; margin: 28px 0 14px; letter-spacing: -0.01em; }
+
+  .ready-check {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    font-size: .94rem;
+    line-height: 1.55;
+  }
+  .ready-check strong { color: #047857; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Cancellation playbook</div>
+  <h1>Cancel Square. Save $312/mo.</h1>
+  <p class="lead">Real breakdown from your June 2026 Square bill. Each row tells you what to cancel, what's replacing it in skateOS, and why it's safe to pull the trigger.</p>
+
+  <div class="savings-card">
+    <div>
+      <h2>You're paying Square</h2>
+      <div class="v">$383<span class="small">/mo</span></div>
+      <div class="sub">June 2026 actual · climbing 5%/mo</div>
+    </div>
+    <div>
+      <h2>After cancellation</h2>
+      <div class="v">$71<span class="small">/mo</span></div>
+      <div class="sub">Just Square Payroll (until you swap providers)</div>
+    </div>
+  </div>
+
+  <h2 class="section">Each subscription, explained</h2>
+  <table class="steps">
+    <thead><tr><th>Service</th><th>Amount</th><th>Action</th><th>What replaces it</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Square Email Marketing</strong></td>
+        <td class="amount">$162.56/mo</td>
+        <td class="action"><span class="pill pill-cancel">Cancel</span></td>
+        <td><div><strong>Resend</strong> ($20/mo) + Marketing campaign builder<br><span class="replacement">Save $143/mo. Resend smoke test ✓ in your inbox.</span></div></td>
+      </tr>
+      <tr>
+        <td><strong>Square for Retail Plus</strong></td>
+        <td class="amount">$96.45/mo</td>
+        <td class="action"><span class="pill pill-cancel">Cancel</span></td>
+        <td><div>skateOS POS · 1,363 products imported · 21+ gate · reports<br><span class="replacement">10,246 sales already showing real data</span></div></td>
+      </tr>
+      <tr class="keep">
+        <td><strong>Square Payroll</strong></td>
+        <td class="amount">$71/mo</td>
+        <td class="action"><span class="pill pill-keep">Keep</span></td>
+        <td><div>skateOS timesheets exist but no direct-deposit / tax filing<br><span class="replacement">If you ever switch: Wave $74/mo or Gusto $103/mo</span></div></td>
+      </tr>
+      <tr>
+        <td><strong>Square Appointments Plus</strong></td>
+        <td class="amount">$31.43/mo</td>
+        <td class="action"><span class="pill pill-cancel">Cancel</span></td>
+        <td><div><strong>/2ntr/lessons</strong> Calendly-style + 126 imported bookings<br><span class="replacement">All 9 instructors selectable, real-time slot picker</span></div></td>
+      </tr>
+      <tr>
+        <td><strong>Square Text Message Marketing</strong></td>
+        <td class="amount">$21.68/mo</td>
+        <td class="action"><span class="pill pill-cancel">Cancel</span></td>
+        <td><div>Twilio ($0.008/SMS — pennies/month) + skateOS Marketing<br><span class="replacement">Save $20+/mo</span></div></td>
+      </tr>
+      <tr>
+        <td><strong>Square Online Plus</strong></td>
+        <td class="amount">$29/mo (annual)</td>
+        <td class="action"><span class="pill pill-cancel">Cancel auto-renew</span></td>
+        <td><div><strong>skateos.com/2ntr/shop</strong> — 1,363 products, drawer cart, pickup checkout<br><span class="replacement">Lapses at next renewal date</span></div></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2 class="section">Recommended order (lowest risk first)</h2>
+
+  <div class="step-card">
+    <div class="n">1</div>
+    <div class="body">
+      <strong>Today — Cancel Square Email Marketing</strong>
+      <p>Biggest line item. Lowest disruption (Resend already wired, smoke test passed). Click <a href="https://app.squareup.com/dashboard/account/pricing" target="_blank">Square → Pricing & subscriptions</a> → Manage next to "Square Email Marketing" → Cancel.</p>
+      <p style="margin-top:6px;color:#007a52;font-weight:700;">→ Save $143/mo immediately</p>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="n">2</div>
+    <div class="body">
+      <strong>This week — Cancel Square Appointments Plus + Square Text Message Marketing</strong>
+      <p>Both have full skateOS replacements live (booking + Twilio SMS). Customer-facing impact: zero.</p>
+      <p style="margin-top:6px;color:#007a52;font-weight:700;">→ Save another $53/mo</p>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="n">3</div>
+    <div class="body">
+      <strong>Cancel Square for Retail Plus</strong>
+      <p>You'll lose access to Square's advanced reports + inventory features inside Square. Your skateOS POS replaces all of it. Keep the free Square account for the card reader.</p>
+      <p style="margin-top:6px;color:#007a52;font-weight:700;">→ Save $96/mo</p>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="n">4</div>
+    <div class="body">
+      <strong>Cancel Square Online Plus (auto-renew)</strong>
+      <p>Yearly renewal, prepaid until April 2027. Turn off auto-renew now so it lapses next April. You won't lose anything — /2ntr/shop is live.</p>
+      <p style="margin-top:6px;color:#007a52;font-weight:700;">→ Save $29/mo amortized</p>
+    </div>
+  </div>
+
+  <div class="step-card">
+    <div class="n">5</div>
+    <div class="body">
+      <strong>Keep Square Payroll for now</strong>
+      <p>$71/mo is reasonable for tax filing + direct deposit. Wave Payroll ($74) and Gusto ($103) cost similar; not worth disrupting payday over $0–30/mo savings.</p>
+    </div>
+  </div>
+
+  <h2 class="section">Before you start</h2>
+  <div class="ready-check">
+    <strong>Daily Square sync is armed</strong> (6am ET cron). Yesterday's swipes auto-pull into skateOS overnight, so you can keep using the Square reader for in-person + reports stay live.<br><br>
+    <strong>Resend test fired</strong> — check info@2ntr.com inbox for "skateOS · Resend smoke test ✓". If it landed cleanly, you're cleared to cancel Square Email Marketing.
+  </div>
+
+  <p style="margin-top:30px;font-size:.85rem;color:#6a737d;text-align:center;">
+    Powered by <a href="https://skateos.com" style="color:#d11a2a;font-weight:700;">skateOS</a> · <a href="/index.html" style="color:#4a525c;">Back to admin</a>
+  </p>
+</div>
+</body>
+</html>

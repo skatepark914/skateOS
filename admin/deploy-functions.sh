@@ -46,6 +46,18 @@ echo "=== Deploying helcim-pay-init ==="
 supabase functions deploy helcim-pay-init --project-ref "$PROJECT_REF"
 
 echo ""
+echo "=== Deploying daypass-checkout (public door-pass purchase) ==="
+supabase functions deploy daypass-checkout --project-ref "$PROJECT_REF" --no-verify-jwt
+
+echo ""
+echo "=== Deploying stripe-checkout ==="
+supabase functions deploy stripe-checkout --project-ref "$PROJECT_REF"
+
+echo ""
+echo "=== Deploying stripe-webhook (no-verify-jwt) ==="
+supabase functions deploy stripe-webhook --project-ref "$PROJECT_REF" --no-verify-jwt
+
+echo ""
 echo "=== Deploying send-email ==="
 supabase functions deploy send-email --project-ref "$PROJECT_REF"
 
@@ -126,6 +138,8 @@ echo "  supabase secrets set SMARTWAIVER_WEBHOOK_SECRET=\$(openssl rand -hex 32)
 echo "  supabase secrets set HELCIM_API_TOKEN=<paste-real-token-from-helcim-dashboard> --project-ref $PROJECT_REF"
 echo "  supabase secrets set HELCIM_WEBHOOK_VERIFIER_TOKEN=\$(openssl rand -hex 32) --project-ref $PROJECT_REF"
 echo "  supabase secrets set RESEND_API_KEY=re_xxx --project-ref $PROJECT_REF"
+echo "  supabase secrets set STRIPE_SECRET_KEY=sk_live_xxx --project-ref $PROJECT_REF       # Stripe card payments"
+echo "  supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_xxx --project-ref $PROJECT_REF      # from Stripe Dashboard webhook"
 echo ""
 echo "Brivo (after Nick generates API credentials in Brivo dashboard):"
 echo "  supabase secrets set BRIVO_CLIENT_ID=<oauth-client-id> --project-ref $PROJECT_REF"

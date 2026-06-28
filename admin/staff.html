@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>Staff clock-in · 2nd Nature</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; -webkit-font-smoothing: antialiased; }
+.app { min-height: 100%; padding: 32px 24px env(safe-area-inset-bottom) 24px; max-width: 1100px; margin: 0 auto; }
+.top { display: flex; align-items: center; justify-content: space-between; padding-bottom: 26px; border-bottom: 1px solid #e6e8ec; margin-bottom: 32px; }
+.brand { font-size: 1.15rem; font-weight: 700; color: #1a1a1a; letter-spacing: -.01em; }
+.brand small { display: block; font-size: .68rem; font-weight: 600; letter-spacing: .8px; color: #6a737d; text-transform: uppercase; margin-bottom: 4px; }
+.clock { text-align: right; }
+.clock .time { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1.4rem; color: #1a1a1a; letter-spacing: -.02em; }
+.clock .date { font-size: .78rem; font-weight: 500; color: #6a737d; margin-top: 2px; }
+.tagline { margin-bottom: 28px; }
+.tagline h1 { font-size: 1.7rem; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; letter-spacing: -.02em; }
+.tagline p { font-size: .98rem; color: #6a737d; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 24px 18px; text-align: center; cursor: pointer; transition: transform .12s ease, box-shadow .12s ease, border .12s; min-height: 200px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; gap: 14px; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.06); border-color: #d1d6dc; }
+.card.live { border-color: #00b388; box-shadow: 0 4px 16px rgba(0,179,136,.12); }
+.avatar { width: 78px; height: 78px; border-radius: 50%; background: #1a1a1a; display: inline-flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+.card.live .avatar { background: #00b388; }
+.name { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; letter-spacing: -.01em; }
+.role { font-size: .72rem; text-transform: uppercase; letter-spacing: .8px; color: #6a737d; font-weight: 600; margin-top: 2px; }
+.state { font-size: .82rem; font-weight: 600; padding: 6px 14px; border-radius: 999px; }
+.state.off { background: #f0f2f5; color: #4a525c; }
+.state.on  { background: #e6faf3; color: #007a5a; }
+.state.dot::before { content: "● "; font-size: .8em; }
+.empty { text-align: center; padding: 60px 20px; color: #6a737d; }
+.empty small { display: block; margin-top: 8px; color: #9aa3ad; }
+.toast { position: fixed; left: 50%; bottom: 36px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; box-shadow: 0 12px 36px rgba(0,0,0,.18); z-index: 9999; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; max-width: 92vw; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+.toast.err { background: #d63a3a; }
+
+/* Modal */
+.modal-bg { position: fixed; inset: 0; background: rgba(20,24,30,.42); backdrop-filter: blur(4px); display: none; align-items: center; justify-content: center; z-index: 8000; padding: 20px; }
+.modal-bg.show { display: flex; }
+.modal { background: #fff; border-radius: 18px; padding: 36px 32px 28px 32px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,.18); }
+.modal .avatar { margin: 0 auto 18px auto; width: 88px; height: 88px; font-size: 2rem; }
+.modal h2 { font-size: 1.35rem; font-weight: 700; margin-bottom: 6px; color: #1a1a1a; letter-spacing: -.02em; }
+.modal .sub { font-size: .94rem; color: #6a737d; margin-bottom: 26px; }
+.elapsed { font-size: .9rem; color: #007a5a; font-weight: 600; margin-bottom: 22px; background: #e6faf3; padding: 8px 16px; border-radius: 999px; display: inline-block; }
+.btn { font-family: inherit; font-weight: 700; font-size: 1rem; padding: 14px; border-radius: 12px; border: none; cursor: pointer; transition: transform .1s, opacity .15s; letter-spacing: -.01em; }
+.btn:active { transform: scale(.98); opacity: .92; }
+.btn-prim { background: #00b388; color: #fff; }
+.btn-out  { background: #1a1a1a; color: #fff; }
+.btn-cancel { background: #f0f2f5; color: #4a525c; }
+.btn-full { width: 100%; padding: 16px; font-size: 1.05rem; margin-top: 8px; }
+.foot { text-align: center; margin-top: 40px; padding-top: 20px; font-size: .8rem; color: #9aa3ad; }
+.foot a { color: #6a737d; text-decoration: none; font-weight: 600; }
+.foot a:hover { color: #1a1a1a; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="app">
+  <div class="top">
+    <div class="brand"><small>2nd Nature · Front Desk</small>Staff clock-in</div>
+    <div class="clock"><div class="time" id="clk">— : —</div><div class="date" id="dt">loading</div></div>
+  </div>
+  <div class="tagline">
+    <h1>Tap your name</h1>
+    <p>Clocking in or out · everyone uses this iPad</p>
+  </div>
+  <div class="grid" id="grid">
+    <div class="empty">Loading staff…</div>
+  </div>
+  <div class="foot">
+    Owner? <a href="/index.html">Open admin →</a> · <span id="ver"></span>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+var rpcHeaders = { 'Content-Type':'application/json', 'apikey':KEY, 'Authorization':'Bearer ' + KEY };
+var staffCache = [];
+
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 3200);
+}
+
+function initials(name){
+  var p = (name||'?').trim().split(/\s+/);
+  return ((p[0]||'').charAt(0) + (p[1]||'').charAt(0) || '?').toUpperCase();
+}
+
+function elapsed(iso){
+  if(!iso) return '';
+  var ms = Date.now() - new Date(iso).getTime();
+  var min = Math.max(0, Math.floor(ms/60000));
+  if(min < 60) return min + 'm';
+  var h = Math.floor(min/60);
+  var m = min % 60;
+  return h + 'h ' + (m<10?'0':'') + m + 'm';
+}
+
+function tickClock(){
+  var now = new Date();
+  var h = now.getHours();
+  var m = now.getMinutes();
+  var ap = h>=12 ? 'PM':'AM';
+  var hh = ((h+11)%12)+1;
+  document.getElementById('clk').textContent = hh + ':' + (m<10?'0':'') + m + ' ' + ap;
+  document.getElementById('dt').textContent = now.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+}
+setInterval(tickClock, 30000);
+
+async function loadStaff(){
+  try {
+    var r = await fetch(SUPA + '/rest/v1/rpc/staff_kiosk_list', {
+      method:'POST', headers: rpcHeaders, body: JSON.stringify({})
+    });
+    var d = await r.json();
+    if(Array.isArray(d)){
+      staffCache = d;
+      render();
+    } else {
+      document.getElementById('grid').innerHTML = '<div class="empty">No staff records yet.<small>Ask Doug to add you in admin.</small></div>';
+    }
+  } catch(e) {
+    document.getElementById('grid').innerHTML = '<div class="empty">Couldn\'t load staff.<small>Check internet + try again.</small></div>';
+  }
+}
+
+function render(){
+  var grid = document.getElementById('grid');
+  if(!staffCache.length){
+    grid.innerHTML = '<div class="empty">No staff records yet.<small>Ask Doug to add you in admin.</small></div>';
+    return;
+  }
+  grid.innerHTML = staffCache.map(function(s, idx){
+    var live = s.is_clocked_in;
+    var el   = live ? elapsed(s.clocked_in_at) : '';
+    return '<div class="card '+(live?'live':'')+'" onclick="tap('+idx+')">' +
+      '<div class="avatar">'+initials(s.display_name)+'</div>' +
+      '<div>' +
+        '<div class="name">'+s.display_name+'</div>' +
+        '<div class="role">'+ (s.role || 'staff') +'</div>' +
+      '</div>' +
+      '<div class="state '+(live?'on dot':'off')+'">' + (live ? ('On the clock · '+el) : 'Tap to clock in') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function tap(idx){
+  var s = staffCache[idx];
+  if(!s) return;
+  var modal = document.getElementById('modal');
+  var modalBg = document.getElementById('modalBg');
+  if(s.is_clocked_in){
+    modal.innerHTML =
+      '<div class="avatar" style="background:#00b388;">'+initials(s.display_name)+'</div>' +
+      '<h2>Clock '+s.display_name.split(' ')[0]+' out?</h2>' +
+      '<div class="sub">Ending the shift now.</div>' +
+      '<div class="elapsed">'+elapsed(s.clocked_in_at)+' on the clock</div>' +
+      '<div></div>' +
+      '<button class="btn btn-out btn-full" onclick="clockAction(\''+s.staff_id+'\', \'out\')">Clock me out</button>' +
+      '<button class="btn btn-cancel btn-full" onclick="closeModal()">Not me</button>';
+  } else {
+    modal.innerHTML =
+      '<div class="avatar">'+initials(s.display_name)+'</div>' +
+      '<h2>Clock '+s.display_name.split(' ')[0]+' in?</h2>' +
+      '<div class="sub">Starting your shift now.</div>' +
+      '<button class="btn btn-prim btn-full" onclick="clockAction(\''+s.staff_id+'\', \'in\')">Clock me in</button>' +
+      '<button class="btn btn-cancel btn-full" onclick="closeModal()">Not me</button>';
+  }
+  modalBg.classList.add('show');
+}
+
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+
+async function clockAction(staffId, action){
+  closeModal();
+  var rpc = action === 'in' ? 'staff_kiosk_clock_in' : 'staff_kiosk_clock_out';
+  var body = action === 'in' ? { p_staff_id: staffId, p_shift_type: 'front_desk' } : { p_staff_id: staffId };
+  try {
+    var r = await fetch(SUPA + '/rest/v1/rpc/' + rpc, {
+      method: 'POST', headers: rpcHeaders, body: JSON.stringify(body)
+    });
+    var j = await r.json();
+    if(!j || j.ok === false){
+      toast((j && j.error) || 'Couldn\'t record. Try again.', 'err');
+    } else {
+      var n = (j.staff_name || 'You').split(' ')[0];
+      if(action === 'in'){
+        toast('Welcome ' + n + ' — you\'re clocked in', 'success');
+      } else {
+        var min = j.minutes_worked || 0;
+        var hrs = Math.floor(min/60);
+        var rest = min % 60;
+        var dur = hrs > 0 ? (hrs + 'h ' + rest + 'm') : (min + ' min');
+        toast('Thanks ' + n + ' — ' + dur + ' logged', 'success');
+      }
+      setTimeout(loadStaff, 400);
+    }
+  } catch(e) {
+    toast('Network error — try again.', 'err');
+  }
+}
+
+setInterval(loadStaff, 60000);
+document.getElementById('ver').textContent = 'v1.1';
+tickClock();
+loadStaff();
+</script>
+</body>
+</html>

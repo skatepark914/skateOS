@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>2011 Ford Ranger — Flip Dossier | SkateOS</title>
+<style>
+  :root{
+    --ink:#14110f;--paper:#f6f3ee;--card:#fff;--line:#e6e0d6;--soft:#7a716a;
+    --accent:#c9572e;--gold:#caa24a;
+    --go:#3f7d5f;--warn:#b07d1f;--stop:#c0392b;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;
+    background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:920px;margin:0 auto;padding:26px 18px 80px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+
+  /* ---- Hero ---- */
+  header.hero{background:var(--ink);color:#fff;border-radius:20px;padding:32px 28px}
+  .hero .kick{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-size:clamp(2rem,7vw,2.9rem);font-weight:900;letter-spacing:-.02em;margin-top:10px;line-height:1.08}
+  .hero h1 .yr{color:var(--gold)}
+  .hero .vin{color:#cdc6bd;margin-top:14px;font-size:.86rem;line-height:1.6;word-break:break-word}
+  .hero .vin b{color:#fff}
+  .stamp{
+    margin-top:20px;display:inline-flex;align-items:center;gap:12px;
+    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);
+    border-radius:12px;padding:11px 16px;
+  }
+  .stamp .dot{width:11px;height:11px;border-radius:50%;background:var(--go);flex:none}
+  .stamp .txt{font-weight:900;font-size:1.02rem;letter-spacing:-.01em}
+  .stamp .sub{font-size:.74rem;color:#cdc6bd;margin-top:1px}
+
+  /* ---- Section labels ---- */
+  h2{
+    font-size:.82rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--soft);margin:34px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;gap:10px;
+  }
+  h2 .n{color:var(--accent);font-weight:900}
+
+  /* ---- Calculator ---- */
+  .calc{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .calc-head{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    font-size:.8rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);
+  }
+  .calc-head .live{display:inline-flex;align-items:center;gap:6px;color:var(--go);font-size:.7rem;letter-spacing:.1em}
+  .calc-head .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--go)}
+  .rows{padding:6px 18px 16px}
+  .row{padding:15px 0;border-bottom:1px solid #f0ece4}
+  .row:last-child{border-bottom:none}
+  .row .rl{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;margin-bottom:10px}
+  .row label{font-size:.92rem;font-weight:700;display:block}
+  .row .hint{font-size:.74rem;color:var(--soft);margin-top:2px}
+  .row .out{font-weight:900;font-size:1.4rem;color:var(--ink);white-space:nowrap}
+  input[type=range]{
+    -webkit-appearance:none;appearance:none;width:100%;height:5px;
+    background:var(--line);border-radius:3px;outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;
+    background:var(--accent);cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)
+  }
+  input[type=range]::-moz-range-thumb{
+    width:22px;height:22px;border-radius:50%;background:var(--accent);
+    cursor:pointer;border:3px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)
+  }
+  .result{background:#faf8f4;border-top:1px solid var(--line);padding:20px 18px}
+  .result-top{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:12px}
+  .margin-box .ml{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);font-weight:700}
+  .margin-box .mv{font-weight:900;font-size:clamp(2.6rem,11vw,3.8rem);line-height:1;letter-spacing:-.02em}
+  .allin{text-align:right;font-size:.74rem;color:var(--soft);letter-spacing:.04em;font-weight:700;text-transform:uppercase}
+  .allin b{display:block;font-weight:900;font-size:1.5rem;color:var(--ink);letter-spacing:-.01em;text-transform:none;margin-top:2px}
+  .bar{display:flex;height:30px;margin-top:18px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .bar div{display:flex;align-items:center;justify-content:center;font-size:.66rem;font-weight:800;letter-spacing:.02em;white-space:nowrap;overflow:hidden;color:#fff}
+  .seg-buy{background:#5a6b78}.seg-fix{background:#a98a3f}.seg-buf{background:#8a8590}.seg-mar{background:var(--go)}
+  .verdict{margin-top:18px;padding:14px 16px;border-radius:12px;border-left:4px solid var(--go);background:#f1f7f3}
+  .verdict .vh{font-weight:900;font-size:1.02rem;color:var(--go);letter-spacing:-.01em}
+  .verdict .vt{font-size:.88rem;color:var(--ink);margin-top:5px;line-height:1.6}
+
+  /* ---- Spec grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .cell{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .cell .k{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);font-weight:700}
+  .cell .v{font-weight:800;font-size:1.18rem;margin-top:4px;letter-spacing:-.01em}
+  .cell .v small{font-size:.78rem;color:var(--soft);font-weight:600}
+
+  /* ---- KBB rows ---- */
+  .kbb{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .kbb-row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:14px 18px;border-bottom:1px solid #f0ece4}
+  .kbb-row:last-child{border-bottom:none}
+  .kbb-row .kl{font-size:.92rem;font-weight:700}
+  .kbb-row .kl small{display:block;color:var(--soft);font-size:.76rem;font-weight:500;margin-top:2px}
+  .kbb-row .kv{font-weight:900;font-size:1.15rem;color:var(--accent);white-space:nowrap;letter-spacing:-.01em}
+  .note{font-size:.82rem;color:var(--soft);line-height:1.65;margin-top:14px}
+  .note b{color:var(--ink)}
+
+  /* ---- Comps ---- */
+  .links{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  a.comp{
+    display:block;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-radius:12px;padding:15px 16px;
+    position:relative;transition:.14s;
+  }
+  a.comp:hover{border-color:var(--accent);transform:translateY(-1px);text-decoration:none;box-shadow:0 4px 14px rgba(20,17,15,.06)}
+  a.comp .ct{font-weight:800;font-size:1rem;letter-spacing:-.01em}
+  a.comp .cd{font-size:.78rem;color:var(--soft);margin-top:3px;line-height:1.45;padding-right:18px}
+  a.comp .arr{position:absolute;top:14px;right:14px;color:var(--accent);font-weight:800}
+  .badge{display:inline-block;font-size:.6rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:999px;background:#f3efe8;color:var(--soft);margin-top:10px}
+  .badge.this{background:var(--accent);color:#fff}
+  a.comp.listing{border-color:var(--accent);background:#fbf3ec}
+
+  /* ---- Listing photo ---- */
+  .shot{margin:18px 0 0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:var(--card)}
+  .shot img{display:block;width:100%;height:auto}
+  .shot figcaption{padding:11px 16px;font-size:.78rem;color:var(--soft);border-top:1px solid var(--line)}
+
+  /* ---- Prose ---- */
+  .prose{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+  .prose p{font-size:.94rem;line-height:1.72;margin-bottom:14px}
+  .prose p:last-child{margin-bottom:0}
+  .prose strong{font-weight:800}
+  .flag{border-left:4px solid var(--stop);padding:12px 16px;background:#fbf0ef;border-radius:10px;margin:16px 0;font-size:.9rem;line-height:1.6}
+  .flag b{color:var(--stop)}
+  .intel{border-left:4px solid var(--accent);padding:12px 16px;background:#fbf3ec;border-radius:10px;margin:0 0 16px;font-size:.9rem;line-height:1.6}
+  .intel b{color:var(--accent)}
+
+  .foot{margin-top:36px;text-align:center;color:var(--soft);font-size:.76rem;letter-spacing:.04em}
+
+  @media(max-width:560px){
+    .grid{grid-template-columns:1fr}
+    .links{grid-template-columns:1fr}
+    header.hero{padding:26px 20px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="kick">Flip Dossier · 2nd Nature × SkateOS</div>
+    <h1><span class="yr">2011</span> Ford Ranger 4×4</h1>
+    <div class="vin">VIN <b>1FTLR4FE1BPA56276</b> · SuperCab · 4.0L V6 Auto · 132,686 mi · Silver · Clean title · NY reg exp 02/28/26</div>
+    <div class="stamp" id="stamp">
+      <span class="dot" id="stampDot"></span>
+      <div>
+        <div class="txt" id="stampTxt">Worth Doing</div>
+        <div class="sub" id="stampSub">Conditional on frame passing inspection</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- LISTING PHOTO -->
+  <figure class="shot">
+    <img src="/ford-ranger/ranger.jpg" alt="2011 Ford Ranger XLT SuperCab 4×4 — seller's listing photo, silver with bed cap" loading="lazy">
+    <figcaption>Seller's listing photo — silver XLT SuperCab 4×4 w/ bed cap · Peekskill, NY · ad claims clean, frame shows rot in person</figcaption>
+  </figure>
+
+  <!-- CALCULATOR -->
+  <h2><span class="n">01</span> Flip Calculator</h2>
+  <div class="calc">
+    <div class="calc-head"><span>Drag to model the deal</span><span class="live">Live</span></div>
+    <div class="rows">
+      <div class="row">
+        <div class="rl"><div><label>Buy price (your offer)</label><div class="hint">He quoted you $3,500 · public ad $6,000</div></div><div class="out" id="buyOut">$3,000</div></div>
+        <input type="range" id="buy" min="1500" max="3500" step="50" value="3000">
+      </div>
+      <div class="row">
+        <div class="rl"><div><label>Frame / subframe welding</label><div class="hint">Must pass NY inspection — verify on a lift first</div></div><div class="out" id="fixOut">$1,500</div></div>
+        <input type="range" id="fix" min="0" max="3500" step="100" value="1500">
+      </div>
+      <div class="row">
+        <div class="rl"><div><label>Buffer — tires / brakes / detail / fees</label><div class="hint">Recon + title costs</div></div><div class="out" id="bufOut">$500</div></div>
+        <input type="range" id="buf" min="0" max="1500" step="50" value="500">
+      </div>
+      <div class="row">
+        <div class="rl"><div><label>Target resale (disclosed repaired frame)</label><div class="hint">Clean-frame 4×4 comps ~$8–10k</div></div><div class="out" id="sellOut">$7,500</div></div>
+        <input type="range" id="sell" min="4000" max="11000" step="100" value="7500">
+      </div>
+    </div>
+    <div class="result">
+      <div class="result-top">
+        <div class="margin-box">
+          <div class="ml">Gross Margin</div>
+          <div class="mv" id="marginV">$2,500</div>
+        </div>
+        <div class="allin">All-in cost<b id="allinV">$5,000</b></div>
+      </div>
+      <div class="bar" id="bar"></div>
+      <div class="verdict" id="verdict">
+        <div class="vh" id="vh">Worth Doing</div>
+        <div class="vt" id="vt">Solid spread for a frame-weld flip. The 4×4 and below-average 132k miles carry it — both sell fast in NY snow country.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPECS -->
+  <h2><span class="n">02</span> VIN Decode &amp; Specs</h2>
+  <div class="grid">
+    <div class="cell"><div class="k">Year / Make</div><div class="v">2011 Ford</div></div>
+    <div class="cell"><div class="k">Model / Body</div><div class="v">Ranger <small>SuperCab</small></div></div>
+    <div class="cell"><div class="k">Engine</div><div class="v">4.0L V6 <small>207 hp / 238 lb-ft</small></div></div>
+    <div class="cell"><div class="k">Drivetrain</div><div class="v">4×4 <small>confirmed eyes-on</small></div></div>
+    <div class="cell"><div class="k">Mileage</div><div class="v">132,686 <small>below avg for yr</small></div></div>
+    <div class="cell"><div class="k">Tow (V6)</div><div class="v">~5,800 lb <small>w/ tow pkg</small></div></div>
+    <div class="cell"><div class="k">Assembly</div><div class="v">Twin Cities <small>St. Paul, MN</small></div></div>
+    <div class="cell"><div class="k">Reg Expires</div><div class="v">02 / 28 / 26 <small>NY passenger</small></div></div>
+    <div class="cell"><div class="k">Transmission</div><div class="v">Automatic <small>Silver / black</small></div></div>
+    <div class="cell"><div class="k">Title / Owners</div><div class="v">Clean · 2 <small>seller-stated, verify</small></div></div>
+  </div>
+
+  <!-- KBB -->
+  <h2><span class="n">03</span> KBB &amp; Valuation</h2>
+  <div class="kbb">
+    <div class="kbb-row"><div class="kl">Clean-frame 4×4 SuperCab<small>Good condition · private party</small></div><div class="kv">$8,000–10,000</div></div>
+    <div class="kbb-row"><div class="kl">This truck — repaired frame<small>Disclosed · passes inspection</small></div><div class="kv">$6,500–8,500</div></div>
+    <div class="kbb-row"><div class="kl">Trade-in equivalent<small>SuperCab range</small></div><div class="kv">$5,400–8,900</div></div>
+    <div class="kbb-row"><div class="kl">Parts / as-is floor<small>If frame fails inspection</small></div><div class="kv">$1,000–1,500</div></div>
+  </div>
+  <p class="note"><b>Reality check:</b> KBB doesn't publish values below "Fair," and structural rust drops off the bottom of their scale. The clean-frame numbers are the buyer's KBB lookup — not what a rotted-subframe truck actually trades at. Plug exact mileage + ZIP into KBB for the live figure.</p>
+
+  <!-- COMPS -->
+  <h2><span class="n">04</span> Comparable Listings &amp; Pricing</h2>
+  <div class="links">
+    <a class="comp listing" href="https://www.facebook.com/marketplace/item/2049638782254889/" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">The Actual Listing</div><div class="cd">FB Marketplace · Peekskill, NY · public ask $6,000</div><span class="badge this">This truck</span>
+    </a>
+    <a class="comp" href="https://www.kbb.com/ford/ranger/2011/" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">Kelley Blue Book</div><div class="cd">Official 2011 Ranger values — set mileage &amp; ZIP</div><span class="badge">Pricing</span>
+    </a>
+    <a class="comp" href="https://www.cargurus.com/Cars/l-Used-2011-Ford-Ranger-d309" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">CarGurus</div><div class="cd">Deal ratings vs market — best for comps</div><span class="badge">Comps</span>
+    </a>
+    <a class="comp" href="https://hudsonvalley.craigslist.org/search/cta?query=ford%20ranger%204x4&min_auto_year=2008&max_auto_year=2012#search=2~gallery~0" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">Craigslist · HV</div><div class="cd">Local Hudson Valley Ranger 4×4 listings</div><span class="badge">Local</span>
+    </a>
+    <a class="comp" href="https://www.facebook.com/marketplace/search/?query=2011%20ford%20ranger%204x4" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">FB Marketplace</div><div class="cd">Nearest private-party comps &amp; demand</div><span class="badge">Local</span>
+    </a>
+    <a class="comp" href="https://www.autotrader.com/cars-for-sale/ford/ranger/2011" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">Autotrader</div><div class="cd">Dealer asking prices — ceiling reference</div><span class="badge">Comps</span>
+    </a>
+    <a class="comp" href="https://www.cars.com/shopping/results/?makes[]=ford&models[]=ford-ranger&year_max=2011&year_min=2011" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">Cars.com</div><div class="cd">National inventory &amp; price history</div><span class="badge">Comps</span>
+    </a>
+    <a class="comp" href="https://www.nadaguides.com/Cars/2011/Ford/Ranger" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">J.D. Power / NADA</div><div class="cd">Second valuation source vs KBB</div><span class="badge">Pricing</span>
+    </a>
+    <a class="comp" href="https://vpic.nhtsa.dot.gov/decoder/Decoder/DecodeVin?VIN=1FTLR4FE1BPA56276" target="_blank" rel="noopener">
+      <span class="arr">↗</span><div class="ct">NHTSA VIN Decode</div><div class="cd">Authoritative spec confirm — drivetrain, recalls</div><span class="badge">Verify</span>
+    </a>
+  </div>
+
+  <!-- THE READ -->
+  <h2><span class="n">05</span> The Read</h2>
+  <div class="prose">
+    <div class="intel"><b>Listing vs. what he told you:</b> his public Facebook ad is <strong>$6,000</strong>, "clean title, nothing rotting out." He quoted <strong>you $3,500</strong> in person. That ~$2,500 private drop off his own asking is the tell — he knows the frame is what you saw, and he's pricing it for a buyer who caught it. Don't let "nothing rotting out" move you off the rust. And note: <strong>clean title ≠ clean frame</strong> — the title can be legitimately clean while the subframe is rotted; they're different things. Use the gap: <em>"your ad says clean, but we both looked at that frame — that's why you're at $3,500."</em></div>
+    <p>Seller's at <strong>$3,500</strong>. With a confirmed rusty frame, <strong>$3,000 is fair and defensible</strong> — the frame is your leverage. Open at $2,700 ("it needs frame work before it'll even pass inspection") and let him pull you to $3,000. Don't go above $3,200; past that the margin gets thin once welding's in.</p>
+    <p>The 4×4 is what flips this from a pass to a yes. A 4×4 Ranger sells far easier than a 2WD in this region, and the <strong>132k miles is genuinely below average</strong> for a 15-year-old truck — both are real selling points, not spin.</p>
+    <div class="flag"><b>The one thing that decides this deal:</b> the $1,500 has to actually make the frame inspection-legal. Get a welder to confirm it on a lift <strong>before</strong> you buy, not after. If it's worse than the seller let on, the estimate blows up and the margin with it.</div>
+    <p>When you resell: <strong>disclose the repaired frame</strong> and price it "frame repaired, passes inspection." A hidden repair comes back on you; a disclosed one that passes inspection sells clean and still clears the spread. And count your time — ~$2k gross is a few weekends of work.</p>
+    <p class="note"><b>Not financial advice</b> — this is deal math, not a recommendation. Verify the frame and inspection status in person before committing a dollar.</p>
+  </div>
+
+  <div class="foot">SkateOS · skateos.com/ford-ranger · Generated dossier</div>
+</div>
+
+<script>
+(function(){
+  var buy=document.getElementById('buy'),fix=document.getElementById('fix'),
+      buf=document.getElementById('buf'),sell=document.getElementById('sell');
+  var fmt=function(n){return '$'+n.toLocaleString('en-US');};
+
+  function recalc(){
+    var b=+buy.value,f=+fix.value,u=+buf.value,s=+sell.value;
+    var allin=b+f+u, margin=s-allin;
+    document.getElementById('buyOut').textContent=fmt(b);
+    document.getElementById('fixOut').textContent=fmt(f);
+    document.getElementById('bufOut').textContent=fmt(u);
+    document.getElementById('sellOut').textContent=fmt(s);
+    document.getElementById('allinV').textContent=fmt(allin);
+
+    var mv=document.getElementById('marginV');
+    mv.textContent=(margin<0?'-$':'$')+Math.abs(margin).toLocaleString('en-US');
+    mv.style.color = margin>=2000?'var(--go)':margin>=750?'var(--warn)':'var(--stop)';
+
+    // stacked bar
+    var bar=document.getElementById('bar');
+    var posMargin=Math.max(margin,0);
+    var total=b+f+u+posMargin;
+    function seg(cls,val,lbl){
+      if(val<=0)return '';
+      var pct=(val/total*100);
+      var show=pct>9?lbl:'';
+      return '<div class="'+cls+'" style="width:'+pct+'%">'+show+'</div>';
+    }
+    bar.innerHTML = seg('seg-buy',b,'Buy')+seg('seg-fix',f,'Fix')+seg('seg-buf',u,'Recon')+seg('seg-mar',posMargin,'Margin');
+
+    // verdict + stamp
+    var vh=document.getElementById('vh'),vt=document.getElementById('vt'),vd=document.getElementById('verdict');
+    var stxt=document.getElementById('stampTxt'),ssub=document.getElementById('stampSub'),
+        sdot=document.getElementById('stampDot');
+    var color,bg,head,body,stampSub;
+    if(margin>=2000){
+      color='var(--go)';bg='#f1f7f3';head='Worth Doing';
+      body='Solid spread for a frame-weld flip. The 4×4 and below-average 132k miles carry it — both sell fast in NY snow country.';
+      stampSub='Conditional on frame passing inspection';
+    } else if(margin>=750){
+      color='var(--warn)';bg='#faf4e8';head='Thin — Proceed Carefully';
+      body='Margin is real but slim once you count your time. Only commit if the welder confirms the frame number, and negotiate the buy down.';
+      stampSub='Tight margin — verify frame cost';
+    } else if(margin>=0){
+      color='var(--stop)';bg='#fbf0ef';head='Break-Even — Walk or Renegotiate';
+      body='Almost no room. Drop your offer hard or pass. A surprise on the lift puts you underwater.';
+      stampSub='No margin — renegotiate or pass';
+    } else {
+      color='var(--stop)';bg='#fbf0ef';head='Underwater — Pass';
+      body='You lose money at these numbers. Offer parts-truck money or walk away.';
+      stampSub='Loss at these numbers';
+    }
+    vh.textContent=head;vh.style.color=color;
+    vt.textContent=body;
+    vd.style.borderLeftColor=color;
+    vd.style.background=bg;
+    stxt.textContent=head;
+    ssub.textContent=stampSub;
+    sdot.style.background=color;
+  }
+  [buy,fix,buf,sell].forEach(function(el){el.addEventListener('input',recalc);});
+  recalc();
+})();
+</script>
+</body>
+</html>

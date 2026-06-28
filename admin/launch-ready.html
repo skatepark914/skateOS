@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Launch readiness · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 880px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 24px; }
+h2 { font-size: 1.15rem; font-weight: 700; margin-top: 28px; margin-bottom: 12px; color: #1a1a1a; letter-spacing: -.01em; display: flex; align-items: center; gap: 12px; }
+h2 .cat-stats { margin-left: auto; font-size: .82rem; font-weight: 600; color: #6a737d; }
+
+/* Score card */
+.score-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 18px; padding: 28px; margin-bottom: 28px; }
+.score-head { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+.score-ring { width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; flex-shrink: 0; background: conic-gradient(#1a1a1a 0deg, #e6e8ec 0deg); position: relative; }
+.score-ring::before { content: ""; position: absolute; inset: 8px; background: #fff; border-radius: 50%; }
+.score-ring .pct { position: relative; font-size: 1.8rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; }
+.score-ring .pct-sub { position: relative; font-size: .68rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; }
+.score-ring.go { background: conic-gradient(#00b388 var(--deg), #e6e8ec 0deg); }
+.score-ring.almost { background: conic-gradient(#b89000 var(--deg), #e6e8ec 0deg); }
+.score-ring.stop { background: conic-gradient(#b53030 var(--deg), #e6e8ec 0deg); }
+.score-body { flex: 1; min-width: 240px; }
+.score-body .verdict { font-size: 1.5rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; margin-bottom: 6px; }
+.score-body .verdict.go { color: #007a5a; }
+.score-body .verdict.almost { color: #b89000; }
+.score-body .verdict.stop { color: #b53030; }
+.score-body .why { font-size: .94rem; color: #4a525c; margin-bottom: 12px; }
+.score-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border-radius: 10px; font-weight: 700; font-size: .92rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-sec:hover { opacity: .88; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 28px; }
+
+/* Category card */
+.cat { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 18px 22px; margin-bottom: 12px; }
+.cat-row { display: flex; align-items: flex-start; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; }
+.cat-row:last-child { border-bottom: none; }
+.cat-row .check-icon { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; flex-shrink: 0; font-size: .82rem; margin-top: 2px; }
+.check-icon.ok { background: #00b388; }
+.check-icon.bad { background: #b53030; }
+.check-icon.warn { background: #b89000; }
+.check-icon.idle { background: #d1d6dc; color: #fff; }
+.check-icon.pending { background: #f0f2f5; color: #6a737d; }
+.cat-row .body { flex: 1; min-width: 0; }
+.cat-row .body strong { display: block; color: #1a1a1a; font-weight: 700; font-size: .96rem; margin-bottom: 4px; }
+.cat-row .body .desc { font-size: .86rem; color: #6a737d; margin-bottom: 4px; }
+.cat-row .body .fix { font-size: .82rem; color: #b53030; padding: 6px 10px; background: #fef0ee; border-radius: 6px; margin-top: 6px; display: inline-block; }
+.cat-row .body .fix code { font-family: 'SF Mono', Menlo, Consolas, monospace; background: rgba(0,0,0,.05); padding: 1px 5px; border-radius: 3px; font-size: .92em; }
+.cat-row .body .warn-note { font-size: .82rem; color: #5c4d1a; padding: 6px 10px; background: #fff7e1; border-radius: 6px; margin-top: 6px; display: inline-block; }
+.cat-row .badge { font-size: .68rem; font-weight: 800; padding: 3px 8px; border-radius: 999px; letter-spacing: .6px; text-transform: uppercase; flex-shrink: 0; margin-left: 8px; }
+.badge.critical { background: #b53030; color: #fff; }
+.badge.optional { background: #f0f2f5; color: #6a737d; }
+.badge.recommended { background: #fff7e1; color: #b89000; }
+
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d6dc; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.foot { margin-top: 50px; padding-top: 22px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Launch Readiness</div>
+  <h1>Are we ready to flip the switch?</h1>
+  <p class="lead">Probes every piece of the system and gives you a single GO/NOT-GO score. Re-run anytime — useful for spotting regressions after changes.</p>
+
+  <div class="score-card">
+    <div class="score-head">
+      <div class="score-ring" id="ring" style="--deg:0deg;">
+        <span class="pct" id="pctVal">—</span>
+        <span class="pct-sub" id="pctSub">checking</span>
+      </div>
+      <div class="score-body">
+        <div class="verdict" id="verdict">Running checks…</div>
+        <div class="why" id="why">Probing secrets, Edge Functions, migrations, and settings.</div>
+        <div class="score-actions">
+          <button class="btn btn-prim" onclick="runAll()" id="runBtn"><i>↻</i> Re-run all checks</button>
+          <a class="btn btn-sec" href="/index.html">← Back to admin</a>
+          <a class="btn btn-sec" href="/cutover.html" id="cutoverLink" style="display:none;">Open cutover playbook →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="categories"></div>
+
+  <div class="foot">
+    Last checked <span id="lastChecked">—</span> · <a href="/index.html">skateOS admin</a>
+  </div>
+</div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+var H = { 'Content-Type':'application/json', 'apikey':KEY, 'Authorization':'Bearer ' + KEY };
+
+// ----------------------------------------------------------------------
+// Each check returns one of: 'ok' | 'warn' | 'bad' | 'idle'
+//   ok    — green, passing
+//   warn  — amber, optional/missing but not critical
+//   bad   — red, critical and missing
+//   idle  — gray, not applicable / skipped
+// Plus an optional `fix` string with the action to take.
+// ----------------------------------------------------------------------
+
+async function tableExists(table){
+  try {
+    var r = await fetch(SUPA + '/rest/v1/' + table + '?select=count&head=true', { headers: H });
+    return r.ok || r.status === 200;
+  } catch(e) { return false; }
+}
+
+async function tableCount(table){
+  try {
+    var r = await fetch(SUPA + '/rest/v1/' + table + '?select=count', { headers: Object.assign({Prefer:'count=exact'}, H) });
+    if(!r.ok) return null;
+    var cr = r.headers.get('content-range');
+    if(cr){ var m = cr.match(/\/(\d+|\*)$/); if(m) return parseInt(m[1],10) || 0; }
+    var data = await r.json();
+    if(Array.isArray(data) && data[0] && data[0].count !== undefined) return data[0].count;
+    return null;
+  } catch(e) { return null; }
+}
+
+async function callFn(fn, body){
+  try {
+    var r = await fetch(SUPA + '/functions/v1/' + fn, {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + KEY },
+      body: JSON.stringify(body || {})
+    });
+    var txt = '';
+    try { txt = await r.text(); } catch(e){}
+    return { ok: r.ok, status: r.status, body: txt };
+  } catch(e) { return { ok: false, status: 0, error: e.message }; }
+}
+
+async function getSettings(){
+  try {
+    var r = await fetch(SUPA + '/rest/v1/app_settings?key=eq.all&select=value', { headers: H });
+    var data = await r.json();
+    return (data && data[0] && data[0].value) || {};
+  } catch(e) { return {}; }
+}
+
+// ----------------------------------------------------------------------
+// Check definitions — grouped by category. Each has:
+//   id, label, desc, critical, run(): returns {status, fix?}
+// ----------------------------------------------------------------------
+
+var CATS = [
+  {
+    title: '🏛 Foundation', icon: 'foundation',
+    checks: [
+      { id:'tbl_customers', label:'customers table reachable', desc:'Core customer records', critical:true,
+        run: async () => (await tableExists('customers')) ? {status:'ok'} : {status:'bad', fix:'Apply base migrations. customers table is from mig 001.'} },
+      { id:'tbl_sales', label:'sales table reachable', desc:'Sales ledger', critical:true,
+        run: async () => (await tableExists('sales')) ? {status:'ok'} : {status:'bad', fix:'Base migration missing.'} },
+      { id:'tbl_lessons', label:'lessons table reachable', desc:'Lesson bookings', critical:true,
+        run: async () => (await tableExists('lessons')) ? {status:'ok'} : {status:'bad', fix:'Base migration missing.'} },
+      { id:'tbl_loyalty', label:'loyalty_transactions table (mig 006)', desc:'Loyalty point ledger', critical:false,
+        run: async () => (await tableExists('loyalty_transactions')) ? {status:'ok'} : {status:'warn', fix:'Apply migration 006 if loyalty is wanted.'} },
+      { id:'tbl_timeentries', label:'time_entries table (mig 008)', desc:'Staff timesheets', critical:false,
+        run: async () => (await tableExists('time_entries')) ? {status:'ok'} : {status:'warn', fix:'Apply migration 008.'} },
+      { id:'tbl_webhook_log', label:'webhook_log table (mig 015)', desc:'Inbound webhook audit', critical:false,
+        run: async () => (await tableExists('webhook_log')) ? {status:'ok'} : {status:'warn', fix:'Apply migration 015.'} },
+      { id:'tbl_gift_cards', label:'gift_cards table (mig 041)', desc:'Gift card balance tracking', critical:false,
+        run: async () => (await tableExists('gift_cards')) ? {status:'ok'} : {status:'warn', fix:'Apply migration 041 if you sell gift cards.'} },
+      { id:'tbl_staff_kiosk', label:'staff_clock_tokens table (mig 072/073)', desc:'Kiosk clock-in support', critical:false,
+        run: async () => (await tableExists('staff_clock_tokens')) ? {status:'ok'} : {status:'warn', fix:'Apply migrations 072 + 073 (already done if kiosk shows staff).'} }
+    ]
+  },
+  {
+    title: '💳 Payments — Square stays for now', icon: 'payments',
+    checks: [
+      { id:'payments_strategy', label:'Plan: skateOS rings sales · Square reader = hardware', desc:'Cashier rings everything in skateOS POS. For card payments, total is shown to customer, they tap/swipe on Square reader. Skip Helcim integration entirely for now.', critical:false,
+        run: async () => ({status:'ok'}) },
+      { id:'square_reader_works', label:'Square card reader still works', desc:'Confirm Square reader pairs + charges. No code changes needed, just keep using it.', critical:false,
+        run: async () => ({status:'warn', fix:'Doug confirms by ringing a $1 sale through Square. Hardware only.'}) },
+      { id:'helcim_deferred', label:'Helcim integration — deferred (post-launch)', desc:'All Helcim code is built and ready. Skipped until after the main switch is stable.', critical:false,
+        run: async () => ({status:'idle', fix:'Revisit after skateOS has run clean for 30+ days. Helcim signup + $1 test + cutover from Square reader is a separate 1-week project.'}) }
+    ]
+  },
+  {
+    title: '✉ Notifications (Resend + Twilio)', icon: 'notif',
+    checks: [
+      { id:'send_email_fn', label:'send-email Edge Function reachable', desc:'Resend proxy', critical:true,
+        run: async () => {
+          var r = await callFn('send-email', {});
+          if(r.status === 404) return {status:'bad', fix:'Run: <code>bash admin/deploy-functions.sh</code>'};
+          if(r.body && r.body.toLowerCase().indexOf('resend_api_key not set') >= 0) return {status:'bad', fix:'Sign up at resend.com → API Keys → run: <code>supabase secrets set RESEND_API_KEY=re_...</code>'};
+          return {status:'ok'};
+        } },
+      { id:'resend_dns', label:'2ntr.com domain verified in Resend', desc:'Without DNS records, emails go to spam', critical:false,
+        run: async () => {
+          // We can't directly probe Resend's verified-domains list from the browser
+          // (would need an Edge Function to wrap the Resend API). Best-effort: fire a
+          // test email with from=info@2ntr.com and see if it returns an unverified-domain error.
+          var r = await callFn('send-email', { to: 'launchcheck@example.com', subject: 'launch-readiness probe', text: 'probe', from: 'info@2ntr.com' });
+          var b = (r.body||'').toLowerCase();
+          if(b.indexOf('not verified') >= 0 || b.indexOf('domain not found') >= 0 || b.indexOf('from address not authorized') >= 0) {
+            return {status:'warn', fix:'Add DNS records to 2ntr.com in GoDaddy. Resend dashboard → Domains → 2ntr.com → copy SPF + DKIM + DMARC records.'};
+          }
+          return {status:'ok'};
+        } },
+      { id:'send_sms_fn', label:'send-sms Edge Function reachable', desc:'Twilio proxy', critical:false,
+        run: async () => {
+          var r = await callFn('send-sms', {});
+          if(r.status === 404) return {status:'warn', fix:'Run: <code>bash admin/deploy-functions.sh</code> (SMS optional for v1)'};
+          if(r.body && r.body.toLowerCase().indexOf('twilio_account_sid') >= 0) return {status:'warn', fix:'Twilio creds not set. Optional for v1 (email covers it).'};
+          return {status:'ok'};
+        } },
+      { id:'sms_a2p', label:'A2P 10DLC registration', desc:'US carriers require this for SMS to land', critical:false,
+        run: async () => ({status:'warn', fix:'Not registered. SMS to US numbers blocked until 1-7 days approval at twilio.com/console. Skip if email is enough.'}) }
+    ]
+  },
+  {
+    title: '🛡 Waiver (Smartwaiver)', icon: 'waiver',
+    checks: [
+      { id:'sw_lookup', label:'smartwaiver-lookup Edge Function reachable', desc:'Checks waiver status by email', critical:false,
+        run: async () => {
+          var r = await callFn('smartwaiver-lookup', { email: 'probe@example.com' });
+          if(r.status === 404) return {status:'warn', fix:'Run: <code>bash admin/deploy-functions.sh</code>'};
+          if(r.body && r.body.toLowerCase().indexOf('smartwaiver_api_key') >= 0) return {status:'bad', fix:'Sign up at smartwaiver.com, get API key, run: <code>supabase secrets set SMARTWAIVER_API_KEY=...</code>'};
+          return {status:'ok'};
+        } }
+    ]
+  },
+  {
+    title: '⚙ Settings', icon: 'settings',
+    checks: [
+      { id:'biz_name', label:'Business name configured', desc:'Shows on receipts + emails', critical:true,
+        run: async () => {
+          var s = await getSettings();
+          return s.bizName ? {status:'ok'} : {status:'bad', fix:'Settings → Business → set business name'};
+        } },
+      { id:'biz_phone', label:'Business phone configured', desc:'Shows on receipts + customer notifications', critical:true,
+        run: async () => {
+          var s = await getSettings();
+          return s.bizPhone ? {status:'ok'} : {status:'bad', fix:'Settings → Business → set phone number'};
+        } },
+      { id:'biz_address', label:'Business address configured', desc:'Required for NY sales tax + receipts', critical:true,
+        run: async () => {
+          var s = await getSettings();
+          return s.bizAddress ? {status:'ok'} : {status:'bad', fix:'Settings → Business → set address'};
+        } },
+      { id:'tax_rate', label:'Sales tax rate configured', desc:'8.375% for Westchester / Peekskill', critical:true,
+        run: async () => {
+          var s = await getSettings();
+          var t = Number(s.taxRate || 0);
+          if(t > 0 && t < 0.2) return {status:'ok'};
+          return {status:'bad', fix:'Settings → Tax & Receipts → set tax rate (Westchester: 0.08375)'};
+        } },
+      { id:'park_hours', label:'Park hours configured', desc:'Drives "closed today" banner + cron timing', critical:false,
+        run: async () => {
+          var s = await getSettings();
+          return (s.hours && Object.keys(s.hours).length > 0) ? {status:'ok'} : {status:'warn', fix:'Settings → Park Hours → set open/close per day'};
+        } },
+      { id:'tip_presets', label:'POS tip presets configured', desc:'15% / 20% / 25% defaults', critical:false,
+        run: async () => {
+          var s = await getSettings();
+          var tp = (s.operations && s.operations.tipPresets) || s.tipPresets;
+          return (tp && tp.length >= 2) ? {status:'ok'} : {status:'warn', fix:'Settings → Operations → POS → set tip presets'};
+        } }
+    ]
+  },
+  {
+    title: '📦 Data readiness', icon: 'data',
+    checks: [
+      { id:'has_products', label:'At least 5 products in catalog', desc:'POS needs something to sell', critical:true,
+        run: async () => {
+          var n = await tableCount('products');
+          if(n === null) return {status:'warn'};
+          if(n >= 5) return {status:'ok'};
+          if(n > 0) return {status:'warn', fix:'Only ' + n + ' product(s). Add more via Products → Add Product, or Import CSV from Square.'};
+          return {status:'bad', fix:'No products. Use Products → Import CSV to load from Square.'};
+        } },
+      { id:'has_categories', label:'At least 3 product categories', desc:'For POS tabs + reports', critical:false,
+        run: async () => {
+          var n = await tableCount('categories');
+          if(n === null) return {status:'warn'};
+          return (n >= 3) ? {status:'ok'} : {status:'warn', fix:'Only ' + n + ' categor' + (n===1?'y':'ies') + '. Add more via Products → Categories.'};
+        } },
+      { id:'has_customers', label:'At least 1 customer record', desc:'Catches empty install', critical:false,
+        run: async () => {
+          var n = await tableCount('customers');
+          if(n === null) return {status:'warn'};
+          if(n > 50) return {status:'ok'};
+          if(n > 0) return {status:'warn', fix:'Only ' + n + ' customer(s). Import Square customers via Customers → Import CSV when ready.'};
+          return {status:'warn', fix:'No customers. Import from Square or add manually.'};
+        } },
+      { id:'tax_categories', label:'Products have categories assigned', desc:'Uncategorized products show as "(uncategorized)" in reports', critical:false,
+        run: async () => {
+          try {
+            var r = await fetch(SUPA + '/rest/v1/products?select=id,category_id&category_id=is.null&limit=10', { headers: H });
+            var data = await r.json();
+            var unc = Array.isArray(data) ? data.length : 0;
+            if(unc === 0) return {status:'ok'};
+            return {status:'warn', fix:unc + '+ products uncategorized. Edit them in Products to assign a category.'};
+          } catch(e) { return {status:'warn'}; }
+        } }
+    ]
+  },
+  {
+    title: '👤 Staff', icon: 'staff',
+    checks: [
+      { id:'has_owner', label:'At least 1 owner role', desc:'Catches accidentally-deleted owner', critical:true,
+        run: async () => {
+          try {
+            var r = await fetch(SUPA + '/rest/v1/staff?role=eq.owner&select=id', { headers: H });
+            var data = await r.json();
+            return (Array.isArray(data) && data.length > 0) ? {status:'ok'} : {status:'bad', fix:'No owner role on staff table. Add one urgently.'};
+          } catch(e) { return {status:'warn'}; }
+        } },
+      { id:'kiosk_staff', label:'Staff kiosk populated', desc:'For app.skateos.com/staff.html', critical:false,
+        run: async () => {
+          try {
+            var r = await fetch(SUPA + '/rest/v1/staff?active=eq.true&select=id', { headers: H });
+            var data = await r.json();
+            var n = Array.isArray(data) ? data.length : 0;
+            if(n >= 3) return {status:'ok'};
+            return {status:'warn', fix:'Only ' + n + ' active staff. Add more via admin → Timesheets → invite, or directly in the staff table.'};
+          } catch(e) { return {status:'warn'}; }
+        } }
+    ]
+  },
+  {
+    title: '🚪 Brivo (optional)', icon: 'brivo',
+    checks: [
+      { id:'brivo_webhook_fn', label:'brivo-webhook Edge Function reachable', desc:'Receives door events from Brivo', critical:false,
+        run: async () => {
+          var r = await callFn('brivo-webhook', {});
+          if(r.status === 404) return {status:'warn', fix:'Run: <code>bash admin/deploy-functions.sh</code>'};
+          return {status:'ok'};
+        } },
+      { id:'brivo_events', label:'Recent Brivo events logged', desc:'Brivo dashboard configured to POST here', critical:false,
+        run: async () => {
+          try {
+            var r = await fetch(SUPA + '/rest/v1/webhook_log?source=eq.brivo&select=id&order=created_at.desc&limit=1', { headers: H });
+            var data = await r.json();
+            if(Array.isArray(data) && data.length > 0) return {status:'ok'};
+            return {status:'idle', fix:'No Brivo events yet. Have Nick configure the Brivo dashboard via <a href="/brivo-setup.html" style="color:#007a5a;font-weight:700;">app.skateos.com/brivo-setup.html</a>'};
+          } catch(e) { return {status:'warn'}; }
+        } }
+    ]
+  }
+];
+
+// ----------------------------------------------------------------------
+// Render + run
+// ----------------------------------------------------------------------
+function renderSkeleton(){
+  var html = '';
+  CATS.forEach(function(cat){
+    html += '<h2>' + cat.title + ' <span class="cat-stats" id="catstats_'+cat.icon+'">checking…</span></h2>';
+    html += '<div class="cat" id="cat_'+cat.icon+'">';
+    cat.checks.forEach(function(c){
+      var badge = c.critical ? '<span class="badge critical">critical</span>' : '<span class="badge optional">optional</span>';
+      html += '<div class="cat-row" id="row_'+c.id+'">'
+        + '<div class="check-icon pending"><span class="spinner"></span></div>'
+        + '<div class="body">'
+        + '<strong>' + c.label + ' ' + badge + '</strong>'
+        + '<div class="desc">' + c.desc + '</div>'
+        + '<div id="fix_'+c.id+'"></div>'
+        + '</div>'
+        + '</div>';
+    });
+    html += '</div>';
+  });
+  document.getElementById('categories').innerHTML = html;
+}
+
+function updateRow(checkId, result, isCritical){
+  var row = document.getElementById('row_'+checkId);
+  if(!row) return;
+  var icon = row.querySelector('.check-icon');
+  var fixEl = document.getElementById('fix_'+checkId);
+  icon.className = 'check-icon ' + result.status;
+  icon.innerHTML = result.status === 'ok' ? '✓' : result.status === 'bad' ? '✕' : result.status === 'warn' ? '!' : '–';
+  if(result.fix){
+    var cls = result.status === 'bad' ? 'fix' : 'warn-note';
+    fixEl.innerHTML = '<div class="' + cls + '">' + result.fix + '</div>';
+  } else {
+    fixEl.innerHTML = '';
+  }
+}
+
+function computeStats(results){
+  // Critical-passing rate is the headline score
+  var critTotal = 0, critOk = 0, totalOk = 0, totalWarn = 0, totalBad = 0, totalIdle = 0;
+  results.forEach(function(r){
+    if(r.critical){
+      critTotal++;
+      if(r.status === 'ok') critOk++;
+    }
+    if(r.status === 'ok') totalOk++;
+    else if(r.status === 'warn') totalWarn++;
+    else if(r.status === 'bad') totalBad++;
+    else if(r.status === 'idle') totalIdle++;
+  });
+  var pct = critTotal === 0 ? 100 : Math.round(critOk / critTotal * 100);
+  return { pct: pct, critTotal: critTotal, critOk: critOk, totalOk: totalOk, totalWarn: totalWarn, totalBad: totalBad, totalIdle: totalIdle };
+}
+
+function updateScore(stats){
+  var ring = document.getElementById('ring');
+  ring.style.setProperty('--deg', (stats.pct * 3.6) + 'deg');
+  ring.classList.remove('go','almost','stop');
+  document.getElementById('pctVal').textContent = stats.pct + '%';
+  document.getElementById('pctSub').textContent = 'critical';
+  var verdict = document.getElementById('verdict');
+  var why = document.getElementById('why');
+  verdict.classList.remove('go','almost','stop');
+  if(stats.pct === 100){
+    ring.classList.add('go');
+    verdict.classList.add('go');
+    verdict.textContent = 'GO — all critical checks pass';
+    why.textContent = (stats.totalWarn || stats.totalBad) ? 'Optional/warning items remain — see below. Critical path is clean.' : 'You can flip the switch.';
+    document.getElementById('cutoverLink').style.display = '';
+  } else if(stats.pct >= 70){
+    ring.classList.add('almost');
+    verdict.classList.add('almost');
+    verdict.textContent = 'ALMOST — ' + (stats.critTotal - stats.critOk) + ' critical issue' + (stats.critTotal - stats.critOk === 1 ? '' : 's') + ' left';
+    why.textContent = 'Fix the red rows below. Each shows what to do.';
+  } else {
+    ring.classList.add('stop');
+    verdict.classList.add('stop');
+    verdict.textContent = 'NOT READY — ' + (stats.critTotal - stats.critOk) + ' critical issue' + (stats.critTotal - stats.critOk === 1 ? '' : 's');
+    why.textContent = 'Most critical pieces aren\'t wired. Start at the top of the red rows.';
+  }
+}
+
+function updateCatStats(cat, statuses){
+  var el = document.getElementById('catstats_'+cat.icon);
+  var ok = statuses.filter(function(s){return s.status==='ok';}).length;
+  var bad = statuses.filter(function(s){return s.status==='bad';}).length;
+  var warn = statuses.filter(function(s){return s.status==='warn';}).length;
+  var idle = statuses.filter(function(s){return s.status==='idle';}).length;
+  var parts = [];
+  if(ok) parts.push('<span style="color:#007a5a;">' + ok + ' ok</span>');
+  if(warn) parts.push('<span style="color:#b89000;">' + warn + ' warn</span>');
+  if(bad) parts.push('<span style="color:#b53030;">' + bad + ' fail</span>');
+  if(idle) parts.push('<span style="color:#6a737d;">' + idle + ' idle</span>');
+  el.innerHTML = parts.join(' · ') || '—';
+}
+
+async function runAll(){
+  var btn = document.getElementById('runBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Running…';
+  renderSkeleton();
+  document.getElementById('verdict').textContent = 'Running checks…';
+  document.getElementById('verdict').className = 'verdict';
+
+  var allResults = [];
+  for(var ci = 0; ci < CATS.length; ci++){
+    var cat = CATS[ci];
+    var catStatuses = [];
+    // Run checks in this category sequentially to keep UI from flickering
+    for(var i = 0; i < cat.checks.length; i++){
+      var c = cat.checks[i];
+      try {
+        var result = await c.run();
+        updateRow(c.id, result, c.critical);
+        catStatuses.push({ status: result.status, critical: c.critical });
+        allResults.push({ status: result.status, critical: c.critical });
+      } catch(e) {
+        updateRow(c.id, { status:'bad', fix:'Check errored: ' + e.message }, c.critical);
+        catStatuses.push({ status:'bad', critical: c.critical });
+        allResults.push({ status:'bad', critical: c.critical });
+      }
+    }
+    updateCatStats(cat, catStatuses);
+  }
+  updateScore(computeStats(allResults));
+  btn.disabled = false;
+  btn.innerHTML = '↻ Re-run all checks';
+  document.getElementById('lastChecked').textContent = new Date().toLocaleString();
+}
+
+renderSkeleton();
+runAll();
+</script>
+</body>
+</html>

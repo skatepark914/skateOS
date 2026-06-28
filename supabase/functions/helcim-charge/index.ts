@@ -9,10 +9,9 @@
 //
 // IMPORTANT — STATUS as of 2026-04-29
 // ----------
-// This function is BUILT FROM HELCIM'S PUBLIC DOCS, not from
-// patterns in the Branch Manager codebase (which is on a drive
-// Doug hasn't located yet). It SHOULD work but has never been
-// tested end-to-end against a real Helcim merchant account.
+// This function is BUILT FROM HELCIM'S PUBLIC DOCS.
+// It SHOULD work but has never been tested end-to-end against
+// a real Helcim merchant account.
 // Doug needs to:
 //   1. Sign up for a Helcim merchant account (helcim.com)
 //   2. Create an API Access Configuration with permissions:

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Get In · 2nd Nature Park</title>
+<meta name="description" content="Buy a day pass and get instant door access at 2nd Nature Park." />
+<style>
+  :root { --ink:#111; --rose:#e11d48; --rose2:#9f1239; --bg:#0b0b0c; --card:#fff; --muted:#6b7280; }
+  * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { margin:0; padding:0; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:linear-gradient(160deg,#0b0b0c 0%,#1a1018 55%,#2a0f1c 100%);
+    color:#fff; min-height:100vh; min-height:100dvh;
+  }
+  .wrap { max-width:460px; margin:0 auto; padding:28px 20px 48px; }
+  .logo { font-size:40px; text-align:center; }
+  h1 { text-align:center; font-size:26px; font-weight:800; margin:6px 0 2px; letter-spacing:-.5px; }
+  .sub { text-align:center; color:#cbd0d8; font-size:14px; margin:0 0 22px; }
+  .card { background:var(--card); color:var(--ink); border-radius:20px; padding:22px; box-shadow:0 12px 40px rgba(0,0,0,.45); }
+  .price { display:flex; align-items:baseline; gap:8px; justify-content:center; margin:2px 0 16px; }
+  .price b { font-size:42px; font-weight:800; color:var(--rose2); letter-spacing:-1px; }
+  .price span { color:var(--muted); font-size:14px; }
+  label { display:block; font-size:12px; font-weight:700; color:#374151; margin:14px 0 5px; text-transform:uppercase; letter-spacing:.4px; }
+  input[type=text],input[type=email],input[type=tel],input[type=date] {
+    width:100%; padding:13px 14px; border:1.5px solid #e5e7eb; border-radius:12px; font-size:16px; outline:none;
+  }
+  input:focus { border-color:var(--rose); }
+  .waiver { display:flex; gap:10px; align-items:flex-start; margin-top:16px; font-size:13px; color:#374151; line-height:1.45; }
+  .waiver input { margin-top:2px; width:20px; height:20px; accent-color:var(--rose); flex:0 0 auto; }
+  .waiver a { color:var(--rose2); }
+  button.cta {
+    width:100%; margin-top:20px; padding:16px; border:0; border-radius:14px; font-size:17px; font-weight:800; color:#fff;
+    background:linear-gradient(135deg,var(--rose),var(--rose2)); cursor:pointer; min-height:54px;
+  }
+  button.cta:disabled { opacity:.55; }
+  .how { margin:18px 2px 0; color:#cbd0d8; font-size:13px; line-height:1.6; }
+  .how b { color:#fff; }
+  .alt { text-align:center; margin-top:22px; }
+  .alt a { color:#fff; font-weight:700; text-decoration:none; border-bottom:2px solid var(--rose); padding-bottom:2px; }
+  .foot { text-align:center; color:#8b909a; font-size:12px; margin-top:26px; line-height:1.7; }
+  .status { margin-top:14px; padding:12px 14px; border-radius:12px; font-size:14px; display:none; }
+  .status.err { display:block; background:#fef2f2; color:#991b1b; border:1px solid #fecaca; }
+  .status.ok  { display:block; background:#f0fdf4; color:#166534; border:1px solid #bbf7d0; }
+  .status.warn{ display:block; background:#fffbeb; color:#92400e; border:1px solid #fde68a; }
+  .spin { display:inline-block; width:16px; height:16px; border:2px solid rgba(255,255,255,.5); border-top-color:#fff; border-radius:50%; animation:s .7s linear infinite; vertical-align:-3px; margin-right:6px; }
+  @keyframes s { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo" id="logo">🛹</div>
+    <h1 id="biz">2nd Nature Park</h1>
+    <p class="sub">Buy a day pass — your door code lands in your phone wallet. No call needed.</p>
+
+    <div class="card">
+      <div class="price"><b id="price">$20</b><span>· <span id="hours">24</span>-hour door access</span></div>
+
+      <form id="form" autocomplete="on">
+        <label for="name">Your name</label>
+        <input id="name" type="text" required placeholder="Tony Hawk" />
+
+        <label for="email">Email <span style="color:#9ca3af;font-weight:500;text-transform:none">(your pass is emailed here)</span></label>
+        <input id="email" type="email" required placeholder="you@email.com" />
+
+        <label for="phone">Phone</label>
+        <input id="phone" type="tel" placeholder="(914) 555-0123" />
+
+        <label for="dob">Date of birth</label>
+        <input id="dob" type="date" />
+
+        <div class="waiver">
+          <input id="waiver" type="checkbox" />
+          <label for="waiver" style="margin:0;text-transform:none;font-weight:500;letter-spacing:0;color:#374151;font-size:13px;">
+            I agree to the <a href="#" id="waiverLink">liability waiver &amp; park rules</a>, and I understand skating is at my own risk.
+          </label>
+        </div>
+
+        <button class="cta" id="buy" type="submit">Buy day pass &amp; get in →</button>
+        <div class="status" id="status"></div>
+      </form>
+
+      <div class="how">
+        <b>How it works:</b> pay → check your email → tap “Accept” to drop the pass into Apple/Google Wallet → tap your phone at the door. Your pass auto-expires when the day’s up.
+      </div>
+    </div>
+
+    <div class="alt">
+      Skating regularly? <a href="join.html">Become a member →</a>
+    </div>
+
+    <div class="foot">
+      Trouble? Buzz the intercom or call <span id="phoneFoot">(914) 402-4624</span>.<br/>
+      <span id="addr">1 Highland Industrial Park, Peekskill, NY</span>
+    </div>
+  </div>
+
+<script type="module">
+  // Load white-label config (brand + Supabase). Same pattern as join.html / me.html.
+  await fetch('config.js').then(r => r.text()).then(t => { (0, eval)(t); }).catch(()=>{});
+  const CFG = window.APP_CONFIG || {};
+  const $ = (id) => document.getElementById(id);
+
+  // Brand
+  if (CFG.bizName)  { $('biz').textContent = CFG.bizName; document.title = 'Get In · ' + CFG.bizName; }
+  if (CFG.logoEmoji) $('logo').textContent = CFG.logoEmoji;
+  if (CFG.bizPhone) $('phoneFoot').textContent = CFG.bizPhone;
+  if (CFG.bizAddr)  $('addr').textContent = CFG.bizAddr;
+  const PRICE = Number(CFG.dayPassPrice) || 20;
+  $('price').textContent = '$' + PRICE;
+
+  const status = $('status'), btn = $('buy');
+  const show = (msg, cls) => { status.className = 'status ' + cls; status.innerHTML = msg; };
+
+  $('waiverLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Liability waiver & park rules\n\nSkateboarding is a hazardous activity. By entering you accept all risk of injury, agree to wear a helmet where required, follow staff instruction and posted rules, and release ' + (CFG.bizName||'the park') + ' from liability. A full waiver will be on file with your account.');
+  });
+
+  $('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = $('name').value.trim();
+    const email = $('email').value.trim();
+    const phone = $('phone').value.trim();
+    const dob = $('dob').value || null;
+    if (!$('waiver').checked) { show('Please accept the waiver to continue.', 'warn'); return; }
+    if (!name || !email) { show('Name and email are required.', 'warn'); return; }
+
+    btn.disabled = true; btn.innerHTML = '<span class="spin"></span>Setting up your pass…';
+    status.className = 'status';
+    try {
+      const resp = await fetch(CFG.supabaseUrl + '/functions/v1/daypass-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + CFG.supabaseKey, 'apikey': CFG.supabaseKey },
+        body: JSON.stringify({ name, email, phone, dob, accept_waiver: true, hours: 24 }),
+      });
+      const data = await resp.json().catch(() => ({}));
+      if (data.ok && data.hosted_payment_url) {
+        show('Redirecting to secure payment…', 'ok');
+        window.location.href = data.hosted_payment_url;
+        return;
+      }
+      if (data.pool_full) { show(data.message || 'Day passes are full right now — buzz the intercom.', 'warn'); }
+      else { show(data.error || 'Something went wrong. Buzz the intercom for staff.', 'err'); }
+    } catch (err) {
+      show('Network error — check signal and try again, or buzz the intercom.', 'err');
+    }
+    btn.disabled = false; btn.innerHTML = 'Buy day pass &amp; get in →';
+  });
+</script>
+</body>
+</html>

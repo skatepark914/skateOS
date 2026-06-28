@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skateOS — Audit, Rollout &amp; Stability Plan</title>
+<link rel="preconnect" href="https://square-fonts-production-f.squarecdn.com" crossorigin>
+<link href="https://square-fonts-production-f.squarecdn.com/v1.11.0/square-sans.min.css" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1a1a;--g50:#f7f7f7;--g100:#efefef;--g200:#e5e5e5;--g300:#d4d4d4;
+    --g500:#737373;--g600:#525252;--g700:#404040;--green:#007a5a;--green-bg:#e6faf3;
+    --amber:#b88200;--amber-bg:#fef3c7;--red:#b53030;--red-bg:#fee2e2;
+    --blue:#1746a2;--blue-bg:#e0ecff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Square Sans Text','Square Sans Display',-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:#fff;line-height:1.55;font-size:16px;}
+  .wrap{max-width:880px;margin:0 auto;padding:48px 24px 96px;}
+  header{border-bottom:1px solid var(--g200);padding-bottom:24px;margin-bottom:36px;}
+  h1{font-family:'Square Sans Display',sans-serif;font-size:2.1rem;font-weight:900;letter-spacing:-.025em;margin:0 0 6px;}
+  h2{font-family:'Square Sans Display',sans-serif;font-size:1.35rem;font-weight:800;letter-spacing:-.015em;margin:48px 0 14px;border-top:1px solid var(--g200);padding-top:36px;}
+  h2:first-of-type{border-top:0;padding-top:0;margin-top:24px;}
+  h3{font-size:1rem;font-weight:800;margin:24px 0 8px;letter-spacing:-.005em;}
+  .meta{color:var(--g500);font-size:.9rem;}
+  .meta strong{color:var(--ink);}
+  p{margin:0 0 12px;}
+  code,pre{font-family:'Square Sans Mono',ui-monospace,Menlo,monospace;font-size:.85em;}
+  code{background:var(--g100);padding:1px 6px;border-radius:4px;}
+  pre{background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:.82rem;line-height:1.5;}
+  pre code{background:transparent;padding:0;}
+  table{width:100%;border-collapse:collapse;margin:12px 0 8px;font-size:.92rem;}
+  th{text-align:left;font-weight:700;padding:9px 12px;border-bottom:2px solid var(--g300);background:var(--g50);}
+  td{padding:11px 12px;border-bottom:1px solid var(--g100);vertical-align:top;}
+  td:first-child{font-weight:600;}
+  .badge{display:inline-block;font-size:.7rem;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em;}
+  .ok{background:var(--green-bg);color:var(--green);}
+  .warn{background:var(--amber-bg);color:var(--amber);}
+  .red{background:var(--red-bg);color:var(--red);}
+  .info{background:var(--blue-bg);color:var(--blue);}
+  .lead{font-size:1.05rem;color:var(--g700);margin-bottom:20px;}
+  ul{margin:8px 0 14px;padding-left:22px;}
+  li{margin-bottom:5px;}
+  blockquote{border-left:3px solid var(--g300);padding:6px 16px;color:var(--g600);margin:14px 0;background:var(--g50);border-radius:0 8px 8px 0;}
+  .signoff{margin-top:48px;padding:24px;border:2px dashed var(--g300);border-radius:12px;background:var(--g50);}
+  .signoff h2{margin-top:0;border:0;padding-top:0;}
+  .stat{display:inline-block;background:var(--g50);border:1px solid var(--g200);border-radius:8px;padding:8px 14px;margin:4px 6px 4px 0;font-size:.85rem;}
+  .stat strong{font-weight:800;color:var(--ink);}
+  a{color:var(--blue);text-decoration:none;border-bottom:1px solid currentColor;}
+  /* Reviewer-notes widget */
+  h2{position:relative;}
+  .note-btn{position:absolute;right:-12px;top:36px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue);border-radius:999px;padding:3px 10px;font-size:.7rem;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.04em;text-transform:uppercase;}
+  .note-btn:hover{background:var(--blue);color:#fff;}
+  .note-count{margin-left:6px;background:#fff;color:var(--blue);border-radius:999px;padding:0 6px;font-weight:800;}
+  .note-thread{margin:8px 0 18px;display:grid;gap:8px;}
+  .note-card{background:#fffbeb;border-left:3px solid #f59e0b;border-radius:0 8px 8px 0;padding:10px 14px;font-size:.92rem;}
+  .note-card.addressed{background:#ecfdf5;border-left-color:#10b981;}
+  .note-card.wontfix{background:#f5f5f5;border-left-color:#9ca3af;color:var(--g500);}
+  .note-meta{font-size:.75rem;color:var(--g500);font-weight:600;margin-bottom:4px;}
+  .note-status{font-size:.7rem;font-weight:800;padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.04em;margin-left:6px;}
+  .note-status.open{background:#fef3c7;color:#92400e;}
+  .note-status.addressed{background:#d1fae5;color:#065f46;}
+  .note-status.wontfix{background:#e5e7eb;color:#374151;}
+  .note-dialog{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:99;}
+  .note-dialog.open{display:flex;}
+  .note-dialog-box{background:#fff;border-radius:12px;padding:24px;max-width:520px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+  .note-dialog-box h3{margin:0 0 4px;}
+  .note-dialog-box .sub{color:var(--g500);font-size:.85rem;margin-bottom:14px;}
+  .note-dialog-box input,.note-dialog-box textarea{width:100%;padding:10px 12px;border:1px solid var(--g300);border-radius:8px;font-family:inherit;font-size:.95rem;margin-bottom:10px;box-sizing:border-box;}
+  .note-dialog-box textarea{min-height:120px;resize:vertical;}
+  .note-dialog-actions{display:flex;justify-content:flex-end;gap:8px;}
+  .note-btn-primary{background:var(--ink);color:#fff;border:0;padding:9px 18px;border-radius:8px;font-weight:700;cursor:pointer;font-family:inherit;}
+  .note-btn-cancel{background:transparent;border:1px solid var(--g300);color:var(--g700);padding:9px 18px;border-radius:8px;font-weight:600;cursor:pointer;font-family:inherit;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+<h1>skateOS — Audit, Rollout &amp; Stability Plan</h1>
+<p class="meta">
+  <strong>For:</strong> Kenan · technical review &amp; sign-off &nbsp; · &nbsp;
+  <strong>From:</strong> Doug Brown (owner, 2nd Nature Park) &nbsp; · &nbsp;
+  <strong>Updated:</strong> 2026-06-22
+</p>
+<p class="lead">
+  This document describes how skateOS is audited, how updates ship, how stability is monitored, and the
+  staged test plan to take it from "works on my machine" to "this runs the park" — so it can be reviewed
+  and approved as if it were under your development.
+</p>
+</header>
+
+<h2 id="sec-1">1 · Current state (skim)</h2>
+
+<div>
+  <span class="stat"><strong>1,350</strong> products (100% Square-linked)</span>
+  <span class="stat"><strong>27,638</strong> customers (deduped)</span>
+  <span class="stat"><strong>10,751</strong> completed sales (12mo history)</span>
+  <span class="stat"><strong>134</strong> lessons (Square Appointments)</span>
+  <span class="stat"><strong>9</strong> staff + 448 payroll shifts</span>
+  <span class="stat"><strong>94</strong> migrations · <strong>33</strong> Edge Functions</span>
+  <span class="stat"><strong>4/4</strong> Square sync crons green</span>
+</div>
+
+<p style="margin-top:14px;">
+  All 13 admin + marketing URLs return HTTP 200. Live functional probes (11/11) verify
+  sale insert, refund flow, check-in + loyalty trigger, customer search at 27K scale, lesson booking
+  RPC, Stripe checkout, webhook signature rejection, real-data Reports.
+</p>
+
+<h2 id="sec-2">2 · Audit pipeline</h2>
+
+<h3>2.1 · Static security scan (Trivy)</h3>
+<p>
+  Trivy <code>v0.71.2</code> runs against the working tree. Two scanners:
+</p>
+<pre><code>trivy fs --scanners secret --severity HIGH,CRITICAL \
+  --skip-dirs ".git,_bm-reference,.wrangler,.netlify,.claude/worktrees,admin-dist" .
+
+trivy fs --scanners vuln --severity HIGH,CRITICAL \
+  --skip-dirs ".git,_bm-reference,.wrangler,.netlify,.claude/worktrees,admin-dist" .</code></pre>
+
+<table>
+<thead><tr><th>Surface</th><th>Status</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td>Production code (admin/, marketing/, supabase/)</td><td><span class="badge ok">clean</span></td><td>0 HIGH / 0 CRITICAL. Supabase ANON keys flagged as JWT — these are public by design (RLS gates row access).</td></tr>
+<tr><td>Dev tooling (mobile/, connector/, desktop-bridge/)</td><td><span class="badge warn">29 H · 1 C</span></td><td>Transitively in <code>node_modules</code>: <code>shell-quote</code>, <code>tar</code>, <code>ws</code>, <code>@xmldom/xmldom</code>. Not shipped to prod. Fixed via <code>npm audit fix</code> on next mobile build.</td></tr>
+</tbody>
+</table>
+
+<h3>2.2 · Independent AI code review</h3>
+<p>
+  A reviewer agent re-reads the shipping surface (admin/index.html, Edge Functions, migrations 006-094)
+  cold every release. Reports findings as P0 (stop-the-line) / P1 / P2 with file:line citations.
+  The 2026-06-22 review caught 5 P0s that the regression test pass had missed — all fixed in the same
+  session (see §3).
+</p>
+
+<h3>2.3 · Continuous functional self-test</h3>
+<p>
+  <a href="https://app.skateos.com/selftest.html">app.skateos.com/selftest.html</a> runs 33 probes
+  on demand, including 5 end-to-end workflow chains:
+</p>
+<ul>
+  <li>POS sale insert → receipt_number trigger fires → row written</li>
+  <li>Stripe Tap-to-Pay: pending sale → checkout session → webhook flip → receipt</li>
+  <li>Refund: status → refunded → loyalty_reverse trigger</li>
+  <li>Check-in: customer attach → loyalty_award trigger fires (+5 pts)</li>
+  <li>Lesson booking: race-safe slot validation → RPC returns lesson_id</li>
+</ul>
+<p>Re-runnable by anyone with browser access. Failures surface in red with the exact RPC + payload.</p>
+
+<h3>2.4 · Cron health dashboard</h3>
+<p>
+  Every <code>pg_cron</code> job's success/failure history queried directly from <code>cron.job_run_details</code>:
+</p>
+<table>
+<thead><tr><th>Job</th><th>Schedule</th><th>Runs</th><th>Failed</th></tr></thead>
+<tbody>
+<tr><td>square-catalog-daily</td><td>30 8 * * *</td><td>15</td><td>0</td></tr>
+<tr><td>square-sales-daily</td><td>0 10 * * *</td><td>16</td><td>0</td></tr>
+<tr><td>square-bookings-daily</td><td>5 10 * * *</td><td>16</td><td>0</td></tr>
+<tr><td>square-discounts-daily</td><td>0 9 * * *</td><td>0*</td><td>0</td></tr>
+</tbody>
+</table>
+<p style="font-size:.85rem;color:var(--g500);margin-top:6px;">
+  *square-discounts-daily was rescheduled in mig 094 (2026-06-22) after 4 silent failures due to a
+  missing GUC; manually fired on rescheduling, next scheduled run 2026-06-23 05:00 ET.
+</p>
+
+<h2 id="sec-3">3 · Stability log (every P0 caught + how)</h2>
+
+<table>
+<thead><tr><th>Mig</th><th>Bug</th><th>How caught</th><th>Customer impact if shipped</th></tr></thead>
+<tbody>
+<tr><td>089</td><td><code>loyalty_award_sale</code> ON CONFLICT against partial index</td><td>Re-running Square sales import; 279 of every 10K orders silently failed</td><td>~3% of sales never written</td></tr>
+<tr><td>092</td><td><code>loyalty_award_checkin</code> + <code>loyalty_reverse_sale</code> — same bug pattern as 089</td><td>AI code review</td><td>Every check-in throws; every refund throws + points never reversed</td></tr>
+<tr><td>093</td><td><code>generate_receipt_number</code> trigger choked on <code>SQ-*</code> Square-imported receipts</td><td>Self-test sale insert returned 22P02 cast error</td><td>Every new POS sale fails</td></tr>
+<tr><td>094</td><td><code>square-discounts-daily</code> cron used a GUC that doesn't exist</td><td>Reviewing <code>cron.job_run_details</code> after stability log review</td><td>Promo codes silently stop syncing nightly</td></tr>
+<tr><td>—</td><td><code>tapToPay()</code> inserted sale as <code>completed</code> before Stripe confirmed payment</td><td>AI code review</td><td>Phantom revenue in Reports; loyalty points awarded on unpaid sales</td></tr>
+<tr><td>—</td><td>5 public webhook receivers deployed without <code>--no-verify-jwt</code></td><td>Self-test webhook signature probe</td><td>Stripe/Brivo/etc webhooks all return 401 silently</td></tr>
+</tbody>
+</table>
+<p>
+  Lesson: <strong>regression tests alone miss subtle correctness bugs.</strong> Adding an independent
+  AI re-read on every release caught 5 of the above in a single pass — none would have surfaced from
+  HTTP smoke tests or unit-test-shaped probes.
+</p>
+
+<h2 id="sec-4">4 · Update + deploy process</h2>
+
+<h3>4.1 · Code surfaces</h3>
+<table>
+<thead><tr><th>Surface</th><th>Deploy command</th><th>Rollback</th></tr></thead>
+<tbody>
+<tr><td>Admin SPA (<code>admin/</code>)</td><td><code>cd admin &amp;&amp; npx wrangler deploy</code></td><td>Cloudflare Workers → Versions → Rollback</td></tr>
+<tr><td>Marketing (<code>marketing/</code>, public shop, /2ntr/*)</td><td><code>cd marketing &amp;&amp; npx wrangler deploy</code></td><td>same as above</td></tr>
+<tr><td>Edge Functions (<code>supabase/functions/&lt;name&gt;</code>)</td><td><code>supabase functions deploy &lt;name&gt; --project-ref zecurmlenxyxanqucrga [--no-verify-jwt]</code></td><td><code>supabase functions deploy &lt;name&gt; --version-id &lt;prev&gt;</code></td></tr>
+<tr><td>Database migration (<code>admin/migrations/NNN_*.sql</code>)</td><td>Apply via Management API (<code>POST /v1/projects/.../database/query</code>) or Supabase SQL editor</td><td>Hand-written reverse migration (idempotent forward + reverse for every mig from 089 on)</td></tr>
+</tbody>
+</table>
+
+<h3>4.2 · Public-facing webhooks must include <code>--no-verify-jwt</code></h3>
+<p>
+  Stripe/Brivo/Frigate/Smartwaiver/Helcim webhooks are HMAC-signed at the function layer, not JWT-gated.
+  Forgetting <code>--no-verify-jwt</code> on these deploys causes Supabase to reject every webhook before
+  the function ever runs. Codified in <code>admin/deploy-functions.sh</code>.
+</p>
+
+<h2 id="sec-5">5 · Staged rollout / sign-off plan</h2>
+<p>
+  Each phase is independently reviewable. Kenan can stop the chain at any phase by withholding sign-off.
+</p>
+
+<h3>Phase A · Read-only (already in production)</h3>
+<ul>
+  <li>Square catalog/customers/orders ingest, daily refresh crons green</li>
+  <li>Reports queries (real numbers, see §1)</li>
+  <li>Customer portal magic-link auth, lessons booking RPC</li>
+</ul>
+<p><span class="badge ok">Live since</span> 2026-04 · <span class="badge ok">No customer impact</span></p>
+
+<h3>Phase B · Mirror mode (active now, parallel to Square)</h3>
+<ul>
+  <li>Cash sales rung in skateOS POS alongside Square (dual entry for one week to verify totals match)</li>
+  <li>Walk-up Check-ins via skateOS Front Desk only; Square handles cards</li>
+  <li>Stripe Tap-to-Pay in TEST mode for staff dry-runs</li>
+</ul>
+<p>
+  <strong>Acceptance gate:</strong>
+  Daily reconciliation page (<code>admin/cutover.html</code>) shows |skateOS gross − Square gross| &lt; $5 for 5 consecutive business days.
+</p>
+
+<h3>Phase C · Cards live (Stripe LIVE)</h3>
+<ul>
+  <li>Swap <code>STRIPE_SECRET_KEY</code> from <code>sk_test_*</code> to <code>sk_live_*</code></li>
+  <li>Owner-only $1 self-charge: ring up + Tap to Pay + receipt verified in Stripe Dashboard</li>
+  <li>3 real customer transactions monitored end-to-end (chargeback &amp; refund flow exercised)</li>
+</ul>
+<p>
+  <strong>Acceptance gate:</strong>
+  $1 owner test + 3 real customer sales clear without manual intervention.
+  No phantom <code>payment_method='Pending'</code> rows older than 30 min in <code>sales</code>.
+</p>
+
+<h3>Phase D · Square cancellation</h3>
+<ul>
+  <li>Cancel Square subscriptions ($383/mo savings)</li>
+  <li>Square Reader retired or repurposed as Stripe Terminal device</li>
+  <li>30-day grace: Square Dashboard kept open for historical lookups only</li>
+</ul>
+<p>
+  <strong>Acceptance gate:</strong>
+  7 days of clean skateOS-only operation with zero cashier escalations.
+</p>
+
+<h3>Phase E · Brivo door integration</h3>
+<ul>
+  <li>Nick provides OAuth client_id + secret (received API key 2026-06-18; OAuth pending)</li>
+  <li>Per-tenant credentials stored via Settings UI (no env-var creds for new parks)</li>
+  <li>Walk-to-door test → Activity Log shows access_granted within 5s</li>
+</ul>
+<p>
+  <strong>Acceptance gate:</strong>
+  10 consecutive door taps, each correlated 1:1 to a checkin row within 15s.
+</p>
+
+<h3>Phase F · White-label / second park</h3>
+<ul>
+  <li>Per-tenant Brivo provisioning Phase 2 (drift-check + signups)</li>
+  <li>Onboarding wizard at Settings → Setup Status reaches 100% for new tenant in &lt; 30 min</li>
+  <li>Sales kit at <code>skateos.com/sales</code></li>
+</ul>
+
+<h2 id="sec-6">6 · How to verify any claim in this document</h2>
+
+<table>
+<thead><tr><th>Claim</th><th>Where to verify</th></tr></thead>
+<tbody>
+<tr><td>"33/33 self-tests pass"</td><td><a href="https://app.skateos.com/selftest.html">app.skateos.com/selftest.html</a> — re-run anytime, no auth needed</td></tr>
+<tr><td>"No remaining ON CONFLICT bugs"</td><td><code>SELECT COUNT(*) FROM pg_proc WHERE pronamespace='public'::regnamespace AND pg_get_functiondef(oid) LIKE '%ON CONFLICT (ref_type, ref_id)%' AND pg_get_functiondef(oid) NOT LIKE '%WHERE ((ref_type IS NOT NULL)%';</code> returns 0</td></tr>
+<tr><td>"4/4 Square crons green"</td><td><code>SELECT jobname, COUNT(*) FILTER (WHERE status='failed') FROM cron.job j JOIN cron.job_run_details d USING (jobid) WHERE jobname LIKE 'square-%' GROUP BY jobname;</code></td></tr>
+<tr><td>"0 duplicate Square customer IDs"</td><td><code>SELECT COUNT(*) - COUNT(DISTINCT square_customer_id) FROM customers WHERE square_customer_id IS NOT NULL;</code></td></tr>
+<tr><td>"All shipping code is Square-linked"</td><td><code>SELECT COUNT(*) FROM products WHERE square_catalog_id IS NULL;</code> returns 0</td></tr>
+<tr><td>"Live URLs all return 200"</td><td><code>for u in https://app.skateos.com/ https://app.skateos.com/me https://skateos.com/2ntr https://skateos.com/2ntr/shop https://skateos.com/2ntr/lessons; do curl -sLo /dev/null -w "%{http_code} $u\n" $u; done</code></td></tr>
+</tbody>
+</table>
+
+<h2 id="sec-7">7 · What's open for Kenan to weigh in on</h2>
+<ul>
+  <li><strong>Should we adopt CodeRabbit (or equivalent GitHub App) for PR-time review?</strong>
+    Currently the AI review is run manually each release. PR-bound would catch issues earlier.</li>
+  <li><strong>Migration reverse pairs:</strong>
+    Migrations 089-094 have idempotent forward but no automated reverse. Should we standardize a
+    <code>NNN_*.up.sql</code> / <code>NNN_*.down.sql</code> pair convention?</li>
+  <li><strong>Edge Function CI:</strong>
+    Deploys are currently manual <code>supabase functions deploy</code>. Adopt a GitHub Action that runs
+    the selftest against a preview deploy on every PR?</li>
+  <li><strong>Stripe webhook secret rotation cadence</strong> — currently set-and-forget; recommend?</li>
+  <li><strong>Tenant data isolation for white-label phase:</strong>
+    Migration 046 (multi-tenant Part B / strict RLS) is written but not applied — needs review before
+    second park onboards.</li>
+</ul>
+
+<h2 id="sec-8">8 · What's likely to break (and what to do)</h2>
+<p>Honest list, prioritized by what will actually break in production at a busy Saturday — not academic risk register.</p>
+
+<h3>🔴 Will hit you within the first week</h3>
+<table>
+<thead><tr><th>Risk</th><th>Why</th><th>Mitigation</th></tr></thead>
+<tbody>
+<tr><td>Cashier muscle memory</td><td>Staff has typed Square POS for years. skateOS is 95% Square-like but the 5% diff causes panic mid-rush.</td><td>1-page cheat sheet by the iPad. First Saturday: owner hovers behind the desk.</td></tr>
+<tr><td>Customer NOT findable in search</td><td>27,638 customers + typos + parent-vs-kid accounts + dupes.</td><td>Train team to search by phone-last-4. Faster + unique.</td></tr>
+<tr><td>Apple Pay tap fails / customer fumbles</td><td>NFC blocked, Apple Pay disabled, or unfamiliar customer.</td><td>Keep Square Reader plugged in for 60 days. Don't cancel Square until real-world failure modes are mapped.</td></tr>
+<tr><td>iPad WiFi drops mid-sale</td><td>Stripe Checkout call hangs. Cashier doesn't know if charge went through → risks double-charge.</td><td>Build "what happened to my sale?" widget — pulls last 10 Stripe sessions, shows status, allows void/retry. (~1 hr)</td></tr>
+<tr><td>Receipt printer doesn't work</td><td>Jon Marchand's printer test (Star/Epson thermal) never ran.</td><td>Email/text receipt as fallback. <code>printer-test.html</code> page is built and ready.</td></tr>
+</tbody>
+</table>
+
+<h3>🟡 Likely within first month</h3>
+<table>
+<thead><tr><th>Risk</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Punch-card count off by 1-2</td><td>Imported <code>punches_used</code> may not match physical reality. Members will dispute.</td></tr>
+<tr><td>Inventory shows stock that's not there / vice versa</td><td>Square inventory sync is real but physical drift happens. First retail sale of week 2 will show this.</td></tr>
+<tr><td>Discount code typos</td><td>"CLASSFREE" vs "CLASS FREE" — RPC is case-insensitive but space breaks it.</td></tr>
+<tr><td>Refund flow under pressure</td><td>Cashier hits Void instead of Refund (different semantics). Customer refunded twice or not at all.</td></tr>
+<tr><td>Stripe webhook delivery delay</td><td>Customer pays → walks out → webhook arrives 90 seconds later. Cashier voids it, double-collects.</td></tr>
+</tbody>
+</table>
+
+<h3>🟢 Less likely but could be ugly</h3>
+<table>
+<thead><tr><th>Risk</th><th>Why</th></tr></thead>
+<tbody>
+<tr><td>Customer portal email collision</td><td>Parent uses same email for 2 kids → magic-link login shows wrong kid's data.</td></tr>
+<tr><td>Daily digest cron breaks silently</td><td>Like the discounts cron just did. Owner relies on 8am summary; doesn't notice for a week.</td></tr>
+<tr><td>Cutover day double-entry</td><td>Cashier rings sale in Square AND skateOS → accounting duplicate.</td></tr>
+<tr><td>Stripe outage = no card fallback</td><td>Once Square is gone, a 2-hr Stripe outage = cash-only or close early.</td></tr>
+<tr><td>Twilio A2P throttling</td><td>US carriers throttle SMS to 100+ recipients without 10DLC. Marketing send fails partially.</td></tr>
+<tr><td>Brivo OAuth scope mismatch</td><td>When Nick wires it, his app may not have the right event scope. First door tap won't auto-check-in.</td></tr>
+</tbody>
+</table>
+
+<h3>What I'd ship this week to harden it</h3>
+<p>Each ~1-3 hour build. Pick the ones that matter; skip the rest.</p>
+<ol>
+<li><strong>Sale recovery widget</strong> — last 10 Stripe sessions w/ status + manual void/confirm (mitigates iPad WiFi drop)</li>
+<li><strong>Cron health dashboard</strong> — owner-only Dashboard card showing every cron + last run + failed count; red banner if any failed in 24hr</li>
+<li><strong>Receipt printer test deadline</strong> — re-send Jon's <code>printer-test.html</code> link with a date</li>
+<li><strong>POS "void vs refund" guardrail</strong> — second-tap confirmation with explicit "did you mean refund?" prompt</li>
+<li><strong>Punch-card audit page</strong> — list every active sub w/ skateOS-vs-customer-says reconciliation column</li>
+<li><strong>Inventory drift alert</strong> — daily Square live count vs skateOS, flag SKUs with &gt;5 unit diff</li>
+</ol>
+
+<div class="signoff">
+<h2 id="sec-signoff">Sign-off</h2>
+<p>If approved, this plan governs production releases until amended.</p>
+<table>
+<thead><tr><th>Reviewer</th><th>Role</th><th>Signature</th><th>Date</th></tr></thead>
+<tbody>
+<tr><td>Kenan</td><td>Technical reviewer</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+<tr><td>Doug Brown</td><td>Owner, 2nd Nature Park</td><td>&nbsp;</td><td>&nbsp;</td></tr>
+</tbody>
+</table>
+</div>
+
+</div>
+
+<!-- Note dialog -->
+<div class="note-dialog" id="noteDialog" onclick="if(event.target===this)closeNote()">
+  <div class="note-dialog-box">
+    <h3>Add a note</h3>
+    <div class="sub" id="noteSection"></div>
+    <input id="noteName" placeholder="Your name (e.g. Kenan)" />
+    <textarea id="noteText" placeholder="What's the comment? Suggestion, concern, question, sign-off, anything."></textarea>
+    <div class="note-dialog-actions">
+      <button class="note-btn-cancel" onclick="closeNote()">Cancel</button>
+      <button class="note-btn-primary" onclick="postNote()" id="notePostBtn">Post note</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Reviewer notes — anon-writable annotation layer (mig 095)
+var SB = 'https://zecurmlenxyxanqucrga.supabase.co';
+var K  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+var PAGE = 'audit-plan';
+var notesBySection = {};
+var activeSection = null;
+
+function fmtDate(iso){
+  var d = new Date(iso); var now = new Date();
+  var diff = Math.round((now - d) / 86400000);
+  if (diff === 0) return 'today';
+  if (diff === 1) return 'yesterday';
+  if (diff < 7) return diff + 'd ago';
+  return d.toLocaleDateString();
+}
+
+async function loadNotes(){
+  var res = await fetch(SB + '/rest/v1/reviewer_notes?page=eq.' + PAGE + '&select=*&order=created_at.asc', {
+    headers: { 'apikey': K, 'Authorization': 'Bearer ' + K }
+  });
+  if(!res.ok) return;
+  var rows = await res.json();
+  notesBySection = {};
+  rows.forEach(function(n){
+    (notesBySection[n.section_id] = notesBySection[n.section_id] || []).push(n);
+  });
+  // Add button + render thread under each section
+  document.querySelectorAll('h2[id^=sec-]').forEach(function(h){
+    var sec = h.id.replace(/^sec-/,'');
+    var count = (notesBySection[sec] || []).length;
+    var btnHtml = '<button class="note-btn" onclick="openNote(\'' + sec + '\')">💬 add note' + (count ? '<span class="note-count">' + count + '</span>' : '') + '</button>';
+    // Remove old btn if any
+    var existing = h.querySelector('.note-btn'); if(existing) existing.remove();
+    h.insertAdjacentHTML('beforeend', btnHtml);
+    // Render thread
+    var threadId = 'thread-' + sec;
+    var prev = document.getElementById(threadId); if(prev) prev.remove();
+    if(count){
+      var html = '<div class="note-thread" id="' + threadId + '">';
+      notesBySection[sec].forEach(function(n){
+        var statusCls = n.status === 'addressed' ? 'addressed' : (n.status === 'wontfix' ? 'wontfix' : '');
+        html += '<div class="note-card ' + statusCls + '">'
+          + '<div class="note-meta">' + escHtml(n.reviewer) + ' · ' + fmtDate(n.created_at)
+          + '<span class="note-status ' + n.status + '">' + n.status + '</span>'
+          + '</div>'
+          + '<div>' + escHtml(n.note).replace(/\n/g,'<br>') + '</div>'
+          + '</div>';
+      });
+      html += '</div>';
+      h.insertAdjacentHTML('afterend', html);
+    }
+  });
+}
+
+function escHtml(s){ return String(s).replace(/[&<>"']/g, function(c){ return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]; }); }
+
+function openNote(sec){
+  activeSection = sec;
+  document.getElementById('noteSection').textContent = 'On section: §' + sec.replace(/^sec-/,'').toUpperCase();
+  var savedName = localStorage.getItem('reviewer_name');
+  document.getElementById('noteName').value = savedName || '';
+  document.getElementById('noteText').value = '';
+  document.getElementById('noteDialog').classList.add('open');
+  setTimeout(function(){ document.getElementById(savedName ? 'noteText' : 'noteName').focus(); }, 50);
+}
+
+function closeNote(){
+  document.getElementById('noteDialog').classList.remove('open');
+}
+
+async function postNote(){
+  var name = document.getElementById('noteName').value.trim();
+  var note = document.getElementById('noteText').value.trim();
+  if(!name || !note){ alert('Both name and note are required.'); return; }
+  localStorage.setItem('reviewer_name', name);
+  var btn = document.getElementById('notePostBtn');
+  btn.disabled = true; btn.textContent = 'Posting…';
+  var res = await fetch(SB + '/rest/v1/reviewer_notes', {
+    method: 'POST',
+    headers: { 'apikey': K, 'Authorization': 'Bearer ' + K, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+    body: JSON.stringify({ page: PAGE, section_id: activeSection, reviewer: name, note: note })
+  });
+  btn.disabled = false; btn.textContent = 'Post note';
+  if(!res.ok){ alert('Failed to post: ' + res.status + ' ' + await res.text().catch(function(){return '?';})); return; }
+  closeNote();
+  loadNotes();
+}
+
+loadNotes();
+</script>
+
+</body>
+</html>

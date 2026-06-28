@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>🛹 2nd Nature Decks — Test Register (Shadow)</title>
+<style>
+  :root{--ink:#14110f;--paper:#f6f3ee;--card:#fff;--line:#e6e0d6;--soft:#7a716a;--accent:#c9572e;--amber:#b9791b;--green:#2c6b48;--red:#c0392b}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:40px}
+  .wrap{max-width:900px;margin:0 auto;padding:20px 14px 40px}
+  header{background:var(--ink);color:#fff;border-radius:16px;padding:18px 20px}
+  .shadowtag{display:inline-block;background:var(--amber);color:#1a1206;font-size:.66rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border-radius:6px;padding:3px 9px}
+  header h1{font-size:1.5rem;font-weight:900;margin:8px 0 4px}
+  header p{color:#cdc6bd;font-size:.88rem;max-width:60ch}
+  .warn{background:#fff7ec;border:1px solid #e8cf9a;border-radius:12px;padding:12px 15px;margin:14px 0;font-size:.9rem}
+  .warn b{color:var(--ink)}
+  h2{font-size:.74rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}
+  .deck{border:1px solid var(--line);background:var(--card);border-radius:11px;padding:11px 10px;cursor:pointer;text-align:center;font-family:inherit;transition:transform .05s,border-color .12s}
+  .deck:active{transform:scale(.97)}.deck:hover{border-color:var(--accent)}
+  .deck .sz{font-weight:900;font-size:1.05rem}
+  .deck .cl{font-size:.74rem;font-weight:700;color:var(--soft)}
+  .deck .pr{font-size:.74rem;color:var(--soft);margin-top:3px}
+  .deck.blk{border-left:5px solid #111}.deck.wht{border-left:5px solid #cfcabf}
+  /* cart */
+  .cart{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:6px}
+  .crow{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid #f0ece4;font-size:.92rem}
+  .crow:last-of-type{border-bottom:none}
+  .crow .nm{flex:1}
+  .qbtn{width:28px;height:28px;border:1px solid var(--line);background:#fff;border-radius:7px;font-weight:900;cursor:pointer;font-size:1rem}
+  .crow .q{min-width:22px;text-align:center;font-weight:800}
+  .crow .lt{min-width:64px;text-align:right;font-weight:700}
+  .cartfoot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:10px}
+  .tot{font-size:1.3rem;font-weight:900}
+  .pm{display:flex;gap:6px}
+  .pm button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:7px 12px;font-weight:700;font-size:.84rem;cursor:pointer;font-family:inherit}
+  .pm button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .rec{background:var(--green);color:#fff;border:none;border-radius:11px;padding:13px 20px;font-weight:900;font-size:1rem;cursor:pointer;font-family:inherit;width:100%;margin-top:12px}
+  .rec:disabled{opacity:.4}
+  input.nm{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:.86rem}
+  /* tally + reconcile */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+  .stat .n{font-size:1.5rem;font-weight:900}.stat .l{font-size:.72rem;color:var(--soft);font-weight:700;text-transform:uppercase}
+  .recon{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:10px}
+  .recon table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:8px}
+  .recon td,.recon th{padding:7px 8px;text-align:right;border-bottom:1px solid #f0ece4}
+  .recon th:first-child,.recon td:first-child{text-align:left}
+  .badge{font-size:.66rem;font-weight:900;border-radius:6px;padding:2px 8px;text-transform:uppercase}
+  .ok{background:#e7f5ec;color:var(--green)}.bad{background:#fdecea;color:var(--red)}
+  .recent{font-size:.84rem;color:var(--soft);margin-top:8px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-weight:700;font-size:.88rem;opacity:0;transition:opacity .2s;z-index:99}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="shadowtag">● Shadow mode · test</span>
+    <h1>🛹 2nd Nature Decks — Test Register</h1>
+    <p>The skateOS deck pilot. Ring decks here <strong>and</strong> in Square. This is a shadow copy — it does <strong>not</strong> touch your Square stats. End of day we compare the two.</p>
+  </header>
+
+  <div class="warn">⚠️ <b>How to use:</b> ring the deck in <b>Square as normal</b> (real payment + your stats), then tap the same deck here. At day's end the reconcile below should show skateOS = Square. If they match, the pilot's working.</div>
+
+  <h2>Tap a deck to ring it (shadow)</h2>
+  <div class="grid" id="decks"></div>
+
+  <h2>This sale</h2>
+  <div class="cart">
+    <div id="cartrows"><div style="color:var(--soft);font-size:.9rem;padding:6px 0">No decks yet — tap one above.</div></div>
+    <div class="cartfoot">
+      <div class="tot" id="total">$0.00</div>
+      <div class="pm" id="pm"><button data-pm="Cash" class="on">Cash</button><button data-pm="Card">Card</button></div>
+    </div>
+    <div style="margin-top:10px"><input class="nm" id="soldby" placeholder="Your name (optional)" style="width:100%"></div>
+    <button class="rec" id="recbtn" onclick="recordSale()" disabled>✅ Record shadow sale</button>
+  </div>
+
+  <h2>Today — shadow tally</h2>
+  <div class="stats">
+    <div class="stat"><div class="n" id="t-units">0</div><div class="l">decks rung (skateOS)</div></div>
+    <div class="stat"><div class="n" id="t-dollars">$0</div><div class="l">shadow total</div></div>
+  </div>
+
+  <h2>Reconcile — skateOS vs Square</h2>
+  <div class="recon">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><span style="font-size:.85rem;color:var(--soft)">Date:</span><input type="date" id="recdate" class="nm"><button class="qbtn" style="width:auto;padding:0 12px" onclick="loadRecon()">↻</button></div>
+    <table id="rectable"><tr><td style="color:var(--soft)">Pick a date + tap ↻</td></tr></table>
+    <div class="recent" id="recent"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var SB='https://zecurmlenxyxanqucrga.supabase.co';
+var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+function H(){return {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};}
+var SIZES=['7.0','7.25','7.75','7.8','8.0','8.25','8.3','8.5','8.75'], COLORS=['Black','White'], PRICE=54.99;
+var cart={}, pm='Cash';
+
+function deckName(sz,cl){return '2nd Nature OG Logo Decks — '+sz+'in '+cl;}
+function money(n){return '$'+(Number(n)||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function todayET(){var d=new Date().toLocaleDateString('en-CA',{timeZone:'America/New_York'});return d;}
+
+function renderDecks(){
+  var h='';SIZES.forEach(function(sz){COLORS.forEach(function(cl){
+    h+='<button class="deck '+(cl==='Black'?'blk':'wht')+'" data-sz="'+sz+'" data-cl="'+cl+'"><div class="sz">'+sz+'"</div><div class="cl">'+cl+'</div><div class="pr">'+money(PRICE)+'</div></button>';
+  });});
+  document.getElementById('decks').innerHTML=h;
+  document.getElementById('decks').addEventListener('click',function(e){var b=e.target.closest('.deck');if(!b)return;addDeck(b.dataset.sz,b.dataset.cl);});
+}
+function addDeck(sz,cl){var k=sz+'|'+cl;cart[k]=cart[k]||{sz:sz,cl:cl,qty:0};cart[k].qty++;renderCart();}
+function chg(k,d){if(!cart[k])return;cart[k].qty+=d;if(cart[k].qty<=0)delete cart[k];renderCart();}
+function renderCart(){
+  var keys=Object.keys(cart),rows='',tot=0;
+  if(!keys.length){rows='<div style="color:var(--soft);font-size:.9rem;padding:6px 0">No decks yet — tap one above.</div>';}
+  keys.forEach(function(k){var c=cart[k];var lt=c.qty*PRICE;tot+=lt;
+    rows+='<div class="crow"><span class="nm">'+c.sz+'" '+c.cl+'</span><button class="qbtn" onclick="chg(\''+k+'\',-1)">−</button><span class="q">'+c.qty+'</span><button class="qbtn" onclick="chg(\''+k+'\',1)">+</button><span class="lt">'+money(lt)+'</span></div>';
+  });
+  document.getElementById('cartrows').innerHTML=rows;
+  document.getElementById('total').textContent=money(tot);
+  document.getElementById('recbtn').disabled=!keys.length;
+}
+document.getElementById('pm').addEventListener('click',function(e){var b=e.target.closest('[data-pm]');if(!b)return;pm=b.dataset.pm;[].forEach.call(this.children,function(x){x.classList.toggle('on',x===b);});});
+
+async function recordSale(){
+  var keys=Object.keys(cart);if(!keys.length)return;
+  var by=document.getElementById('soldby').value.trim();
+  var rows=keys.map(function(k){var c=cart[k];return {deck_name:deckName(c.sz,c.cl),size:c.sz+'in',color:c.cl,qty:c.qty,unit_price:PRICE,total:Math.round(c.qty*PRICE*100)/100,payment_method:pm,sold_by:by||null,notes:'[SHADOW pilot]'};});
+  document.getElementById('recbtn').disabled=true;
+  try{
+    var r=await fetch(SB+'/rest/v1/deck_pilot_sales',{method:'POST',headers:Object.assign(H(),{'Prefer':'return=minimal'}),body:JSON.stringify(rows)});
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    cart={};renderCart();document.getElementById('soldby').value=by;
+    toast('✅ Shadow sale recorded');
+    loadTally();loadRecon();
+  }catch(e){toast('Error: '+e.message);document.getElementById('recbtn').disabled=false;}
+}
+
+async function loadTally(){
+  try{var r=await fetch(SB+'/rest/v1/rpc/deck_pilot_reconcile',{method:'POST',headers:H(),body:JSON.stringify({p_date:todayET()})});var d=await r.json();
+    document.getElementById('t-units').textContent=d.shadow_units||0;
+    document.getElementById('t-dollars').textContent=money(d.shadow_dollars||0);
+  }catch(e){}
+}
+async function loadRecon(){
+  var date=document.getElementById('recdate').value||todayET();
+  try{
+    var r=await fetch(SB+'/rest/v1/rpc/deck_pilot_reconcile',{method:'POST',headers:H(),body:JSON.stringify({p_date:date})});
+    var d=await r.json();
+    var um=d.units_match?'<span class="badge ok">match</span>':'<span class="badge bad">off by '+Math.abs((d.shadow_units||0)-(d.square_units||0))+'</span>';
+    var dm=d.dollars_match?'<span class="badge ok">match</span>':'<span class="badge bad">Δ '+money(Math.abs((d.shadow_dollars||0)-(d.square_dollars||0)))+'</span>';
+    document.getElementById('rectable').innerHTML=
+      '<tr><th></th><th>skateOS (shadow)</th><th>Square (real)</th><th>match?</th></tr>'+
+      '<tr><td>Decks (units)</td><td>'+(d.shadow_units||0)+'</td><td>'+(d.square_units||0)+'</td><td>'+um+'</td></tr>'+
+      '<tr><td>Dollars</td><td>'+money(d.shadow_dollars||0)+'</td><td>'+money(d.square_dollars||0)+'</td><td>'+dm+'</td></tr>';
+    document.getElementById('recent').innerHTML='Square figures come from the daily Square import — if today\'s Square decks aren\'t in yet, check back after the next import (or it\'ll match tomorrow).';
+  }catch(e){document.getElementById('rectable').innerHTML='<tr><td>Reconcile error: '+e.message+'</td></tr>';}
+}
+
+document.getElementById('recdate').value=todayET();
+renderDecks();renderCart();loadTally();loadRecon();
+function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(function(){e.classList.remove('show');},1600);}
+</script>
+</body>
+</html>

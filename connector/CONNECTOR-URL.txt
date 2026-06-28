@@ -1,0 +1,6 @@
+skateOS Connector — add this at claude.ai → Settings → Connectors → Add custom connector
+Name: skateOS
+URL:  https://skateos-connector.icy-field-9c38.workers.dev/sk/1ec88ea4a0522a8f8d118e1a05f7be99/mcp
+
+Keep this URL private (it's read-only, but anyone with it can see park stats).
+Tools: park_stats, top_products, sales_summary, find_customer

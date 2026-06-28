@@ -179,6 +179,53 @@ Deno.serve(async (req) => {
             }
           }
 
+          // ── Day pass → auto-issue Brivo wallet pass (admin/door.html) ──
+          // Self-serve day-pass invoices carry a "Day Pass: <customer_id>
+          // until <ISO>" marker (written by daypass-checkout). On paid, fire
+          // brivo-issue-event-pass for now → that ISO. The pass ROW is created
+          // immediately, so the payment side is complete today; the actual
+          // Brivo door credential provisions automatically the moment Brivo
+          // credentials are configured (brivo-issue-event-pass + the 5-min sync
+          // cron handle that). Non-fatal: a missing/not-yet-live Brivo never
+          // breaks the payment webhook.
+          if (status === "paid" && (upd.data as any)?.customer_id) {
+            try {
+              const dayRow = upd.data as { id: string; customer_id: string; notes: string | null };
+              const dayPassMatch = (dayRow.notes || "").match(/Day Pass:\s*[a-f0-9-]{30,}(?:\s+until\s+(\S+))?/i);
+              if (dayPassMatch) {
+                const validFrom = new Date().toISOString();
+                const untilRaw  = dayPassMatch[1];
+                const untilDate = untilRaw ? new Date(untilRaw) : null;
+                const validUntil = (untilDate && !isNaN(untilDate.getTime()) && untilDate.getTime() > Date.now())
+                  ? untilDate.toISOString()
+                  : new Date(Date.now() + 24 * 3600 * 1000).toISOString();
+                try {
+                  const issueResp = await fetch(`${Deno.env.get("SUPABASE_URL")}/functions/v1/brivo-issue-event-pass`, {
+                    method: "POST",
+                    headers: {
+                      "Authorization": `Bearer ${Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")}`,
+                      "Content-Type":  "application/json",
+                    },
+                    body: JSON.stringify({
+                      customer_id:  dayRow.customer_id,
+                      valid_from:   validFrom,
+                      valid_until:  validUntil,
+                      reason:       `Day pass · auto-issued on Helcim payment for invoice ${invNum}`,
+                      send_invite:  true,
+                      actor_email:  "helcim-webhook@auto",
+                    }),
+                  });
+                  const issueData = await issueResp.json().catch(() => ({}));
+                  console.log("day pass auto-issue:", issueResp.status, issueData?.pass_id || issueData?.error);
+                } catch (passErr) {
+                  console.warn("day pass auto-issue exception (non-fatal):", passErr);
+                }
+              }
+            } catch (dayErr) {
+              console.warn("day pass auto-issue flow non-fatal:", dayErr);
+            }
+          }
+
           // ── Pre-order deposit + retail-order auto-flip ─────────────
           // If this invoice was created by the preorder flow, the cached
           // invoice number lives on form_submissions.data.helcim_invoice_number.

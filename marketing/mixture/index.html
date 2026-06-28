@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>2nd Nature × Mixture — Apparel Order + Mockup</title>
+<style>
+  :root{--ink:#14110f;--paper:#f6f3ee;--card:#fff;--line:#e6e0d6;--soft:#7a716a;--accent:#c9572e;--gold:#caa24a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;padding-bottom:92px;touch-action:manipulation}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 16px 40px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  header.hero{background:var(--ink);color:#fff;border-radius:18px;padding:24px 22px}
+  .hero .kick{font-size:.7rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-size:1.6rem;font-weight:900;letter-spacing:-.02em;margin-top:8px}
+  .hero p{color:#cdc6bd;margin-top:8px;font-size:.9rem;max-width:64ch}
+  .banner{background:#fff7ec;border:1px solid #e8cf9a;border-radius:13px;padding:13px 16px;margin:14px 0;font-size:.88rem;display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+  .people{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 16px;margin:14px 0;position:sticky;top:0;z-index:55}
+  .people .ptitle{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);margin-bottom:9px}
+  .pchips{display:flex;flex-wrap:wrap;gap:7px}
+  .pchip{border:1px solid var(--line);background:#fcfaf6;border-radius:999px;padding:7px 14px;font-size:.84rem;font-weight:700;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .pchip.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .pchip.add{border-style:dashed;color:var(--accent);border-color:var(--accent)}
+  .pchip.avg{background:#eef6f2;border-color:var(--green);color:#2c5c46}.pchip.avg.sel{background:var(--green);color:#fff}
+  .pstat{font-size:.8rem;color:var(--soft);margin-top:9px}
+  .legend{display:flex;flex-wrap:wrap;gap:22px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 18px;margin:14px 0}
+  .legend .t{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin-bottom:6px}
+  .sw{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;margin:3px 10px 3px 0}
+  .dot{width:14px;height:14px;border-radius:50%;border:1px solid rgba(0,0,0,.18);flex:none}
+
+  .item{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:16px}
+  .item .head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .pd{margin-top:9px;background:#faf7f1;border:1px solid var(--line);border-radius:9px;padding:9px 11px}
+  .pd summary{cursor:pointer;font-weight:800;font-size:.84rem;list-style:none}
+  .pd summary::-webkit-details-marker{display:none}
+  .pd summary::before{content:"▾ ";color:var(--soft)} .pd[open] summary::before{content:"▴ "}
+  .pdbody{font-size:.83rem;color:#4a423c;margin-top:8px}
+  .studiotoggle{width:100%;text-align:left;border:1px dashed var(--line);background:#fcfaf6;border-radius:10px;padding:10px 13px;font-weight:800;font-size:.9rem;cursor:pointer;font-family:inherit;color:var(--ink);margin:10px 0}
+  .studiotoggle .chev{float:right;color:var(--soft)}
+  .pdcopy{margin-left:6px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:2px 8px;font-size:.7rem;font-weight:800;cursor:pointer}
+  .item .name{font-size:1.12rem;font-weight:800}.item .target{font-size:.76rem;color:var(--soft);font-weight:600}
+  .itemtot{background:var(--ink);color:#fff;border-radius:9px;padding:4px 11px;font-size:.8rem;font-weight:800;white-space:nowrap}
+
+  .studio{display:grid;grid-template-columns:1fr 168px;gap:14px;margin:12px 0;border-top:1px dashed var(--line);padding-top:14px}
+  @media(max-width:680px){.studio{grid-template-columns:1fr}}
+  .cwchips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+  .cwchip{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:.76rem;font-weight:700;cursor:pointer;background:#fcfaf6}
+  .cwchip.sel{border-color:var(--ink);background:var(--ink);color:#fff}.cwchip.sel .dot{border-color:rgba(255,255,255,.5)}
+  .cwx{margin-left:6px;color:#c0492b;cursor:pointer;font-weight:900;opacity:.5}.cwx:hover{opacity:1}.cwchip.sel .cwx{color:#ffb4a0}
+  .cwadd{border:1px dashed var(--accent);background:#fff;color:var(--accent);border-radius:999px;padding:4px 11px;font-size:.76rem;font-weight:800;cursor:pointer;font-family:inherit}
+  .addcw{display:inline-flex;align-items:center;border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 11px;font-size:.82rem;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .addcw:hover{border-color:var(--accent)}
+  .stages{display:flex;gap:12px;flex-wrap:wrap}
+  .stage{position:relative;flex:1;min-width:150px;max-width:250px;background:#efeae1;border:1px solid var(--line);border-radius:12px;aspect-ratio:1/1;overflow:hidden;touch-action:none}
+  .stage .vlabel{position:absolute;top:6px;left:8px;font-size:.62rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);background:rgba(255,255,255,.7);border-radius:5px;padding:1px 6px;z-index:3;pointer-events:none}
+  .stage svg{position:absolute;inset:0;width:100%;height:100%}
+  .stage.photo{background:#fff}
+  .gphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+  .placed{position:absolute;transform:translate(-50%,-50%);cursor:grab;z-index:5;user-select:none;touch-action:none}
+  .placed.sel{outline:2px dashed var(--accent);outline-offset:3px}
+  .placed .ink{width:100%;background-repeat:no-repeat;background-position:center;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain;mask-repeat:no-repeat;mask-position:center;mask-size:contain;pointer-events:none}
+  .placed .ph{border:1.5px dashed currentColor;border-radius:6px;padding:4px 8px;font-weight:800;font-size:.72rem;white-space:nowrap;text-align:center;pointer-events:none}
+  .stage .hint{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#a59c92;font-size:.78rem;font-weight:600;text-align:center;padding:14px;pointer-events:none}
+
+  .selpanel{margin-top:10px;border:1px solid var(--accent);border-radius:11px;padding:10px 12px;background:#fff7f3}
+  .selpanel .sh{font-size:.78rem;font-weight:800;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+  .selpanel .lbl{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);margin:8px 0 4px}
+  .inks{display:flex;flex-wrap:wrap;gap:6px}
+  .inkdot{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+  .inkdot.sel{box-shadow:0 0 0 2px var(--ink)}
+  .inkauto{width:auto;border-radius:7px;padding:0 8px;font-size:.66rem;font-weight:800;height:24px;display:inline-flex;align-items:center;background:#efe9df;border:1px solid var(--line);cursor:pointer}
+  .inkauto.sel{background:var(--ink);color:#fff}
+  .sizes{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .szbtn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 9px;font-size:.74rem;font-weight:700;cursor:pointer}
+  .szbtn.sel{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .szread{font-size:.8rem;font-weight:800;margin-left:4px}
+  .minibtn{border:1px solid var(--line);background:#fff;border-radius:7px;width:28px;height:28px;font-weight:900;cursor:pointer;font-size:.95rem}
+  .delbtn{border:none;background:var(--accent);color:#fff;border-radius:8px;padding:5px 11px;font-weight:800;font-size:.74rem;cursor:pointer}
+
+  .tray .tt{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin-bottom:8px}
+  .logo{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:7px;background:#fcfaf6;cursor:grab;touch-action:none}
+  .logo:active{cursor:grabbing}
+  .logo img{width:38px;height:30px;object-fit:contain;flex:none}
+  .logo .lph{width:38px;height:30px;border:1.5px dashed var(--soft);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:800;color:var(--soft);flex:none;text-align:center;line-height:1}
+  .logo .ln{font-size:.74rem;font-weight:700;line-height:1.2}.logo .lp{font-size:.6rem;color:var(--soft)}
+
+  .blanks{margin:12px 0;border-top:1px dashed var(--line);padding-top:11px}
+  .blanks .ot{font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--soft);margin-bottom:7px}
+  .chosenblank{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff3ee;border:1px solid var(--accent);border-radius:10px;padding:8px 12px;font-size:.86rem}
+  .chosenblank span{flex:1;min-width:120px}
+  .changeblank{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:8px;padding:4px 12px;font-size:.76rem;font-weight:800;cursor:pointer}
+  .blank{display:flex;align-items:center;gap:10px;padding:8px 11px;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;background:#fcfaf6;cursor:pointer}
+  .blank.sel{border-color:var(--accent);background:#fff3ee;box-shadow:inset 0 0 0 1px var(--accent)}
+  .blank input{width:18px;height:18px;accent-color:var(--accent);flex:none;margin:0}
+  .blank .bb{flex:1;min-width:0}.blank .bn{font-weight:700;font-size:.88rem}.blank .bd{font-size:.76rem;color:var(--soft)}
+  .blank .view{flex:none;font-size:.76rem;font-weight:800;color:var(--accent)}
+  .tagfav{display:inline-block;background:var(--gold);color:#3a2c08;border-radius:5px;font-size:.6rem;font-weight:900;padding:1px 5px;margin-left:5px;text-transform:uppercase}
+
+  .gridwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:6px}
+  table.grid{border-collapse:collapse;width:100%;min-width:460px;font-size:.85rem}
+  table.grid th,table.grid td{padding:6px 7px;text-align:center;border:1px solid var(--line)}
+  table.grid thead th{background:#f3ede4;font-size:.72rem;font-weight:700}
+  table.grid th.design{text-align:left;background:#faf7f1;min-width:150px;font-size:.78rem}
+  table.grid td.rowtot,table.grid th.coltot{background:#f7f2ea;font-weight:800}
+  table.grid input{width:48px;border:1px solid var(--line);border-radius:7px;padding:6px 4px;text-align:center;font-size:.88rem;font-family:inherit;background:#fff}
+  table.grid input:focus{outline:2px solid var(--accent);border-color:var(--accent)}
+  table.grid input::-webkit-outer-spin-button,table.grid input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .colhdr{display:flex;flex-direction:column;align-items:center;gap:3px}
+  .notes{margin-top:10px}.notes label{font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--soft)}
+  .notes textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:8px 10px;font-family:inherit;font-size:.86rem;margin-top:4px;resize:vertical;min-height:40px}
+  .open{background:#fff7ec;border:1px solid #e8cf9a;border-radius:13px;padding:14px 16px;margin-top:16px;font-size:.88rem}
+  .open ul{margin:6px 0 0 18px}.open li{margin:3px 0}
+  .contacts{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:14px}
+  .contact{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:14px;font-size:.86rem}
+  .contact .who{font-weight:800}.contact .role{font-size:.74rem;color:var(--soft);margin-bottom:6px}.contact a{display:block;margin-top:2px}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:10px 16px;padding-bottom:max(10px,env(safe-area-inset-bottom));display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;box-shadow:0 -4px 16px rgba(0,0,0,.06);z-index:60}
+  .bar .gt{font-weight:900;font-size:1.05rem}.bar .gt small{font-weight:600;color:var(--soft);font-size:.78rem}
+  .bar .acts{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-weight:800;font-size:.84rem;cursor:pointer;font-family:inherit;color:var(--ink)}
+  .btn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}.btn.accent{background:var(--accent);color:#fff;border-color:var(--accent)}
+  .modal{position:fixed;inset:0;background:rgba(20,17,15,.55);display:none;align-items:center;justify-content:center;padding:18px;z-index:120}
+  .modal.show{display:flex}
+  .sheet{background:#fff;border-radius:16px;max-width:680px;width:100%;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+  .sheet h3{padding:15px 18px;border-bottom:1px solid var(--line);font-size:1.05rem}
+  .sheet pre{margin:0;padding:16px 18px;overflow:auto;white-space:pre-wrap;font-family:ui-monospace,Menlo,monospace;font-size:.82rem;line-height:1.5;flex:1;background:#fbf9f5}
+  .sheet .sa{padding:12px 18px;border-top:1px solid var(--line);display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+  .toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-weight:700;font-size:.86rem;opacity:0;transition:opacity .2s;z-index:200;pointer-events:none}
+  .toast.show{opacity:1}
+  #ghost{position:fixed;z-index:300;pointer-events:none;transform:translate(-50%,-50%);opacity:.85;display:none}
+  #ghost img{width:60px;height:48px;object-fit:contain}#ghost .ph{background:rgba(255,255,255,.95);border:1.5px dashed var(--accent);border-radius:6px;padding:5px 9px;font-weight:800;font-size:.74rem}
+  @media print{.bar,.modal,.tray,.blanks .view,.selpanel{display:none!important}body{padding-bottom:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <div class="kick">2nd Nature × Mixture Prints</div>
+    <h1>Summer Apparel — Order + Mockup</h1>
+    <p>Drag a logo onto the tee (front/back), tap it to set <b>print color</b> + <b>print size</b>, switch colorways, pick the blank, set quantities, then Build order. Saves automatically.</p>
+  </header>
+
+  <div class="banner">
+    <div>📊 <b>Quantities pre-filled from your sales</b> — conservative (your own apparel sells in the tens; e.g. shirts ~10, 5-panels ~13). The emailed 50-each plan is ~3–5× that. Adjust freely.</div>
+    <button class="btn dark" onclick="applySuggested()">✨ Re-apply suggested</button>
+  </div>
+
+  <div class="legend">
+    <div><div class="t">🍂 Real Comfort Colors palette — tap ＋ colorway on any item to add more</div>
+      <span class="sw"><span class="dot" style="background:#be531c"></span>Yam</span>
+      <span class="sw"><span class="dot" style="background:#8a1538"></span>Brick</span>
+      <span class="sw"><span class="dot" style="background:#22372b"></span>Moss</span>
+      <span class="sw"><span class="dot" style="background:#3e5d58"></span>Blue Spruce</span>
+      <span class="sw"><span class="dot" style="background:#a69f88"></span>Sandstone</span>
+      <span class="sw" style="color:var(--soft)">+22 more in the picker</span>
+    </div>
+    <div><div class="t">Logos (drag onto garment)</div>
+      <span class="sw">🖼️ Wordmark · OG · Tree = real art · Unique Excursions = placeholder</span>
+    </div>
+  </div>
+
+  <div id="people" class="people"></div>
+  <div id="items"></div>
+
+  <section class="open"><b>Still to confirm with Chris</b>
+    <ul><li>Final size breakdown per item — add to each item's notes.</li>
+      <li>Gym shorts: nylon vs mesh + full color list.</li>
+      <li>Trucker / 5-panel exact colors.</li>
+      <li>Send Unique Excursions art (placeholder for now).</li></ul>
+  </section>
+  <section class="contacts">
+    <div class="contact"><div class="who">Chris Fahrbach</div><div class="role">Mixture Inc. — printer</div><a href="tel:18455612857">📞 845.561.2857 x102</a><a href="mailto:info@mixtureprints.com">✉️ info@mixtureprints.com</a><a href="https://www.mixtureprints.com" target="_blank">🌐 mixtureprints.com</a></div>
+    <div class="contact"><div class="who">Jon — 2nd Nature</div><div class="role">Order lead</div><a href="tel:19146461146">📞 914.646.1146</a><a href="mailto:info@2ntr.com">✉️ info@2ntr.com</a></div>
+  </section>
+</div>
+
+<div class="bar">
+  <div class="gt">Total: <span id="grandTotal">0</span> <small>pieces · <span id="filledCount">0</span> items</small></div>
+  <div class="acts"><button class="btn" onclick="resetAll()">Clear</button><button class="btn" onclick="window.print()">🖨️ Print</button><button class="btn accent" id="mainBtn" onclick="mainAction()">✓ I'm done</button></div>
+</div>
+<div class="modal" id="modal"><div class="sheet"><h3>Order summary</h3><pre id="orderText"></pre>
+  <div class="sa"><button class="btn" onclick="closeModal()">Close</button><button class="btn dark" onclick="copyOrder()">📋 Copy</button><button class="btn accent" onclick="emailOrder()">✉️ Email Chris</button></div></div></div>
+<div id="ghost"></div><div class="toast" id="toast"></div>
+
+<script>
+// Real Comfort Colors fall default set (accurate hexes from the CC chart)
+var FALL=[{n:'Yam',c:'#be531c'},{n:'Brick',c:'#8a1538'},{n:'Moss',c:'#22372b'},{n:'Blue Spruce',c:'#3e5d58'},{n:'Sandstone',c:'#a69f88'}];
+// Full real Comfort Colors palette to choose from (accurate hexes)
+var PALETTE=[{n:'White',c:'#ffffff'},{n:'Ivory',c:'#e7ceb5'},{n:'Sandstone',c:'#a69f88'},{n:'Khaki',c:'#a09074'},{n:'Grey',c:'#716e6a'},{n:'Pepper',c:'#4e4b48'},{n:'Black',c:'#25282a'},{n:'Yam',c:'#be531c'},{n:'Brick',c:'#8a1538'},{n:'Clay',c:'#a60a3d'},{n:'Crimson',c:'#a4123f'},{n:'Berry',c:'#7e4966'},{n:'Watermelon',c:'#f4364c'},{n:'Bright Salmon',c:'#ff6d6a'},{n:'Crunchberry',c:'#ef4a81'},{n:'Orchid',c:'#c7b2de'},{n:'Violet',c:'#7474c1'},{n:'Moss',c:'#22372b'},{n:'Hemp',c:'#1c4220'},{n:'Light Green',c:'#5c7f71'},{n:'Bay',c:'#94a596'},{n:'Blue Spruce',c:'#3e5d58'},{n:'Blue Jean',c:'#647692'},{n:'Washed Denim',c:'#6787b7'},{n:'Chambray',c:'#bdd6e6'},{n:'Lagoon Blue',c:'#05c3de'},{n:'True Navy',c:'#041e43'}];
+var colorConfig={};
+function cols(it){return (colorConfig[it.id]&&colorConfig[it.id].length)?colorConfig[it.id]:it['colors'];}
+function saveColorways(){upsertSub('__colorways__',colorConfig);}
+function addColorway(id,n,c){var it=byId(id);var cur=cols(it).slice();if(cur.some(function(x){return x.n===n;}))return;cur.push({n:n,c:c});colorConfig[id]=cur;saveColorways();render();}
+function removeColorway(id,idx){var it=byId(id);var cur=cols(it).slice();if(cur.length<=1){alert('Keep at least one colorway.');return;}cur.splice(idx,1);colorConfig[id]=cur;saveColorways();render();}
+function openColorPicker(id){var it=byId(id);var have={};cols(it).forEach(function(x){have[x.n]=1;});var h='<div class="sheet"><h3>Add a colorway</h3><div style="padding:14px 18px 4px;font-size:.82rem;color:var(--soft)">Real Comfort Colors options — tap to add to this item.</div><div style="padding:6px 18px 14px;display:flex;flex-wrap:wrap;gap:8px">';PALETTE.forEach(function(p){if(have[p.n])return;h+='<button class="addcw" data-id="'+id+'" data-n="'+escP(p.n)+'" data-c="'+p.c+'"><span style="width:16px;height:16px;border-radius:50%;background:'+p.c+';border:1px solid rgba(0,0,0,.2);display:inline-block;vertical-align:middle;margin-right:6px"></span>'+escP(p.n)+'</button>';});h+='</div><div class="sa"><button class="btn" onclick="this.closest(\'.modal\').remove()">Done</button></div></div>';var ov=document.createElement('div');ov.className='modal show';ov.innerHTML=h;document.body.appendChild(ov);ov.addEventListener('click',function(e){var b=e.target.closest('.addcw');if(b){addColorway(b.dataset.id,b.dataset.n,b.dataset.c);ov.remove();return;}if(e.target===ov)ov.remove();});}
+var LOGOS=[
+  {id:'wm',  name:'2nd Nature', sub:'wordmark · real', img:'/2ntr/assets/logo.png',     ar:228/84},
+  {id:'og',  name:'OG Logo',    sub:'real art',        img:'/2ntr/assets/og-logo.png',   ar:1},
+  {id:'tree',name:'Tree Logo',  sub:'real art',        img:'/2ntr/assets/tree-logo.png', ar:792/720},
+  {id:'uniq',name:'Unique Excursions', sub:'placeholder', ar:2.2}
+];
+function logoById(id){for(var i=0;i<LOGOS.length;i++)if(LOGOS[i].id===id)return LOGOS[i];return null;}
+// print inks
+var INKS=[{n:'White',c:'#ffffff'},{n:'Black',c:'#111111'},{n:'Cream',c:'#efe7d3'},{n:'Red',c:'#b1311f'},{n:'Navy',c:'#1f2a44'},{n:'Spice',c:'#9c5b3b'},{n:'Neptune',c:'#4a7c6f'},{n:'Mahogany',c:'#6e2b2b'}];
+// print sizes (width inches)
+var SIZES=[{n:'Pocket',in:3.5},{n:'L.Chest',in:4},{n:'Center',in:9},{n:'Full',in:11},{n:'Back',in:12}];
+var STAGE_IN=20; // garment width the stage represents
+function widthPct(inches){return Math.max(4,Math.min(80, inches/STAGE_IN*100));}
+function lum(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(function(x){return x+x;}).join('');var r=parseInt(hex.substr(0,2),16),g=parseInt(hex.substr(2,2),16),b=parseInt(hex.substr(4,2),16);return (0.299*r+0.587*g+0.114*b)/255;}
+function resolveInk(p,garmentHex){ if(p.ink&&p.ink!=='auto')return p.ink; return lum(garmentHex)<0.5?'#ffffff':'#111111'; }
+
+function teeSVG(f){return '<svg viewBox="0 0 100 100"><path d="M30 14 L20 22 L10 34 L18 44 L26 38 L26 86 L74 86 L74 38 L82 44 L90 34 L80 22 L70 14 L62 14 C60 20 54 23 50 23 C46 23 40 20 38 14 Z" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/></svg>';}
+function tankSVG(f){return '<svg viewBox="0 0 100 100"><path d="M36 14 L30 18 L26 30 L26 86 L74 86 L74 30 L70 18 L64 14 C62 22 56 26 50 26 C44 26 38 22 36 14 Z" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/></svg>';}
+function capSVG(f){return '<svg viewBox="0 0 100 100"><path d="M18 60 C18 36 34 26 52 26 C70 26 82 38 82 56 L82 60 Z" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/><path d="M16 60 L90 60 C92 60 92 66 86 66 L18 66 C14 66 14 60 16 60 Z" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/></svg>';}
+function shortsSVG(f){return '<svg viewBox="0 0 100 100"><path d="M26 22 L74 22 L74 50 L66 86 L54 86 L50 56 L46 86 L34 86 L26 50 Z" fill="'+f+'" stroke="rgba(0,0,0,.28)" stroke-width="1.2"/></svg>';}
+function garmentSVG(t,f){return t==='cap'?capSVG(f):t==='shorts'?shortsSVG(f):t==='tank'?tankSVG(f):teeSVG(f);}
+
+var ITEMS=[
+ {id:'tees',name:'👕 T-Shirts',target:'3 designs · 5 colorways',garment:'tee',views:['front','back'],photos:{front:'/2ntr/assets/garments/tee-front.jpg',back:'/2ntr/assets/garments/tee-back.jpg'},photoHex:'#f0f0f0',
+  designs:['Unique Excursions — sm pocket + full back','Tree Logo — large front/center','OG Logo — large front/center'],colors:FALL,
+  blanks:[{n:'Comfort Colors 1717 — Garment-Dyed Heavyweight',d:'★ The blank your fall colorways come from',url:'https://www.ssactivewear.com/p/comfort_colors/1717',fav:1,desc:'6.1 oz · 100% ring-spun cotton · garment-dyed. Soft, lived-in feel, relaxed boxy fit, minimal shrinkage. This is the line that carries Arabian Spice / Neptune / Red Mahogany / Clay / Foxglove.'},{n:'American Apparel 1301',d:'Chris uses for skateparks',url:'https://www.ssactivewear.com/p/american_apparel/1301?color=white-classic_100_cotton',desc:'6.0 oz · 100% combed cotton heavyweight. Durable retail classic — but its color names differ from the Comfort Colors fall set.'},{n:'AS Colour Block Tubular 5050',d:"Chris's fav · boxy heavyweight",url:'https://ascolour.com/block-tubular-tee-5050/',desc:'Premium tubular heavyweight, 100% combed cotton, boxy fit. Real colors: Bone, Ecru, Walnut, Army, Coal, Khaki, Navy — NOT the Comfort Colors fall names.'},{n:'AS Colour Staple 5001',d:'Mid-weight, big range',url:'https://ascolour.com/staple-tee-5001/',desc:'5.3 oz mid-weight regular-fit staple, 100% cotton.'},{n:'Gildan Hammer H000',d:'Skate staple',url:'https://www.ssactivewear.com/p/gildan/h000?color=white-hammer',desc:'6.0 oz · 100% ring-spun cotton · workwear-grade durability.'},{n:'Bella+Canvas 3001',d:'Soft, slim, huge range',url:'https://www.ssactivewear.com/p/bella_canvas/3001c',desc:'4.2 oz lightweight, retail-soft, slim fit, hundreds of colors.'}]},
+ {id:'tanks',name:'🎽 Tank Tops',target:'2 designs · 5 colorways',garment:'tank',views:['front','back'],designs:['Tree Logo — sm pocket + full back','Unique Excursions — sm pocket + full back'],colors:FALL,blanks:[]},
+ {id:'ribbed',name:'🎽 Next Level 5013 Festival Ribbed Tank',target:'1 design · 100 total',garment:'tank',views:['front','back'],designs:['OG Logo — sm pocket'],colors:[{n:'Black',c:'#111'},{n:'White',c:'#f4f4f4'},{n:'Heather Grey',c:'#9a9a9a'}],blanks:[{n:'Next Level 5013 Festival Ribbed Tank',d:'The ribbed-tank blank',url:'https://www.ssactivewear.com/p/next_level/5013',fav:1,desc:'Soft drapey ribbed festival tank, 58/38/4 poly-cotton-spandex rib knit. Confirm exact colorways with Chris.'}]},
+ {id:'cargo',name:'🩳 Cargo Shorts',target:'1 design · 4 colors',garment:'shorts',views:['front'],photos:{front:'/2ntr/assets/garments/cargo.jpg'},photoHex:'#111',designs:['Patches sewn (2ntr provides)'],colors:[{n:'Tan',c:'#c2a679'},{n:'Black',c:'#111'},{n:'Army',c:'#4b5320'},{n:'Dark Blue',c:'#1f2a44'}],blanks:[]},
+ {id:'gym',name:'🩳 Gym Shorts',target:'1 design · 100 total',garment:'shorts',views:['front'],photos:{front:'/2ntr/assets/garments/short.jpg'},photoHex:'#2b2b2b',designs:['OG Logo — bottom-left leg'],colors:[{n:'Black',c:'#111'},{n:'Army',c:'#4b5320'},{n:'Dk Heather',c:'#6d6d6d'},{n:'Red',c:'#9e1b1b'}],blanks:[{n:'Shaka Wear SHPRS',d:'Better price · poly',url:'https://www.ssactivewear.com/p/shaka_wear/shprs?color=black-running_100poly',fav:1},{n:'AS Colour Active 5924',d:'19" active short',url:'https://ascolour.com/mens-active-training-shorts-19-5924/'}]},
+ {id:'trucker',name:'🧢 Trucker Hats',target:'2 designs · 3 colors',garment:'cap',views:['front'],photos:{front:'/2ntr/assets/garments/hat.jpg'},photoHex:'#111',designs:['OG Logo','Tree Logo'],colors:[{n:'Color 1',c:'#cfcabf'},{n:'Color 2',c:'#7d7468'},{n:'Color 3',c:'#2c2722'}],blanks:[{n:'Richardson 112',d:"Chris's go-to",url:'https://www.ssactivewear.com/p/richardson/112r?color=white-richardson_112',fav:1},{n:'YP Classics 6006',d:'Classic alt',url:'https://www.ssactivewear.com/p/yp_classics/6006?color=white-yp_classics_6006'}]},
+ {id:'fivepanel',name:'🧢 5-Panel Hats',target:'1 design · 3 colors',garment:'cap',views:['front'],photos:{front:'/2ntr/assets/garments/hat.jpg'},photoHex:'#111',designs:['OG Logo'],colors:[{n:'Color 1',c:'#cfcabf'},{n:'Color 2',c:'#7d7468'},{n:'Color 3',c:'#2c2722'}],blanks:[{n:'YP Classics 6089M',d:'Chris loves this',url:'https://www.ssactivewear.com/p/yp_classics/6089m?color=white-yp_classics_6089m',fav:1},{n:'YP Classics 6506',d:'5/6-panel',url:'https://www.ssactivewear.com/p/yp_classics/6506'},{n:'AS Colour Surf Cap 1114',d:'Popular now',url:'https://ascolour.com/surf-cap-1114/'},{n:'AS Colour Surf Rope Cap',d:'Rope front',url:'https://ascolour.com/surf-rope-cap/'}]}
+];
+function suggestCurve(n){return ({3:[6,5,4],4:[6,4,3,3],5:[5,4,3,2,1]}[n])||[];}
+// customer-facing store descriptions (based on the blank specs)
+var PD={
+ tees:'Printed on a premium Comfort Colors garment-dyed heavyweight 100% cotton tee (6.1 oz). Soft, broken-in feel with rich, sun-faded color in our fall palette. Three designs — OG, Tree, and Unique Excursions.',
+ tanks:'Garment-dyed heavyweight cotton tank in our fall colorways. Small front-pocket logo + full back graphic. Soft, relaxed, made to live in all summer.',
+ ribbed:'Soft, drapey ribbed festival tank with a small OG-logo pocket hit. Available in Black, White, and Heather Grey.',
+ cargo:'Durable cargo shorts with sewn-on 2nd Nature patches. Tan, Black, Army, and Dark Blue.',
+ gym:'Lightweight performance gym shorts with a small OG-logo hit on the leg. Black, Army, Heather Grey, and Red.',
+ trucker:'Classic structured trucker hat, mesh back, snapback closure — repping the OG or Tree logo.',
+ fivepanel:'Low-profile 5-panel cap with the OG logo. Clean, simple, everyday.'
+};
+
+var KEY='mixture_order_v3', state=load();
+var SELECTED=null; // {item,colorKey,view,idx}
+var blanksOpen={}; // runtime: which items have the blank picker expanded
+var studioOpen={}; // runtime: which items have the mockup studio expanded
+// ---- shared multi-contributor backend ----
+var SB_URL='https://zecurmlenxyxanqucrga.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+var ORDER_KEY='summer-2026';
+var contributors={}; var current=null; var avgMode=false;
+function sbH(){return {'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'};}
+async function fetchSubs(){try{var r=await fetch(SB_URL+'/rest/v1/mixture_submissions?order_key=eq.'+ORDER_KEY+'&select=contributor,data,updated_at',{headers:sbH()});if(!r.ok)return;var rows=await r.json();contributors={};rows.forEach(function(x){if(x.contributor==='__colorways__'){colorConfig=x.data||{};return;}if(x.contributor&&x.contributor.indexOf('__')!==0)contributors[x.contributor]={data:x.data||{},updated_at:x.updated_at};});}catch(e){}}
+async function upsertSub(name,data){try{await fetch(SB_URL+'/rest/v1/mixture_submissions',{method:'POST',headers:Object.assign(sbH(),{'Prefer':'resolution=merge-duplicates,return=minimal'}),body:JSON.stringify({order_key:ORDER_KEY,contributor:name,data:data,updated_at:new Date().toISOString()})});}catch(e){}}
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{};}catch(e){return{};}}
+var _saveT;
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){}
+  if(current&&!avgMode){var ss=document.getElementById('saveStatus');if(ss)ss.textContent='saving…';clearTimeout(_saveT);_saveT=setTimeout(function(){upsertSub(current,state);contributors[current]={data:JSON.parse(JSON.stringify(state)),updated_at:new Date().toISOString()};var s=document.getElementById('saveStatus');if(s)s.textContent='✓ saved to shared list';},700);}}
+function fillSuggestedState(){ITEMS.forEach(function(it){var st=S(it),cv=suggestCurve(cols(it).length);it.designs.forEach(function(d,di){cols(it).forEach(function(c,ci){st.q[di+'_'+ci]=cv[ci]||0;});});});}
+function selectPerson(name){avgMode=false;current=name;localStorage.setItem('mixture_current',name);if(contributors[name])state=JSON.parse(JSON.stringify(contributors[name].data||{}));migrateMock();render();renderPeople();}
+function buildSuggestedData(){var tmp={};ITEMS.forEach(function(it){tmp[it.id]={q:{},blank:'',notes:'',color:0,mock:{}};var cv=suggestCurve(cols(it).length);it.designs.forEach(function(d,di){cols(it).forEach(function(c,ci){tmp[it.id].q[di+'_'+ci]=cv[ci]||0;});});});return tmp;}
+function finalizePerson(name,base){avgMode=false;current=name;localStorage.setItem('mixture_current',name);state=JSON.parse(JSON.stringify(base||{}));if(state._meta)delete state._meta;contributors[name]={data:JSON.parse(JSON.stringify(state)),updated_at:''};upsertSub(name,state);render();renderPeople();toast('Welcome, '+name+' — adjust the numbers + mockups, then tap “I’m done”.');}
+function addPerson(){var n=(prompt('Your name — this saves YOUR suggested order to the shared list:')||'').trim();if(!n||n.indexOf('__')===0)return;if(contributors[n]){selectPerson(n);return;}if(Object.keys(contributors).length){startChooser(n);}else{finalizePerson(n,buildSuggestedData());}}
+function startChooser(name){
+  var names=Object.keys(contributors).sort();
+  var h='<div class="sheet"><h3>How should '+escP(name)+' start?</h3><div style="padding:16px 18px;display:grid;gap:9px">';
+  h+='<button class="btn" data-base="suggested">Start from suggested defaults (fully independent)</button>';
+  h+='<button class="btn" data-base="avg">Start from the average so far</button>';
+  names.forEach(function(nm){h+='<button class="btn" data-base="copy:'+encodeURIComponent(nm)+'">Start from a copy of '+escP(nm)+' (then tweak)</button>';});
+  h+='<div style="font-size:.78rem;color:var(--soft);margin-top:4px">Copying someone is faster; fully independent entries make the average more meaningful. Either way it saves as '+escP(name)+'’s own order.</div>';
+  h+='</div></div>';
+  var ov=document.createElement('div');ov.className='modal show';ov.innerHTML=h;document.body.appendChild(ov);
+  ov.addEventListener('click',function(e){var b=e.target.closest('[data-base]');if(!b){if(e.target===ov)ov.remove();return;}var base=b.dataset.base,data;if(base==='suggested')data=buildSuggestedData();else if(base==='avg')data=computeAvg();else data=JSON.parse(JSON.stringify((contributors[decodeURIComponent(base.slice(5))]||{}).data||{}));ov.remove();finalizePerson(name,data);});
+}
+function computeAvg(){var names=Object.keys(contributors);var out={};ITEMS.forEach(function(it){out[it.id]={q:{},blank:'',notes:'',color:0,mock:{}};it.designs.forEach(function(d,di){cols(it).forEach(function(c,ci){var sum=0,n=0;names.forEach(function(nm){var dd=contributors[nm].data||{};var iv=(dd[it.id]&&dd[it.id].q)?dd[it.id].q[di+'_'+ci]:null;sum+=(parseInt(iv,10)||0);n++;});out[it.id].q[di+'_'+ci]=n?Math.round(sum/n):0;});});var bc={};names.forEach(function(nm){var b=((contributors[nm].data||{})[it.id]||{}).blank;if(b)bc[b]=(bc[b]||0)+1;});out[it.id].blank=Object.keys(bc).sort(function(a,b){return bc[b]-bc[a];})[0]||'';var ns=[];names.forEach(function(nm){var nt=((contributors[nm].data||{})[it.id]||{}).notes;if(nt)ns.push(nm+': '+nt);});out[it.id].notes=ns.join(' | ');});return out;}
+function showAvg(){if(!Object.keys(contributors).length){alert('No submissions yet — add a person first.');return;}avgMode=true;current='__avg__';state=computeAvg();render();renderPeople();}
+function onPeopleClick(e){var b=e.target.closest('.pchip');if(!b)return;if(b.dataset.add){addPerson();return;}if(b.dataset.avg){showAvg();return;}if(b.dataset.person){selectPerson(decodeURIComponent(b.dataset.person));}}
+function isDone(nm){var d=contributors[nm]&&contributors[nm].data;return !!(d&&d._meta&&d._meta.done);}
+function mainAction(){ if(avgMode){buildOrder();} else {markDone();} }
+function markDone(){ if(!current){alert('Tap “＋ Add person” and enter your name first.');return;} state._meta=Object.assign({},state._meta,{done:true,doneAt:new Date().toISOString()}); save(); toast('✓ Submitted — your order is in the shared list'); renderPeople(); }
+function updateMainBtn(){ var b=document.getElementById('mainBtn'); if(!b)return; if(avgMode){b.textContent='📋 Build final order → Chris';} else if(current){b.textContent=(state._meta&&state._meta.done)?'✓ Submitted · tap to re-confirm':'✓ I\'m done — submit';} else {b.textContent='✓ I\'m done';} }
+function renderPeople(){var el=document.getElementById('people');if(!el)return;var names=Object.keys(contributors).sort();var doneN=names.filter(isDone).length;var h='<div class="ptitle">👥 Suggested orders — everyone feeds one shared list, the final order is the average</div><div class="pchips">';names.forEach(function(nm){h+='<button class="pchip'+(current===nm&&!avgMode?' sel':'')+'" data-person="'+encodeURIComponent(nm)+'">'+(isDone(nm)?'✓ ':'')+escP(nm)+'</button>';});h+='<button class="pchip add" data-add="1">＋ Add person</button>';if(names.length)h+='<button class="pchip avg'+(avgMode?' sel':'')+'" data-avg="1">📊 Final = average ('+names.length+')</button>';h+='</div>';h+='<div class="pstat">'+(avgMode?'Viewing the <b>averaged final order</b> across '+names.length+' people ('+doneN+' marked done) — read-only. Tap <b>Build final order</b> to send it to Chris.':(current?'Editing as <b>'+escP(current)+'</b> · <span id="saveStatus">saved to shared list</span> · '+doneN+' of '+names.length+' submitted.':'👉 Tap <b>＋ Add person</b> to start your suggested order (Lucas, Jon, etc).'))+'</div>';el.innerHTML=h;updateMainBtn();}
+function escP(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function S(it){state[it.id]=state[it.id]||{q:{},blank:'',notes:'',color:0,mock:{}};return state[it.id];}
+function getQ(it,di,ci){var v=S(it).q[di+'_'+ci];return v?parseInt(v,10)||0:0;}
+function byId(id){for(var i=0;i<ITEMS.length;i++)if(ITEMS[i].id===id)return ITEMS[i];}
+function mockKey(ci,v){return v;} // placements persist across colorways (keyed by view only)
+function migrateMock(){Object.keys(state).forEach(function(id){var st=state[id];if(!st||!st.mock)return;var keys=Object.keys(st.mock);if(!keys.some(function(k){return /^\d+_/.test(k);}))return;var nm={};keys.forEach(function(k){var view=k.replace(/^\d+_/,'');if(!nm[view]||!nm[view].length)nm[view]=st.mock[k]||[];});st.mock=nm;});save();}
+function getPlaced(it,ci,v){var st=S(it);st.mock[mockKey(ci,v)]=st.mock[mockKey(ci,v)]||[];return st.mock[mockKey(ci,v)];}
+
+function applySuggested(){ITEMS.forEach(function(it){var st=S(it),cv=suggestCurve(cols(it).length);it.designs.forEach(function(d,di){cols(it).forEach(function(c,ci){st.q[di+'_'+ci]=cv[ci]||0;});});});save();render();toast('Suggested quantities applied');}
+
+function render(){
+  var host=document.getElementById('items');host.innerHTML='';
+  ITEMS.forEach(function(it){var st=S(it);
+    var card=document.createElement('div');card.className='item';
+    var h='<div class="head"><div><div class="name">'+it.name+'</div><div class="target">'+it.target+'</div></div><div class="itemtot" id="tot_'+it.id+'">0</div></div>';
+    h+='<details class="pd"><summary>📝 Store description</summary><div class="pdbody">'+(PD[it.id]||'')+' <button class="pdcopy" data-pd="'+it.id+'">Copy</button></div></details>';
+    if(st.color>=cols(it).length)st.color=0;
+    // colorways — always visible (these are the order columns)
+    h+='<div class="cwchips">'+cols(it).map(function(c,ci){return '<span class="cwchip'+(st.color===ci?' sel':'')+'" data-item="'+it.id+'" data-ci="'+ci+'"><span class="dot" style="background:'+c.c+'"></span>'+c.n+(avgMode?'':' <b class="cwx" data-rmitem="'+it.id+'" data-rmci="'+ci+'">×</b>')+'</span>';}).join('')+(avgMode?'':'<button class="cwadd" data-add="'+it.id+'">＋ colorway</button>')+'</div>';
+    // mockup studio — collapsed by default, with a glimpse
+    var _pN=0;it.views.forEach(function(v){_pN+=getPlaced(it,st.color,v).length;});
+    var _so=!!studioOpen[it.id];
+    h+='<button class="studiotoggle" data-studio="'+it.id+'">🎨 Mock up the design'+(_pN?' · '+_pN+' graphic'+(_pN>1?'s':'')+' placed':'')+' <span class="chev">'+(_so?'▴':'▾')+'</span></button>';
+    if(_so){
+      h+='<div class="studio"><div class="stagewrap">';
+      if(it.photos)h+='<div style="font-size:.72rem;color:var(--soft);margin:0 0 9px">📷 Real product photo — colorways above set your order + auto-ink (the photo itself is a fixed sample).</div>';
+      h+='<div class="stages">'+it.views.map(function(v){var ph=it.photos&&it.photos[v];var inner=ph?'<img class="gphoto" src="'+ph+'" alt="">':garmentSVG(it.garment,cols(it)[st.color].c);return '<div class="stage'+(ph?' photo':'')+'" data-item="'+it.id+'" data-view="'+v+'"><span class="vlabel">'+v+'</span>'+inner+'<div class="hint">drag a logo here</div></div>';}).join('')+'</div>';
+      h+='<div class="selpanel" id="sel_'+it.id+'" style="display:none"></div>';
+      h+='</div>';
+      h+='<div class="tray"><div class="tt">Drag onto garment</div>'+LOGOS.map(function(l){var t=l.img?'<img src="'+l.img+'" alt="">':'<span class="lph">'+l.name.split(' ')[0]+'</span>';return '<div class="logo" data-logo="'+l.id+'">'+t+'<span><span class="ln">'+l.name+'</span><br><span class="lp">'+l.sub+'</span></span></div>';}).join('')+'</div></div>';
+    }
+    if(it.blanks.length){
+      var collapsed=!blanksOpen[it.id];
+      if(collapsed){
+        if(st.blank){
+          var cb=it.blanks.filter(function(b){return b.n===st.blank;})[0]||{n:st.blank};
+          h+='<div class="blanks"><div class="chosenblank"><span>✓ Blank: <b>'+cb.n+'</b></span>'+(cb.url?'<a class="view" href="'+cb.url+'" target="_blank">View →</a>':'')+'<button class="changeblank" data-item="'+it.id+'">Change</button></div></div>';
+        } else {
+          h+='<div class="blanks"><div class="chosenblank" style="border-style:dashed;border-color:var(--line);background:#fcfaf6;color:var(--soft)"><span>Blank not chosen yet</span><button class="changeblank" data-item="'+it.id+'">Choose style ▾</button></div></div>';
+        }
+      } else {
+        h+='<div class="blanks"><div class="ot">Choose the blank</div>'+it.blanks.map(function(b){var s=st.blank===b.n?' sel':'';return '<label class="blank'+s+'" data-item="'+it.id+'" data-blank="'+encodeURIComponent(b.n)+'"><input type="radio" name="blank_'+it.id+'" '+(st.blank===b.n?'checked':'')+'><span class="bb"><span class="bn">'+b.n+(b.fav?' <span class="tagfav">rec</span>':'')+'</span><span class="bd">'+b.d+(b.desc?'<br>'+b.desc:'')+'</span></span><a class="view" href="'+b.url+'" target="_blank" onclick="event.stopPropagation()">View →</a></label>';}).join('')+'</div>';
+      }
+    }
+    h+='<div class="gridwrap"><table class="grid"><thead><tr><th class="design">Design \\ Colorway</th>'+cols(it).map(function(c){return '<th><span class="colhdr"><span class="dot" style="background:'+c.c+'"></span>'+c.n+'</span></th>';}).join('')+'<th class="coltot">Total</th></tr></thead><tbody>';
+    it.designs.forEach(function(dn,di){h+='<tr><th class="design">'+dn+'</th>'+cols(it).map(function(c,ci){return '<td><input '+(avgMode?'readonly ':'')+'inputmode="numeric" pattern="[0-9]*" data-item="'+it.id+'" data-di="'+di+'" data-ci="'+ci+'" value="'+(getQ(it,di,ci)||'')+'"></td>';}).join('')+'<td class="rowtot" id="rt_'+it.id+'_'+di+'">0</td></tr>';});
+    h+='</tbody></table></div><div class="notes"><label>Sizes / notes</label><textarea data-notes="'+it.id+'" placeholder="e.g. S-6, M-14, L-16, XL-10, 2XL-4">'+(st.notes||'')+'</textarea></div>';
+    card.innerHTML=h;host.appendChild(card);
+    it.views.forEach(function(v){renderPlaced(it,st.color,v);});
+  });
+  if(!render._wired){host.addEventListener('input',onInput);host.addEventListener('click',onClick);render._wired=true;}
+  attachLogoDrag();recalc();renderSelPanel();
+}
+function onInput(e){var t=e.target;if(t.tagName==='INPUT'&&t.dataset.item){var id=t.dataset.item,st=state[id],v=t.value.replace(/[^0-9]/g,'');if(v!==t.value)t.value=v;st.q[t.dataset.di+'_'+t.dataset.ci]=v?parseInt(v,10):0;save();recalc();}else if(t.dataset.notes){state[t.dataset.notes].notes=t.value;save();}}
+function onClick(e){
+  var pc=e.target.closest('.pdcopy');if(pc){var d=PD[pc.dataset.pd]||'';try{navigator.clipboard.writeText(d);}catch(_){}toast('Store description copied');return;}
+  var rx=e.target.closest('.cwx');if(rx){e.stopPropagation();removeColorway(rx.dataset.rmitem,parseInt(rx.dataset.rmci,10));return;}
+  var ca=e.target.closest('.cwadd');if(ca){openColorPicker(ca.dataset.add);return;}
+  var st2=e.target.closest('.studiotoggle');if(st2){studioOpen[st2.dataset.studio]=!studioOpen[st2.dataset.studio];render();return;}
+  var chip=e.target.closest('.cwchip');if(chip){var it=byId(chip.dataset.item);S(it).color=parseInt(chip.dataset.ci,10);SELECTED=null;save();render();return;}var ch=e.target.closest('.changeblank');if(ch){blanksOpen[ch.dataset.item]=true;render();return;}
+  var lab=e.target.closest('.blank');if(lab&&!e.target.classList.contains('view')){var id=lab.dataset.item,b=decodeURIComponent(lab.dataset.blank);state[id].blank=b;blanksOpen[id]=false;save();render();return;}}
+
+function renderPlaced(it,ci,view){
+  var stage=document.querySelector('.stage[data-item="'+it.id+'"][data-view="'+view+'"]');if(!stage)return;
+  stage.querySelectorAll('.placed').forEach(function(n){n.remove();});
+  var ph=it.photos&&it.photos[view];var arr=getPlaced(it,ci,view),garHex=ph?(it.photoHex||'#ffffff'):cols(it)[ci].c,hint=stage.querySelector('.hint');if(hint)hint.style.display=arr.length?'none':'flex';
+  arr.forEach(function(p,idx){
+    var l=logoById(p.logo);if(!l)return;var el=document.createElement('div');el.className='placed';
+    var isSel=SELECTED&&SELECTED.item===it.id&&SELECTED.colorKey===ci&&SELECTED.view===view&&SELECTED.idx===idx;if(isSel)el.className+=' sel';
+    el.style.left=p.x+'%';el.style.top=p.y+'%';el.style.width=widthPct(p.size)+'%';
+    var ink=resolveInk(p,garHex);
+    if(l.img){ el.innerHTML='<div class="ink" style="height:0;padding-bottom:'+(100/l.ar)+'%;background-color:'+ink+';-webkit-mask-image:url('+l.img+');mask-image:url('+l.img+')"></div>'; }
+    else { el.innerHTML='<div class="ph" style="color:'+ink+'">'+l.name+'</div>'; }
+    stage.appendChild(el);
+    el.addEventListener('pointerdown',function(ev){ev.preventDefault();el.setPointerCapture(ev.pointerId);var moved=false,sx=ev.clientX,sy=ev.clientY;el.style.cursor='grabbing';
+      function mv(e2){if(Math.abs(e2.clientX-sx)>4||Math.abs(e2.clientY-sy)>4)moved=true;var r=stage.getBoundingClientRect();p.x=Math.max(0,Math.min(100,((e2.clientX-r.left)/r.width)*100));p.y=Math.max(0,Math.min(100,((e2.clientY-r.top)/r.height)*100));el.style.left=p.x+'%';el.style.top=p.y+'%';}
+      function up(){try{el.releasePointerCapture(ev.pointerId);}catch(_){}el.style.cursor='grab';document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);if(moved){save();}else{SELECTED={item:it.id,colorKey:ci,view:view,idx:idx};renderPlaced(it,ci,view);renderSelPanel();}}
+      document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);
+    });
+  });
+}
+
+function renderSelPanel(){
+  document.querySelectorAll('.selpanel').forEach(function(p){p.style.display='none';p.innerHTML='';});
+  if(!SELECTED)return;var it=byId(SELECTED.item);if(!it)return;var arr=getPlaced(it,SELECTED.colorKey,SELECTED.view);var p=arr[SELECTED.idx];if(!p){SELECTED=null;return;}
+  var panel=document.getElementById('sel_'+it.id);if(!panel)return;var l=logoById(p.logo);
+  var h='<div class="sh"><span>🎨 '+l.name+' · '+SELECTED.view+'</span><button class="delbtn" onclick="delPlaced()">Delete</button></div>';
+  h+='<div class="lbl">Print color (ink)</div><div class="inks"><span class="inkauto'+((!p.ink||p.ink==='auto')?' sel':'')+'" onclick="setInk(\'auto\')">Auto</span>'+INKS.map(function(k){return '<span class="inkdot'+(p.ink===k.c?' sel':'')+'" style="background:'+k.c+'" title="'+k.n+'" onclick="setInk(\''+k.c+'\')"></span>';}).join('')+'</div>';
+  h+='<div class="lbl">Print size</div><div class="sizes">'+SIZES.map(function(s){return '<button class="szbtn'+(Math.abs(p.size-s.in)<0.01?' sel':'')+'" onclick="setSize('+s.in+')">'+s.n+'</button>';}).join('')+'<button class="minibtn" onclick="bumpSize(-0.5)">−</button><button class="minibtn" onclick="bumpSize(0.5)">+</button><span class="szread">≈ '+p.size.toFixed(1)+' in</span></div>';
+  panel.innerHTML=h;panel.style.display='block';
+}
+function _selP(){if(!SELECTED)return null;var it=byId(SELECTED.item);return getPlaced(it,SELECTED.colorKey,SELECTED.view)[SELECTED.idx];}
+function setInk(c){var p=_selP();if(!p)return;p.ink=c;save();var it=byId(SELECTED.item);renderPlaced(it,SELECTED.colorKey,SELECTED.view);renderSelPanel();}
+function setSize(v){var p=_selP();if(!p)return;p.size=v;save();var it=byId(SELECTED.item);renderPlaced(it,SELECTED.colorKey,SELECTED.view);renderSelPanel();}
+function bumpSize(d){var p=_selP();if(!p)return;p.size=Math.max(1.5,Math.min(16,p.size+d));save();var it=byId(SELECTED.item);renderPlaced(it,SELECTED.colorKey,SELECTED.view);renderSelPanel();}
+function delPlaced(){if(!SELECTED)return;var it=byId(SELECTED.item);getPlaced(it,SELECTED.colorKey,SELECTED.view).splice(SELECTED.idx,1);var k={item:SELECTED.item,ck:SELECTED.colorKey,v:SELECTED.view};SELECTED=null;save();renderPlaced(byId(k.item),k.ck,k.v);renderSelPanel();}
+
+var ghost=document.getElementById('ghost');
+function attachLogoDrag(){document.querySelectorAll('.logo').forEach(function(node){node.addEventListener('pointerdown',function(ev){ev.preventDefault();var id=node.dataset.logo,l=logoById(id);ghost.innerHTML=l.img?'<img src="'+l.img+'">':'<div class="ph">'+l.name+'</div>';ghost.style.display='block';ghost.style.left=ev.clientX+'px';ghost.style.top=ev.clientY+'px';
+  function mv(e2){ghost.style.left=e2.clientX+'px';ghost.style.top=e2.clientY+'px';}
+  function up(e2){document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);ghost.style.display='none';var tgt=document.elementFromPoint(e2.clientX,e2.clientY);var stage=tgt&&tgt.closest?tgt.closest('.stage'):null;if(stage){var it=byId(stage.dataset.item),view=stage.dataset.view,ci=S(it).color,r=stage.getBoundingClientRect();var defSize=view==='back'?12:(it.garment==='cap'?3:it.garment==='shorts'?3.5:4);getPlaced(it,ci,view).push({logo:id,x:Math.max(0,Math.min(100,((e2.clientX-r.left)/r.width)*100)),y:Math.max(0,Math.min(100,((e2.clientY-r.top)/r.height)*100)),size:defSize,ink:'auto'});SELECTED={item:it.id,colorKey:ci,view:view,idx:getPlaced(it,ci,view).length-1};save();renderPlaced(it,ci,view);renderSelPanel();toast('Placed '+l.name+' — tap it to set color/size');}}
+  document.addEventListener('pointermove',mv);document.addEventListener('pointerup',up);});});}
+
+function recalc(){var grand=0,filled=0;ITEMS.forEach(function(it){var itot=0;it.designs.forEach(function(d,di){var rt=0;cols(it).forEach(function(c,ci){rt+=getQ(it,di,ci);});var el=document.getElementById('rt_'+it.id+'_'+di);if(el)el.textContent=rt;itot+=rt;});var te=document.getElementById('tot_'+it.id);if(te)te.textContent=itot;if(itot>0)filled++;grand+=itot;});document.getElementById('grandTotal').textContent=grand.toLocaleString();document.getElementById('filledCount').textContent=filled;}
+
+function buildOrder(){var L=['2ND NATURE — MIXTURE APPAREL ORDER','Generated '+new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}),'========================================'];var grand=0;
+  ITEMS.forEach(function(it){var itot=0,body=[];it.designs.forEach(function(dn,di){var parts=[],rt=0;cols(it).forEach(function(c,ci){var q=getQ(it,di,ci);if(q>0){parts.push(c.n+' '+q);rt+=q;}});if(rt>0){body.push('   • '+dn+': '+parts.join(', ')+'  = '+rt);itot+=rt;}});
+    if(itot>0){grand+=itot;L.push('');L.push(it.name.replace(/[^\x00-\x7F]/g,'').trim().toUpperCase()+'  ['+itot+' pcs]  — blank: '+(state[it.id].blank||'TBD'));L=L.concat(body);
+      // mockup notes: list placements
+      var mk=state[it.id].mock||{},plc=[];Object.keys(mk).forEach(function(vw){(mk[vw]||[]).forEach(function(p){var l=logoById(p.logo);if(l)plc.push(l.name+' '+(p.ink&&p.ink!=='auto'?'('+inkName(p.ink)+' ink) ':'')+'~'+p.size.toFixed(1)+'in on '+vw);});});
+      if(plc.length)L.push('   prints: '+plc.join(' | '));
+      if(state[it.id].notes)L.push('   sizes/notes: '+state[it.id].notes);}});
+  L.push('','========================================','GRAND TOTAL: '+grand.toLocaleString()+' pieces','','Open: confirm sizes (see notes), gym shorts nylon/mesh, hat colors. Art files to follow.','— 2nd Nature Park · info@2ntr.com · 914.646.1146');
+  var t=L.join('\n');document.getElementById('orderText').textContent=t;window._ot=t;document.getElementById('modal').classList.add('show');}
+function inkName(c){for(var i=0;i<INKS.length;i++)if(INKS[i].c===c)return INKS[i].n;return c;}
+function closeModal(){document.getElementById('modal').classList.remove('show');}
+function copyOrder(){var t=window._ot||'';try{navigator.clipboard.writeText(t);}catch(e){var a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();}toast('Order copied');}
+function emailOrder(){var t=window._ot||'';window.location.href='mailto:info@mixtureprints.com?cc=info@2ntr.com,bigpicturemural@gmail.com&subject='+encodeURIComponent('2nd Nature — Summer Apparel Order')+'&body='+encodeURIComponent(t);}
+function resetAll(){if(!confirm('Clear all quantities, mockups and selections?'))return;state={};SELECTED=null;save();render();toast('Cleared');}
+function toast(m){var e=document.getElementById('toast');e.textContent=m;e.classList.add('show');setTimeout(function(){e.classList.remove('show');},1500);}
+
+migrateMock();
+async function init(){
+  var pe=document.getElementById('people'); if(pe) pe.addEventListener('click',onPeopleClick);
+  render(); renderPeople();           // paint immediately
+  await fetchSubs();                  // load everyone from the shared DB
+  var saved=localStorage.getItem('mixture_current');
+  if(saved){ selectPerson(saved); }   // re-open your own entry
+  else if(Object.keys(contributors).length){ showAvg(); }  // others exist → show the average
+  else { fillSuggestedState(); render(); renderPeople(); }  // first-ever → suggested + prompt to add
+}
+init();
+</script>
+</body>
+</html>

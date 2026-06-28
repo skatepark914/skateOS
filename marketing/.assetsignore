@@ -3,3 +3,7 @@
 .deploy-trigger
 *.md
 node_modules/**
+# Doug's consulting business — separate from skateOS marketing.
+# Lives elsewhere when consult.skateos.com is set up properly.
+# Contains references to Branch Manager which should not bleed into skateOS brand.
+consulting/**

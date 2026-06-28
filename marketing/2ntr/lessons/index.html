@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book a lesson · 2nd Nature Park</title>
+<meta name="description" content="Book a private, group, or camp skate lesson at 2nd Nature Park. Real-time availability. Pay online.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛹</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* === Square-inspired clean white admin look === */
+  :root {
+    --ink: #0e0e10;
+    --ink-soft: #4a4d55;
+    --ink-mute: #7a7e85;
+    --line: #e6e7ea;
+    --line-strong: #d2d4d8;
+    --bg: #f6f7f9;
+    --white: #fff;
+    --rose: #d11a2a;
+    --rose-light: #fef0ee;
+    --green: #007a52;
+    --green-light: #ecfdf5;
+    --amber: #b88200;
+    --amber-light: #fff8e6;
+    --shadow-sm: 0 1px 2px rgba(20,24,30,.04);
+    --shadow: 0 2px 8px rgba(20,24,30,.06), 0 1px 2px rgba(20,24,30,.04);
+    --shadow-lg: 0 14px 30px rgba(20,24,30,.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* === Top bar === */
+  header.top {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 14px 24px;
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .brand {
+    font-weight: 800; font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: flex; align-items: center;
+  }
+  .brand .em { margin-right: 6px; }
+  .brand-logo { height: 42px; width: auto; display: block; }
+  .top .back {
+    font-size: 13.5px; color: var(--ink-mute); font-weight: 600;
+  }
+  .top .back:hover { color: var(--ink); }
+  .top-nav { display: flex; align-items: center; gap: 22px; }
+  .top-nav a { font-size: 14px; font-weight: 700; color: var(--ink-mute); white-space: nowrap; }
+  .top-nav a:hover, .top-nav a.active { color: var(--ink); }
+  @media (max-width: 560px) {
+    header.top { padding: 12px 16px; }
+    .top-nav { gap: 14px; }
+    .top-nav a { font-size: 13px; }
+    .brand { font-size: 16px; }
+  }
+
+  /* === Page === */
+  .wrap { max-width: 880px; margin: 0 auto; padding: 28px 20px 80px; }
+
+  .head { margin-bottom: 24px; }
+  .head h1 {
+    font-size: 1.7rem; font-weight: 800; letter-spacing: -0.025em;
+    margin-bottom: 6px;
+  }
+  .head p { color: var(--ink-soft); font-size: .95rem; }
+
+  /* === Stepper === */
+  .stepper {
+    display: flex; align-items: center; gap: 8px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+    font-size: 13px; font-weight: 700;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .stepper::-webkit-scrollbar { display: none; }
+  .stepper .step {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 4px 12px;
+    border-radius: 18px;
+    background: transparent;
+    color: var(--ink-mute);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .stepper .step .n {
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--line);
+    color: var(--ink-soft);
+    font-size: 11px; font-weight: 800;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .stepper .step.active { background: var(--ink); color: #fff; }
+  .stepper .step.active .n { background: rgba(255,255,255,.2); color: #fff; }
+  .stepper .step.done .n { background: var(--green); color: #fff; }
+  .stepper .step.done { color: var(--ink); }
+  .stepper .sep { flex: 0 0 8px; height: 1px; background: var(--line-strong); }
+
+  /* === Panel (card) === */
+  .panel {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .panel h2 {
+    font-size: 1.15rem; font-weight: 800; letter-spacing: -0.015em;
+    margin-bottom: 4px;
+  }
+  .panel .sub { color: var(--ink-mute); font-size: .88rem; margin-bottom: 22px; }
+  .hidden { display: none !important; }
+
+  /* === Service cards (Square POS-tile look) === */
+  .svc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 12px;
+  }
+  .svc {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 16px 18px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color .12s, background .12s, box-shadow .12s;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .svc:hover { border-color: var(--ink-soft); }
+  .svc.sel {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #fff;
+    box-shadow: var(--shadow);
+  }
+  .svc .em {
+    font-size: 22px;
+    width: 38px; height: 38px;
+    background: var(--bg); border-radius: 9px;
+    display: inline-flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .svc.sel .em { background: rgba(255,255,255,.12); }
+  .svc .body { flex: 1; min-width: 0; }
+  .svc .name { font-size: .96rem; font-weight: 800; letter-spacing: -0.01em; margin-bottom: 2px; }
+  .svc .meta { font-size: .78rem; color: var(--ink-mute); margin-bottom: 6px; }
+  .svc.sel .meta { color: rgba(255,255,255,.6); }
+  .svc .price {
+    font-size: .94rem; font-weight: 800; letter-spacing: -0.01em;
+  }
+
+  /* === Coach cards === */
+  .coach-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+  }
+  .coach {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 18px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .12s, background .12s;
+  }
+  .coach:hover { border-color: var(--ink-soft); }
+  .coach.sel { border-color: var(--ink); background: var(--ink); color: #fff; box-shadow: var(--shadow); }
+  .coach .avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--bg); color: var(--ink);
+    font-weight: 800; font-size: 1rem; letter-spacing: -0.02em;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .coach.sel .avatar { background: #fff; color: var(--ink); }
+  .coach .nm { font-size: .9rem; font-weight: 800; letter-spacing: -0.01em; }
+  .coach .role { font-size: .72rem; color: var(--ink-mute); margin-top: 2px; }
+  .coach.sel .role { color: rgba(255,255,255,.55); }
+  .coach.coach-any {
+    border-color: var(--ink);
+    background: linear-gradient(135deg, #fff 0%, #f6f7f9 100%);
+  }
+  .coach.coach-any:hover { border-color: var(--ink); background: #fff; }
+  .coach.coach-any.sel { background: var(--ink); }
+
+  /* === Date + time === */
+  .date-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .date {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 4px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .12s, background .12s;
+  }
+  .date:hover:not(.dis) { border-color: var(--ink-soft); }
+  .date.sel { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .date .dow {
+    font-size: .66rem; font-weight: 800;
+    color: var(--ink-mute);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+  .date.sel .dow { color: rgba(255,255,255,.6); }
+  .date .d { font-size: 1.3rem; font-weight: 900; letter-spacing: -0.02em; }
+  .date .ct {
+    font-size: .68rem; font-weight: 700; margin-top: 2px;
+    color: var(--green);
+  }
+  .date.sel .ct { color: #a3e3c5; }
+  .date.dis { opacity: 0.4; cursor: not-allowed; }
+  .date.dis .ct { color: var(--ink-mute); font-weight: 600; }
+
+  .slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+    gap: 8px;
+  }
+  .slot {
+    background: #fff;
+    border: 1.5px solid var(--line);
+    border-radius: 9px;
+    padding: 11px 6px;
+    text-align: center;
+    font-size: .92rem; font-weight: 700;
+    cursor: pointer;
+    transition: border-color .12s, background .12s, color .12s;
+    color: var(--ink);
+  }
+  .slot:hover { border-color: var(--ink-soft); }
+  .slot.sel { background: var(--ink); border-color: var(--ink); color: #fff; }
+  .empty { text-align: center; padding: 30px 14px; color: var(--ink-mute); font-size: .9rem; }
+
+  /* === Form === */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block;
+    font-size: .76rem; font-weight: 800;
+    color: var(--ink); margin-bottom: 6px;
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 1.5px solid var(--line-strong);
+    border-radius: 8px;
+    font-family: inherit; font-size: .94rem;
+    background: #fff; color: var(--ink);
+    transition: border-color .12s;
+  }
+  .field input:focus, .field textarea:focus { outline: none; border-color: var(--ink); }
+  .field textarea { min-height: 60px; resize: vertical; }
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .row-2 { grid-template-columns: 1fr; } }
+
+  /* === Order summary === */
+  .summary {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 18px;
+  }
+  .summary .ln {
+    display: flex; justify-content: space-between;
+    padding: 4px 0; font-size: .9rem;
+    color: var(--ink-soft);
+  }
+  .summary .ln.total {
+    border-top: 1px solid var(--line-strong);
+    margin-top: 8px; padding-top: 10px;
+    font-weight: 800; color: var(--ink);
+    font-size: 1.05rem;
+  }
+  .summary .lbl { color: var(--ink-mute); font-size: .78rem; text-transform: uppercase; letter-spacing: .04em; font-weight: 700; }
+  .summary .v { color: var(--ink); font-weight: 700; }
+
+  /* === Buttons === */
+  .row { display: flex; gap: 10px; margin-top: 18px; }
+  .btn {
+    flex: 1;
+    padding: 13px 18px;
+    border: none; border-radius: 9px;
+    font-family: inherit; font-size: .96rem; font-weight: 800;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: opacity .12s, transform .08s;
+  }
+  .btn:active { transform: scale(.99); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .btn-prim {
+    background: var(--ink); color: #fff;
+  }
+  .btn-prim:hover:not(:disabled) { opacity: 0.92; }
+  .btn-sec {
+    flex: 0; padding: 13px 18px;
+    background: #fff; color: var(--ink);
+    border: 1.5px solid var(--line-strong);
+  }
+  .btn-sec:hover:not(:disabled) { border-color: var(--ink); }
+
+  /* === Spinner + error === */
+  .loading { padding: 32px; text-align: center; color: var(--ink-mute); font-size: .9rem; }
+  .loading .spin {
+    display: inline-block; width: 16px; height: 16px;
+    border: 2.5px solid var(--line);
+    border-top-color: var(--ink);
+    border-radius: 50%;
+    animation: sp .8s linear infinite;
+    vertical-align: middle; margin-right: 10px;
+  }
+  @keyframes sp { to { transform: rotate(360deg); } }
+  .err {
+    background: var(--rose-light); border: 1px solid #fecaca;
+    color: #b91c1c; padding: 11px 14px;
+    border-radius: 8px; font-size: .88rem;
+    margin-top: 14px;
+  }
+
+  /* === Pay screen === */
+  .pay-line {
+    background: var(--green-light);
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: .85rem; font-weight: 700;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 9px;
+  }
+
+  /* === Confirmation === */
+  .done { text-align: center; padding: 24px 8px; }
+  .done .check {
+    width: 76px; height: 76px; border-radius: 50%;
+    background: var(--green-light); color: var(--green);
+    font-size: 2.4rem;
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 16px;
+  }
+  .done h2 { font-size: 1.6rem; margin-bottom: 6px; letter-spacing: -0.02em; }
+  .done p { color: var(--ink-soft); font-size: .95rem; }
+  .conf {
+    display: inline-block;
+    background: var(--bg);
+    padding: 9px 16px; border-radius: 8px;
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: .9rem; font-weight: 800;
+    color: var(--ink);
+    margin: 14px 0;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="/2ntr" class="brand"><img src="/2ntr/assets/logo.png" alt="2nd Nature Park" class="brand-logo"></a>
+  <nav class="top-nav">
+    <a href="/2ntr/park">The park</a>
+    <a href="/2ntr/shop">Shop</a>
+    <a href="/2ntr/lessons" class="active">Lessons</a>
+    <a href="/admin/me.html">Account</a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div style="position:relative;border-radius:18px;overflow:hidden;margin-bottom:18px;">
+    <img src="/2ntr/assets/park-action.jpg" alt="Skate lessons at 2nd Nature Park, Peekskill NY" loading="lazy" style="width:100%;height:230px;object-fit:cover;object-position:center 42%;display:block;">
+    <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,9,14,0.62),rgba(8,9,14,0.12));display:flex;align-items:center;padding:0 30px;">
+      <div style="color:#fff;">
+        <div style="font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;opacity:.92;">2nd Nature Park · Peekskill, NY</div>
+        <div style="font-size:clamp(22px,3.6vw,34px);font-weight:900;letter-spacing:-0.02em;margin-top:5px;line-height:1.05;">Learn to skate with real coaches</div>
+      </div>
+    </div>
+  </div>
+  <div class="head">
+    <h1>Book a lesson</h1>
+    <p>Pick a service, coach, and time. Pay online. You'll get a confirmation email.</p>
+  </div>
+
+  <div class="stepper" id="stepper">
+    <div class="step" data-s="1"><span class="n">1</span>Service</div>
+    <span class="sep"></span>
+    <div class="step" data-s="2"><span class="n">2</span>Coach</div>
+    <span class="sep"></span>
+    <div class="step" data-s="3"><span class="n">3</span>Time</div>
+    <span class="sep"></span>
+    <div class="step" data-s="4"><span class="n">4</span>Details</div>
+    <span class="sep"></span>
+    <div class="step" data-s="5"><span class="n">$</span>Pay</div>
+  </div>
+
+  <!-- Step 1: Service -->
+  <section class="panel" id="step1">
+    <h2>Choose a service</h2>
+    <p class="sub">Each service has its own duration + price.</p>
+    <div class="svc-grid">
+      <button class="svc" data-type="private" data-price="90">
+        <span class="em">👤</span>
+        <div class="body">
+          <div class="name">Private 1:1 lesson</div>
+          <div class="meta">60 minutes · personalized</div>
+          <div class="price">$90</div>
+        </div>
+      </button>
+      <button class="svc" data-type="group" data-price="50">
+        <span class="em">👥</span>
+        <div class="body">
+          <div class="name">Group lesson</div>
+          <div class="meta">90 minutes · 2–4 skaters</div>
+          <div class="price">$50/skater</div>
+        </div>
+      </button>
+      <button class="svc" data-type="camp" data-price="120">
+        <span class="em">🏕️</span>
+        <div class="body">
+          <div class="name">Camp session</div>
+          <div class="meta">3 hours · 6–10 skaters</div>
+          <div class="price">$120/skater</div>
+        </div>
+      </button>
+      <button class="svc" data-type="birthday" data-price="400">
+        <span class="em">🎂</span>
+        <div class="body">
+          <div class="name">Birthday party</div>
+          <div class="meta">2 hours · full group</div>
+          <div class="price">From $400</div>
+        </div>
+      </button>
+    </div>
+    <div class="row">
+      <button class="btn btn-prim" id="b1" disabled onclick="go(2)">Continue</button>
+    </div>
+  </section>
+
+  <!-- Step 2: Coach -->
+  <section class="panel hidden" id="step2">
+    <h2>Pick your coach</h2>
+    <p class="sub">All coaches are 2nd Nature staff.</p>
+    <div id="coachWrap" class="loading"><span class="spin"></span>Loading coaches…</div>
+    <div class="row">
+      <button class="btn btn-sec" onclick="go(1)">← Back</button>
+      <button class="btn btn-prim" id="b2" disabled onclick="go(3)">Continue</button>
+    </div>
+  </section>
+
+  <!-- Step 3: Time -->
+  <section class="panel hidden" id="step3">
+    <h2>Pick a time</h2>
+    <p class="sub" id="step3Sub">Next 14 days · times shown are local.</p>
+    <div id="dateWrap" class="loading"><span class="spin"></span>Loading availability…</div>
+    <div id="slotWrap"></div>
+    <div class="row">
+      <button class="btn btn-sec" onclick="go(2)">← Back</button>
+      <button class="btn btn-prim" id="b3" disabled onclick="go(4)">Continue</button>
+    </div>
+  </section>
+
+  <!-- Step 4: Details -->
+  <section class="panel hidden" id="step4">
+    <h2>Your details</h2>
+    <p class="sub">We'll email you a confirmation + reminder before the lesson.</p>
+    <div class="field"><label>Skater name</label><input id="fName" type="text" placeholder="First last"></div>
+    <div class="row-2">
+      <div class="field"><label>Email</label><input id="fEmail" type="email" placeholder="you@example.com"></div>
+      <div class="field"><label>Phone</label><input id="fPhone" type="tel" placeholder="(914) 555-1234"></div>
+    </div>
+    <div class="field"><label>Parent / guardian <span style="text-transform:none;color:var(--ink-mute);letter-spacing:0;font-weight:500;font-size:.78rem;">— if skater is under 18</span></label><input id="fParent" type="text" placeholder="Parent first last (or skip)"></div>
+    <div class="field"><label>Notes for the coach (optional)</label><textarea id="fNotes" placeholder="Skill level, goals, anything we should know"></textarea></div>
+    <div class="row">
+      <button class="btn btn-sec" onclick="go(3)">← Back</button>
+      <button class="btn btn-prim" onclick="go(5)">Review + pay →</button>
+    </div>
+  </section>
+
+  <!-- Step 5: Pay -->
+  <section class="panel hidden" id="step5">
+    <h2>Confirm + pay</h2>
+    <p class="sub">You'll be redirected to Square's secure payment page.</p>
+    <div class="summary" id="orderSummary"></div>
+    <div class="pay-line">🔒 Payment is processed by Square. We never see your card details.</div>
+    <div class="row">
+      <button class="btn btn-sec" onclick="go(4)">← Back</button>
+      <button class="btn btn-prim" id="payBtn" onclick="startPay()">Pay <span id="payAmt"></span> + book →</button>
+    </div>
+    <div id="payErr" class="err hidden"></div>
+  </section>
+
+  <!-- Step 6: Confirmation (when redirected back from Square) -->
+  <section class="panel hidden" id="step6">
+    <div class="done">
+      <div class="check">✓</div>
+      <h2>You're booked!</h2>
+      <p>Your payment was received. We'll email + text the confirmation shortly.</p>
+      <div class="conf" id="confNo">CONFIRMATION-XXXX</div>
+      <div class="summary" id="confSummary"></div>
+      <div class="row" style="margin-top:18px;">
+        <a href="/2ntr" class="btn btn-sec" style="flex:1;text-align:center;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">Back home</a>
+        <a href="/2ntr/lessons" class="btn btn-prim" style="text-align:center;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;">Book another</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+var SUPA = 'https://zecurmlenxyxanqucrga.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+var H = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
+
+var st = { type: null, typeLabel: null, price: 0, instructor: null, instructorId: null, date: null, slot: null, slotLabel: null };
+function $(id){ return document.getElementById(id); }
+
+function setStep(n){
+  document.querySelectorAll('.stepper .step').forEach(function(s){
+    var x = parseInt(s.dataset.s, 10);
+    s.classList.toggle('active', x === n);
+    s.classList.toggle('done', x < n);
+  });
+  for (var i = 1; i <= 6; i++){
+    var el = $('step' + i);
+    if (el) el.classList.toggle('hidden', i !== n);
+  }
+}
+
+function go(n){
+  if (n === 2 && !st.type) return;
+  if (n === 3 && !st.instructor) return;
+  if (n === 4 && !st.slot) return;
+  if (n === 5){
+    // validate the details form
+    var name = $('fName').value.trim();
+    var email = $('fEmail').value.trim();
+    var phone = $('fPhone').value.trim();
+    if (!name){ alert('Enter the skater\'s name'); return; }
+    if (!email && !phone){ alert('Enter at least an email or phone'); return; }
+    renderSummary();
+  }
+  setStep(n);
+  if (n === 2) loadCoaches();
+  if (n === 3) loadSlots();
+}
+
+// === Step 1 ===
+document.querySelectorAll('.svc').forEach(function(s){
+  s.addEventListener('click', function(){
+    document.querySelectorAll('.svc').forEach(function(x){ x.classList.remove('sel'); });
+    s.classList.add('sel');
+    st.type = s.dataset.type;
+    st.typeLabel = s.querySelector('.name').textContent;
+    st.price = parseFloat(s.dataset.price);
+    $('b1').disabled = false;
+  });
+});
+
+// === Step 2 ===
+async function loadCoaches(){
+  var w = $('coachWrap');
+  try {
+    var r = await fetch(SUPA + '/rest/v1/rpc/public_instructor_list', { method:'POST', headers:H, body:'{}' });
+    var d = await r.json();
+    if (!Array.isArray(d)) throw new Error('Bad response');
+    var inst = d.filter(function(i){ return i.display_name; });
+    if (inst.length === 0){
+      w.innerHTML = '<div class="empty">No coaches available. Call (914) 402-4624 to book.</div>';
+      return;
+    }
+    // Stash for "Any coach" fan-out
+    window._allCoaches = inst;
+    w.className = 'coach-grid';
+    // "Any coach" tile first — picks the first available instructor for a slot
+    var anyTile = '<button class="coach coach-any" data-id="__any__" data-name="__any__">'
+      + '<div class="avatar" style="background:linear-gradient(135deg,#0e0e10 0%,#4a4d55 100%);color:#fff;">★</div>'
+      + '<div class="nm">Any coach</div>'
+      + '<div class="role">Most availability</div>'
+      + '</button>';
+    var coachTiles = inst.map(function(i){
+      var init = (i.display_name||'').split(/\s+/).map(function(p){return p[0]||'';}).join('').slice(0,2).toUpperCase();
+      return '<button class="coach" data-id="' + i.id + '" data-name="' + (i.display_name||'').replace(/"/g,'&quot;') + '">'
+        + '<div class="avatar">' + init + '</div>'
+        + '<div class="nm">' + (i.display_name||'') + '</div>'
+        + '<div class="role">Coach</div>'
+        + '</button>';
+    }).join('');
+    w.innerHTML = anyTile + coachTiles;
+    w.querySelectorAll('.coach').forEach(function(c){
+      c.addEventListener('click', function(){
+        w.querySelectorAll('.coach').forEach(function(x){ x.classList.remove('sel'); });
+        c.classList.add('sel');
+        st.instructor = c.dataset.name;
+        st.instructorId = c.dataset.id;
+        $('b2').disabled = false;
+      });
+    });
+  } catch(e){
+    w.innerHTML = '<div class="err">Couldn\'t load coaches: ' + e.message + '</div>';
+  }
+}
+
+// === Step 3 ===
+// When "Any coach" is picked we fan out to all instructors in parallel +
+// merge results. Each slot is tagged with which coach is open at that time
+// so when the customer picks one we can lock in a specific instructor for
+// the actual booking + payment.
+async function loadSlots(){
+  var dw = $('dateWrap');
+  dw.className = 'loading';
+  var label = (st.instructor === '__any__') ? 'any coach' : st.instructor;
+  dw.innerHTML = '<span class="spin"></span>Loading availability for ' + label + '…';
+  $('slotWrap').innerHTML = '';
+  st.date = null; st.slot = null;
+  $('b3').disabled = true;
+  $('step3Sub').textContent = st.typeLabel + ' with ' + label + ' · next 14 days';
+
+  try {
+    if (st.instructor === '__any__') {
+      // Fan-out: fetch slots for every instructor in parallel
+      var inst = window._allCoaches || [];
+      if (inst.length === 0) throw new Error('No coaches available');
+      var results = await Promise.all(inst.map(function(i){
+        return fetch(SUPA + '/rest/v1/rpc/public_lesson_slots', {
+          method:'POST', headers:H,
+          body: JSON.stringify({ p_instructor: i.display_name, p_lesson_type: st.type, p_days_forward: 14 })
+        }).then(function(r){ return r.json(); }).then(function(j){ return { coach: i.display_name, days: (j && j.days) || [] }; }).catch(function(){ return { coach: i.display_name, days: [] }; });
+      }));
+      window._days = mergeAnyCoach(results);
+    } else {
+      var r = await fetch(SUPA + '/rest/v1/rpc/public_lesson_slots', {
+        method:'POST', headers:H,
+        body: JSON.stringify({ p_instructor: st.instructor, p_lesson_type: st.type, p_days_forward: 14 })
+      });
+      var d = await r.json();
+      if (!d || !d.days) throw new Error('Bad response');
+      // Tag each slot with the chosen instructor so the slot picker logic
+      // is unified across single-coach + any-coach modes
+      window._days = d.days.map(function(day){
+        return {
+          date: day.date,
+          dow: day.dow,
+          is_closed: day.is_closed,
+          slots: (day.slots||[]).map(function(s){ return Object.assign({}, s, { coach: st.instructor }); }),
+        };
+      });
+    }
+
+    dw.className = 'date-strip';
+    dw.innerHTML = window._days.map(function(day){
+      var n = (day.slots||[]).length;
+      var dt = new Date(day.date + 'T12:00:00');
+      var cls = day.is_closed ? 'dis' : (n === 0 ? 'dis' : '');
+      var ct = day.is_closed ? 'closed' : (n === 0 ? '—' : n + ' open');
+      return '<div class="date ' + cls + '" data-d="' + day.date + '">'
+        + '<div class="dow">' + day.dow.slice(0,3) + '</div>'
+        + '<div class="d">' + dt.getDate() + '</div>'
+        + '<div class="ct">' + ct + '</div>'
+        + '</div>';
+    }).join('');
+    dw.querySelectorAll('.date:not(.dis)').forEach(function(p){
+      p.addEventListener('click', function(){
+        dw.querySelectorAll('.date').forEach(function(x){ x.classList.remove('sel'); });
+        p.classList.add('sel');
+        st.date = p.dataset.d;
+        showSlots(p.dataset.d);
+      });
+    });
+    var first = dw.querySelector('.date:not(.dis)');
+    if (first) first.click();
+  } catch(e){
+    dw.className = 'err'; dw.textContent = 'Couldn\'t load: ' + e.message;
+  }
+}
+
+// Merge availability from N instructors → a single days[] structure
+// Each merged slot carries the list of coaches available at that time.
+// The displayed time picker shows distinct times; when picked we pick
+// the FIRST available coach for that slot for the actual booking.
+function mergeAnyCoach(results){
+  // Build a map: date → { dow, is_closed, slots: Map<iso, {iso, time_label, duration_min, coaches:[]}> }
+  var byDate = {};
+  results.forEach(function(res){
+    res.days.forEach(function(day){
+      if (!byDate[day.date]){
+        byDate[day.date] = { date: day.date, dow: day.dow, is_closed: day.is_closed, slots: {} };
+      }
+      // If ANY coach reports the day NOT closed, mark it not closed
+      if (!day.is_closed) byDate[day.date].is_closed = false;
+      (day.slots || []).forEach(function(s){
+        var k = s.iso;
+        if (!byDate[day.date].slots[k]){
+          byDate[day.date].slots[k] = Object.assign({}, s, { coaches: [] });
+        }
+        byDate[day.date].slots[k].coaches.push(res.coach);
+      });
+    });
+  });
+  // Flatten into the array shape the renderer expects, sorted by ISO time
+  return Object.keys(byDate).sort().map(function(date){
+    var d = byDate[date];
+    var slots = Object.values(d.slots).sort(function(a, b){ return a.iso.localeCompare(b.iso); });
+    // For each slot, expose `coach` as the first-available instructor (for
+    // booking) + `coaches` as the full list (for UI labeling)
+    slots = slots.map(function(s){ return Object.assign({}, s, { coach: s.coaches[0] }); });
+    return { date: d.date, dow: d.dow, is_closed: d.is_closed, slots: slots };
+  });
+}
+function showSlots(date){
+  var w = $('slotWrap');
+  var day = (window._days || []).find(function(d){ return d.date === date; });
+  if (!day || !day.slots || day.slots.length === 0){
+    w.innerHTML = '<div class="empty">No times — try a different day.</div>'; return;
+  }
+  var isAny = (st.instructor === '__any__');
+  w.innerHTML = '<div class="slot-grid">' + day.slots.map(function(s){
+    var coach = s.coach || st.instructor;
+    var coachLine = isAny
+      ? '<div style="font-size:.66rem;color:var(--ink-mute);font-weight:600;margin-top:3px;">w/ ' + coach + (s.coaches && s.coaches.length > 1 ? ' +' + (s.coaches.length-1) : '') + '</div>'
+      : '';
+    return '<div class="slot" data-iso="' + s.iso + '" data-label="' + s.time_label + '" data-coach="' + coach.replace(/"/g,'&quot;') + '">'
+      + s.time_label + coachLine + '</div>';
+  }).join('') + '</div>';
+  w.querySelectorAll('.slot').forEach(function(el){
+    el.addEventListener('click', function(){
+      w.querySelectorAll('.slot').forEach(function(x){ x.classList.remove('sel'); });
+      el.classList.add('sel');
+      st.slot = el.dataset.iso;
+      st.slotLabel = el.dataset.label;
+      // When "Any" is selected, lock in the actual coach for this slot
+      st.slotCoach = el.dataset.coach;
+      $('b3').disabled = false;
+    });
+  });
+}
+
+// === Step 5 ===
+function renderSummary(){
+  var dt = new Date(st.slot);
+  var dateStr = dt.toLocaleDateString('en-US', { weekday:'long', month:'short', day:'numeric' });
+  // When "Any coach" was the picker but a specific coach got assigned to this slot,
+  // surface the actual coach name in the summary.
+  var coachDisplay = (st.instructor === '__any__') ? st.slotCoach : st.instructor;
+  $('payAmt').textContent = '$' + Number(st.price).toFixed(0);
+  $('orderSummary').innerHTML =
+      '<div class="ln"><span class="lbl">Service</span><span class="v">' + st.typeLabel + '</span></div>'
+    + '<div class="ln"><span class="lbl">Coach</span><span class="v">' + coachDisplay + '</span></div>'
+    + '<div class="ln"><span class="lbl">When</span><span class="v">' + dateStr + ' · ' + st.slotLabel + '</span></div>'
+    + '<div class="ln"><span class="lbl">Skater</span><span class="v">' + $('fName').value.trim() + '</span></div>'
+    + '<div class="ln total"><span>Total</span><span>$' + Number(st.price).toFixed(2) + '</span></div>';
+}
+
+async function startPay(){
+  var btn = $('payBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span style="display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:sp .8s linear infinite;vertical-align:middle;margin-right:8px;"></span>Creating payment…';
+  $('payErr').classList.add('hidden');
+  try {
+    // When "Any" was chosen, we already locked in the actual coach when the
+    // customer picked a slot. Send that to the booking API, not "__any__".
+    var bookingInstructor = (st.instructor === '__any__') ? st.slotCoach : st.instructor;
+    var r = await fetch(SUPA + '/functions/v1/square-lesson-checkout', {
+      method:'POST', headers:{'Content-Type':'application/json','Authorization':'Bearer ' + KEY},
+      body: JSON.stringify({
+        instructor:    bookingInstructor,
+        lesson_type:   st.type,
+        slot_iso:      st.slot,
+        skater_name:   $('fName').value.trim(),
+        skater_email:  $('fEmail').value.trim() || null,
+        skater_phone:  $('fPhone').value.trim() || null,
+        parent_name:   $('fParent').value.trim() || null,
+        notes:         $('fNotes').value.trim() || null,
+        return_url:    location.origin + '/2ntr/lessons/thanks',
+      })
+    });
+    var d = await r.json();
+    if (!r.ok || !d.ok){
+      throw new Error(d.error || 'Payment setup failed');
+    }
+    location.href = d.url;
+  } catch(e){
+    var er = $('payErr'); er.textContent = e.message; er.classList.remove('hidden');
+    btn.disabled = false; btn.innerHTML = 'Pay ' + ($('payAmt').textContent) + ' + book →';
+  }
+}
+
+// Boot
+setStep(1);
+</script>
+</body>
+</html>

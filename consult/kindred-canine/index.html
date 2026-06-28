@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Kindred Canine Co. — structured dog training in Fairfield County, CT</title>
+<meta name="description" content="Balanced, real-world dog training for working and power breeds in Stamford & Fairfield County, CT. Private training, Board & Train, behavior rehab. Free evaluation.">
+<meta name="robots" content="noindex">
+<meta property="og:title" content="Kindred Canine Co. — structured training for real life">
+<meta property="og:description" content="Balanced dog training & behavior rehab for power breeds. Stamford, CT. Book a free evaluation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='84'%3E%F0%9F%90%95%3C/text%3E%3C/svg%3E">
+<style>
+  :root{
+    --ink:#22241f;--cream:#f6f1e6;--paper:#fbf9f2;--card:#fffdf8;
+    --green:#46624f;--green-d:#2c3f33;--gold:#b08d3e;--gold-l:#c9a44f;
+    --sage:#8b9a83;--soft:#6e6a5d;--line:#e6ddca;--accent2:#9a6a3e;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,ui-sans-serif,-apple-system,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Cormorant Garamond",Georgia,serif}
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%;display:block}
+
+  .ribbon{background:var(--green-d);color:#eadfca;text-align:center;font-size:.74rem;letter-spacing:.04em;padding:7px 16px}
+  .ribbon b{color:#fff}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(251,249,242,.9);backdrop-filter:saturate(160%) blur(10px);border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:1.45rem;letter-spacing:.01em;display:flex;align-items:center;gap:9px}
+  .brand .mk{width:32px;height:32px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:1rem}
+  .nav-links{display:flex;gap:26px;align-items:center;font-size:.9rem;font-weight:500;color:var(--soft)}
+  .nav-links a:hover{color:var(--green)}
+  .btn{display:inline-block;border-radius:40px;padding:11px 22px;font-weight:600;font-size:.9rem;cursor:pointer;border:1px solid var(--green);transition:.15s}
+  .btn.primary{background:var(--green);color:#fff}
+  .btn.primary:hover{background:var(--green-d)}
+  .btn.ghost{background:transparent;color:var(--green)}
+  .btn.ghost:hover{background:var(--green);color:#fff}
+  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+
+  .hero{position:relative;overflow:hidden;background:linear-gradient(165deg,#f7f3ea 0%,#eef0e6 55%,#e2e8dd 100%)}
+  .hero-in{position:relative;max-width:1080px;margin:0 auto;padding:84px 22px 92px;text-align:center}
+  .eyebrow{font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:16px}
+  .hero h1{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(2.6rem,6.2vw,4.4rem);line-height:1.04;letter-spacing:-.01em;color:var(--green-d)}
+  .hero h1 em{font-style:italic;color:var(--gold)}
+  .hero .lede{max-width:52ch;margin:20px auto 0;font-size:1.08rem;color:#4a463b}
+  .hero .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .stars{margin-top:22px;font-size:.92rem;color:var(--soft)}
+  .stars b{color:var(--green)}
+
+  section{padding:74px 22px}
+  .in{max-width:1080px;margin:0 auto}
+  .narrow{max-width:720px;margin:0 auto}
+  .kicker{font-size:.76rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);font-weight:600;text-align:center;margin-bottom:12px}
+  h2.h{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(2rem,4.4vw,2.9rem);line-height:1.1;text-align:center;color:var(--green-d)}
+  .sub{text-align:center;color:var(--soft);max-width:58ch;margin:16px auto 0;font-size:1.04rem}
+
+  .story{background:var(--cream)}
+  .story p{font-size:1.12rem;color:#403c32;margin-top:18px}
+  .story .narrow{text-align:center}
+
+  .cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:42px}
+  @media(max-width:860px){.cards-grid{grid-template-columns:1fr;max-width:460px;margin-inline:auto}}
+  .prog{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+  .prog .ph{aspect-ratio:16/9;position:relative;display:flex;align-items:flex-end;padding:14px}
+  .prog .ph .tag{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:rgba(255,255,255,.88);color:var(--green-d);padding:5px 10px;border-radius:30px;font-weight:600}
+  .prog .body{padding:20px 20px 22px;display:flex;flex-direction:column;flex:1}
+  .prog h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.55rem;font-weight:600;color:var(--green-d)}
+  .prog .feat{font-size:.92rem;color:var(--soft);margin-top:8px;flex:1}
+  .prog .pr{margin-top:14px;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.35rem;font-weight:600;color:var(--green)}
+  .prog .pr small{font-size:.78rem;color:var(--soft);font-weight:400;font-family:Inter}
+
+  .why{background:var(--green-d);color:#ece3cf}
+  .why h2.h,.why .kicker{color:#fff}
+  .why .kicker{color:var(--gold-l)}
+  .why .sub{color:#bcc8b8}
+  .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:42px}
+  @media(max-width:760px){.why-grid{grid-template-columns:1fr 1fr}}
+  @media(max-width:480px){.why-grid{grid-template-columns:1fr}}
+  .why-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px 18px}
+  .why-card .ic{font-size:1.5rem}
+  .why-card h4{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.3rem;font-weight:600;margin:8px 0 4px;color:#fff}
+  .why-card p{font-size:.88rem;color:#bcc8b8}
+
+  .eval{background:var(--cream)}
+  .eval-card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:34px 30px;display:grid;grid-template-columns:1.2fr 1fr;gap:30px;align-items:center}
+  @media(max-width:780px){.eval-card{grid-template-columns:1fr}}
+  .eval-card h2{font-family:"Cormorant Garamond",Georgia,serif;font-size:2.1rem;font-weight:500;color:var(--green-d);line-height:1.12}
+  .eval-card ul{list-style:none;margin-top:16px}
+  .eval-card li{padding:7px 0 7px 28px;position:relative;color:#403c32}
+  .eval-card li:before{content:"\2713";position:absolute;left:0;color:var(--gold);font-weight:700}
+  .eval-card .price-side{text-align:center}
+
+  .book{background:linear-gradient(180deg,#f7f3ea,#eef0e6)}
+  .widget{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:28px 26px;max-width:860px;margin:38px auto 0;box-shadow:0 16px 50px -28px rgba(44,63,51,.4)}
+  .field label{display:block;font-size:.74rem;letter-spacing:.08em;text-transform:uppercase;color:var(--soft);font-weight:600;margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;font-size:.95rem;font-family:Inter;background:#fff;color:var(--ink)}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+  .wopts{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:22px}
+  @media(max-width:480px){.wopts{grid-template-columns:1fr}}
+  .cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .cal-head .nav{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:1.1rem;color:var(--green);display:flex;align-items:center;justify-content:center;line-height:1}
+  .cal-head .nav:hover{background:var(--green);color:#fff;border-color:var(--green)}
+  .cal-head .nav:disabled{opacity:.3;cursor:not-allowed}
+  .cal-head .lbl{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.2rem;font-weight:600;color:var(--green-d)}
+  .cals{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media(max-width:680px){.cals{grid-template-columns:1fr}.cal.second{display:none}}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+  .dow span{text-align:center;font-size:.66rem;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);font-weight:600;padding:4px 0}
+  .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+  .mname{text-align:center;font-family:"Cormorant Garamond",Georgia,serif;font-size:1.3rem;font-weight:600;color:var(--green-d);margin-bottom:8px}
+  .day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:.9rem;border-radius:9px;cursor:pointer;color:var(--ink);user-select:none}
+  .day:hover:not(.off):not(.past):not(.unavail){background:#e7efe7}
+  .day.off{visibility:hidden;cursor:default}
+  .day.past{color:#cfcabc;cursor:not-allowed}
+  .day.unavail{color:#c7bca8;cursor:not-allowed;text-decoration:line-through;background:#efe9dd}
+  .day.today{box-shadow:inset 0 0 0 1px var(--gold)}
+  .day.inrange{background:#dde7de;border-radius:0}
+  .day.start{background:var(--green);color:#fff;border-radius:9px 0 0 9px}
+  .day.end{background:var(--green);color:#fff;border-radius:0 9px 9px 0}
+  .day.start.end{border-radius:9px}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-size:.78rem;color:var(--soft)}
+  .legend i{width:13px;height:13px;border-radius:4px;display:inline-block;vertical-align:-2px;margin-right:5px}
+  .calnote{font-size:.78rem;color:var(--soft);margin-top:9px}
+  .summary{margin-top:20px;padding:18px 20px;border-radius:14px;background:#f1f5f1;border:1px solid #d6e2d6;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .summary .det{font-size:.96rem;color:var(--green-d)}
+  .summary .det b{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.25rem;font-weight:600}
+  .summary .total{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;color:var(--green);font-weight:600}
+  .summary.empty{color:var(--soft);background:#faf8f2;border-color:var(--line);justify-content:center;font-size:.92rem;text-align:center}
+  #bookMsg{margin-top:16px;padding:16px 18px;border-radius:13px;background:#eef5ee;border:1px solid #cfe3cf;color:var(--green-d);font-size:.94rem;display:none}
+  #bookMsg.show{display:block}
+  #bookMsg b{font-weight:600}
+
+  .rev{background:var(--cream)}
+  .rev-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:38px}
+  @media(max-width:700px){.rev-grid{grid-template-columns:1fr}}
+  .quote{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .quote .st{color:var(--gold);letter-spacing:2px}
+  .quote p{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.32rem;font-style:italic;color:#3c382e;margin:10px 0 14px;line-height:1.4}
+  .quote .by{font-size:.86rem;color:var(--soft);font-weight:500}
+
+  /* ---- proposal / pitch (B2B, for the owner) ---- */
+  .pitch{background:#1a1613;color:#ece4d4}
+  .pitch .kicker{color:var(--gold-l)}
+  .pitch h2.h{color:#fff}
+  .pitch .sub{color:#c4bba9}
+  .deliv{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:820px){.deliv{grid-template-columns:1fr 1fr}}
+  @media(max-width:520px){.deliv{grid-template-columns:1fr}}
+  .deliv .d{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:20px}
+  .deliv .d .ic{font-size:1.4rem}
+  .deliv .d h4{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.3rem;color:#fff;margin:8px 0 4px;font-weight:600}
+  .deliv .d p{font-size:.9rem;color:#c4bba9}
+  .honest{background:#2a241d;border:1px solid #4a4234;border-left:4px solid var(--gold);border-radius:14px;padding:24px 26px;max-width:820px;margin:40px auto 0}
+  .honest h3{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.7rem;color:#fff;font-weight:600}
+  .honest p{color:#cfc6b3;font-size:.97rem;margin-top:10px}
+  .honest .big{color:var(--gold-l);font-weight:600}
+  .honest ul{margin:14px 0 0;padding:0;list-style:none}
+  .honest li{position:relative;padding:8px 0 8px 26px;color:#d8cfbd;font-size:.96rem}
+  .honest li:before{content:"\2192";position:absolute;left:0;color:var(--gold)}
+  .plan{max-width:820px;margin:38px auto 0;border:1px solid rgba(255,255,255,.14);border-radius:16px;overflow:hidden}
+  .plan .row{display:grid;grid-template-columns:62px 1fr;border-bottom:1px solid rgba(255,255,255,.1)}
+  .plan .row:last-child{border-bottom:none}
+  .plan .hr{background:rgba(176,141,62,.16);color:var(--gold-l);font-family:"Cormorant Garamond",Georgia,serif;font-size:1.3rem;font-weight:600;display:flex;align-items:center;justify-content:center}
+  .plan .wk{padding:15px 20px}
+  .plan .wk b{color:#fff;font-weight:600}
+  .plan .wk p{color:#b9b0a0;font-size:.89rem;margin-top:2px}
+  .plan-foot{text-align:center;color:#b9b0a0;font-size:.9rem;margin:16px auto 0;max-width:620px}
+  .pkgs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px;align-items:stretch}
+  @media(max-width:820px){.pkgs{grid-template-columns:1fr;max-width:440px;margin-inline:auto}}
+  .pkg{background:#fffdf8;color:var(--ink);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;border:1px solid var(--line)}
+  .pkg.featured{border:2px solid var(--gold);box-shadow:0 18px 50px -26px rgba(176,141,62,.6)}
+  .pkg .badge{align-self:flex-start;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;color:#fff;background:var(--gold);padding:4px 10px;border-radius:20px;margin-bottom:12px}
+  .pkg h4{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;font-weight:600;color:var(--green-d)}
+  .pkg .amt{font-family:"Cormorant Garamond",Georgia,serif;font-size:2.6rem;font-weight:600;color:var(--green);margin:6px 0 2px;line-height:1}
+  .pkg .amt small{font-size:.9rem;color:var(--soft);font-weight:400;font-family:Inter}
+  .pkg .desc{color:var(--soft);font-size:.91rem;margin-bottom:14px}
+  .pkg .desc em{color:var(--accent2);font-style:normal;font-weight:600}
+  .pkg ul{list-style:none;margin-top:auto;padding:0}
+  .pkg li{padding:6px 0 6px 24px;position:relative;font-size:.9rem;color:#3f3a30}
+  .pkg li:before{content:"\2713";position:absolute;left:0;color:var(--gold);font-weight:700}
+  .pitch-close{text-align:center;margin-top:46px}
+  .cmp{max-width:900px;margin:40px auto 0;background:#fffdf8;border:1px solid var(--line);border-radius:16px;color:var(--ink)}
+  .cmp .scroll{overflow-x:auto;border-radius:16px}
+  .cmp table{width:100%;border-collapse:collapse;font-size:.87rem}
+  .cmp th,.cmp td{padding:13px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  .cmp thead th{background:#f3efe4;font-size:.7rem;letter-spacing:.03em;text-transform:uppercase;color:var(--soft);font-weight:700}
+  .cmp thead th.us{background:var(--green);color:#fff}
+  .cmp td.us{background:#f1f5f1;font-weight:600;color:var(--green-d)}
+  .cmp tbody tr:last-child td{border-bottom:none}
+  .cmp .rowlbl{font-weight:600;color:var(--ink);white-space:nowrap}
+  @media(max-width:640px){.cmp table{min-width:580px}}
+  .offer{max-width:720px;margin:38px auto 0;background:#fffdf8;color:var(--ink);border:2px solid var(--gold);border-radius:20px;padding:32px 28px;box-shadow:0 22px 60px -30px rgba(176,141,62,.7)}
+  .offer-row{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;justify-content:center;text-align:center}
+  .offer-row .was{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.8rem;color:var(--soft);text-decoration:line-through}
+  .offer-row .now{font-family:"Cormorant Garamond",Georgia,serif;font-size:3.4rem;font-weight:600;color:var(--green);line-height:1}
+  .offer-row .lbl{width:100%;color:var(--soft);font-size:.95rem;margin-top:4px}
+  .offer-perks{list-style:none;padding:0;margin:22px auto 0;max-width:520px}
+  .offer-perks li{position:relative;padding:8px 0 8px 28px;font-size:.97rem;color:#3f3a30}
+  .offer-perks li:before{content:"\2713";position:absolute;left:0;color:var(--gold);font-weight:700}
+  .offer-fine{margin-top:16px;font-size:.88rem;color:var(--soft);text-align:center;font-style:italic}
+  .src{font-size:.78rem;color:#9a917f;margin-top:14px}
+  .cfg{max-width:720px;margin:38px auto 0;background:#fffdf8;color:var(--ink);border:1px solid var(--line);border-radius:20px;padding:28px 26px;text-align:left}
+  .cfg h4{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.15rem;color:var(--green-d);font-weight:600;margin:20px 0 10px}
+  .cfg h4:first-child{margin-top:0}
+  .opt{display:flex;align-items:flex-start;gap:12px;border:1px solid var(--line);border-radius:12px;padding:13px 15px;margin-bottom:9px;cursor:pointer;transition:.12s}
+  .opt:hover{border-color:var(--gold)}
+  .opt input{margin-top:3px;accent-color:var(--green);width:17px;height:17px;flex-shrink:0}
+  .opt .ot{flex:1}
+  .opt .ot b{display:block;color:var(--ink);font-size:.96rem}
+  .opt .ot span{font-size:.85rem;color:var(--soft)}
+  .opt .op{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.2rem;color:var(--green);font-weight:600;white-space:nowrap}
+  .opt.sel{border-color:var(--green);background:#f1f5f1}
+  .cfg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:520px){.cfg .grid2{grid-template-columns:1fr}}
+  .cfg textarea{resize:vertical;min-height:64px}
+  .cfg-sum{background:var(--green-d);color:#fff;border-radius:14px;padding:18px 20px;margin-top:22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+  .cfg-sum .s1{font-size:.8rem;color:#bcc8b8}
+  .cfg-sum .s2{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.5rem;font-weight:600}
+  .cfg-sum .s2 small{font-size:.85rem;color:#cdd6c6;font-weight:400;font-family:Inter}
+  .cfg .send{width:100%;margin-top:16px;background:var(--green);color:#fff;border:none;font-size:1rem;padding:14px;border-radius:12px;cursor:pointer;font-weight:700;font-family:Inter}
+  .cfg .send:hover{background:#16302a}
+  .cfg .send:disabled{opacity:.5;cursor:not-allowed}
+  .cfg-msg{margin-top:14px;padding:14px 16px;border-radius:12px;font-size:.93rem;display:none}
+  .cfg-msg.ok{display:block;background:#eef5ee;border:1px solid #cfe3cf;color:var(--green-d)}
+  .cfg-msg.err{display:block;background:#fbecec;border:1px solid #e6c9c9;color:#9a2b2b}
+  .cfg-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+  @media(max-width:520px){.cfg-actions{grid-template-columns:1fr}}
+  .cfg-actions .send{margin-top:0}
+  .send.ghost{background:#fff;color:var(--green);border:1px solid var(--green)}
+  .send.ghost:hover{background:#f1f5f1}
+  .agree{border-top:1px solid var(--line);margin-top:24px;padding-top:18px}
+  .agree-box{background:#faf8f2;border:1px solid var(--line);border-radius:12px;padding:18px 20px;font-size:.9rem;color:#3f3a30;max-height:320px;overflow-y:auto}
+  .agree-box h5{font-family:"Cormorant Garamond",Georgia,serif;font-size:1.2rem;color:var(--green-d);margin:0 0 8px}
+  .agree-box .ln{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px dashed var(--line)}
+  .agree-box .ln b{color:var(--green-d);text-align:right}
+  .agree-box .terms{margin-top:12px;font-size:.83rem;color:var(--soft);line-height:1.65}
+  .agree-check{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:.92rem;color:#3f3a30;cursor:pointer}
+  .agree-check input{margin-top:3px;width:18px;height:18px;accent-color:var(--green);flex-shrink:0}
+  .agree-date{font-size:.85rem;color:var(--soft);margin-top:10px}
+
+  footer{background:var(--green-d);color:#cdd6c6;padding:60px 22px 34px}
+  .foot-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:30px}
+  @media(max-width:700px){.foot-in{grid-template-columns:1fr;gap:24px}}
+  footer .brand{color:#fff;margin-bottom:10px}
+  footer h5{font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);margin-bottom:12px}
+  footer a:hover{color:#fff;text-decoration:underline}
+  footer p,footer li{font-size:.92rem;line-height:1.85;list-style:none}
+  .foot-bottom{max-width:1080px;margin:34px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:.8rem;color:#9bab93}
+  .foot-bottom a{color:var(--gold-l)}
+</style>
+</head>
+<body>
+
+<div class="ribbon">Concept preview prepared for <b>Kindred Canine Co.</b> · built by Hudson Valley AI · not yet live</div>
+
+<nav>
+  <div class="nav-in">
+    <a class="brand" href="#top"><span class="mk">🐕</span> Kindred Canine Co.</a>
+    <div class="nav-links">
+      <a href="#programs">Programs</a>
+      <a href="#about">About</a>
+      <a href="#book">Boarding</a>
+      <a class="btn primary" href="#book">Book a free eval</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-in">
+    <div class="eyebrow">Stamford &amp; Fairfield County, CT</div>
+    <h1>Structured training<br>for <em>real life.</em></h1>
+    <p class="lede">Balanced, individualized dog training and behavior rehab — built for working and power breeds. 25 years of getting real results with the dogs other trainers turn away.</p>
+    <div class="cta">
+      <a class="btn primary" href="#book">Book your free evaluation</a>
+      <a class="btn ghost" href="#programs">See the programs</a>
+    </div>
+    <div class="stars">★★★★★ &nbsp;<b>25 years experience</b> · fully insured · loved by clients across Fairfield County</div>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section class="story" id="about">
+  <div class="narrow">
+    <div class="kicker">The trainer</div>
+    <h2 class="h">Meet Ashley.</h2>
+    <p>Ashley Lionetti has spent nearly 25 years working with dogs — specializing in working breeds, pit bulls, and power breeds, including the tough behavioral and reactivity cases that scare other trainers off.</p>
+    <p>No one-size-fits-all programs here. Every dog gets a balanced, individualized plan built around real-world exposure and structured socialization — so the training actually holds up in the real world, not just in a quiet room.</p>
+  </div>
+</section>
+
+<!-- PROGRAMS -->
+<section id="programs">
+  <div class="in">
+    <div class="kicker">What we offer</div>
+    <h2 class="h">Programs for every dog &amp; every goal.</h2>
+    <p class="sub">From puppy foundations to serious behavioral rehab. Not sure where to start? Begin with a free evaluation.</p>
+    <div class="cards-grid">
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#6f8a72,#3f5747)"><span class="tag">1-on-1</span></div>
+        <div class="body">
+          <h3>Private Training</h3>
+          <p class="feat">One-on-one sessions — obedience, leash work, prong &amp; e-collar conditioning, and real-world manners, on your schedule.</p>
+          <div class="pr">from $150<small> / hour</small></div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#b6a06a,#7d6a36)"><span class="tag">Immersive</span></div>
+        <div class="body">
+          <h3>Board &amp; Train</h3>
+          <p class="feat">Your dog stays with Ashley for an immersive program and comes home with structure, obedience, and confidence built in.</p>
+          <div class="pr">$2,200–$4,800</div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#5d7d86,#33525a)"><span class="tag">Drop-off</span></div>
+        <div class="body">
+          <h3>Day Training</h3>
+          <p class="feat">Drop off for focused daytime instruction — intensive skill-building or ongoing maintenance to keep training sharp.</p>
+          <div class="pr">$125–$495<small> / day</small></div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#7c9c8c,#46624f)"><span class="tag">Foundations</span></div>
+        <div class="body">
+          <h3>Puppy &amp; Foundations</h3>
+          <p class="feat">Potty training, early socialization, and the foundation manners that set a puppy up for life. Start them off right.</p>
+          <div class="pr">Free eval to start</div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#9a6a3e,#5e3f24)"><span class="tag">Specialty</span></div>
+        <div class="body">
+          <h3>Behavior &amp; Reactivity</h3>
+          <p class="feat">Rehab for reactive, anxious, or power breeds — confidence building, obstacle work, and structured exposure that lasts.</p>
+          <div class="pr">Consults from $250</div>
+        </div>
+      </div>
+
+      <div class="prog">
+        <div class="ph" style="background:linear-gradient(150deg,#6b7d63,#3a4733)"><span class="tag">Care</span></div>
+        <div class="body">
+          <h3>Daycare &amp; Boarding</h3>
+          <p class="feat">Daycare with training built in, plus overnight boarding — your dog is cared for and keeps learning while you're away.</p>
+          <div class="pr">Daycare $85–$110 · Boarding $100<small>/night</small></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="why">
+  <div class="in">
+    <div class="kicker">Why Kindred</div>
+    <h2 class="h">The real deal — not a franchise.</h2>
+    <div class="why-grid">
+      <div class="why-card"><div class="ic">🎓</div><h4>25 years in</h4><p>A quarter-century of hands-on work with every kind of dog.</p></div>
+      <div class="why-card"><div class="ic">💪</div><h4>Power-breed specialist</h4><p>Pit bulls, working &amp; power breeds — and the hard cases.</p></div>
+      <div class="why-card"><div class="ic">⚖️</div><h4>Balanced &amp; individual</h4><p>A plan built for your dog, not a cookie-cutter program.</p></div>
+      <div class="why-card"><div class="ic">🌳</div><h4>Real-world exposure</h4><p>Training that holds up where it counts — out in the world.</p></div>
+      <div class="why-card"><div class="ic">🛡️</div><h4>Fully insured</h4><p>Licensed, insured, and accountable for your dog's care.</p></div>
+      <div class="why-card"><div class="ic">❤️</div><h4>Discounts &amp; plans</h4><p>Rescue, bully-ambassador, military &amp; student discounts · payment plans.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FREE EVAL -->
+<section class="eval">
+  <div class="in">
+    <div class="eval-card">
+      <div>
+        <h2>Start with a free evaluation.</h2>
+        <ul>
+          <li>Free phone consultation — talk through what's going on</li>
+          <li>Free in-person evaluation to meet your dog</li>
+          <li>Off-site evaluation available ($50, credited toward training)</li>
+          <li>An honest plan — what your dog needs, and what it'll take</li>
+        </ul>
+      </div>
+      <div class="price-side">
+        <div class="serif" style="font-size:3.4rem;color:var(--green);line-height:1">Free</div>
+        <div style="color:var(--soft);font-size:.92rem;margin-top:4px">phone consult &amp; first evaluation</div>
+        <a class="btn primary" href="#book" style="margin-top:18px">Book it</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING / BOARDING CALENDAR -->
+<section class="book" id="book">
+  <div class="in">
+    <div class="kicker">Reserve</div>
+    <h2 class="h">Check boarding &amp; daycare dates.</h2>
+    <p class="sub">Pick your dates and we'll confirm by email — usually within the day. (For training programs, book your free evaluation and we'll build the plan together.)</p>
+    <div class="widget">
+      <form class="wopts" id="bookForm" onsubmit="return false">
+        <div class="field"><label for="svc">Service</label>
+          <select id="svc">
+            <option value="100">Overnight Boarding — $100 / night</option>
+            <option value="95">Daycare + training — $95 / day</option>
+          </select>
+        </div>
+        <div class="field"><label for="dog">Your dog</label>
+          <select id="dog"><option>1 dog</option><option>2 dogs</option></select>
+        </div>
+      </form>
+
+      <div class="cal-head">
+        <button class="nav" id="prevM" aria-label="Previous month">&lsaquo;</button>
+        <div class="lbl" id="calRange">Select your dates</div>
+        <button class="nav" id="nextM" aria-label="Next month">&rsaquo;</button>
+      </div>
+      <div class="cals" id="cals"></div>
+      <div class="legend">
+        <span><i style="background:var(--green)"></i>Selected</span>
+        <span><i style="background:#dde7de"></i>Your stay</span>
+        <span><i style="background:#fff;box-shadow:inset 0 0 0 1px var(--gold)"></i>Today</span>
+        <span><i style="background:#efe9dd"></i>Full</span>
+      </div>
+      <p class="calnote">Sample availability — in the live version these dates sync with Ashley's real calendar so nothing double-books.</p>
+
+      <div class="summary empty" id="summary">Tap a drop-off date, then a pick-up date.</div>
+      <div id="bookMsg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="rev">
+  <div class="in">
+    <div class="kicker">Kind words</div>
+    <h2 class="h">Owners trust Ashley with the tough ones.</h2>
+    <p class="sub" style="font-size:.9rem">Representative of the reviews on file — your real Google &amp; Yelp reviews drop in here automatically once connected.</p>
+    <div class="rev-grid">
+      <div class="quote"><div class="st">★★★★★</div><p>"Patient, honest, and the only trainer who actually got through to our dog. We can finally enjoy walks again."</p><div class="by">Sample · replace with your real reviews</div></div>
+      <div class="quote"><div class="st">★★★★★</div><p>"Our Board &amp; Train sent home a completely different dog — calmer, focused, and finally listening. Worth every penny."</p><div class="by">Sample · replace with your real reviews</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====== PROPOSAL — for the owner (Ashley) ====== -->
+<section class="pitch" id="proposal">
+  <div class="in">
+    <div class="kicker">For Ashley · Kindred Canine Co.</div>
+    <h2 class="h">Everything above is the preview.<br>Here's how we make it yours.</h2>
+    <p class="sub">This is a working concept built specifically for Kindred Canine by Hudson Valley AI — a local shop out of Peekskill. Below is exactly what we'd build, how we'd build it, and what it costs. No agency runaround.</p>
+
+    <div class="deliv">
+      <div class="d"><div class="ic">🌐</div><h4>Your own booking site</h4><p>A site like this one — your programs, pricing, brand. Mobile-perfect, live on your own domain.</p></div>
+      <div class="d"><div class="ic">📅</div><h4>Online booking 24/7</h4><p>Clients book a free eval, a session, or boarding right on your page — even at 11pm when they can't call.</p></div>
+      <div class="d"><div class="ic">📋</div><h4>Client &amp; dog intake</h4><p>New clients fill out the dog's history, vetting, and goals before they ever arrive — no more back-and-forth.</p></div>
+      <div class="d"><div class="ic">🔔</div><h4>Automatic reminders</h4><p>Text &amp; email reminders before every session and stay — fewer no-shows, less chasing.</p></div>
+      <div class="d"><div class="ic">💳</div><h4>Deposits &amp; packages</h4><p>Take a deposit on Board &amp; Train and sell session packages online, so spots are committed.</p></div>
+      <div class="d"><div class="ic">🔑</div><h4>You own it</h4><p>Your software, your client list, your data — no platform lock-in, no per-booking cut to anyone.</p></div>
+    </div>
+
+    <div class="honest">
+      <h3>Straight talk on what this actually does</h3>
+      <p>We won't oversell it, so here's the honest version of where the value is:</p>
+      <ul>
+        <li><b>You're losing leads to phone tag.</b> <span class="big">67–70% of people</span> would rather book online than call, and <span class="big">40% of bookings happen after hours</span> — every missed call or slow DM reply is a client who books someone else.</li>
+        <li><b>No-shows cost you real money.</b> Automatic text/email reminders cut no-shows by <span class="big">38–50%</span> — on a $400 day-train or a $3,000 Board &amp; Train, that adds up fast.</li>
+        <li><b>It won't replace your phone — and shouldn't.</b> Some clients will always call, and that's good. This captures the ones who'd never call, and kills the back-and-forth on the rest. You're not paying any "commission" to anyone — there's no OTA in dog training. The value is your time, more booked evals, and fewer empty slots.</li>
+      </ul>
+    </div>
+
+    <div class="kicker" style="margin-top:64px">Getting found</div>
+    <h2 class="h" style="font-size:2.2rem">SEO &amp; Google — so new clients find you.</h2>
+    <p class="sub">Bookings only happen if people find you. Here's the honest plan for that.</p>
+    <div class="deliv">
+      <div class="d"><div class="ic">📍</div><h4>Google Business Profile</h4><p>Set up &amp; optimized so "dog trainer near Stamford" and Google Maps point to Kindred — the biggest free local lever.</p></div>
+      <div class="d"><div class="ic">🔎</div><h4>Built to be found</h4><p>Pages targeting Board &amp; Train, reactivity, and power-breed training across Fairfield County, with proper structured data.</p></div>
+      <div class="d"><div class="ic">⭐</div><h4>Reviews engine</h4><p>An easy nudge for happy clients to leave Google reviews — the #1 thing that wins local trust and ranking.</p></div>
+      <div class="d"><div class="ic">📝</div><h4>Helpful content</h4><p>Short guides ("is Board &amp; Train right for my dog?") that catch owners searching for answers — then book them.</p></div>
+    </div>
+    <div class="honest" style="margin-top:30px">
+      <h3>The honest part on SEO</h3>
+      <ul>
+        <li><b>It's a slow burn, not a switch.</b> SEO compounds over months — it won't fill your calendar overnight.</li>
+        <li><b>Where you win is local + reviews.</b> You won't out-rank the big directories on generic terms, but "dog trainer Stamford / Greenwich / Darien," Google Maps, and a strong review profile are very winnable — and that's where serious local clients look.</li>
+        <li><b>Reviews do the heavy lifting.</b> For a trainer, a steady stream of 5-star Google reviews beats almost any other marketing. We make leaving one effortless.</li>
+      </ul>
+    </div>
+
+    <div class="kicker" style="margin-top:64px">The build</div>
+    <h2 class="h" style="font-size:2.2rem">Hour by hour — what you're paying for.</h2>
+    <p class="sub">At $175/hour, here's where the time goes for the full booking site. Most trainers land around 8 hours.</p>
+    <div class="plan">
+      <div class="row"><div class="hr">1</div><div class="wk"><b>Kickoff &amp; gather</b><p>Your programs, pricing, policies, brand, and how you like to take clients — collected once.</p></div></div>
+      <div class="row"><div class="hr">2</div><div class="wk"><b>Build your site</b><p>Design, your content, mobile layout — the page clients actually see.</p></div></div>
+      <div class="row"><div class="hr">3</div><div class="wk"><b>Booking &amp; programs</b><p>Free-eval booking, session scheduling, boarding/daycare calendar, your real pricing.</p></div></div>
+      <div class="row"><div class="hr">4</div><div class="wk"><b>Client &amp; dog intake</b><p>Smart intake forms — dog history, vetting, goals — so you're prepped before they arrive.</p></div></div>
+      <div class="row"><div class="hr">5</div><div class="wk"><b>Reminders &amp; notifications</b><p>Auto text/email reminders to cut no-shows, plus instant booking alerts to you.</p></div></div>
+      <div class="row"><div class="hr">6</div><div class="wk"><b>Deposits &amp; packages</b><p>Take deposits on Board &amp; Train and sell session packages online.</p></div></div>
+      <div class="row"><div class="hr">7</div><div class="wk"><b>Go live &amp; get found</b><p>Your domain, Google Business Profile, search basics, full testing — then we walk you through it.</p></div></div>
+      <div class="row"><div class="hr">8</div><div class="wk"><b>Handoff &amp; support</b><p>It's yours. 30 days of support included after launch.</p></div></div>
+    </div>
+    <p class="plan-foot">Want less? We can start with just booking + intake. Want more — a client portal, training-progress reports, gift cards? It's $175/hour, à la carte.</p>
+
+    <div class="kicker" style="margin-top:64px">Your options</div>
+    <h2 class="h" style="font-size:2.2rem">Pick what fits.</h2>
+    <div class="pkgs">
+      <div class="pkg featured">
+        <span class="badge">Recommended</span>
+        <h4>Custom booking site you own</h4>
+        <div class="amt">$1,499</div>
+        <div class="desc">A custom software product, built for Kindred Canine — yours to keep.</div>
+        <ul>
+          <li>Everything in the 8-hour build above</li>
+          <li>Online booking + client/dog intake</li>
+          <li>Automatic reminders + deposits</li>
+          <li>Live on your domain · mobile-perfect</li>
+          <li>Google Business Profile + SEO foundations</li>
+          <li>You own the software &amp; the data · 30 days support</li>
+        </ul>
+      </div>
+      <div class="pkg">
+        <h4>On your own server</h4>
+        <div class="amt">$999</div>
+        <div class="desc">Run it all in-house on a Mac mini — no cloud bill, fully yours. <em>You supply the Mac mini.</em></div>
+        <ul>
+          <li>Full install + setup on your Mac mini</li>
+          <li>Your software, running on your network</li>
+          <li>No monthly hosting, nothing off-site</li>
+          <li>Handoff so it's yours to run</li>
+          <li>Pairs with the booking site above</li>
+        </ul>
+      </div>
+      <div class="pkg">
+        <h4>À la carte</h4>
+        <div class="amt">$175<small> / hr</small></div>
+        <div class="desc">Changes, add-ons, or ongoing help — only pay for what you use.</div>
+        <ul>
+          <li>New features or pages</li>
+          <li>Client portal &amp; progress reports</li>
+          <li>Marketing automation &amp; content</li>
+          <li>AI / token costs included</li>
+          <li>No retainer, no lock-in</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="kicker" style="margin-top:64px">Ongoing</div>
+    <h2 class="h" style="font-size:2.2rem">Keep it running — no surprises.</h2>
+    <p class="sub">Once it's live, this is the only recurring cost: hosting, security, backups, and a real person when you need one. Month to month, cancel anytime.</p>
+    <div class="pkgs">
+      <div class="pkg">
+        <h4>Essential Care</h4>
+        <div class="amt">$49<small> / mo</small></div>
+        <div class="desc">Keeps the lights on and the site safe.</div>
+        <ul>
+          <li>Hosting — fast, secure, always on</li>
+          <li>Security &amp; software updates</li>
+          <li>Daily backups + uptime monitoring</li>
+          <li>Booking, reminders &amp; intake kept running</li>
+          <li>Email support</li>
+        </ul>
+      </div>
+      <div class="pkg featured">
+        <span class="badge">Most popular</span>
+        <h4>Full Care</h4>
+        <div class="amt">$129<small> / mo</small></div>
+        <div class="desc">Everything in Essential, plus we keep improving it.</div>
+        <ul>
+          <li>Everything in Essential Care</li>
+          <li>Up to 1 hour of changes/content each month</li>
+          <li>Google Business Profile &amp; SEO upkeep</li>
+          <li>Priority support — we pick up first</li>
+          <li>Seasonal program &amp; pricing updates handled</li>
+        </ul>
+      </div>
+    </div>
+    <p class="plan-foot">No lock-in — month to month, cancel anytime. Bigger projects are billed à la carte at $175/hour.</p>
+
+    <div class="kicker" style="margin-top:64px">How we compare</div>
+    <h2 class="h" style="font-size:2.2rem">Owned, not rented.</h2>
+    <p class="sub">What the same booking setup costs the usual ways.</p>
+    <div class="cmp">
+      <div class="scroll">
+        <table>
+          <thead><tr><th></th><th class="us">Hudson Valley AI</th><th>Web agency</th><th>Booking software<br>(Acuity / Gingr-type)</th><th>DMs &amp; phone</th></tr></thead>
+          <tbody>
+            <tr><td class="rowlbl">Upfront</td><td class="us">$1,499 once</td><td>$3,000–$20,000+</td><td>$0–300 setup</td><td>$0</td></tr>
+            <tr><td class="rowlbl">Monthly</td><td class="us">$49–$129</td><td>$100–$300 retainer</td><td>$20–$150+</td><td>$0</td></tr>
+            <tr><td class="rowlbl">Online booking 24/7</td><td class="us">Yes</td><td>Depends</td><td>Yes</td><td>No</td></tr>
+            <tr><td class="rowlbl">Intake + reminders</td><td class="us">Built in</td><td>Custom-built</td><td>Add-ons</td><td>Manual</td></tr>
+            <tr><td class="rowlbl">Client + dog records</td><td class="us">Yours, custom</td><td>Custom</td><td>In their system</td><td>In your head</td></tr>
+            <tr><td class="rowlbl">Who owns it</td><td class="us">You do</td><td>Usually you</td><td>You rent it</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="plan-foot">Typical market ranges — yours will vary, but the shape holds: you own it, and clients can book you any hour of the day.</p>
+
+    <div class="kicker" style="margin-top:64px">For Kindred Canine</div>
+    <h2 class="h" style="font-size:2.2rem">Your founding-client rate.</h2>
+    <p class="sub">You'd be one of the first businesses we're building this for — and it becomes our showcase. So this isn't list price. It's a founding deal, just for you.</p>
+    <div class="offer">
+      <div class="offer-row">
+        <span class="was">$1,499</span>
+        <span class="now">$1,199</span>
+        <span class="lbl">the full custom booking site — yours to own</span>
+      </div>
+      <ul class="offer-perks">
+        <li><b>$300 off</b> the build — founding-client rate, because you're early</li>
+        <li><b>First 2 months of care free</b>, then Essential Care locked at <b>$49/mo</b> — your founding rate, it won't go up</li>
+        <li>Everything above: online booking, intake, reminders, deposits, Google Business Profile + SEO foundations — and you own it</li>
+      </ul>
+      <p class="offer-fine">In return, we'd feature Kindred Canine as an early case study. That's the whole deal — a real discount because you're first.</p>
+    </div>
+
+    <div class="honest" style="margin-top:34px">
+      <h3>The math — and the industry behind it</h3>
+      <ul>
+        <li><span class="big">67–70%</span> of people prefer to book online rather than call, and <span class="big">94%</span> are more likely to choose a provider who offers it.</li>
+        <li><span class="big">40%</span> of all bookings happen outside business hours — those are clients you can't answer the phone for, but a site can.</li>
+        <li>Automatic reminders cut no-shows <span class="big">38–50%</span>. Save even one missed Board &amp; Train deposit or a couple of day-trains a month and the build has paid for itself.</li>
+      </ul>
+      <p style="margin-top:14px">Conservative read — your real numbers depend on volume. The point: more booked evals and fewer empty slots, fast.</p>
+      <p class="src">Industry sources: online-booking preference 67–70% &amp; 94% more likely to choose (Zippia, SchedulingKit, 2026) · 40% of bookings after hours (SchedulingKit) · reminders cut no-shows 38–50%, from appointment/service-business studies (Klara) · small-business custom site $3,000–$20,000+ from agencies, freelance $1,500–$8,000 (Clutch / GruffyGoat, 2026).</p>
+    </div>
+
+    <div class="kicker" style="margin-top:64px">Ready?</div>
+    <h2 class="h" style="font-size:2.2rem">Pick your setup — we'll take it from here.</h2>
+    <p class="sub">Choose what you want, add your details, and it comes straight to us. No payment now — this just tells us what to put together for you.</p>
+    <form class="cfg" id="cfgForm" onsubmit="return false">
+      <h4>1 · The build</h4>
+      <label class="opt sel"><input type="radio" name="build" value="Founding booking site" data-once="1199" checked><span class="ot"><b>Founding booking site</b><span>Your custom site, yours to own — founding rate</span></span><span class="op">$1,199</span></label>
+      <label class="opt"><input type="radio" name="build" value="On your own server (Mac mini)" data-once="999"><span class="ot"><b>On your own server</b><span>Runs in-house on your Mac mini (you supply it)</span></span><span class="op">$999</span></label>
+      <label class="opt"><input type="radio" name="build" value="Not sure yet — let's talk" data-once="0"><span class="ot"><b>Not sure yet</b><span>Let's talk it through first</span></span><span class="op">—</span></label>
+
+      <h4>2 · Ongoing care</h4>
+      <label class="opt sel"><input type="radio" name="care" value="Essential Care" data-mo="49" checked><span class="ot"><b>Essential Care</b><span>Hosting, security, backups, support · first 2 months free</span></span><span class="op">$49/mo</span></label>
+      <label class="opt"><input type="radio" name="care" value="Full Care" data-mo="129"><span class="ot"><b>Full Care</b><span>Essential + monthly changes, SEO upkeep, priority support</span></span><span class="op">$129/mo</span></label>
+      <label class="opt"><input type="radio" name="care" value="Decide later" data-mo="0"><span class="ot"><b>Decide later</b><span>Add care after launch</span></span><span class="op">—</span></label>
+
+      <h4>3 · Add-ons <span style="font-weight:400;color:var(--soft);font-size:.85rem">(optional · quoted at $175/hr)</span></h4>
+      <label class="opt"><input type="checkbox" name="addon" value="Online payments / deposits"><span class="ot"><b>Online payments / deposits</b><span>Take deposits on Board &amp; Train + sell packages</span></span></label>
+      <label class="opt"><input type="checkbox" name="addon" value="Client portal & progress reports"><span class="ot"><b>Client portal &amp; progress reports</b><span>Owners log in to see their dog's progress</span></span></label>
+      <label class="opt"><input type="checkbox" name="addon" value="Reviews & Google Business Profile"><span class="ot"><b>Reviews &amp; Google Business Profile</b><span>Win local search + a steady review stream</span></span></label>
+      <label class="opt"><input type="checkbox" name="addon" value="SEO content package"><span class="ot"><b>SEO content package</b><span>Ongoing content to get found on Google</span></span></label>
+
+      <h4>4 · Your details</h4>
+      <div class="grid2">
+        <div class="field"><input type="text" id="cfgName" placeholder="Your name" autocomplete="name"></div>
+        <div class="field"><input type="email" id="cfgEmail" placeholder="Email" autocomplete="email"></div>
+      </div>
+      <div class="field" style="margin-top:12px"><input type="tel" id="cfgPhone" placeholder="Phone (optional)" autocomplete="tel"></div>
+      <div class="field" style="margin-top:12px"><textarea id="cfgNote" placeholder="Anything we should know? Programs, timing, questions…"></textarea></div>
+
+      <div class="cfg-sum">
+        <div><div class="s1">Your setup</div><div class="s2" id="cfgOnce">$1,199 <small>one-time</small></div></div>
+        <div style="text-align:right"><div class="s1">Then</div><div class="s2" id="cfgMo">$49<small>/mo · first 2 free</small></div></div>
+      </div>
+      <div class="cfg-actions">
+        <button type="button" class="send ghost" id="cfgTalk">Talk it through first</button>
+        <button type="button" class="send" id="cfgSignBtn">Sign up now →</button>
+      </div>
+      <div class="cfg-msg" id="cfgMsg"></div>
+
+      <div class="agree" id="agreePanel" style="display:none">
+        <h4 style="margin-top:0">Your agreement</h4>
+        <div class="agree-box" id="agreeBox"></div>
+        <label class="agree-check"><input type="checkbox" id="agreeChk"> I have read and agree to the Hudson Valley AI Client Services Agreement above, and I authorize the deposit shown.</label>
+        <div class="agree-date" id="agreeDate"></div>
+        <div class="field" style="margin-top:12px"><input type="text" id="signName" placeholder="Type your full name to sign"></div>
+        <button type="button" class="send" id="cfgSignSubmit" style="margin-top:14px">Agree &amp; continue to deposit →</button>
+      </div>
+    </form>
+
+    <div class="pitch-close">
+      <p style="color:#c4bba9;font-size:.95rem">Prefer to just talk it through? Email <a href="mailto:doug@2ntr.com" style="color:var(--gold-l)">doug@2ntr.com</a> or text (914) 402-4624.</p>
+      <p style="color:#9a917f;font-size:.86rem;margin-top:14px">Built by <a href="https://consult.skateos.com" style="color:var(--gold-l)" target="_blank" rel="noopener">Hudson Valley AI</a> · Doug · doug@2ntr.com</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div>
+      <div class="brand serif" style="font-size:1.5rem"><span class="mk" style="display:inline-flex;width:30px;height:30px;border-radius:50%;background:var(--green);align-items:center;justify-content:center;vertical-align:middle;margin-right:7px;font-size:.9rem">🐕</span>Kindred Canine Co.</div>
+      <p style="max-width:36ch;color:#aebaa6">Structured training for real life. Balanced dog training &amp; behavior rehab for working and power breeds.</p>
+    </div>
+    <div>
+      <h5>Get in touch</h5>
+      <p><a href="mailto:hello@kindredcanineco.com">hello@kindredcanineco.com</a><br>
+      <a href="tel:+12035619703">(203) 561-9703</a><br>
+      Stamford, CT · serving Fairfield County</p>
+    </div>
+    <div>
+      <h5>Start here</h5>
+      <ul>
+        <li><a href="#book">Book a free evaluation →</a></li>
+        <li>Greenwich · Darien · Stamford</li>
+        <li>Fully insured · payment plans</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© Kindred Canine Co. Concept site.</span>
+    <span>Designed &amp; built by <a href="https://consult.skateos.com" target="_blank" rel="noopener">Hudson Valley AI</a></span>
+  </div>
+</footer>
+
+<script>
+// ---- boarding date-range calendar (concept demo) ----
+(function(){
+  var svcSel=document.getElementById('svc');
+  var services={100:'Overnight Boarding',95:'Daycare + training'};
+  var today=new Date(); today.setHours(0,0,0,0);
+  var view=new Date(today.getFullYear(),today.getMonth(),1);
+  var ci=null, co=null;
+  function key(d){return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+  function same(a,b){return a&&b&&key(a)===key(b);}
+  function fmt(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+  function nights(){return ci&&co?Math.round((co-ci)/864e5):0;}
+  var unavail={};
+  [3,4,11,17,18,25,38,39,53].forEach(function(o){ unavail[key(new Date(today.getTime()+o*864e5))]=1; });
+  function rangeHasUnavail(a,b){var d=new Date(a.getTime()+864e5);while(d<b){if(unavail[key(d)])return true;d=new Date(d.getTime()+864e5);}return false;}
+  var cals=document.getElementById('cals'), calRange=document.getElementById('calRange');
+  var prevM=document.getElementById('prevM'), nextM=document.getElementById('nextM');
+  var summary=document.getElementById('summary'), msg=document.getElementById('bookMsg');
+  function monthHTML(anchor){
+    var y=anchor.getFullYear(), m=anchor.getMonth();
+    var start=new Date(y,m,1).getDay(), dim=new Date(y,m+1,0).getDate();
+    var h='<div class="mname">'+anchor.toLocaleDateString('en-US',{month:'long',year:'numeric'})+'</div>'+
+      '<div class="dow"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div><div class="grid">';
+    for(var i=0;i<start;i++) h+='<div class="day off"></div>';
+    for(var dn=1;dn<=dim;dn++){
+      var d=new Date(y,m,dn), cls='day';
+      if(d<today) cls+=' past';
+      else if(unavail[key(d)]) cls+=' unavail';
+      if(same(d,today)) cls+=' today';
+      if(ci&&co&&d>ci&&d<co) cls+=' inrange';
+      if(same(d,ci)) cls+=' start';
+      if(same(d,co)) cls+=' end';
+      h+='<div class="'+cls+'" data-k="'+y+'-'+m+'-'+dn+'">'+dn+'</div>';
+    }
+    return h+'</div>';
+  }
+  function render(){
+    var b=new Date(view.getFullYear(),view.getMonth()+1,1);
+    cals.innerHTML='<div class="cal">'+monthHTML(view)+'</div><div class="cal second">'+monthHTML(b)+'</div>';
+    calRange.textContent = ci&&co ? fmt(ci)+' → '+fmt(co) : (ci ? fmt(ci)+' → select pick-up' : 'Select your dates');
+    prevM.disabled = (view.getFullYear()===today.getFullYear() && view.getMonth()===today.getMonth());
+    cals.querySelectorAll('.day:not(.off):not(.past):not(.unavail)').forEach(function(el){
+      el.addEventListener('click',function(){
+        var p=el.getAttribute('data-k').split('-'); var d=new Date(+p[0],+p[1],+p[2]);
+        if(!ci || (ci&&co)){ ci=d; co=null; }
+        else if(d>ci && !rangeHasUnavail(ci,d)){ co=d; }
+        else { ci=d; co=null; }
+        msg.classList.remove('show'); render();
+      });
+    });
+    renderSummary();
+  }
+  function renderSummary(){
+    var n=nights();
+    if(ci&&co&&n>0){
+      var rate=+svcSel.value, total=rate*n;
+      summary.className='summary';
+      summary.innerHTML='<div class="det"><b>'+fmt(ci)+' → '+fmt(co)+'</b> · '+n+' '+(n>1?'days':'day')+' · '+services[rate]+'</div>'+
+        '<div style="display:flex;align-items:center;gap:16px"><span class="total">$'+total+'</span><button class="btn primary" id="reqBtn">Request these dates</button></div>';
+      document.getElementById('reqBtn').addEventListener('click',book);
+    } else {
+      summary.className='summary empty';
+      summary.textContent = ci ? 'Now tap your pick-up date.' : 'Tap a drop-off date, then a pick-up date.';
+    }
+  }
+  function book(){
+    var n=nights(), rate=+svcSel.value, dog=document.getElementById('dog').value;
+    msg.innerHTML='<b>Request received — '+fmt(ci)+' → '+fmt(co)+', '+n+' '+(n>1?'days':'day')+' of '+services[rate]+', '+dog+'.</b><br>In the live version this checks Ashley’s calendar in real time and confirms by email. (This is a concept preview, so nothing was actually booked.)';
+    msg.classList.add('show'); msg.scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  prevM.addEventListener('click',function(){view=new Date(view.getFullYear(),view.getMonth()-1,1);render();});
+  nextM.addEventListener('click',function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render();});
+  svcSel.addEventListener('change',renderSummary);
+  render();
+})();
+
+// ---- package configurator: talk-it-through OR sign-up-on-the-spot ----
+(function(){
+  var form=document.getElementById('cfgForm'); if(!form) return;
+  var SB='https://zecurmlenxyxanqucrga.supabase.co';
+  var ANON='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+  var PROPERTY='kindred-canine', BRAND='Kindred Canine Co.';
+  var PAY_LINK=''; // paste a Stripe/Helcim deposit payment link here to enable instant "Pay now"; blank = link emailed
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c];});}
+  function once(){var r=form.querySelector('input[name=build]:checked');return r?+r.getAttribute('data-once'):0;}
+  function mo(){var r=form.querySelector('input[name=care]:checked');return r?+r.getAttribute('data-mo'):0;}
+  function deposit(){var o=once();return o?Math.round(o*0.5):0;}
+  function selVisual(){form.querySelectorAll('.opt').forEach(function(o){o.classList.toggle('sel',o.querySelector('input').checked);});}
+  function updateSum(){
+    var o=once(), m=mo();
+    document.getElementById('cfgOnce').innerHTML = o ? '$'+o.toLocaleString()+' <small>one-time</small>' : '<small>To be scoped</small>';
+    document.getElementById('cfgMo').innerHTML = m ? '$'+m+'<small>/mo · first 2 free</small>' : '<small>—</small>';
+  }
+  form.addEventListener('change',function(){selVisual();updateSum();var p=document.getElementById('agreePanel');if(p.style.display!=='none')renderAgreement(gather());});
+  selVisual(); updateSum();
+
+  var msg=document.getElementById('cfgMsg');
+  function validEmail(e){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);}
+  function gather(){
+    return {
+      name:document.getElementById('cfgName').value.trim(),
+      email:document.getElementById('cfgEmail').value.trim(),
+      phone:document.getElementById('cfgPhone').value.trim(),
+      note:document.getElementById('cfgNote').value.trim(),
+      build:form.querySelector('input[name=build]:checked').value,
+      care:form.querySelector('input[name=care]:checked').value,
+      addons:[].map.call(form.querySelectorAll('input[name=addon]:checked'),function(c){return c.value;}),
+      o:once(), m:mo(), dep:deposit()
+    };
+  }
+  function picksText(g){
+    return 'Build: '+g.build+(g.o?' ($'+g.o.toLocaleString()+')':'')+'\n'
+      +'Care: '+g.care+(g.m?' ($'+g.m+'/mo, first 2 free)':'')+'\n'
+      +'Add-ons: '+(g.addons.length?g.addons.join(', '):'none')+'\n'
+      +'One-time: '+(g.o?'$'+g.o.toLocaleString():'to scope')+'  |  Monthly: '+(g.m?'$'+g.m+'/mo':'—')+'\n\n'
+      +'Name: '+(g.name||'—')+'\nEmail: '+g.email+'\nPhone: '+(g.phone||'—')+'\nNotes: '+(g.note||'—');
+  }
+  function row(k,v){return '<tr><td style="padding:5px 12px 5px 0;color:#777">'+k+'</td><td style="padding:5px 0;font-weight:600">'+v+'</td></tr>';}
+  function picksHtml(g,heading){
+    return '<div style="font-family:system-ui,sans-serif;max-width:540px"><h2 style="margin:0 0 12px">'+esc(heading)+' — '+esc(BRAND)+'</h2><table style="border-collapse:collapse;font-size:14px">'
+      +row('Build',esc(g.build)+(g.o?' — $'+g.o.toLocaleString():''))
+      +row('Care',esc(g.care)+(g.m?' — $'+g.m+'/mo (first 2 free)':''))
+      +row('Add-ons',(g.addons.length?esc(g.addons.join(', ')):'none'))
+      +row('One-time',(g.o?'$'+g.o.toLocaleString():'to scope'))
+      +row('Monthly',(g.m?'$'+g.m+'/mo':'—'))
+      +row('Name',esc(g.name||'—'))+row('Email',esc(g.email))+row('Phone',esc(g.phone||'—'))
+      +'<tr><td style="padding:5px 12px 5px 0;color:#777;vertical-align:top">Notes</td><td style="padding:5px 0">'+esc(g.note||'—')+'</td></tr>'
+      +'</table></div>';
+  }
+  async function sendToUs(subject,lines,html,replyTo){
+    try{
+      var resp=await fetch(SB+'/functions/v1/send-email',{method:'POST',headers:{'Authorization':'Bearer '+ANON,'apikey':ANON,'Content-Type':'application/json'},body:JSON.stringify({to:'doug@2ntr.com',from:'doug@2ntr.com',fromName:'Hudson Valley AI',subject:subject,html:html,text:lines,replyTo:replyTo||'doug@2ntr.com',tags:[{name:'type',value:'package_request'},{name:'property',value:PROPERTY}]})});
+      var r=await resp.json().catch(function(){return {};});
+      return resp.ok && r.ok;
+    }catch(e){ return false; }
+  }
+
+  // ---- PATH 1: talk it through ----
+  document.getElementById('cfgTalk').addEventListener('click',async function(){
+    var g=gather();
+    if(!validEmail(g.email)){ msg.className='cfg-msg err'; msg.textContent='Please add a valid email so we can reply.'; document.getElementById('cfgEmail').focus(); return; }
+    var btn=this, orig=btn.textContent; btn.disabled=true; btn.textContent='Sending…'; msg.style.display='none';
+    var subject=BRAND+' — package request'+(g.name?' from '+g.name:'');
+    var ok=await sendToUs(subject,'New package request — '+BRAND+'\n\n'+picksText(g),picksHtml(g,'New package request'),g.email);
+    if(ok){ form.querySelectorAll('input,textarea,button').forEach(function(e){e.disabled=true;}); msg.className='cfg-msg ok'; msg.innerHTML='<b>Sent — thank you!</b><br>We have your picks and will be in touch shortly.'; msg.scrollIntoView({behavior:'smooth',block:'center'}); }
+    else { var mailto='mailto:doug@2ntr.com?subject='+encodeURIComponent(subject)+'&body='+encodeURIComponent(picksText(g)); msg.className='cfg-msg err'; msg.innerHTML='Couldn\'t auto-send. <a href="'+mailto+'" style="color:#9a2b2b;font-weight:700;text-decoration:underline">Click to email it instead →</a> or text (914) 402-4624.'; btn.disabled=false; btn.textContent=orig; }
+  });
+
+  // ---- PATH 2: sign up now -> reveal agreement ----
+  function renderAgreement(g){
+    var box=document.getElementById('agreeBox');
+    var careLine = g.m ? '$'+g.m+'/mo (first 2 months free)' : 'None for now';
+    box.innerHTML='<h5>Hudson Valley AI — Services Agreement</h5>'
+      +'<div class="ln"><span>Client</span><b>'+esc(g.name||'—')+'</b></div>'
+      +'<div class="ln"><span>Project</span><b>'+esc(g.build)+'</b></div>'
+      +'<div class="ln"><span>One-time price</span><b>$'+g.o.toLocaleString()+'</b></div>'
+      +'<div class="ln"><span>Deposit due now (50%)</span><b>$'+g.dep.toLocaleString()+'</b></div>'
+      +'<div class="ln"><span>Balance at launch</span><b>$'+(g.o-g.dep).toLocaleString()+'</b></div>'
+      +'<div class="ln"><span>Ongoing care</span><b>'+careLine+'</b></div>'
+      +(g.addons.length?'<div class="ln"><span>Add-ons (quoted @ $175/hr)</span><b>'+esc(g.addons.join(', '))+'</b></div>':'')
+      +'<div class="terms">You’re hiring Hudson Valley AI to build the project above. You own the finished site and your data once paid in full. We work professionally but do <b>not</b> guarantee specific results (bookings, revenue, or rankings). Our total liability is limited to the fees you pay us, and we’re not liable for indirect or consequential damages. Third-party services (hosting, payment processors, scheduling tools) are outside our control. 30 days of post-launch support included. Either side may cancel with 14 days’ notice; the deposit covers work already begun. Governed by New York law. Full written terms available on request.</div>';
+    document.getElementById('agreeDate').textContent='Date: '+new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'});
+  }
+  document.getElementById('cfgSignBtn').addEventListener('click',function(){
+    var g=gather();
+    if(!g.o){ msg.className='cfg-msg err'; msg.textContent='Pick a build option above to sign up. (Choose "Talk it through" if you’re not sure yet.)'; return; }
+    if(!validEmail(g.email)){ msg.className='cfg-msg err'; msg.textContent='Add your name and email above first, then sign up.'; document.getElementById('cfgEmail').focus(); return; }
+    msg.style.display='none';
+    renderAgreement(g);
+    var p=document.getElementById('agreePanel'); p.style.display='block'; p.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+
+  // ---- sign submit ----
+  document.getElementById('cfgSignSubmit').addEventListener('click',async function(){
+    var g=gather();
+    var sign=document.getElementById('signName').value.trim();
+    if(!document.getElementById('agreeChk').checked){ msg.className='cfg-msg err'; msg.textContent='Please check the box to agree to the terms.'; return; }
+    if(sign.length<3){ msg.className='cfg-msg err'; msg.textContent='Type your full name to sign.'; document.getElementById('signName').focus(); return; }
+    var btn=this, orig=btn.textContent; btn.disabled=true; btn.textContent='Submitting…'; msg.style.display='none';
+    var when=new Date().toLocaleString('en-US');
+    var lines='SIGNED AGREEMENT — '+BRAND+'\n\nSigned by: '+sign+'\nAgreed (typed signature + checkbox): YES\nWhen: '+when+'\n\n'
+      +picksText(g)+'\n\nDeposit due: $'+g.dep.toLocaleString()+' (50% of $'+g.o.toLocaleString()+')\nBalance at launch: $'+(g.o-g.dep).toLocaleString();
+    var html=picksHtml(g,'✍️ SIGNED')
+      +'<div style="font-family:system-ui,sans-serif;max-width:540px"><p style="margin:12px 0 4px"><b>'+esc(sign)+'</b> agreed to the Services Agreement on '+esc(when)+'.</p>'
+      +'<p style="font-weight:700">Deposit due: $'+g.dep.toLocaleString()+' &nbsp;·&nbsp; Balance at launch: $'+(g.o-g.dep).toLocaleString()+'</p>'
+      +'<p style="color:#777;font-size:13px">Typed-signature acceptance captured on the concept site. Send the deposit payment link to '+esc(g.email)+'.</p></div>';
+    var subject='✍️ SIGNED — '+BRAND+': '+sign+' ($'+g.dep.toLocaleString()+' deposit)';
+    var ok=await sendToUs(subject,lines,html,g.email);
+    if(ok){
+      form.querySelectorAll('input,textarea,button').forEach(function(e){e.disabled=true;});
+      msg.className='cfg-msg ok';
+      var pay = PAY_LINK
+        ? '<a href="'+PAY_LINK+'" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;background:var(--green);color:#fff;padding:12px 22px;border-radius:10px;font-weight:700;text-decoration:none">Pay your $'+g.dep.toLocaleString()+' deposit →</a>'
+        : 'We’ll email a secure link for your <b>$'+g.dep.toLocaleString()+' deposit</b> to '+esc(g.email)+' right away.';
+      msg.innerHTML='<b>You’re in — thank you, '+esc(sign.split(' ')[0])+'!</b><br>Your signed agreement is on its way to us. '+pay;
+      msg.scrollIntoView({behavior:'smooth',block:'center'});
+    } else {
+      msg.className='cfg-msg err'; msg.innerHTML='Something hiccuped submitting your agreement. Please email <a href="mailto:doug@2ntr.com" style="color:#9a2b2b;font-weight:700">doug@2ntr.com</a> or text (914) 402-4624 and we’ll finish it with you.';
+      btn.disabled=false; btn.textContent=orig;
+    }
+  });
+})();
+</script>
+</body>
+</html>

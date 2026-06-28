@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Cutover playbook · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 40px 24px 100px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 24px; }
+h2 { font-size: 1.25rem; font-weight: 700; margin-top: 36px; margin-bottom: 14px; color: #1a1a1a; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; }
+h2 .num { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .9rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+h2 .phase-badge { margin-left: auto; font-size: .7rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; letter-spacing: .6px; text-transform: uppercase; background: #f0f2f5; color: #4a525c; }
+h2 .phase-badge.warn { background: #fff7e1; color: #b89000; }
+h2 .phase-badge.go   { background: #e6faf3; color: #007a5a; }
+h2 .phase-badge.stop { background: #fde1e1; color: #b53030; }
+h3 { font-size: 1rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; color: #1a1a1a; letter-spacing: -.01em; }
+p { color: #2c3138; margin-bottom: 12px; font-size: .96rem; }
+
+.score-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 16px; padding: 24px; margin-bottom: 28px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.score-card .progress { flex: 1; min-width: 200px; }
+.score-card .progress-bar { background: #f0f2f5; height: 14px; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+.score-card .progress-fill { height: 100%; background: linear-gradient(90deg, #00b388, #02d499); width: 0%; transition: width .3s ease; border-radius: 8px; }
+.score-card .progress-stats { font-size: .86rem; color: #6a737d; font-weight: 600; display: flex; justify-content: space-between; }
+.score-card .progress-stats strong { color: #1a1a1a; }
+.score-card .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: .92rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-red { background: #b53030; color: #fff; }
+
+.phase { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 18px 22px; margin-bottom: 16px; }
+.phase.rollback { border-color: #f5c2bb; background: #fef0ee; }
+.phase.rollback h2 { color: #8a2424; }
+.phase-intro { color: #4a525c; font-size: .92rem; margin-bottom: 14px; }
+
+.step { display: flex; gap: 14px; padding: 12px 0; border-bottom: 1px solid #f0f2f5; align-items: flex-start; }
+.step:last-child { border-bottom: none; }
+.step-check { width: 24px; height: 24px; border-radius: 6px; border: 2px solid #d1d6dc; flex-shrink: 0; cursor: pointer; background: #fff; display: inline-flex; align-items: center; justify-content: center; transition: all .15s; margin-top: 2px; }
+.step-check:hover { border-color: #1a1a1a; }
+.step-check.checked { background: #00b388; border-color: #00b388; }
+.step-check.checked::after { content: "✓"; color: #fff; font-weight: 800; font-size: .92rem; }
+.step-body { flex: 1; min-width: 0; }
+.step-body strong { display: block; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; font-size: .96rem; }
+.step-body.done strong { color: #6a737d; text-decoration: line-through; }
+.step-body .desc { font-size: .88rem; color: #4a525c; }
+.step-body .desc code { background: #f0f2f5; padding: 1px 6px; border-radius: 4px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: .9em; }
+.step-body .desc a { color: #007a5a; font-weight: 600; }
+.step-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.step-meta span { font-size: .7rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; letter-spacing: .5px; text-transform: uppercase; }
+.step-meta .tag-time { background: #f0f2f5; color: #4a525c; }
+.step-meta .tag-who { background: #1a1a1a; color: #fff; }
+.step-meta .tag-critical { background: #b53030; color: #fff; }
+.step-meta .tag-risk { background: #fff7e1; color: #b89000; }
+
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 14px 18px; color: #006148; font-size: .92rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+.warn { background: #fef0ee; border: 1px solid #f5c2bb; border-radius: 12px; padding: 14px 18px; color: #b53030; font-size: .92rem; margin: 14px 0; }
+.warn strong { color: #8a2424; font-weight: 700; }
+.callout { background: #fffaeb; border: 1px solid #f5dba6; border-radius: 12px; padding: 14px 18px; color: #5c4d1a; font-size: .92rem; margin: 14px 0; }
+.callout strong { color: #1a1a1a; font-weight: 700; }
+
+.foot { margin-top: 50px; padding-top: 22px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Cutover playbook</div>
+  <h1>The actual day-of switch</h1>
+  <p class="lead">Step-by-step from "still on Square" to "fully on skateOS." Each step has a checkbox — your progress saves to this device. Rollback plan at the bottom if anything goes sideways.</p>
+
+  <div class="score-card">
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-stats">
+        <span><strong id="progDone">0</strong> / <strong id="progTotal">0</strong> steps done</span>
+        <span id="progPct">0%</span>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn btn-prim" href="/launch-ready.html">↻ Run readiness check first</a>
+      <button class="btn btn-sec" onclick="resetAll()">Reset all checkboxes</button>
+    </div>
+  </div>
+
+  <div class="callout">
+    <strong>Before you start:</strong> Run the <a href="/launch-ready.html" style="color:#1a1a1a;font-weight:700;">launch readiness check</a> first. Don't begin cutover until that page says GO.
+  </div>
+
+  <!-- PHASE 1: PRE-CUTOVER -->
+  <div class="phase">
+    <h2><span class="num">1</span>Pre-cutover (the week before) <span class="phase-badge warn">3-7 days ahead</span></h2>
+    <div class="phase-intro">All the setup that has to happen before you touch the switch. Spread these across the week so you're not scrambling on day-of.</div>
+    <div id="phase-1"></div>
+  </div>
+
+  <!-- PHASE 2: DAY BEFORE -->
+  <div class="phase">
+    <h2><span class="num">2</span>Day before cutover <span class="phase-badge warn">T-1 day</span></h2>
+    <div class="phase-intro">Final confirmation steps. By end of this phase, everything's primed — you just haven't flipped the switch yet.</div>
+    <div id="phase-2"></div>
+  </div>
+
+  <!-- PHASE 3: CUTOVER MORNING -->
+  <div class="phase">
+    <h2><span class="num">3</span>Cutover morning <span class="phase-badge stop">T-0</span></h2>
+    <div class="phase-intro">The actual switch. Do this before the park opens. Should take 30-45 min.</div>
+    <div id="phase-3"></div>
+  </div>
+
+  <!-- PHASE 4: FIRST DAY LIVE -->
+  <div class="phase">
+    <h2><span class="num">4</span>First day live <span class="phase-badge go">T-0 day</span></h2>
+    <div class="phase-intro">You're running real sales on skateOS. Watch for issues. Keep Square dashboard open in another tab for sanity-checks.</div>
+    <div id="phase-4"></div>
+  </div>
+
+  <!-- PHASE 5: WEEK 1 POST-CUTOVER -->
+  <div class="phase">
+    <h2><span class="num">5</span>Week 1 post-cutover <span class="phase-badge">days 1-7</span></h2>
+    <div class="phase-intro">Stabilization. Catch edge cases, train staff on quirks, fine-tune anything off.</div>
+    <div id="phase-5"></div>
+  </div>
+
+  <!-- PHASE 6: WEEK 4 (DECOMMISSION SQUARE) -->
+  <div class="phase">
+    <h2><span class="num">6</span>30 days later — decommission Square <span class="phase-badge go">T+30</span></h2>
+    <div class="phase-intro">If skateOS has run clean for 30 days, time to close out Square. Don't rush this — Square stays as backup until you're sure.</div>
+    <div id="phase-6"></div>
+  </div>
+
+  <!-- ROLLBACK PLAN -->
+  <div class="phase rollback">
+    <h2 style="color:#8a2424;"><span class="num" style="background:#b53030;">!</span>Rollback plan <span class="phase-badge stop">if it breaks</span></h2>
+    <div class="phase-intro" style="color:#8a2424;">If something goes catastrophically wrong on cutover day, here's how to fall back to Square. <strong>Same day.</strong> Square stays live for 30 days for exactly this scenario.</div>
+    <div id="phase-rollback"></div>
+  </div>
+
+  <div class="foot">
+    Progress saves to this device only · Last updated <span id="lastSaved">never</span> · <a href="/launch-ready.html">Launch Readiness</a> · <a href="/index.html">Admin</a>
+  </div>
+</div>
+
+<script>
+// ----------------------------------------------------------------------
+// Each step is { id, title, desc, time?, who?, critical?, risk? }
+// id must be unique + stable for localStorage persistence
+// ----------------------------------------------------------------------
+var PHASES = {
+  'phase-1': [
+    { id:'p1_payment_strategy', title:'Confirm payment strategy: Square reader stays', desc:'Decision: skip Helcim integration for v1. skateOS rings up every sale; the cashier shows the customer the total; if paying by card, the customer taps on the existing Square reader. Square is hardware-only — we don\'t use Square POS UI anymore. This removes the biggest blocker entirely.', time:'5 min', who:'Doug', critical:true },
+    { id:'p1_square_reader_test', title:'Verify Square reader still pairs + charges', desc:'Quick check: connect the reader, run a $1 sale through Square POS, confirm it works. We\'re NOT touching the reader during cutover — just confirming it still functions.', time:'5 min', who:'Doug' },
+    { id:'p1_resend_dns', title:'Verify 2ntr.com sending domain in Resend', desc:'Resend dashboard → Domains → 2ntr.com → add SPF + DKIM + DMARC records to GoDaddy. Wait for green checkmark.', time:'15 min + DNS propagation', who:'Doug' },
+    { id:'p1_resend_test', title:'Send a test email from <code>info@2ntr.com</code>', desc:'Open admin Settings → Integrations → "Send test email" button. Verify it lands in your inbox (not spam).', time:'5 min', who:'Doug' },
+    { id:'p1_square_export', title:'Export Square data', desc:'Square Dashboard → Reports → Export: customer list, item library, transaction history (last 90 days minimum). Drop in shared folder.', time:'30 min', who:'Doug', critical:true },
+    { id:'p1_data_import', title:'Import Square data into skateOS', desc:'Admin → Customers → Import CSV. Then Products → Import CSV. Then Sales History → "Import Square sales". Watch for skipped rows.', time:'30 min', who:'Doug', critical:true },
+    { id:'p1_data_sanity', title:'Sanity-check imported data', desc:'Spot-check 5-10 customers. Verify Top product is correct in Reports. Confirm total imported $ matches Square Dashboard for same period.', time:'15 min', who:'Jon DiCarlo + Doug' },
+    { id:'p1_printer_test', title:'Receipt printer compatibility confirmed', desc:'Jon Marchand to run <a href="/printer-test.html">app.skateos.com/printer-test.html</a> and submit report. Fix any issues before cutover.', time:'10 min', who:'Jon Marchand' },
+    { id:'p1_staff_training', title:'Staff 30-min POS walkthrough', desc:'Walk Nick + the Jons through new POS UI. Ring a fake sale together. Show check-in flow. Q&A.', time:'30 min', who:'All staff' },
+    { id:'p1_kiosk_setup', title:'Kiosk page set as iPad home screen', desc:'Front-desk iPad: open <code>app.skateos.com/staff.html</code> → Share → Add to Home Screen. Auto-launches on tap.', time:'5 min', who:'Doug' },
+    { id:'p1_brivo_optional', title:'(Optional) Brivo webhook wired by Nick', desc:'<a href="/brivo-setup.html">app.skateos.com/brivo-setup.html</a> walks Nick through it. Skip if not ready — door access works regardless.', time:'20 min', who:'Nick' }
+  ],
+  'phase-2': [
+    { id:'p2_readiness_green', title:'Launch readiness page shows GO', desc:'All critical checks green at <a href="/launch-ready.html">app.skateos.com/launch-ready.html</a>. If any are red, stop and fix first.', time:'5 min', who:'Doug', critical:true },
+    { id:'p2_team_notify', title:'Tell staff the cutover date', desc:'Group text to Nick + the Jons. "Tomorrow morning we switch to skateOS POS. Square stays as backup. I\'ll be here for opening."', time:'2 min', who:'Doug' },
+    { id:'p2_backup_data', title:'Pull a Supabase database backup', desc:'Supabase Dashboard → Database → Backups → "Make backup now". Insurance against data loss during cutover.', time:'10 min', who:'Doug' },
+    { id:'p2_square_close', title:'Run final close-out on Square', desc:'End-of-day close-out for the last Square day. Print + save the daily report. This is your baseline.', time:'15 min', who:'Doug' },
+    { id:'p2_cash_count', title:'Count cash drawer + record', desc:'Note today\'s starting cash for tomorrow. skateOS will track the new day independently.', time:'5 min', who:'Doug' }
+  ],
+  'phase-3': [
+    { id:'p3_set_payments_skateos', title:'Switch to dual-hardware workflow', desc:'New rule for cashiers: <strong>1.</strong> Ring every sale in skateOS POS. <strong>2.</strong> When customer pays card → swipe/tap on Square reader. <strong>3.</strong> When customer pays cash → take cash. Either way, hit "Complete sale" in skateOS so it\'s recorded.', time:'5 min · brief staff', who:'Doug', critical:true },
+    { id:'p3_open_dashboards', title:'Open dashboards in 2 browser tabs', desc:'Tab 1: skateOS admin (where sales are logged). Tab 2: Square dashboard (where card $ flows in). End of day, the two should match minus cash sales.', time:'2 min', who:'Doug' },
+    { id:'p3_first_sale', title:'Ring the FIRST real sale on skateOS', desc:'Probably day pass for the first skater. Ring in skateOS. If card: swipe Square reader for the dollar amount. If cash: take cash. Hit Complete. Verify receipt prints from skateOS + emailed receipt fires.', time:'2 min', who:'Doug', critical:true },
+    { id:'p3_first_checkin', title:'First check-in on skateOS', desc:'Same skater or one of the early arrivals. Use member card QR or name search. Verify WELCOME banner appears.', time:'1 min', who:'Doug' }
+  ],
+  'phase-4': [
+    { id:'p4_watch_first_hour', title:'Watch the first hour closely', desc:'Stay at the front desk. Every sale, every check-in. Catch issues immediately. If you see anything weird, halt + diagnose before pushing through.', time:'1 hr', who:'Doug', critical:true },
+    { id:'p4_log_issues', title:'Log issues in real-time', desc:'Keep a notes app open. Every weird thing → write it down + which screen it happened on. Fix list for end of day.', time:'ongoing', who:'Doug' },
+    { id:'p4_end_of_day_close', title:'End-of-day close-out on skateOS', desc:'Open Sales History → "Close out day" button. <strong>Compare:</strong> skateOS card revenue should match Square dashboard for the same day (since card $ flowed through Square reader). Cash variance is a different check — count drawer vs. cash sales in skateOS.', time:'20 min', who:'Doug', critical:true },
+    { id:'p4_email_staff', title:'Email staff a debrief', desc:'"Day 1 went OK / had X issues. Tomorrow we keep going. Hit me with anything you noticed."', time:'10 min', who:'Doug' }
+  ],
+  'phase-5': [
+    { id:'p5_daily_reconcile', title:'Daily reconciliation for 7 days', desc:'Each evening: skateOS close-out vs. expected. Catch quiet bugs (rounding errors, missing tip attribution, refunds not flowing).', time:'15 min × 7', who:'Doug' },
+    { id:'p5_helcim_dashboard', title:'Check Helcim dashboard each morning', desc:'Verify yesterday\'s deposits hit the bank. First few days are when wiring issues surface.', time:'5 min × 7', who:'Doug' },
+    { id:'p5_membership_renewals', title:'Confirm membership auto-renewal works', desc:'Whoever\'s membership renews this week → verify the email goes out + charge processes. If not, manually fix and debug.', time:'as needed', who:'Doug' },
+    { id:'p5_staff_check_in', title:'Quick mid-week staff check-in', desc:'Text staff: "How\'s the new POS? Anything broken/annoying?" Fix or queue based on feedback.', time:'10 min', who:'Doug' },
+    { id:'p5_loyalty_audit', title:'Audit loyalty point accruals', desc:'Pick 3 customers who made purchases this week. Verify their loyalty points actually went up by the right amount.', time:'10 min', who:'Doug' }
+  ],
+  'phase-6': [
+    { id:'p6_no_issues', title:'30 days of clean operation', desc:'No major bugs, no payment discrepancies between skateOS sales and Square card revenue, no data loss.', time:'-', who:'Doug', critical:true },
+    { id:'p6_export_square_final', title:'Final Square data export', desc:'Pull complete historical data from Square one last time. Archive forever. This is your permanent record of the pre-cutover era.', time:'30 min', who:'Doug' },
+    { id:'p6_square_downgrade', title:'Downgrade Square plan (keep reader + base)', desc:'Square dashboard → Account → Subscription → cancel premium add-ons (Team Plus, Loyalty, Marketing). Keep base account active — we still use the reader. ~$60/mo saved.', time:'10 min', who:'Doug' },
+    { id:'p6_helcim_later', title:'(Later) Revisit Helcim for further cost savings', desc:'Once skateOS has run clean for 30+ days, consider switching the card reader from Square (2.6% + 10¢) to Helcim (~2.4% interchange-plus). Saves ~$6k/yr at your volume. Separate 1-week project — not now.', time:'-', who:'Doug' },
+    { id:'p6_celebrate', title:'Buy yourself a coffee. You did it.', desc:'You moved a working business off Square POS UI onto skateOS. Even keeping the Square reader, this is a big deal. Acknowledge it.', time:'5 min', who:'Doug' }
+  ],
+  'phase-rollback': [
+    { id:'r_stop_sales', title:'Stop ringing on skateOS immediately', desc:'Tell staff: "Square only until further notice." No more skateOS transactions until issue is diagnosed.', time:'instant', who:'Doug' },
+    { id:'r_resume_square', title:'Resume normal Square workflow', desc:'Square account is still active. Cashiers know how to use it. Ring on Square as if nothing changed.', time:'instant', who:'Doug' },
+    { id:'r_diagnose', title:'Diagnose what broke', desc:'Check skateOS admin → Activity Log + webhook_log. Helcim dashboard. Resend dashboard. Most issues surface in one of those three.', time:'30 min - hours', who:'Doug + dev support' },
+    { id:'r_data_state', title:'Capture data state before further changes', desc:'Pull Supabase backup again. Lock-in current state so you can debug without losing today\'s data.', time:'10 min', who:'Doug' },
+    { id:'r_fix_root_cause', title:'Fix root cause, then retry', desc:'Don\'t just patch + retry. Understand WHY it failed. Bad migration? Wrong secret? Helcim issue? Then re-attempt cutover on another day.', time:'varies', who:'Doug' },
+    { id:'r_communicate', title:'Tell staff + customers (if customer-impacting)', desc:'If any customer was affected (charged twice, lost receipt, etc.) — proactive email/call. Better to over-communicate.', time:'30 min', who:'Doug' }
+  ]
+};
+
+// ----------------------------------------------------------------------
+// Render + persist
+// ----------------------------------------------------------------------
+var STORAGE_KEY = 'skateos_cutover_progress_v1';
+
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveProgress(p){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+  catch(e) {}
+  var d = new Date().toLocaleString();
+  document.getElementById('lastSaved').textContent = d;
+}
+
+function renderPhase(phaseId, steps, progress){
+  var html = '';
+  steps.forEach(function(step){
+    var checked = !!progress[step.id];
+    var metaParts = [];
+    if(step.who) metaParts.push('<span class="tag-who">'+step.who+'</span>');
+    if(step.critical) metaParts.push('<span class="tag-critical">critical</span>');
+    if(step.risk) metaParts.push('<span class="tag-risk">risk</span>');
+    if(step.time) metaParts.push('<span class="tag-time">'+step.time+'</span>');
+    html += '<div class="step">'
+      + '<div class="step-check '+(checked?'checked':'')+'" onclick="toggleStep(\''+step.id+'\')"></div>'
+      + '<div class="step-body'+(checked?' done':'')+'">'
+      + '<strong>' + step.title + '</strong>'
+      + '<div class="desc">' + step.desc + '</div>'
+      + (metaParts.length ? '<div class="step-meta">' + metaParts.join('') + '</div>' : '')
+      + '</div>'
+      + '</div>';
+  });
+  document.getElementById(phaseId).innerHTML = html;
+}
+
+function renderAll(){
+  var progress = loadProgress();
+  Object.keys(PHASES).forEach(function(phaseId){
+    renderPhase(phaseId, PHASES[phaseId], progress);
+  });
+  updateScore();
+}
+
+function toggleStep(id){
+  var progress = loadProgress();
+  progress[id] = !progress[id];
+  saveProgress(progress);
+  renderAll();
+}
+
+function resetAll(){
+  if(!confirm('Reset all checkboxes? You will lose progress.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderAll();
+}
+
+function updateScore(){
+  var progress = loadProgress();
+  var total = 0, done = 0;
+  Object.keys(PHASES).forEach(function(phaseId){
+    PHASES[phaseId].forEach(function(step){
+      total++;
+      if(progress[step.id]) done++;
+    });
+  });
+  document.getElementById('progDone').textContent = done;
+  document.getElementById('progTotal').textContent = total;
+  var pct = total === 0 ? 0 : Math.round(done / total * 100);
+  document.getElementById('progPct').textContent = pct + '%';
+  document.getElementById('progFill').style.width = pct + '%';
+}
+
+renderAll();
+</script>
+</body>
+</html>

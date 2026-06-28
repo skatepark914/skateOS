@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Brivo setup · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 720px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 12px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1.04rem; color: #4a525c; margin-bottom: 28px; }
+h2 { font-size: 1.3rem; font-weight: 700; margin-top: 40px; margin-bottom: 16px; color: #1a1a1a; letter-spacing: -.01em; display: flex; align-items: center; gap: 12px; }
+h2 .num { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .9rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+h3 { font-size: 1rem; font-weight: 700; margin-top: 20px; margin-bottom: 8px; color: #1a1a1a; letter-spacing: -.01em; }
+p { color: #2c3138; margin-bottom: 14px; }
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+.callout { background: #fff7e1; border: 1px solid #f5dba6; border-radius: 12px; padding: 16px 20px; margin: 16px 0; color: #5c4d1a; font-size: .94rem; }
+.callout strong { color: #1a1a1a; }
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 14px 18px; color: #006148; font-size: .94rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+.warn { background: #fef0ee; border: 1px solid #f5c2bb; border-radius: 12px; padding: 14px 18px; color: #b53030; font-size: .94rem; margin: 14px 0; }
+.warn strong { color: #8a2424; font-weight: 700; }
+.copyable { background: #1a1a1a; color: #fff; border-radius: 10px; padding: 14px 18px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: .9rem; word-break: break-all; position: relative; margin: 8px 0; }
+.copyable .copy-btn { position: absolute; right: 8px; top: 8px; background: rgba(255,255,255,.12); color: #fff; border: none; padding: 5px 10px; border-radius: 6px; font-size: .76rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.copyable .copy-btn:hover { background: rgba(255,255,255,.22); }
+.copyable .copy-btn.copied { background: #00b388; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-green { background: #00b388; color: #fff; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+.step:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0; margin-top: 2px; }
+.step-body strong { display: block; color: #1a1a1a; font-weight: 700; margin-bottom: 4px; }
+.step-body { font-size: .94rem; color: #2c3138; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: .82rem; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; letter-spacing: -.01em; }
+.field input { width: 100%; background: #fff; border: 1px solid #d1d6dc; border-radius: 8px; padding: 12px 14px; font-size: .95rem; font-family: inherit; color: #1a1a1a; }
+.event-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.event-list span { background: #f0f2f5; color: #1a1a1a; padding: 6px 12px; border-radius: 999px; font-size: .82rem; font-weight: 600; font-family: 'SF Mono', monospace; }
+.event-list span.must { background: #1a1a1a; color: #fff; }
+.event-list span.want { background: #e6faf3; color: #007a5a; }
+.event-list span.skip { background: #f0f2f5; color: #6a737d; text-decoration: line-through; }
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; opacity: 0; transition: opacity .2s, transform .2s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+.toast.err { background: #b53030; }
+.check { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; gap: 12px; align-items: center; }
+.check .check-icon { width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; color: #fff; flex-shrink: 0; font-size: .82rem; }
+.check.ok .check-icon { background: #00b388; }
+.check.bad .check-icon { background: #b53030; }
+.check.idle .check-icon { background: #d1d6dc; color: #6a737d; }
+.check .check-label { flex: 1; font-size: .94rem; color: #1a1a1a; font-weight: 500; }
+.check .check-label small { display: block; color: #6a737d; font-weight: 400; font-size: .8rem; margin-top: 2px; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Brivo Configurator</div>
+  <h1>Hey Nick — Brivo setup walkthrough</h1>
+  <p class="lead">Doug pulled me into this because I've fought the same battle. Everything you need is below. Copy-paste, follow the steps, ~20 min total.</p>
+
+  <div class="callout">
+    <strong>What this does:</strong> wires every Brivo door tap into skateOS so we can auto-check-in members and surface low-punch / expired-waiver warnings to the front desk before they even ask. Plus 3+ failed attempts in 5 min → instant Team Chat alert.
+  </div>
+
+  <h2><span class="num">1</span>Generate the webhook secret</h2>
+  <p>This secret is what proves to skateOS that the webhook fired from Brivo (not a random attacker). Paste it in BOTH places — Brivo's webhook config + Supabase's secrets store.</p>
+  <div class="card">
+    <h3>Your webhook secret (auto-generated, refresh to regenerate)</h3>
+    <div class="copyable" id="secretBox">
+      <span id="secretVal">generating…</span>
+      <button class="copy-btn" onclick="copyTxt('secretVal', this)">Copy</button>
+    </div>
+    <p style="font-size:.82rem;color:#6a737d;margin-top:8px;margin-bottom:0;">64 random hex chars. Save it somewhere you can find later — once it's set in Supabase, you can't read it back, only overwrite.</p>
+  </div>
+
+  <h2><span class="num">2</span>Set the secret in Supabase</h2>
+  <p>Doug runs this once on his terminal (skateOS server side). I can do it for him too but you'd need shell access.</p>
+  <div class="card">
+    <h3>Run in Terminal</h3>
+    <div class="copyable" id="cmdBox">
+      <span id="cmdVal">supabase secrets set BRIVO_WEBHOOK_SECRET=… --project-ref zecurmlenxyxanqucrga</span>
+      <button class="copy-btn" onclick="copyTxt('cmdVal', this)">Copy</button>
+    </div>
+    <p style="font-size:.82rem;color:#6a737d;margin-top:8px;margin-bottom:0;">After running, restart the brivo-webhook Edge Function (Doug knows how, or it auto-picks up on next call).</p>
+  </div>
+
+  <h2><span class="num">3</span>In the Brivo dashboard</h2>
+  <p>Open <a href="https://access.brivo.com" target="_blank" style="color:#007a5a;font-weight:700;">access.brivo.com</a> in another tab.</p>
+
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Find the Webhooks / API Integrations section</strong>Usually under: Settings → API Management → Webhooks. (Some Brivo plans don't have webhooks — if you don't see it, plan upgrade may be needed.)</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Create a new webhook subscription</strong>Click "Add" / "New webhook" / "Subscribe".</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>URL field — paste this exactly</strong>
+        <div class="copyable" style="margin-top:8px;">
+          <span id="urlVal">https://zecurmlenxyxanqucrga.supabase.co/functions/v1/brivo-webhook</span>
+          <button class="copy-btn" onclick="copyTxt('urlVal', this)">Copy</button>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Secret field — paste the secret from Step 1</strong>Same secret as Supabase. Brivo signs the webhook with HMAC-SHA256 using this. If they differ, skateOS rejects every event.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body"><strong>Event filter — select these:</strong>
+        <div class="event-list">
+          <span class="must">access_granted</span>
+          <span class="must">access_denied</span>
+          <span class="want">door_held_open</span>
+          <span class="want">door_forced</span>
+          <span class="skip">user_created</span>
+          <span class="skip">user_deleted</span>
+        </div>
+        <p style="font-size:.82rem;color:#6a737d;margin-top:6px;margin-bottom:0;">Bold = required. Green = optional but useful (intrusion alerts). Strikethrough = skip (handled separately).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">6</div>
+      <div class="step-body"><strong>Save the webhook</strong>Brivo may want to test it. If it fails, check the URL has no trailing slash and the secret matches exactly.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">4</span>Find the access point IDs</h2>
+  <p>These are the door identifiers Brivo uses. Doug needs to set them as env vars so skateOS knows which Brivo door = park door vs shop door.</p>
+
+  <div class="card">
+    <h3>Find them in Brivo</h3>
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Navigate to Access Points / Doors</strong>Usually under Devices → Access Points.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Click the park door</strong>The URL will look like <code style="background:#f0f2f5;padding:2px 6px;border-radius:4px;font-size:.85rem;">/access-points/123456</code>. The number at the end is the AP ID.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Note both park door + shop door IDs below</strong>Type them in and the secret-set commands appear ready to copy.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>Park door access point ID</label>
+      <input type="text" id="parkApId" placeholder="e.g. 123456" oninput="updateCmds()">
+    </div>
+    <div class="field">
+      <label>Shop door access point ID</label>
+      <input type="text" id="shopApId" placeholder="e.g. 123457" oninput="updateCmds()">
+    </div>
+    <div id="apCmds" style="display:none;">
+      <h3>Run in Terminal (for Doug)</h3>
+      <div class="copyable" id="apCmdBox">
+        <span id="apCmdVal"></span>
+        <button class="copy-btn" onclick="copyTxt('apCmdVal', this)">Copy</button>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">5</span>Test the wiring</h2>
+  <p>Once the webhook is saved + AP IDs are set, walk to a door and tap your Mobile Pass. Then check below — it'll show whether skateOS got the event.</p>
+
+  <div class="card">
+    <button class="btn btn-prim" onclick="checkWebhook()">Check for recent webhook events</button>
+    <div id="webhookResults" style="margin-top:14px;"></div>
+  </div>
+
+  <h2><span class="num">6</span>What happens after this works</h2>
+  <div class="card">
+    <div class="check ok">
+      <div class="check-icon">✓</div>
+      <div class="check-label">Member taps park door → auto-checks-in to skateOS<small>Their punch decrements, loyalty points add, last_visit_at updates</small></div>
+    </div>
+    <div class="check ok">
+      <div class="check-icon">✓</div>
+      <div class="check-label">Low-punch warnings surface automatically<small>Front desk sees "Tommy has 1 punch left" without searching</small></div>
+    </div>
+    <div class="check ok">
+      <div class="check-icon">✓</div>
+      <div class="check-label">3+ access_denied in 5 min → Team Chat alert<small>Catches lapsed memberships, lost phones, banned customers</small></div>
+    </div>
+    <div class="check ok">
+      <div class="check-icon">✓</div>
+      <div class="check-label">Door-forced / door-held events log to audit trail<small>If someone props the door open or breaks in, we have a timestamp</small></div>
+    </div>
+  </div>
+
+  <h2><span class="num">7</span>Questions / problems</h2>
+  <div class="card">
+    <p>Text Doug: <strong>(914) 647-7276</strong>. He's the source of truth.</p>
+    <p style="font-size:.88rem;color:#6a737d;margin-bottom:0;">If Brivo's webhook UI looks different from this guide, take a screenshot + send. The plan tiers vary by year.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 2800);
+}
+function rndHex(len){
+  var s = '';
+  var arr = new Uint8Array(len/2);
+  if(window.crypto && crypto.getRandomValues){
+    crypto.getRandomValues(arr);
+    for(var i = 0; i < arr.length; i++) s += arr[i].toString(16).padStart(2,'0');
+  } else {
+    for(var j = 0; j < len; j++) s += Math.floor(Math.random()*16).toString(16);
+  }
+  return s;
+}
+function copyTxt(id, btn){
+  var el = document.getElementById(id);
+  var txt = el ? (el.textContent||'') : '';
+  if(!txt) return;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){
+      if(btn){ btn.textContent = '✓ Copied'; btn.classList.add('copied'); setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600); }
+    });
+  } else {
+    var ta = document.createElement('textarea');
+    ta.value = txt; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); if(btn){ btn.textContent='✓ Copied'; setTimeout(function(){ btn.textContent='Copy'; }, 1600); } } catch(e){}
+    document.body.removeChild(ta);
+  }
+}
+function updateCmds(){
+  var park = (document.getElementById('parkApId').value||'').trim();
+  var shop = (document.getElementById('shopApId').value||'').trim();
+  if(park || shop){
+    var cmd = '';
+    if(park) cmd += 'supabase secrets set BRIVO_PARK_DOOR_AP_ID=' + park + ' --project-ref zecurmlenxyxanqucrga';
+    if(shop){
+      if(cmd) cmd += '\n';
+      cmd += 'supabase secrets set BRIVO_SHOP_DOOR_AP_ID=' + shop + ' --project-ref zecurmlenxyxanqucrga';
+    }
+    document.getElementById('apCmdVal').textContent = cmd;
+    document.getElementById('apCmds').style.display = 'block';
+  } else {
+    document.getElementById('apCmds').style.display = 'none';
+  }
+}
+async function checkWebhook(){
+  var box = document.getElementById('webhookResults');
+  box.innerHTML = '<em style="color:#6a737d;">Checking last 10 minutes…</em>';
+  try {
+    var url = SUPA + '/rest/v1/webhook_log?source=eq.brivo&select=event_type,status,created_at,payload&order=created_at.desc&limit=10';
+    var r = await fetch(url, { headers: { 'apikey':KEY, 'Authorization':'Bearer '+KEY } });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    var rows = await r.json();
+    if(!Array.isArray(rows) || rows.length === 0){
+      box.innerHTML = '<div class="check bad"><div class="check-icon">✕</div><div class="check-label">No Brivo events in last 10 min<small>Either Brivo isn\'t firing webhooks yet, or the URL/secret is wrong. Tap a door + try again.</small></div></div>';
+      return;
+    }
+    var html = '<div style="margin-bottom:8px;color:#007a5a;font-weight:700;">✓ '+rows.length+' Brivo event(s) found</div>';
+    rows.forEach(function(row){
+      var ok = row.status === 'processed';
+      html += '<div class="check '+(ok?'ok':'bad')+'">'
+        + '<div class="check-icon">'+(ok?'✓':'✕')+'</div>'
+        + '<div class="check-label">'+row.event_type+' · '+row.status+'<small>'+new Date(row.created_at).toLocaleString()+'</small></div>'
+        + '</div>';
+    });
+    box.innerHTML = html;
+  } catch(e) {
+    box.innerHTML = '<div class="check bad"><div class="check-icon">✕</div><div class="check-label">Couldn\'t reach skateOS<small>'+e.message+'</small></div></div>';
+  }
+}
+// Generate secret on page load
+document.getElementById('secretVal').textContent = rndHex(64);
+var cmdEl = document.getElementById('cmdVal');
+cmdEl.textContent = 'supabase secrets set BRIVO_WEBHOOK_SECRET=' + document.getElementById('secretVal').textContent + ' --project-ref zecurmlenxyxanqucrga';
+</script>
+</body>
+</html>

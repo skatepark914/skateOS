@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipping Calculator — 2nd Nature Park</title>
+<meta name="description" content="Estimate shipping on skateboards, completes, and gear from 2nd Nature Park, Peekskill NY.">
+<style>
+  :root{--rose:#e11d48;--rose-dark:#be123c;--ink:#0f1115;--ink-soft:#5b5f66;--bg:#faf9f6;--line:#e7e7e2;--ok:#16a34a;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Inter,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
+  .wrap{max-width:780px;margin:0 auto;padding:28px 18px 80px;}
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+  .top img{height:40px}
+  h1{font-size:clamp(24px,4vw,34px);font-weight:900;letter-spacing:-.02em;}
+  .sub{color:var(--ink-soft);font-size:.95rem;margin-top:4px;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:0 6px 24px rgba(0,0,0,.05);margin-bottom:16px;}
+  label{font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);display:block;margin-bottom:6px;}
+  input[type=text]{width:100%;padding:13px 14px;border:1.5px solid var(--line);border-radius:11px;font-size:1rem;font-family:inherit;}
+  input:focus{outline:none;border-color:var(--rose);box-shadow:0 0 0 3px rgba(225,29,72,.12);}
+  .items{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+  .item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;}
+  .item .meta{flex:1}
+  .item .nm{font-weight:700;font-size:.95rem}
+  .item .hint{font-size:.76rem;color:var(--ink-soft)}
+  .qty{display:flex;align-items:center;gap:8px}
+  .qty button{width:34px;height:34px;border:1.5px solid var(--line);background:#fff;border-radius:9px;font-size:1.1rem;font-weight:800;cursor:pointer;color:var(--ink);}
+  .qty button:hover{border-color:var(--rose);color:var(--rose)}
+  .qty .n{min-width:26px;text-align:center;font-weight:800}
+  .calc-btn{width:100%;margin-top:16px;padding:16px;border:none;border-radius:13px;background:var(--rose);color:#fff;font-weight:800;font-size:1.05rem;cursor:pointer;}
+  .calc-btn:hover{background:var(--rose-dark)}
+  .result{display:none;}
+  .opt{display:flex;justify-content:space-between;align-items:center;padding:15px 0;border-bottom:1px solid var(--line);}
+  .opt:last-child{border-bottom:none}
+  .opt .name{font-weight:700}
+  .opt .name small{display:block;font-weight:400;color:var(--ink-soft);font-size:.8rem;margin-top:2px}
+  .opt .price{font-weight:900;font-size:1.25rem;}
+  .opt .price.free{color:var(--ok)}
+  .pill{display:inline-block;background:#f0f7e6;color:var(--ok);font-weight:800;font-size:.72rem;padding:3px 9px;border-radius:20px;margin-left:8px}
+  .note{font-size:.82rem;color:var(--ink-soft);background:#fff;border:1px dashed var(--line);border-radius:12px;padding:14px 16px;line-height:1.6;}
+  .err{color:var(--rose);font-size:.85rem;margin-top:8px;display:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="/2ntr/assets/logo.png" alt="2nd Nature Park">
+    <div><h1>Shipping calculator</h1><div class="sub">Ships from Peekskill, NY · estimate before you check out</div></div>
+  </div>
+
+  <div class="card">
+    <label for="zip">Ship to ZIP code</label>
+    <input type="text" id="zip" inputmode="numeric" maxlength="5" placeholder="e.g. 12524 (Fishkill)" autocomplete="postal-code">
+    <div class="err" id="ziperr">Enter a valid 5-digit US ZIP code.</div>
+
+    <label style="margin-top:18px;">What are you shipping?</label>
+    <div class="items" id="items"></div>
+
+    <label style="margin-top:18px;">Order subtotal ($) — for free-shipping check</label>
+    <input type="text" id="subtotal" inputmode="decimal" placeholder="e.g. 120">
+
+    <button class="calc-btn" id="calcBtn">Calculate shipping →</button>
+  </div>
+
+  <div class="card result" id="result">
+    <div id="opts"></div>
+  </div>
+
+  <div class="note">
+    <strong>How this works:</strong> rates are calibrated to real 2nd Nature shipments (a deck to nearby Fishkill runs ~$30 because boards ship in long, oversized boxes — distance matters less than size). Estimates include packaging. <strong>Free shipping over $150.</strong> Local pickup at the park is always free. Final rate is confirmed at checkout — no surprise second charge.
+  </div>
+</div>
+
+<script>
+  // ---- Item categories (rates calibrated to real data: ~$30 deck to a near zone) ----
+  // base = cost to nearest zone (2); perZone = added cost per zone beyond 2; cap via zone 8.
+  var CATS = [
+    {key:'deck',     nm:'Skateboard deck',            hint:'Long box · oversized',         base:24, perZone:3.0},
+    {key:'complete', nm:'Complete skateboard',        hint:'Deck + trucks/wheels assembled',base:30, perZone:3.5},
+    {key:'hardware', nm:'Trucks / wheels / hardware', hint:'Heavy, small box',             base:11, perZone:2.0},
+    {key:'apparel',  nm:'Apparel (tee, hoodie)',      hint:'Soft, light',                  base:7,  perZone:1.0},
+    {key:'small',    nm:'Accessories (bearings, stickers, tools)', hint:'Small + light',    base:5,  perZone:0.75},
+  ];
+  var FREE_OVER = 150;
+
+  // Build item rows
+  var itemsEl = document.getElementById('items'); var qty = {};
+  CATS.forEach(function(c){
+    qty[c.key]=0;
+    var row=document.createElement('div'); row.className='item';
+    row.innerHTML='<div class="meta"><div class="nm">'+c.nm+'</div><div class="hint">'+c.hint+'</div></div>'+
+      '<div class="qty"><button data-k="'+c.key+'" data-d="-1">−</button><span class="n" id="n-'+c.key+'">0</span><button data-k="'+c.key+'" data-d="1">+</button></div>';
+    itemsEl.appendChild(row);
+  });
+  itemsEl.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b)return;
+    var k=b.dataset.k, d=parseInt(b.dataset.d,10);
+    qty[k]=Math.max(0,Math.min(20,qty[k]+d)); document.getElementById('n-'+k).textContent=qty[k];
+  });
+
+  // ZIP -> USPS-ish zone from 10566 (Peekskill, NY)
+  function zoneFromZip(zip){
+    var z=parseInt(zip.slice(0,3),10);
+    if(isNaN(z))return null;
+    // near NY metro / NJ / CT / lower New England
+    if((z>=100&&z<=129)||(z>=60&&z<=89)||(z>=6&&z<=9)) return 2;        // 100-129 NY, 06-08 CT/NJ, 060-089
+    if((z>=10&&z<=59)||(z>=130&&z<=219)) return 3;                      // New England, upstate NY/PA, MD/DC/VA
+    if((z>=220&&z<=349)||(z>=430&&z<=499)) return 4;                    // VA/Carolinas/GA/FL, OH/MI/IN
+    if((z>=350&&z<=429)||(z>=500&&z<=629)) return 5;                    // AL/TN/KY/MS, IA/MN/IL
+    if((z>=630&&z<=799)) return 6;                                      // MO/KS/NE/TX/OK/AR/LA
+    if((z>=800&&z<=899)) return 7;                                      // CO/UT/NM/AZ/NV/ID/MT/WY
+    if((z>=900&&z<=999)) return 8;                                      // CA/OR/WA + AK/HI
+    return 4;
+  }
+
+  function money(n){return '$'+n.toFixed(2);}
+
+  document.getElementById('calcBtn').addEventListener('click',function(){
+    var zip=document.getElementById('zip').value.trim();
+    var err=document.getElementById('ziperr');
+    if(!/^\d{5}$/.test(zip)){err.style.display='block';return;} err.style.display='none';
+    var zone=zoneFromZip(zip);
+    var totalQty=CATS.reduce(function(s,c){return s+qty[c.key];},0);
+    if(totalQty===0){err.textContent='Add at least one item.';err.style.display='block';return;}
+
+    // per-item rate at this zone
+    function rate(c){ return c.base + c.perZone*Math.max(0,zone-2); }
+    // priciest item is the base; each additional item adds 45% of its own rate (consolidated box)
+    var lines=[];
+    CATS.forEach(function(c){ for(var i=0;i<qty[c.key];i++) lines.push(rate(c)); });
+    lines.sort(function(a,b){return b-a;});
+    var ship = lines[0] + lines.slice(1).reduce(function(s,r){return s+r*0.45;},0);
+    // AK/HI surcharge
+    if(/^(99[5-9]|96[7-8])/.test(zip)) ship += 12;
+    ship = Math.round(ship*100)/100;
+
+    var subtotal = parseFloat(document.getElementById('subtotal').value)||0;
+    var freeEligible = subtotal>=FREE_OVER;
+
+    var html='';
+    html+='<div class="opt"><div class="name">🚚 Standard Ground'+(freeEligible?'<span class="pill">FREE — order over $'+FREE_OVER+'</span>':'')+'<small>To ZIP '+zip+' · zone '+zone+' · 3–6 business days</small></div>'+
+          '<div class="price'+(freeEligible?' free':'')+'">'+(freeEligible?'FREE':money(ship))+'</div></div>';
+    html+='<div class="opt"><div class="name">🏪 Local pickup at the park<small>1 Highland Industrial Park, Peekskill NY</small></div><div class="price free">FREE</div></div>';
+    if(!freeEligible){
+      var toFree=(FREE_OVER-subtotal);
+      html+='<div class="opt"><div class="name">💡 Add '+money(toFree)+' to your cart<small>…and Standard Ground ships free</small></div><div class="price"></div></div>';
+    }
+    document.getElementById('opts').innerHTML=html;
+    document.getElementById('result').style.display='block';
+    document.getElementById('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+</script>
+</body>
+</html>

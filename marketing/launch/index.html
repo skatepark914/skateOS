@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>🛹 skateOS — LAUNCH CONTROL</title>
+<style>
+  :root{--bg:#0d0b14;--card:#171423;--line:#2a2540;--ink:#f4f1fb;--soft:#a59cc4;--rose:#ff4d6d;--lime:#c6ff4d;--cyan:#3ad7ff;--gold:#ffd24d}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;background:radial-gradient(1200px 600px at 50% -10%,#241a3d 0,var(--bg) 60%);color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+  .wrap{max-width:920px;margin:0 auto;padding:24px 16px 80px}
+  a{color:var(--cyan);text-decoration:none}
+
+  .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,77,109,.15);border:1px solid var(--rose);color:#ffd0d9;border-radius:999px;padding:6px 14px;font-size:.72rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase}
+  .blink{width:9px;height:9px;border-radius:50%;background:var(--rose);box-shadow:0 0 10px var(--rose);animation:pulse 1.1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  h1{font-size:2.9rem;font-weight:900;letter-spacing:-.03em;margin:14px 0 4px;line-height:.98}
+  h1 .grad{background:linear-gradient(90deg,var(--rose),var(--gold),var(--lime),var(--cyan));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:var(--soft);font-size:1.02rem;max-width:54ch}
+
+  .countdown{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 6px}
+  .cd{flex:1;min-width:74px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 8px;text-align:center}
+  .cd .n{font-size:2.4rem;font-weight:900;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#fff,#bdb4e0);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .cd .l{font-size:.62rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-top:2px}
+  .launchline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:.9rem;color:var(--soft)}
+  .launchline input{background:#0d0b14;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font-family:inherit;font-size:.86rem}
+  .golive{background:linear-gradient(90deg,var(--lime),var(--cyan));color:#08210a;border-radius:16px;padding:18px;text-align:center;font-weight:900;font-size:1.4rem;display:none;margin:22px 0;box-shadow:0 0 40px rgba(198,255,77,.4)}
+
+  h2{font-size:.78rem;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--soft);margin:30px 0 12px;display:flex;align-items:center;gap:10px}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* readiness meter */
+  .meter{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+  .meter .top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+  .meter .pct{font-size:1.8rem;font-weight:900}
+  .meter .lab{font-size:.8rem;color:var(--soft);font-weight:700}
+  .bar{height:16px;border-radius:999px;background:#0d0b14;border:1px solid var(--line);overflow:hidden}
+  .bar > div{height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold),var(--lime));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+
+  /* checklist */
+  .check{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:9px;cursor:pointer;transition:border-color .15s,transform .05s}
+  .check:active{transform:scale(.995)}
+  .check.on{border-color:var(--lime);background:linear-gradient(90deg,rgba(198,255,77,.08),var(--card))}
+  .box{flex:none;width:26px;height:26px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-weight:900;color:#08210a;background:transparent;transition:all .15s}
+  .check.on .box{background:var(--lime);border-color:var(--lime)}
+  .ctxt{flex:1}.ctxt .ct{font-weight:800;font-size:.98rem}.check.on .ct{text-decoration:line-through;color:var(--soft)}
+  .ctxt .cd2{font-size:.82rem;color:var(--soft);margin-top:2px}
+  .who{flex:none;font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;border-radius:6px;padding:3px 8px;align-self:center}
+  .w-done{background:rgba(198,255,77,.15);color:var(--lime)} .w-you{background:rgba(255,210,77,.15);color:var(--gold)} .w-team{background:rgba(58,215,255,.13);color:var(--cyan)}
+
+  /* calendar */
+  .calwrap{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:640px){.calwrap{grid-template-columns:1fr}}
+  .cal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px}
+  .cal h3{font-size:.95rem;font-weight:900;margin-bottom:10px;text-align:center;letter-spacing:.02em}
+  .cgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+  .cdow{font-size:.58rem;font-weight:800;color:var(--soft);text-align:center;padding-bottom:4px;text-transform:uppercase}
+  .cell{aspect-ratio:1;border-radius:8px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:.78rem;color:var(--soft);position:relative;background:#0d0b14;border:1px solid transparent}
+  .cell.blank{background:transparent}
+  .cell.today{border-color:var(--cyan);color:#fff;font-weight:800}
+  .cell.ev{color:#fff;font-weight:800}
+  .cell .ed{font-size:.5rem;line-height:1;position:absolute;bottom:3px}
+  .cell.launch{background:linear-gradient(135deg,var(--rose),var(--gold));color:#1a0a12;font-weight:900;box-shadow:0 0 18px rgba(255,77,109,.5);animation:pulse 1.6s infinite}
+  .cell.huddle{background:rgba(58,215,255,.22)}.cell.dry{background:rgba(255,210,77,.2)}.cell.sq{background:rgba(165,156,196,.18)}
+  .callegend{font-size:.74rem;color:var(--soft);margin-top:10px;display:flex;flex-wrap:wrap;gap:10px}
+  .lg{display:inline-flex;align-items:center;gap:5px}.lg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  .links{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+  .lnk{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:11px;padding:11px 15px;font-weight:800;font-size:.86rem}
+  .lnk:hover{border-color:var(--cyan)}
+  .foot{margin-top:30px;text-align:center;color:var(--soft);font-size:.76rem}
+
+  /* confetti */
+  .conf{position:fixed;top:-10px;width:9px;height:14px;z-index:999;pointer-events:none;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="badge"><span class="blink"></span> skateOS · Launch Control</div>
+  <h1>We're <span class="grad">dropping in.</span></h1>
+  <p class="sub">This is the launch app for 2nd Nature going live on skateOS. Countdown, the go-live checklist, and the calendar — all in one place. Send it. 🛹</p>
+
+  <div class="countdown" id="countdown">
+    <div class="cd"><div class="n" id="cd-d">--</div><div class="l">Days</div></div>
+    <div class="cd"><div class="n" id="cd-h">--</div><div class="l">Hours</div></div>
+    <div class="cd"><div class="n" id="cd-m">--</div><div class="l">Min</div></div>
+    <div class="cd"><div class="n" id="cd-s">--</div><div class="l">Sec</div></div>
+  </div>
+  <div class="launchline">🚀 Launch day: <input type="date" id="launchDate"> <span id="tminus"></span></div>
+  <div class="golive" id="golive">🎉 IT'S LIVE — WELCOME TO skateOS 🛹</div>
+
+  <h2>🔋 Launch readiness</h2>
+  <div class="meter">
+    <div class="top"><div class="pct" id="pct">0%</div><div class="lab" id="pctlab">tap the checklist below</div></div>
+    <div class="bar"><div id="barfill"></div></div>
+  </div>
+
+  <h2>✅ Go-live checklist</h2>
+  <div id="checklist"></div>
+
+  <h2>🗓️ Launch calendar</h2>
+  <div class="calwrap" id="cals"></div>
+  <div class="callegend">
+    <span class="lg"><i style="background:linear-gradient(135deg,#ff4d6d,#ffd24d)"></i> Launch</span>
+    <span class="lg"><i style="background:rgba(58,215,255,.6)"></i> Staff huddle</span>
+    <span class="lg"><i style="background:rgba(255,210,77,.6)"></i> Dry-run</span>
+    <span class="lg"><i style="background:rgba(165,156,196,.6)"></i> Square backup ends</span>
+    <span class="lg"><i style="background:transparent;border:1px solid #3ad7ff"></i> Today</span>
+  </div>
+
+  <div class="links">
+    <a class="lnk" href="https://skateos.com/update" target="_blank">📊 Status board</a>
+    <a class="lnk" href="https://skateos.com/payments" target="_blank">💳 Payments plan</a>
+    <a class="lnk" href="https://skateos.com/roadmap" target="_blank">📈 6-month AI roadmap</a>
+    <a class="lnk" href="https://app.skateos.com" target="_blank">🛹 Open skateOS</a>
+  </div>
+
+  <div class="foot">skateOS · 2nd Nature Park · launch control. Let's go. 🤘</div>
+</div>
+
+<script>
+var DEF_LAUNCH='2026-06-27';
+var launch=localStorage.getItem('skateos_launch_date')||DEF_LAUNCH;
+document.getElementById('launchDate').value=launch;
+document.getElementById('launchDate').addEventListener('change',function(){launch=this.value||DEF_LAUNCH;localStorage.setItem('skateos_launch_date',launch);buildCals();tick();});
+
+function launchDateObj(){return new Date(launch+'T10:00:00');}
+function tick(){
+  var now=new Date(),t=launchDateObj()-now;
+  var live=t<=0;
+  document.getElementById('golive').style.display=live?'block':'none';
+  if(live){['cd-d','cd-h','cd-m','cd-s'].forEach(function(id){document.getElementById(id).textContent='0';});document.getElementById('tminus').textContent='— live!';return;}
+  var d=Math.floor(t/864e5),h=Math.floor(t/36e5)%24,m=Math.floor(t/6e4)%60,s=Math.floor(t/1e3)%60;
+  document.getElementById('cd-d').textContent=d;
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+  document.getElementById('tminus').textContent='· T-minus '+d+' day'+(d===1?'':'s');
+}
+
+// ---- checklist ----
+var TASKS=[
+  {id:'db',t:'Database migrated · email live · Square data in',d:'All applied and verified.',w:'done',pre:true},
+  {id:'mixture',t:'AI tools proven (Mixture order app live)',d:'Lucas already using it.',w:'done',pre:true},
+  {id:'pay',t:'Payments ready for day 1',d:'skateOS rings sales → Square reader for cards (works now). Stripe link = upgrade later.',w:'you'},
+  {id:'sw',t:'Smartwaiver webhook confirmed',d:'URL ends with ?key=… + one test waiver lands. (Paper/iPad works regardless.)',w:'you'},
+  {id:'backfill',t:'Square backfill — 488 missing orders',d:'So reports match Square exactly. (Claude runs it.)',w:'team'},
+  {id:'huddle',t:'15-min staff huddle on the POS',d:'Nick + the Jons: ring → pay → complete.',w:'team'},
+  {id:'cutover',t:'Pick cutover date & GO LIVE',d:'Start ringing on skateOS; keep Square 30 days as backup.',w:'you'},
+  {id:'square',t:'Cancel Square (after 30-day backup)',d:'skateOS becomes the system of record.',w:'you'}
+];
+var done=JSON.parse(localStorage.getItem('skateos_launch_checklist')||'{}');
+TASKS.forEach(function(x){if(x.pre)done[x.id]=true;});
+function renderChecklist(){
+  var el=document.getElementById('checklist');el.innerHTML='';
+  TASKS.forEach(function(x){
+    var on=!!done[x.id];
+    var d=document.createElement('div');d.className='check'+(on?' on':'');d.dataset.id=x.id;
+    var wc=x.w==='done'?'w-done':x.w==='you'?'w-you':'w-team';
+    var wl=x.w==='done'?'done':x.w==='you'?'you':'team';
+    d.innerHTML='<div class="box">'+(on?'✓':'')+'</div><div class="ctxt"><div class="ct">'+x.t+'</div><div class="cd2">'+x.d+'</div></div><div class="who '+wc+'">'+wl+'</div>';
+    if(!x.pre)d.addEventListener('click',function(){done[x.id]=!done[x.id];localStorage.setItem('skateos_launch_checklist',JSON.stringify(done));renderChecklist();updateMeter();});
+    el.appendChild(d);
+  });
+}
+function updateMeter(){
+  var total=TASKS.length,n=TASKS.filter(function(x){return done[x.id];}).length;
+  var pct=Math.round(n/total*100);
+  document.getElementById('pct').textContent=pct+'%';
+  document.getElementById('barfill').style.width=pct+'%';
+  var lab=pct===100?'🎉 fully ready — drop in!':pct>=75?'almost there — send it':pct>=40?'rolling…':'gearing up';
+  document.getElementById('pctlab').textContent=n+' of '+total+' · '+lab;
+  if(pct===100&&!window._confettiFired){window._confettiFired=true;confetti();}
+  if(pct<100)window._confettiFired=false;
+}
+
+// ---- calendar ----
+function ymd(dt){return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');}
+function addDays(dstr,n){var d=new Date(dstr+'T10:00:00');d.setDate(d.getDate()+n);return ymd(d);}
+function buildCals(){
+  var events={};
+  events[launch]={cls:'launch',e:'🚀'};
+  events[addDays(launch,-7)]=events[addDays(launch,-7)]||{cls:'huddle',e:'🎓'};
+  events[addDays(launch,-3)]=events[addDays(launch,-3)]||{cls:'dry',e:'🧾'};
+  events[addDays(launch,30)]=events[addDays(launch,30)]||{cls:'sq',e:'🟦'};
+  var today=ymd(new Date());
+  var L=launchDateObj();
+  var months=[{y:L.getFullYear(),m:L.getMonth()}];
+  var nx=new Date(L);nx.setMonth(nx.getMonth()+1);months.push({y:nx.getFullYear(),m:nx.getMonth()});
+  var MN=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var host=document.getElementById('cals');host.innerHTML='';
+  months.forEach(function(mo){
+    var first=new Date(mo.y,mo.m,1),start=first.getDay(),days=new Date(mo.y,mo.m+1,0).getDate();
+    var h='<div class="cal"><h3>'+MN[mo.m]+' '+mo.y+'</h3><div class="cgrid">';
+    ['S','M','T','W','T','F','S'].forEach(function(d){h+='<div class="cdow">'+d+'</div>';});
+    for(var i=0;i<start;i++)h+='<div class="cell blank"></div>';
+    for(var dn=1;dn<=days;dn++){
+      var ds=mo.y+'-'+String(mo.m+1).padStart(2,'0')+'-'+String(dn).padStart(2,'0');
+      var ev=events[ds],cls='cell';if(ev)cls+=' ev '+ev.cls;if(ds===today)cls+=' today';
+      h+='<div class="'+cls+'">'+dn+(ev?'<span class="ed">'+ev.e+'</span>':'')+'</div>';
+    }
+    h+='</div></div>';host.innerHTML+=h;
+  });
+}
+
+// ---- confetti ----
+function confetti(){
+  var colors=['#ff4d6d','#ffd24d','#c6ff4d','#3ad7ff','#fff'];
+  for(var i=0;i<90;i++){(function(){
+    var c=document.createElement('div');c.className='conf';
+    c.style.left=Math.random()*100+'vw';c.style.background=colors[i%colors.length];
+    c.style.transform='rotate('+(Math.random()*360)+'deg)';
+    document.body.appendChild(c);
+    var fall=2200+Math.random()*1800, drift=(Math.random()*200-100);
+    c.animate([{transform:'translate(0,0) rotate(0)',opacity:1},{transform:'translate('+drift+'px,105vh) rotate(720deg)',opacity:.9}],{duration:fall,easing:'cubic-bezier(.3,.6,.5,1)'});
+    setTimeout(function(){c.remove();},fall);
+  })();}
+}
+
+renderChecklist();updateMeter();buildCals();tick();setInterval(tick,1000);
+</script>
+</body>
+</html>

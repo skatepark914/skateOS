@@ -1,0 +1,353 @@
+/* ============================================================
+ * tokens.css — shared design system for skateOS
+ *
+ * One file owns the brand. Change a color here, every page
+ * that uses var(--brand-rose) updates. New pages built going
+ * forward should reference these tokens instead of hardcoding.
+ *
+ * Usage:
+ *   <link rel="stylesheet" href="/styles/tokens.css">
+ *
+ * Page-specific layout styles stay inline in the page. Only
+ * SHARED patterns (buttons, cards, modals, forms, pills) live
+ * here.
+ *
+ * Order: design tokens → reset → typography → components → utilities
+ * ============================================================ */
+
+/* ──── Design tokens ──── */
+:root {
+  /* Brand palette — rose-purple (consumer / marketing / 2ntr) */
+  --rose:           #e11d48;
+  --rose-dark:      #be123c;
+  --rose-light:     #ffe4e6;
+  --rose-purple:    #b537c0;
+  --pink:           #f0507f;
+
+  /* Neutral palette — Square-style for admin / kiosk */
+  --ink:            #1a1a1a;
+  --ink-soft:       #4a525c;
+  --ink-mute:       #6a737d;
+  --ink-faint:      #9aa3ad;
+  --line:           #e6e8ec;
+  --line-strong:    #d1d6dc;
+  --bg:             #f7f8fa;
+  --bg-card:        #fafbfc;
+  --white:          #ffffff;
+
+  /* Semantic colors */
+  --green:          #00b388;
+  --green-dark:     #007a5a;
+  --green-light:    #e6faf3;
+  --amber:          #b89000;
+  --amber-light:    #fff7e1;
+  --red:            #b53030;
+  --red-light:      #fef0ee;
+  --blue:           #2255b8;
+  --blue-light:     #e6f0ff;
+
+  /* Spacing scale (rem-based) */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  20px;
+  --s-6:  24px;
+  --s-8:  32px;
+  --s-10: 40px;
+  --s-12: 48px;
+
+  /* Border radius scale */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-pill: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(20,24,30,.04);
+  --shadow-md: 0 8px 24px rgba(20,24,30,.08), 0 2px 6px rgba(20,24,30,.04);
+  --shadow-lg: 0 20px 60px rgba(20,24,30,.18);
+
+  /* Typography */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'SF Mono', Menlo, Consolas, monospace;
+
+  /* Transition timing */
+  --t-fast:   .12s;
+  --t-normal: .2s;
+  --t-slow:   .3s;
+}
+
+/* ──── Reset (additive — safe to layer on existing pages) ──── */
+.skos-scope *,
+.skos-scope *::before,
+.skos-scope *::after {
+  box-sizing: border-box;
+}
+
+/* ──── Buttons ──── */
+.skos-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 22px;
+  border-radius: var(--r-md);
+  font-weight: 700;
+  font-size: .94rem;
+  font-family: inherit;
+  letter-spacing: -.01em;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+  line-height: 1;
+}
+.skos-btn:active { transform: scale(.98); }
+.skos-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.skos-btn-prim   { background: var(--ink); color: var(--white); }
+.skos-btn-prim:hover:not(:disabled) { opacity: .88; }
+
+.skos-btn-rose   { background: var(--rose); color: var(--white); }
+.skos-btn-rose:hover:not(:disabled) { background: var(--rose-dark); }
+
+.skos-btn-green  { background: var(--green); color: var(--white); }
+.skos-btn-green:hover:not(:disabled) { opacity: .9; }
+
+.skos-btn-red    { background: var(--red); color: var(--white); }
+.skos-btn-red:hover:not(:disabled) { opacity: .9; }
+
+.skos-btn-sec    { background: #f0f2f5; color: var(--ink); }
+.skos-btn-sec:hover:not(:disabled) { background: var(--line); }
+
+.skos-btn-ghost  { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+.skos-btn-ghost:hover:not(:disabled) { background: var(--bg); border-color: var(--line-strong); }
+
+.skos-btn-full { width: 100%; padding: 14px; font-size: 1rem; justify-content: center; }
+.skos-btn-sm   { padding: 8px 14px; font-size: .82rem; }
+
+.skos-btn-row { display: flex; gap: var(--s-3); flex-wrap: wrap; }
+
+/* ──── Cards ──── */
+.skos-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: var(--s-6);
+}
+.skos-card-hover {
+  transition: transform var(--t-fast), box-shadow var(--t-fast), border-color var(--t-fast);
+}
+.skos-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--line-strong);
+}
+
+/* ──── Status pills ──── */
+.skos-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .4px;
+  white-space: nowrap;
+}
+.skos-pill-green { background: var(--green-light); color: var(--green-dark); }
+.skos-pill-amber { background: var(--amber-light); color: var(--amber); }
+.skos-pill-red   { background: var(--red-light); color: var(--red); }
+.skos-pill-blue  { background: var(--blue-light); color: var(--blue); }
+.skos-pill-gray  { background: #f0f2f5; color: var(--ink-soft); }
+.skos-pill-dark  { background: var(--ink); color: var(--white); }
+
+/* ──── Form inputs ──── */
+.skos-field { margin-bottom: var(--s-4); }
+.skos-field label {
+  display: block;
+  font-size: .82rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+  letter-spacing: -.01em;
+}
+.skos-field input[type=text],
+.skos-field input[type=email],
+.skos-field input[type=number],
+.skos-field input[type=tel],
+.skos-field input[type=password],
+.skos-field input[type=date],
+.skos-field input[type=time],
+.skos-field input[type=url],
+.skos-field select,
+.skos-field textarea {
+  width: 100%;
+  background: var(--white);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-sm);
+  padding: 10px 14px;
+  font-size: .95rem;
+  font-family: inherit;
+  color: var(--ink);
+}
+.skos-field input:focus,
+.skos-field select:focus,
+.skos-field textarea:focus { outline: none; border-color: var(--ink); }
+.skos-field textarea { min-height: 80px; resize: vertical; }
+.skos-field .hint { font-size: .78rem; color: var(--ink-mute); margin-top: 4px; }
+
+/* ──── Modal ──── */
+.skos-modal-bg {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,24,30,.42);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 8000;
+  padding: var(--s-5);
+}
+.skos-modal-bg.show { display: flex; }
+.skos-modal {
+  background: var(--white);
+  border-radius: var(--r-xl);
+  padding: var(--s-8) var(--s-6);
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow: auto;
+  box-shadow: var(--shadow-lg);
+}
+.skos-modal-lg { max-width: 720px; }
+.skos-modal-sm { max-width: 360px; }
+.skos-modal h2 {
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: var(--s-4);
+  color: var(--ink);
+  letter-spacing: -.02em;
+}
+
+/* ──── Callouts (tip / warn / info) ──── */
+.skos-tip,
+.skos-warn,
+.skos-info,
+.skos-danger {
+  border-radius: var(--r-md);
+  padding: 14px 18px;
+  font-size: .94rem;
+  margin: var(--s-3) 0;
+  border: 1px solid;
+}
+.skos-tip    { background: var(--green-light);  border-color: #b8e8d9; color: var(--green-dark); }
+.skos-warn   { background: var(--amber-light);  border-color: #f5dba6; color: #5c4d1a; }
+.skos-info   { background: var(--blue-light);   border-color: #b6d0f5; color: var(--blue); }
+.skos-danger { background: var(--red-light);    border-color: #f5c2bb; color: var(--red); }
+
+.skos-tip strong, .skos-warn strong, .skos-info strong, .skos-danger strong { color: var(--ink); }
+
+/* ──── Spinner ──── */
+.skos-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: skos-spin .8s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes skos-spin { to { transform: rotate(360deg); } }
+
+/* ──── Toast ──── */
+.skos-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--white);
+  padding: 14px 24px;
+  border-radius: var(--r-md);
+  font-weight: 600;
+  font-size: .94rem;
+  box-shadow: var(--shadow-md);
+  z-index: 9999;
+  opacity: 0;
+  transition: opacity var(--t-normal), transform var(--t-normal);
+  pointer-events: none;
+  max-width: 92vw;
+}
+.skos-toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.skos-toast.success { background: var(--green); }
+.skos-toast.err     { background: var(--red); }
+.skos-toast.warn    { background: var(--amber); color: var(--white); }
+
+/* ──── Typography helpers ──── */
+.skos-eyebrow {
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.skos-lead {
+  font-size: 1.04rem;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+.skos-mono {
+  font-family: var(--font-mono);
+  background: #f0f2f5;
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: .9em;
+}
+
+/* ──── Copyable box (for secrets, URLs, code) ──── */
+.skos-copyable {
+  background: var(--ink);
+  color: var(--white);
+  border-radius: var(--r-md);
+  padding: 14px 60px 14px 18px;
+  font-family: var(--font-mono);
+  font-size: .88rem;
+  word-break: break-all;
+  position: relative;
+  margin: var(--s-2) 0;
+  line-height: 1.4;
+}
+.skos-copyable .copy-btn {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  background: rgba(255,255,255,.15);
+  color: var(--white);
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  font-size: .74rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+}
+.skos-copyable .copy-btn:hover { background: rgba(255,255,255,.25); }
+.skos-copyable .copy-btn.copied { background: var(--green); }
+
+/* ──── Utility ──── */
+.skos-text-center  { text-align: center; }
+.skos-text-mute    { color: var(--ink-mute); }
+.skos-text-soft    { color: var(--ink-soft); }
+.skos-text-red     { color: var(--red); }
+.skos-text-green   { color: var(--green-dark); }
+.skos-mt-2 { margin-top: var(--s-2); }
+.skos-mt-4 { margin-top: var(--s-4); }
+.skos-mt-6 { margin-top: var(--s-6); }
+.skos-mb-2 { margin-bottom: var(--s-2); }
+.skos-mb-4 { margin-bottom: var(--s-4); }
+.skos-mb-6 { margin-bottom: var(--s-6); }
+.skos-hidden { display: none; }

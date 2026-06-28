@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Media library · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 12px; }
+h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 6px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: .96rem; color: #4a525c; margin-bottom: 22px; }
+.toolbar { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.toolbar input { background: #fff; border: 1px solid #d1d6dc; border-radius: 8px; padding: 10px 14px; font-size: .92rem; font-family: inherit; min-width: 240px; flex: 1; }
+.toolbar input:focus { outline: none; border-color: #1a1a1a; }
+.toolbar select { background: #fff; border: 1px solid #d1d6dc; border-radius: 8px; padding: 10px 14px; font-size: .92rem; font-family: inherit; cursor: pointer; }
+.stats { display: flex; gap: 12px; flex-wrap: wrap; margin-left: auto; font-size: .84rem; color: #4a525c; font-weight: 600; }
+.stats span { padding: 4px 10px; background: #f0f2f5; border-radius: 6px; }
+.stats span.go { background: #e6faf3; color: #007a5a; }
+.stats span.warn { background: #fff7e1; color: #b89000; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 10px; cursor: pointer; transition: transform .12s, box-shadow .12s, border .12s; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.06); border-color: #d1d6dc; }
+.card.no-image { border-style: dashed; }
+.card .img { width: 100%; aspect-ratio: 1; background: #f7f8fa center/contain no-repeat; border-radius: 8px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; }
+.card .img .placeholder { color: #d1d6dc; font-size: 1.8rem; }
+.card .name { font-size: .82rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .meta { font-size: .72rem; color: #6a737d; margin-top: 2px; display: flex; justify-content: space-between; gap: 6px; }
+.card .meta .src { background: #f0f2f5; padding: 1px 6px; border-radius: 4px; }
+.card .meta .src.skateos { background: #e6faf3; color: #007a5a; }
+.card .meta .src.square { background: #fff7e1; color: #b89000; }
+.card .meta .src.none { background: #fde1e1; color: #b53030; }
+.empty { text-align: center; padding: 60px 20px; color: #6a737d; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d6dc; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Detail modal */
+.modal-bg { position: fixed; inset: 0; background: rgba(20,24,30,.5); display: none; align-items: center; justify-content: center; z-index: 9000; padding: 20px; }
+.modal-bg.show { display: flex; }
+.modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 540px; width: 100%; }
+.modal h2 { font-size: 1.15rem; font-weight: 800; margin-bottom: 14px; color: #1a1a1a; }
+.modal .imgbox { background: #f7f8fa; border-radius: 10px; padding: 12px; margin-bottom: 14px; aspect-ratio: 1; background-position: center; background-size: contain; background-repeat: no-repeat; }
+.modal .row { font-size: .88rem; color: #4a525c; padding: 8px 0; border-bottom: 1px solid #f0f2f5; display: flex; justify-content: space-between; gap: 12px; }
+.modal .row strong { color: #1a1a1a; font-weight: 700; }
+.modal .row code { font-family: 'SF Mono', monospace; font-size: .8rem; background: #f0f2f5; padding: 2px 6px; border-radius: 4px; word-break: break-all; max-width: 320px; overflow: hidden; text-overflow: ellipsis; }
+.modal .actions { display: flex; gap: 10px; margin-top: 16px; }
+.modal .actions a, .modal .actions button { flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-weight: 700; font-size: .9rem; text-decoration: none; cursor: pointer; border: none; font-family: inherit; }
+.modal .actions .open { background: #1a1a1a; color: #fff; }
+.modal .actions .close { background: #f0f2f5; color: #1a1a1a; }
+
+.foot { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Media library</div>
+  <h1>Product photos</h1>
+  <p class="lead">Browse + search all product images. Source badge shows where each lives: skateOS Storage (owned, safe), Square CDN (depends on Square), or none.</p>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Search by product name…" oninput="filterCards()">
+    <select id="filterSel" onchange="filterCards()">
+      <option value="all">All products</option>
+      <option value="skateos">Hosted by skateOS</option>
+      <option value="square">Still on Square CDN</option>
+      <option value="none">No image</option>
+    </select>
+    <div class="stats" id="stats"></div>
+  </div>
+
+  <div id="grid" class="grid"><div class="empty"><span class="spinner"></span>Loading products…</div></div>
+
+  <div class="foot">
+    <a href="/index.html">← Back to admin</a>
+  </div>
+</div>
+
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+var H = { 'apikey':KEY, 'Authorization':'Bearer ' + KEY };
+
+var allProducts = [];
+
+function classifySrc(url){
+  if(!url) return 'none';
+  if(url.indexOf(SUPA) === 0 || url.indexOf('supabase.co/storage') >= 0) return 'skateos';
+  if(url.indexOf('items-images-production') >= 0 || url.indexOf('square') >= 0) return 'square';
+  return 'other';
+}
+function classifySrcLabel(src){
+  return src === 'skateos' ? 'skateOS' : src === 'square' ? 'Square CDN' : src === 'none' ? 'No image' : 'External';
+}
+
+async function loadProducts(){
+  try {
+    var r = await fetch(SUPA + '/rest/v1/products?select=id,name,image_url,image_thumb_url,image_origin_url,price&order=name.asc&limit=2000', { headers: H });
+    var data = await r.json();
+    allProducts = Array.isArray(data) ? data : [];
+    render();
+  } catch(e) {
+    document.getElementById('grid').innerHTML = '<div class="empty">Failed to load. ' + e.message + '</div>';
+  }
+}
+
+function render(){
+  var search = (document.getElementById('searchInput').value || '').toLowerCase();
+  var filter = document.getElementById('filterSel').value;
+  var grid = document.getElementById('grid');
+  var counts = { all: allProducts.length, skateos: 0, square: 0, none: 0, other: 0 };
+  var filtered = allProducts.filter(function(p){
+    var src = classifySrc(p.image_url);
+    counts[src] = (counts[src] || 0) + 1;
+    if(filter !== 'all' && src !== filter) return false;
+    if(search && (p.name || '').toLowerCase().indexOf(search) < 0) return false;
+    return true;
+  });
+  document.getElementById('stats').innerHTML =
+    '<span class="go">skateOS: ' + counts.skateos + '</span>'
+    + '<span class="warn">Square: ' + counts.square + '</span>'
+    + '<span>None: ' + counts.none + '</span>'
+    + (counts.other ? '<span>External: ' + counts.other + '</span>' : '');
+  if(filtered.length === 0){
+    grid.innerHTML = '<div class="empty">No products match.</div>';
+    return;
+  }
+  grid.innerHTML = filtered.slice(0, 500).map(function(p, idx){
+    var src = classifySrc(p.image_url);
+    var thumbUrl = p.image_thumb_url || p.image_url;
+    var img = thumbUrl ? ('<div class="img" style="background-image:url(\'' + thumbUrl + '\');"></div>')
+                       : '<div class="img"><div class="placeholder">🖼</div></div>';
+    return '<div class="card ' + (src === 'none' ? 'no-image' : '') + '" onclick="openDetail(\'' + p.id + '\')">'
+      + img
+      + '<div class="name">' + (p.name || '(unnamed)') + '</div>'
+      + '<div class="meta"><span>$' + (p.price || 0) + '</span><span class="src ' + src + '">' + classifySrcLabel(src) + '</span></div>'
+      + '</div>';
+  }).join('') + (filtered.length > 500 ? '<div class="empty">Showing first 500 of ' + filtered.length + ' · refine search</div>' : '');
+}
+
+function filterCards(){ render(); }
+
+function openDetail(id){
+  var p = allProducts.find(function(x){ return x.id === id; });
+  if(!p) return;
+  var src = classifySrc(p.image_url);
+  var fullUrl = p.image_url || '';
+  var modal = document.getElementById('modal');
+  modal.innerHTML = '<h2>' + (p.name || '(unnamed)') + '</h2>'
+    + (fullUrl ? '<div class="imgbox" style="background-image:url(\'' + fullUrl + '\');"></div>' : '<div class="imgbox" style="display:flex;align-items:center;justify-content:center;color:#d1d6dc;font-size:3rem;">🖼</div>')
+    + '<div class="row"><strong>Hosted by</strong><span class="src ' + src + '" style="font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;">' + classifySrcLabel(src) + '</span></div>'
+    + '<div class="row"><strong>Price</strong><span>$' + (p.price || 0) + '</span></div>'
+    + (fullUrl ? '<div class="row"><strong>Full URL</strong><code>' + fullUrl.slice(0, 60) + (fullUrl.length > 60 ? '…' : '') + '</code></div>' : '')
+    + (p.image_thumb_url ? '<div class="row"><strong>Thumb URL</strong><code>' + p.image_thumb_url.slice(0, 60) + '…</code></div>' : '')
+    + (p.image_origin_url ? '<div class="row"><strong>Original</strong><code>' + p.image_origin_url.slice(0, 60) + '…</code></div>' : '')
+    + '<div class="actions">'
+    + (fullUrl ? '<a class="open" href="' + fullUrl + '" target="_blank">Open full image</a>' : '')
+    + '<button class="close" onclick="closeModal()">Close</button>'
+    + '</div>';
+  document.getElementById('modalBg').classList.add('show');
+}
+function closeModal(){ document.getElementById('modalBg').classList.remove('show'); }
+
+loadProducts();
+</script>
+</body>
+</html>

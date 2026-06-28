@@ -20,9 +20,9 @@ window.APP_CONFIG = {
   bizTagline:     'PARK OPERATIONS',      // sidebar subtitle (uppercase)
   logoEmoji:      '🛹',                   // fallback icon if no image
   logoUrl:        '',                     // optional image path
-  themeColor:     '#e11d48',              // primary accent (rose-600)
-  themeColorDark: '#be123c',
-  themeColorLight:'#ffe4e6',
+  themeColor:     '#1a1a1a',              // Square black (default). Classic theme restores rose.
+  themeColorDark: '#000000',
+  themeColorLight:'#f5f5f7',
 
   // --- Contact ---
   bizPhone:       '(914) 402-4624',
@@ -72,7 +72,7 @@ window.APP_CONFIG = {
       webhookPath:   '/functions/v1/smartwaiver-webhook',
     },
     resend: {                              // transactional email
-      enabled:       false,
+      enabled:       true,                 // RESEND_API_KEY secret live; verified send-email function
       fromAddress:   'info@2ntr.com',
       fromName:      '2nd Nature Park',
     },
@@ -82,6 +82,9 @@ window.APP_CONFIG = {
     },
     helcim: {
       enabled:       false,                // flips true once Edge Function deploys
+    },
+    stripe: {                              // card payments (hosted checkout) — "get going now" path
+      enabled:       false,                // flip true after STRIPE_SECRET_KEY secret is set + deployed
     },
   },
 
@@ -93,7 +96,7 @@ window.APP_CONFIG = {
     lessons:         true,    // booked lessons
     parties:         true,    // birthday party bookings
     shop:            true,    // retail POS
-    service:         false,   // board-repair tickets — off by default (was mower-shaped)
+    service:         false,   // board-repair tickets — off by default
     onlineShop:      false,   // customer-facing storefront — v2
     giftCards:       true,    // sell + redeem at POS, public balance check at /admin/gift-card.html
     warranties:      false,   // skate products rarely carry warranty

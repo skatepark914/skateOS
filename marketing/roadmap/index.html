@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>skateOS × AI — 6-Month Trust & Go-Live Roadmap</title>
+<style>
+  :root{--ink:#14110f;--paper:#f6f3ee;--card:#fff;--line:#e6e0d6;--soft:#7a716a;--accent:#c9572e;--gold:#caa24a;--green:#3f7d5f;--blue:#2f6db0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:920px;margin:0 auto;padding:26px 18px 80px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  header.hero{background:var(--ink);color:#fff;border-radius:20px;padding:34px 28px}
+  .hero .kick{font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .hero h1{font-size:2rem;font-weight:900;letter-spacing:-.02em;margin-top:10px;line-height:1.12}
+  .hero p{color:#cdc6bd;margin-top:12px;font-size:.98rem;max-width:64ch}
+
+  .principle{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:14px;padding:18px 20px;margin:18px 0}
+  .principle b{color:var(--ink)}
+  h2{font-size:.82rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin:30px 0 14px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+
+  .phase{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0;margin-bottom:14px;overflow:hidden}
+  .phase .top{display:flex;align-items:center;gap:14px;padding:16px 18px;border-bottom:1px solid var(--line)}
+  .mo{flex:none;width:54px;height:54px;border-radius:14px;background:var(--ink);color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:900;line-height:1}
+  .mo small{font-size:.56rem;font-weight:700;letter-spacing:.08em;opacity:.7;text-transform:uppercase}
+  .mo span{font-size:1.25rem}
+  .phase .ti{flex:1;min-width:0}
+  .phase .ti .nm{font-size:1.12rem;font-weight:800}
+  .phase .ti .th{font-size:.84rem;color:var(--soft)}
+  .risk{flex:none;font-size:.66rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;border-radius:999px;padding:4px 10px}
+  .r-none{background:#eaf6ef;color:#2c6b48}.r-low{background:#eef4fb;color:#2f5e92}.r-med{background:#fbf3e6;color:#8a5a17}
+
+  .phase .body{padding:14px 18px}
+  .phase ul{margin:2px 0 0 18px;font-size:.92rem}
+  .phase li{margin:5px 0}
+  .trust{margin-top:12px;background:#f3f9f5;border:1px solid #cfe6d9;border-radius:10px;padding:10px 13px;font-size:.86rem}
+  .trust b{color:var(--green)}
+  .flag{display:inline-block;background:var(--gold);color:#3a2c08;font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.04em;border-radius:5px;padding:2px 7px;margin-left:6px}
+  .live{background:#2c6b48;color:#fff}
+
+  .proof{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 20px}
+  .proof .row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid #f0ece4;font-size:.92rem}
+  .proof .row:last-child{border-bottom:none}
+  .proof .ic{flex:none;color:var(--green);font-weight:900}
+  .cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+  .btn{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 16px;font-weight:800;font-size:.86rem;color:var(--ink)}
+  .btn.dark{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .foot{margin-top:30px;text-align:center;color:var(--soft);font-size:.78rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <div class="kick">skateOS × AI · internal plan</div>
+    <h1>From "new system" to fully trusted &amp; live — in 6 months</h1>
+    <p>How we use AI <strong>incrementally</strong> to run 2nd Nature: start where it literally can't break anything, prove the numbers against Square, and expand only as trust is earned — until skateOS is the operating layer of the park.</p>
+  </header>
+
+  <div class="principle">
+    <b>The principle: trust is earned, not assumed.</b> Every phase below starts low-stakes (parallel tools, drafts a human approves, shadow-mode against Square) and only moves to higher-stakes once the prior step has proven accurate in the real world. AI never sends money, emails, or orders on its own until that specific job has earned it.
+  </div>
+
+  <h2>The 6-month arc</h2>
+
+  <!-- MONTH 1 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>1</span></div>
+      <div class="ti"><div class="nm">Parallel tools — zero risk <span class="flag live">in motion</span></div><div class="th">AI builds internal tools that can't touch live operations</div></div>
+      <div class="risk r-none">No risk</div></div>
+    <div class="body"><ul>
+      <li><b>Mixture apparel order builder</b> — the flagship example: a shared, multi-person order tool (Lucas, Jon, Doug each submit, AI averages into a final order, with live mockups + real supplier colors). Built by AI, lives beside operations, touches no customer or money. <a href="https://skateos.com/mixture" target="_blank">→ see it</a></li>
+      <li><b>Shadow-run vs Square</b> — skateOS runs alongside Square; AI reconciles totals daily and flags any gap (it already caught 488 un-imported Square orders).</li>
+      <li>AI builds the internal status board, migrations, and reconciliation tooling.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> the team uses an AI-built tool daily, and skateOS's numbers match Square to the dollar.</div>
+    </div>
+  </div>
+
+  <!-- MONTH 2 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>2</span></div>
+      <div class="ti"><div class="nm">Go live at the front desk</div><div class="th">AI assists; a human still makes every call</div></div>
+      <div class="risk r-low">Low risk</div></div>
+    <div class="body"><ul>
+      <li><b>Go live on the Square bridge</b> — skateOS rings every sale, your existing Square reader swipes the cards. No new hardware, nothing blocked. (<a href="https://skateos.com/payments">payments plan →</a>)</li>
+      <li><b>Full store, stocked incrementally</b> — start with 2nd Nature decks, add a category at a time as you trust it. (Deck Pilot is live in the real POS now.)</li>
+      <li>AI handles the safe, repetitive layer: receipts, daily close-out math, low-stock alerts, the morning digest email.</li>
+      <li><b>Endgame:</b> swap card processing to <b>Stripe Tap to Pay on iPhone</b> — tap the card right in skateOS, drop the extra swipe + the Square fees.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> a full week of skateOS sales reconcile clean against Square, and staff trust the flow.</div>
+    </div>
+  </div>
+
+  <!-- MONTH 3 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>3</span></div>
+      <div class="ti"><div class="nm">Insights &amp; gentle automation</div><div class="th">AI surfaces what matters; humans act on it</div></div>
+      <div class="risk r-low">Low risk</div></div>
+    <div class="body"><ul>
+      <li>Weekly/monthly performance reports + partner P&amp;L to Jon, written automatically.</li>
+      <li>At-risk-customer and re-order lists; AI suggests, owner decides.</li>
+      <li>Opt-in reminders (lessons, membership renewals) and AI-drafted marketing campaigns — owner sends.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> a decision the owner made off an AI insight pays off (recovered member, avoided stockout).</div>
+    </div>
+  </div>
+
+  <!-- MONTH 4 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>4</span></div>
+      <div class="ti"><div class="nm">Customer-facing — supervised</div><div class="th">AI touches customers, with a human in the loop</div></div>
+      <div class="risk r-med">Medium risk</div></div>
+    <div class="body"><ul>
+      <li>Online ordering / pre-orders (the same shared-form pattern as Mixture, now customer-facing) and the self-serve member portal.</li>
+      <li>Digital waivers fully automated (Smartwaiver → auto-stamped on the customer).</li>
+      <li>Inbound form submissions → AI drafts the response, owner approves.</li>
+      <li>Brivo door → auto check-in, once it's proven on a few real taps.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> customers self-serve (orders, waivers, check-ins) with no front-desk error.</div>
+    </div>
+  </div>
+
+  <!-- MONTH 5 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>5</span></div>
+      <div class="ti"><div class="nm">Scale the pattern</div><div class="th">One park proven → repeatable</div></div>
+      <div class="risk r-med">Medium risk</div></div>
+    <div class="body"><ul>
+      <li>The "many people feed one shared database" pattern (proven on the Mixture form) generalizes to multi-park / white-label onboarding.</li>
+      <li>AI watches for anomalies: refund spikes, capacity overages, reconciliation drift — and alerts before they become problems.</li>
+      <li>AI-built onboarding so a second park can come online in days, not months.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> the system runs a full month with AI catching issues before a human noticed them.</div>
+    </div>
+  </div>
+
+  <!-- MONTH 6 -->
+  <div class="phase">
+    <div class="top"><div class="mo"><small>Month</small><span>6</span></div>
+      <div class="ti"><div class="nm">Trusted autonomy</div><div class="th">AI runs the routine; humans set direction</div></div>
+      <div class="risk r-med">Earned</div></div>
+    <div class="body"><ul>
+      <li>The jobs that earned trust now run on their own with oversight: auto-reconcile, auto-reorder, reminder + marketing cadence, partner reporting.</li>
+      <li>Square is cancelled — skateOS is the system of record.</li>
+      <li>Owner's time shifts from running the software to running the business; AI handles the operating layer.</li>
+    </ul>
+      <div class="trust"><b>Trust milestone:</b> skateOS is fully live, Square is gone, and the park runs on an AI-operated stack you trust.</div>
+    </div>
+  </div>
+
+  <h2>Already proven (the trust is being built now)</h2>
+  <div class="proof">
+    <div class="row"><span class="ic">✓</span><div><b>Mixture order builder</b> — shared multi-person tool, live, in use by Lucas now.</div></div>
+    <div class="row"><span class="ic">✓</span><div><b>Square reconciliation</b> — AI audited every order and surfaced a 488-order / ~$20k import gap to fix.</div></div>
+    <div class="row"><span class="ic">✓</span><div><b>Database fully migrated</b>, email (Resend) live, real Square data imported.</div></div>
+    <div class="row"><span class="ic">✓</span><div><b>Payments, waivers, door access</b> all built &amp; deployed — waiting only on account keys, not code.</div></div>
+    <div class="row"><span class="ic">✓</span><div><b>Honest by default</b> — AI flagged that the apparel "fall colors" weren't real stock colors, and corrected them. Trust comes from catching its own gaps.</div></div>
+  </div>
+
+  <div class="cta">
+    <a class="btn dark" href="https://skateos.com/mixture" target="_blank">See the Month-1 example →</a>
+    <a class="btn" href="https://skateos.com/update" target="_blank">Live status board →</a>
+  </div>
+
+  <div class="foot">Internal · skateOS × 2nd Nature Park · the plan to earn full trust, one proven step at a time.</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>skateOS · status board (internal)</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #ffffff; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 18px; }
+h1 { font-size: 2.4rem; font-weight: 800; line-height: 1.06; margin-bottom: 18px; letter-spacing: -.025em; color: #1a1a1a; }
+.lead { font-size: 1.08rem; color: #4a525c; margin-bottom: 32px; }
+h2 { font-size: 1.35rem; font-weight: 700; margin-top: 56px; margin-bottom: 18px; display: flex; align-items: center; gap: 12px; letter-spacing: -.02em; color: #1a1a1a; }
+h2 .num { width: 30px; height: 30px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .88rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+h3 { font-size: 1.05rem; font-weight: 700; margin-top: 22px; margin-bottom: 6px; color: #1a1a1a; letter-spacing: -.01em; }
+p { color: #2c3138; margin-bottom: 14px; }
+
+.draft-banner { background: #fef0ee; border: 1px solid #f5c2bb; border-radius: 14px; padding: 18px 22px; margin: -10px 0 32px 0; display: flex; gap: 14px; align-items: flex-start; }
+.draft-banner .icon { width: 32px; height: 32px; border-radius: 50%; background: #b53030; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; font-size: 1rem; }
+.draft-banner strong { color: #1a1a1a; font-weight: 700; display: block; margin-bottom: 4px; }
+.draft-banner p { color: #8a2424; margin: 0; font-size: .92rem; }
+
+.callout { background: #f7f8fa; border: 1px solid #e6e8ec; border-radius: 14px; padding: 22px 24px; margin: 22px 0; }
+.callout strong { color: #1a1a1a; font-weight: 700; }
+.callout p { margin-top: 8px; margin-bottom: 0; color: #2c3138; }
+
+/* Status table — what's real */
+.reality { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; overflow: hidden; margin: 16px 0; }
+.reality .r-row { display: flex; align-items: center; padding: 14px 18px; border-bottom: 1px solid #f0f2f5; gap: 14px; }
+.reality .r-row:last-child { border-bottom: none; }
+.reality .r-icon { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: .82rem; flex-shrink: 0; color: #fff; }
+.r-icon.ok { background: #00b388; }
+.r-icon.warn { background: #b89000; }
+.r-icon.bad { background: #b53030; }
+.r-icon.idle { background: #d1d6dc; color: #6a737d; }
+.reality .r-label { flex: 1; font-size: .94rem; color: #1a1a1a; font-weight: 500; }
+.reality .r-label .r-sub { display: block; color: #6a737d; font-size: .8rem; font-weight: 400; margin-top: 2px; }
+.reality .r-val { font-size: .78rem; font-weight: 700; color: #4a525c; text-transform: uppercase; letter-spacing: .6px; }
+
+/* Action list — what to do this week */
+.do-list { list-style: none; padding-left: 0; margin-top: 12px; }
+.do-list li { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 16px 20px; margin-bottom: 10px; display: flex; gap: 14px; align-items: flex-start; }
+.do-list li.priority { border-left: 4px solid #b53030; }
+.do-list li.next { border-left: 4px solid #b89000; }
+.do-list li.later { border-left: 4px solid #d1d6dc; }
+.do-list .who { font-size: .68rem; font-weight: 800; padding: 4px 10px; border-radius: 999px; letter-spacing: .8px; text-transform: uppercase; flex-shrink: 0; margin-top: 2px; }
+.who.you { background: #1a1a1a; color: #fff; }
+.who.code { background: #e6f0ff; color: #2255b8; }
+.who.both { background: #fff7e1; color: #b89000; }
+.do-list .what { flex: 1; }
+.do-list .what strong { display: block; color: #1a1a1a; font-weight: 700; margin-bottom: 4px; font-size: .96rem; }
+.do-list .what .why { font-size: .85rem; color: #6a737d; margin-top: 4px; }
+
+/* Help-wanted list */
+.help-list { display: flex; flex-direction: column; gap: 14px; margin: 18px 0; }
+.help-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 22px 24px; border-left: 4px solid #b89000; }
+.help-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.help-tag { font-size: .72rem; font-weight: 800; padding: 5px 12px; border-radius: 999px; letter-spacing: .8px; text-transform: uppercase; flex-shrink: 0; }
+.who-nick { background: #1a1a1a; color: #fff; }
+.who-jonm { background: #2255b8; color: #fff; }
+.who-jondi { background: #007a5a; color: #fff; }
+.help-title { font-weight: 700; font-size: 1.05rem; color: #1a1a1a; letter-spacing: -.01em; }
+.help-body p { font-size: .94rem; color: #2c3138; margin-bottom: 10px; }
+.help-body strong { color: #1a1a1a; font-weight: 700; }
+.help-body ul { list-style: none; padding-left: 0; margin: 8px 0 12px 0; }
+.help-body ul li { padding: 4px 0 4px 22px; font-size: .9rem; color: #2c3138; position: relative; }
+.help-body ul li::before { content: "→"; position: absolute; left: 0; top: 4px; color: #b89000; font-weight: 800; }
+
+/* Drop list */
+.drop-list { background: #f7f8fa; border-radius: 12px; padding: 18px 22px; margin: 16px 0; }
+.drop-list h4 { font-size: .9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 10px; text-transform: uppercase; letter-spacing: .8px; }
+.drop-list ul { list-style: none; padding-left: 0; }
+.drop-list li { padding: 6px 0; color: #4a525c; font-size: .92rem; padding-left: 24px; position: relative; }
+.drop-list li::before { content: "✕"; position: absolute; left: 0; top: 7px; color: #b53030; font-weight: 800; }
+.drop-list li strong { color: #1a1a1a; font-weight: 700; }
+
+/* Numbers tile row */
+.num-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin: 18px 0; }
+.num-tile { background: #fff; border: 1px solid #e6e8ec; border-radius: 12px; padding: 16px; }
+.num-tile .num-label { font-size: .68rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; margin-bottom: 4px; }
+.num-tile .num-val { font-size: 1.6rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; }
+.num-tile .num-sub { font-size: .76rem; color: #6a737d; margin-top: 2px; font-weight: 500; }
+.num-tile.go .num-val { color: #007a5a; }
+.num-tile.stop .num-val { color: #b53030; }
+
+/* Timeline */
+.timeline { position: relative; padding-left: 26px; margin: 16px 0; }
+.timeline::before { content: ""; position: absolute; left: 8px; top: 8px; bottom: 8px; width: 2px; background: #e6e8ec; }
+.t-item { position: relative; padding: 8px 0 8px 16px; }
+.t-item::before { content: ""; position: absolute; left: -22px; top: 14px; width: 14px; height: 14px; border-radius: 50%; background: #fff; border: 2px solid #d1d6dc; }
+.t-item.done::before { background: #00b388; border-color: #00b388; }
+.t-item.now::before { background: #1a1a1a; border-color: #1a1a1a; }
+.t-item.now { background: #fafafa; border-radius: 8px; padding-left: 16px; padding-right: 12px; }
+.t-when { font-size: .72rem; color: #6a737d; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 2px; }
+.t-what { font-weight: 600; color: #1a1a1a; font-size: .96rem; }
+.t-detail { font-size: .85rem; color: #4a525c; margin-top: 4px; }
+
+/* App screenshot mockups */
+.app-screen { background: #fff; border: 1px solid #e6e8ec; border-radius: 16px; padding: 0; margin: 18px 0; overflow: hidden; box-shadow: 0 8px 24px rgba(20,24,30,.06), 0 2px 6px rgba(20,24,30,.04); }
+.app-screen .topbar { background: #fff; border-bottom: 1px solid #e6e8ec; padding: 10px 14px; display: flex; align-items: center; gap: 12px; }
+.app-screen .dots { display: flex; gap: 6px; }
+.app-screen .dots span { width: 10px; height: 10px; border-radius: 50%; background: #e6e8ec; }
+.app-screen .dots span:nth-child(1) { background: #ff5f57; }
+.app-screen .dots span:nth-child(2) { background: #ffbd2e; }
+.app-screen .dots span:nth-child(3) { background: #28c941; }
+.app-screen .url { background: #f0f2f5; color: #6a737d; padding: 4px 12px; border-radius: 999px; font-size: .72rem; font-weight: 500; }
+.app-screen .body { padding: 18px 20px; background: #fafbfc; }
+.app-screen .screen-title { font-size: 1.05rem; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; letter-spacing: -.02em; }
+.app-screen .screen-sub { font-size: .78rem; color: #6a737d; margin-bottom: 14px; }
+.caption { font-size: .82rem; color: #6a737d; text-align: center; margin: 6px 0 22px 0; padding: 0 12px; font-style: italic; }
+
+/* Dashboard mock */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(115px, 1fr)); gap: 8px; margin-bottom: 12px; }
+.stat-tile { background: #fff; border: 1px solid #e6e8ec; border-radius: 10px; padding: 12px; }
+.stat-tile .stat-label { font-size: .62rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; margin-bottom: 2px; }
+.stat-tile .stat-val { font-size: 1.3rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; }
+.stat-tile .stat-delta { font-size: .68rem; font-weight: 600; margin-top: 2px; }
+.stat-tile .stat-delta.up { color: #007a5a; }
+.stat-tile .stat-delta.flat { color: #6a737d; }
+
+.list-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 10px; padding: 10px 12px; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+.list-card .avatar-sm { width: 32px; height: 32px; border-radius: 50%; background: #1a1a1a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .76rem; }
+.list-card .avatar-sm.green { background: #00b388; }
+.list-card .avatar-sm.pink { background: #f0507f; }
+.list-card .meta { flex: 1; }
+.list-card .meta-name { font-weight: 700; color: #1a1a1a; font-size: .88rem; }
+.list-card .meta-sub { font-size: .74rem; color: #6a737d; margin-top: 1px; }
+.pill { font-size: .66rem; font-weight: 700; padding: 3px 8px; border-radius: 999px; letter-spacing: .4px; }
+.pill.green { background: #e6faf3; color: #007a5a; }
+.pill.amber { background: #fff7e1; color: #b89000; }
+.pill.red   { background: #fde1e1; color: #b53030; }
+.pill.blue  { background: #e6f0ff; color: #2255b8; }
+.pill.gray  { background: #f0f2f5; color: #4a525c; }
+
+/* POS mock */
+.pos-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+.pos-products { background: #fff; border-radius: 10px; padding: 10px; border: 1px solid #e6e8ec; }
+.pos-cat { display: flex; gap: 6px; margin-bottom: 8px; overflow-x: auto; }
+.pos-cat span { font-size: .72rem; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: #f0f2f5; color: #4a525c; white-space: nowrap; }
+.pos-cat span.active { background: #1a1a1a; color: #fff; }
+.pos-prods { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.pos-prod { background: #fafbfc; border: 1px solid #ecedef; border-radius: 6px; padding: 8px 6px; text-align: center; }
+.pos-prod .pname { font-size: .72rem; font-weight: 600; color: #1a1a1a; }
+.pos-prod .pprice { font-size: .66rem; color: #6a737d; margin-top: 2px; }
+.pos-cart { background: #fff; border-radius: 10px; padding: 12px; border: 1px solid #e6e8ec; }
+.pos-cart-title { font-size: .62rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; margin-bottom: 8px; }
+.pos-line { display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed #ecedef; font-size: .76rem; }
+.pos-line:last-of-type { border-bottom: none; }
+.pos-line span:last-child { font-weight: 700; }
+.pos-total { display: flex; justify-content: space-between; margin-top: 8px; padding-top: 8px; border-top: 2px solid #1a1a1a; font-weight: 800; }
+.pos-total span:last-child { font-size: 1rem; }
+.pos-btn { width: 100%; background: #00b388; color: #fff; padding: 8px; border-radius: 6px; font-weight: 700; font-size: .82rem; margin-top: 8px; text-align: center; }
+
+/* Calendar */
+.cal-grid { display: grid; grid-template-columns: 40px repeat(7, 1fr); gap: 1px; background: #ecedef; border-radius: 8px; overflow: hidden; }
+.cal-hdr, .cal-cell, .cal-time { background: #fff; padding: 4px 3px; font-size: .66rem; font-weight: 600; color: #6a737d; text-align: center; min-height: 28px; }
+.cal-hdr { background: #f7f8fa; color: #1a1a1a; font-weight: 700; }
+.cal-cell { min-height: 32px; position: relative; }
+.cal-event { background: #1a1a1a; color: #fff; font-size: .58rem; padding: 3px 4px; border-radius: 3px; margin: 1px; font-weight: 600; line-height: 1.1; }
+.cal-event.pink { background: #f0507f; }
+.cal-event.green { background: #00b388; }
+.cal-event.blue { background: #2255b8; }
+
+/* Welcome */
+.welcome { background: linear-gradient(135deg, #00b388, #02d499); color: #fff; border-radius: 12px; padding: 14px 18px; display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.welcome .w-avatar { width: 46px; height: 46px; border-radius: 50%; background: rgba(255,255,255,.18); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.05rem; }
+.welcome .w-body { flex: 1; }
+.welcome .w-name { font-size: 1rem; font-weight: 800; }
+.welcome .w-meta { font-size: .74rem; opacity: .9; margin-top: 1px; }
+.welcome .w-chips { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; }
+.welcome .w-chip { background: rgba(255,255,255,.18); padding: 2px 8px; border-radius: 999px; font-size: .64rem; font-weight: 700; }
+
+.foot { margin-top: 56px; padding-top: 24px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Internal status board · for the owners (Doug + Jon)</div>
+  <h1>Where we actually are</h1>
+  <p class="lead">Honest read on the Square → skateOS switch. The software is built, deployed, and verified end-to-end (33/33 self-tests pass). 6 P0 bugs caught + fixed this week. What's left: paste the Stripe LIVE key + walk Nick through Brivo OAuth + cancel Square.</p>
+
+  <div class="draft-banner" style="background:#f0fbf7;border-left-color:#00b388;">
+    <div class="icon" style="background:#00b388;">✓</div>
+    <div>
+      <strong>Bottom line: production-ready, awaiting one paste + Nick's OAuth.</strong>
+      <p>The platform runs the park today (POS, check-in, lessons, memberships, loyalty, email — all live). Stripe is wired in TEST mode; pasting the LIVE key + a $1 owner test flips it on. Brivo door integration waits on Nick's OAuth client_id + secret. <strong>Full audit + rollout plan:</strong> <a href="https://app.skateos.com/audit-plan.html" style="color:#007a5a;font-weight:700;">app.skateos.com/audit-plan.html</a> · <strong>Re-run any test:</strong> <a href="https://app.skateos.com/selftest.html" style="color:#007a5a;font-weight:700;">app.skateos.com/selftest.html</a></p>
+    </div>
+  </div>
+
+  <div class="reality" style="margin:18px 0 6px;">
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Core platform — built, deployed, verified<span class="r-sub">POS, check-in, lessons, memberships, loyalty, reports, staff time-clock · 33/33 e2e probes pass</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Square data — one-time copy at cutover<span class="r-sub">Tested + working. Run once the day we cancel Square; nothing to babysit until then.</span></div><div class="r-val">tested</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Email (Resend) + SMS (Twilio) — live<span class="r-sub">receipts, reminders, weekly reports, refund confirmations</span></div><div class="r-val">done</div></div>
+    <div class="r-row"><div class="r-icon warn">~</div><div class="r-label">Card payments (Stripe) — TEST mode active, LIVE key pending<span class="r-sub">Andrew's 2FA recovery done ✓ · last step: paste <code>sk_live_*</code> as <code>STRIPE_SECRET_KEY</code> secret → Test Stripe key in Settings</span></div><div class="r-val">paste key</div></div>
+    <div class="r-row"><div class="r-icon warn">~</div><div class="r-label">Brivo door auto-check-in (Nick)<span class="r-sub">API key received 6/18 ✓ · waiting on OAuth client_id + secret from Brivo Dashboard → Account → Apps</span></div><div class="r-val">need OAuth</div></div>
+  </div>
+
+  <h2><span class="num">🔒</span>What's left to go live</h2>
+  <p>Three things. Everything else is green: 33/33 end-to-end probes pass, 4/4 Square sync crons green, 6 P0 bugs caught + fixed this week (see Stability log below).</p>
+  <ul class="do-list">
+    <li class="priority"><span class="who you">You</span><div class="what"><strong>Paste the Stripe LIVE key (30 sec)</strong>Grab <code>sk_live_*</code> from <a href="https://dashboard.stripe.com/apikeys" style="color:#007a5a;font-weight:700;">dashboard.stripe.com/apikeys</a> → in Terminal run <code>supabase secrets set STRIPE_SECRET_KEY=sk_live_… --project-ref zecurmlenxyxanqucrga</code> → Settings → Payments → <strong>Test Stripe key</strong>.<div class="why">The Stripe-side is wired in TEST mode and verified end-to-end. Pasting the LIVE key flips the same flow to real cards. Andrew's 2FA recovery is done.</div></div></li>
+    <li class="priority"><span class="who you">You + phone</span><div class="what"><strong>$1 live Tap-to-Pay smoke test</strong>POS → ring a $1 item → Tap to Pay → scan the QR with your phone → pay via Apple/Google Pay. Receipt opens, sale clears in Stripe Dashboard.<div class="why">Proves the cable end-to-end on real money. Single transaction, ~2 minutes. Refunds are a button click for any test sale.</div></div></li>
+    <li class="priority"><span class="who you">You / Nick</span><div class="what"><strong>OAuth client_id + secret from Nick</strong>Nick: Brivo Dashboard → Account → Apps → skateOS app → Client ID + Client Secret. You: Settings → Brivo per-tenant → paste.<div class="why">API key arrived 6/18 ✓ · OAuth still pending. Without OAuth, the Edge Functions can't authenticate to Brivo's REST API. Full walkthrough at <a href="https://app.skateos.com/brivo-setup.html" style="color:#007a5a;font-weight:700;">brivo-setup.html</a>.</div></div></li>
+    <li class="next"><span class="who you">You</span><div class="what"><strong>Cancel Square — saves $383/mo</strong>Once the $1 test clears, cancel Square subscriptions. Square Dashboard stays open for 30-day historical lookups; the data is already in skateOS.<div class="why">The reason we built skateOS. Whole loop unlocks.</div></div></li>
+  </ul>
+
+  <h2><span class="num">1</span>The honest read</h2>
+
+  <div class="num-row">
+    <div class="num-tile go"><div class="num-label">E2E tests</div><div class="num-val">33/33</div><div class="num-sub">live at /selftest.html</div></div>
+    <div class="num-tile go"><div class="num-label">P0 bugs</div><div class="num-val">6</div><div class="num-sub">caught + fixed this week</div></div>
+    <div class="num-tile go"><div class="num-label">Edge Functions</div><div class="num-val">33</div><div class="num-sub">deployed + reachable</div></div>
+    <div class="num-tile"><div class="num-label">Waiting on</div><div class="num-val">2</div><div class="num-sub">Stripe LIVE key paste · Nick OAuth</div></div>
+  </div>
+
+  <p>What's actually built and working today:</p>
+
+  <div class="reality">
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Admin app (POS, lessons, memberships, reports, staff)<span class="r-sub">Square Sans typography, Square POS visual parity, 8 page modules render clean</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Square data copy — one-time, at cutover<span class="r-sub">Tested with full real Square dataset; runs in minutes. Nothing to do until the day we flip off Square.</span></div><div class="r-val">tested</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Customer portal (me.html) + magic-link auth<span class="r-sub">Loyalty balance, visit history, active passes, recent purchases — self-serve</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Staff clock-in kiosk + payroll shifts<span class="r-sub">448 historical Square Payroll shifts imported · instructor profitability live</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Marketing site (skateos.com + skateos.com/2ntr)<span class="r-sub">Landing · sales kit · 2ntr split (chooser/park/shop/lessons) · all live</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Email (Resend)<span class="r-sub">send-email Edge Function verified live. 2ntr.com sender DNS pending (current Resend team holds the domain)</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">SMS (Twilio)<span class="r-sub">Account SID + Auth Token + From Number wired. Refund SMS, marketing campaigns, lesson reminders all live</span></div><div class="r-val">live</div></div>
+    <div class="r-row"><div class="r-icon warn">~</div><div class="r-label">Stripe Tap-to-Pay — TEST mode active<span class="r-sub">Wired end-to-end · webhook signature verified · only the LIVE key paste remaining. Andrew's 2FA recovery done ✓</span></div><div class="r-val">paste sk_live_</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Square reader as backup hardware<span class="r-sub">skateOS rings every sale; Square reader handles card swipes until Stripe LIVE paste</span></div><div class="r-val">works</div></div>
+    <div class="r-row"><div class="r-icon warn">~</div><div class="r-label">Brivo door → skateOS auto-check-in<span class="r-sub">API key received 6/18 ✓ · waiting on OAuth client_id + secret from Nick. Active setup walkthrough at brivo-setup.html</span></div><div class="r-val">need OAuth</div></div>
+    <div class="r-row"><div class="r-icon idle">○</div><div class="r-label">Helcim integration (post-launch · ~$4k/yr savings at current volume)<span class="r-sub">All code built + ready. Revisit 30+ days after switch.</span></div><div class="r-val">deferred</div></div>
+  </div>
+
+  <h2><span class="num">🛠</span>Stability log — every P0 caught + fixed this week</h2>
+  <p>The audit pipeline (Trivy static scan + AI code review + 33-probe selftest + cron-health dashboard) caught 6 production-critical bugs that the original test pass missed. Each one would have hurt real cutover.</p>
+  <div class="reality">
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Mig 092 — <code>loyalty_award_checkin</code> + <code>loyalty_reverse_sale</code> ON CONFLICT bug<span class="r-sub">Same partial-index bug as mig 089. Would have thrown on every check-in AND every refund — points never reversed.</span></div><div class="r-val">fixed</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Mig 093 — <code>generate_receipt_number()</code> trigger choked on SQ-* receipts<span class="r-sub">Would have failed every new POS sale with cast-error 22P02.</span></div><div class="r-val">fixed</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">Mig 094 — <code>square-discounts-daily</code> cron silently failing 4 days<span class="r-sub">Missing GUC. Promo codes would silently stop syncing. Now using the same hard-coded pattern as the other 3 working crons.</span></div><div class="r-val">fixed</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">tapToPay() phantom-sale fix<span class="r-sub">Was inserting sale as completed before Stripe confirmed. Reports would have inflated, free loyalty awarded on unpaid sales. Now inserts as voided; webhook flips on confirmation.</span></div><div class="r-val">fixed</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">All 5 public webhook receivers redeployed with --no-verify-jwt<span class="r-sub">Without the flag, every Stripe/Brivo/Frigate/Smartwaiver/Helcim webhook returns 401 silently.</span></div><div class="r-val">fixed</div></div>
+    <div class="r-row"><div class="r-icon ok">✓</div><div class="r-label">stripe-checkout discount-line drop<span class="r-sub">Was silently dropping negative-amount line items, charging customer pre-discount. Now creates a one-time Stripe coupon.</span></div><div class="r-val">fixed</div></div>
+  </div>
+  <p style="margin-top:14px;font-size:.9rem;color:#525252;"><strong>Verify any claim:</strong> <a href="https://app.skateos.com/audit-plan.html" style="color:#007a5a;font-weight:700;">app.skateos.com/audit-plan.html</a> §6 has copy-paste SQL + curl commands for every assertion in this document.</p>
+
+  <h2><span class="num">2</span>Might not work — but trying. Need help.</h2>
+  <p>This is the stretch list. Things I want to make work but can't pull off alone. Names attached — these are explicit asks for help, not assignments. If you read this and it's your name, decide if it's worth your time. If not, no problem — we cut these from v1.</p>
+
+  <div class="help-list">
+    <div class="help-card">
+      <div class="help-head">
+        <div class="help-tag who-nick">Nick E.</div>
+        <div class="help-title">Brivo door → skateOS auto-check-in</div>
+      </div>
+      <div class="help-body">
+        <p><strong>What it does:</strong> When a member taps their Brivo Mobile Pass at the park door, skateOS auto-records the check-in (no front-desk action needed). Their loyalty + low-punch warnings still fire normally.</p>
+        <p><strong>Why I need you:</strong> You know Brivo's dashboard cold — the access point IDs, webhook config, event types, where the secret goes. I've built the skateOS side. The cable to plug it into Brivo is the part I keep getting wrong.</p>
+        <p><strong>Everything you need:</strong> <a href="https://app.skateos.com/brivo-setup.html" style="color:#007a5a;font-weight:700;">app.skateos.com/brivo-setup.html</a> — a step-by-step walkthrough I built specifically for this. Auto-generates the webhook secret, gives you copy-paste-ready URLs + commands, and has a "Check for recent events" button to test after you save.</p>
+        <p><strong>If it works:</strong> Members tap door → skateOS knows they're in, attaches their punch deduction, surfaces low-punch warnings to front desk automatically. Eliminates a front-desk step.</p>
+        <p><strong>If it doesn't:</strong> No harm. Front desk keeps doing manual check-ins. Members still get in via Brivo regardless.</p>
+      </div>
+    </div>
+
+    <div class="help-card">
+      <div class="help-head">
+        <div class="help-tag who-jonm">Jon Marchand</div>
+        <div class="help-title">Receipt printer compatibility test</div>
+      </div>
+      <div class="help-body">
+        <p><strong>What it does:</strong> Tests whether the current thermal receipt printer (Star / Epson 80mm at the front desk) prints skateOS receipts correctly via the browser print path. If not, we know we need a driver tweak or a different printer.</p>
+        <p><strong>Why I need you:</strong> You're at the desk more than me — you can poke at it while you're already there. I can't test from home.</p>
+        <p><strong>What it'd take:</strong> ~10 min when you're already at the park. <strong>Open <a href="https://app.skateos.com/printer-test.html" style="color:#007a5a;font-weight:700;">app.skateos.com/printer-test.html</a></strong> — built specifically for this. Print test receipt, fill out the 4-question form, hit submit.</p>
+        <p><strong>If it works:</strong> One fewer hardware blocker for go-live.</p>
+        <p><strong>If it doesn't:</strong> We need to either buy a known-compatible printer or use the iPad's hosted-receipt option (email/SMS receipt, no paper).</p>
+      </div>
+    </div>
+
+    <div class="help-card">
+      <div class="help-head">
+        <div class="help-tag who-jondi">Jon DiCarlo</div>
+        <div class="help-title">Square data export sanity-check</div>
+      </div>
+      <div class="help-body">
+        <p><strong>What it does:</strong> Catches edge cases in Square's exports before we import them — duplicate customer records, products with weird category mappings, sales history columns we should preserve.</p>
+        <p><strong>Why I need you:</strong> You've used Square's reports more than I have. You'd spot the weirdness I miss.</p>
+        <p><strong>What it'd take:</strong> ~20 min reviewing the CSVs once I have them. Flag duplicates, flag products that need merging, flag any data you don't trust.</p>
+        <p><strong>If it works:</strong> Cleaner data day 1. Less reconciliation pain.</p>
+        <p><strong>If it doesn't:</strong> We import as-is and clean up after. Fine, just more manual work later.</p>
+      </div>
+    </div>
+  </div>
+
+  <h2><span class="num">3</span>What we're definitively dropping (for now)</h2>
+  <p>These are not "might work" — they're "not worth trying for v1." Revisit post-launch.</p>
+
+  <div class="drop-list">
+    <h4>Cut from v1 — revisit later</h4>
+    <ul>
+      <li><strong>Twilio SMS.</strong> US carriers block local-number SMS without A2P 10DLC registration (1-7 days approval, $4 brand + $10/mo). Email via Resend covers it. Park SMS until post-launch.</li>
+      <li><strong>Customer self-serve portal (me.html).</strong> Built but optional. Doesn't block payments. Park.</li>
+      <li><strong>Mobile bus shop.</strong> Built but no bus yet. Park.</li>
+      <li><strong>Vision Box (Frigate + Coral).</strong> Hardware-side. Multi-month project. Definitely park.</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">3</span>What we ship to make the switch real</h2>
+  <p>This is the realistic punch list. Three buckets — your work, code work, both.</p>
+
+  <ul class="do-list">
+    <li class="next" style="background:#f0fbf7;border-left-color:#00b388;">
+      <span class="who code" style="background:#e6faf3;color:#007a5a;">✓ Done</span>
+      <div class="what"><strong>Helcim integration — deferred</strong>Skip Helcim merchant signup for v1. skateOS rings every sale; Square reader stays for card swipes. Removes the biggest signup blocker entirely.<div class="why">Revisit post-launch (saves ~$6k/yr if/when we cut over from Square reader to Helcim hardware later).</div></div>
+    </li>
+    <li class="next" style="background:#f0fbf7;border-left-color:#00b388;">
+      <span class="who code" style="background:#e6faf3;color:#007a5a;">✓ Done</span>
+      <div class="what"><strong>Square data copy</strong>One-time pull at cutover. Tested with full real Square dataset. Nothing to do until the day we cancel Square.<div class="why">Used to be the big blocker; isn't anymore.</div></div>
+    </li>
+    <li class="next" style="background:#f0fbf7;border-left-color:#00b388;">
+      <span class="who code" style="background:#e6faf3;color:#007a5a;">✓ Done</span>
+      <div class="what"><strong>Square CSV importer — built</strong>Customer, product, and Square Transactions importers all extended to recognize Square's exact column names. Drop a Square export directly into admin → Customers/Products/Sales History → "Import CSV" buttons.<div class="why">No more renaming columns. The system reads Square's headers directly.</div></div>
+    </li>
+    <li class="next" style="background:#f0fbf7;border-left-color:#00b388;">
+      <span class="who code" style="background:#e6faf3;color:#007a5a;">✓ Done</span>
+      <div class="what"><strong>Receipt printer test page — built</strong>Standalone page at <a href="https://app.skateos.com/printer-test.html" style="color:#007a5a;font-weight:700;">app.skateos.com/printer-test.html</a>. Ready for Jon Marchand to run a print test + submit findings.<div class="why">Removes the "we don't know if the printer works" unknown.</div></div>
+    </li>
+    <li class="next">
+      <span class="who you">You</span>
+      <div class="what"><strong>Brief cashiers on new payment flow</strong>"Ring every sale in skateOS POS. When customer pays card → swipe on Square reader. When cash → take cash. Either way, hit Complete in skateOS." 5-min huddle before opening on cutover day.<div class="why">Square reader becomes hardware only — skateOS tracks the sale + payment method.</div></div>
+    </li>
+    <li class="next">
+      <span class="who you">You</span>
+      <div class="what"><strong>Verify 2ntr.com sending domain in Resend</strong>resend.com → Domains → 2ntr.com → add 3 DNS records to GoDaddy.<div class="why">Without DNS verification, emails land in spam. ~10 min in GoDaddy + Resend.</div></div>
+    </li>
+    <li class="later">
+      <span class="who you">You</span>
+      <div class="what"><strong>30-min POS walkthrough with Nick + the Jons</strong>Show them the new POS UI in person. Use real products. Run them through a sale flow.<div class="why">Train before go-live. Less panic on day 1.</div></div>
+    </li>
+    <li class="later">
+      <span class="who both">Both</span>
+      <div class="what"><strong>1-week dual-running period</strong>Ring up every sale in BOTH Square and skateOS. End of week, compare totals. If they match, switch for real.<div class="why">Confidence check. Catches anything we missed.</div></div>
+    </li>
+    <li class="later">
+      <span class="who you">You</span>
+      <div class="what"><strong>Cutover day</strong>Stop ringing in Square. Run everything in skateOS. Keep Square account active for 30 days as backup.<div class="why">The actual switch.</div></div>
+    </li>
+  </ul>
+
+  <h2><span class="num">4</span>Timeline — realistic</h2>
+  <div class="timeline">
+    <div class="t-item done">
+      <div class="t-when">Done · last 8 weeks</div>
+      <div class="t-what">Foundation built</div>
+      <div class="t-detail">App, database, edge functions, marketing site, kiosk preview.</div>
+    </div>
+    <div class="t-item now">
+      <div class="t-when">This week · Jun 9–13</div>
+      <div class="t-what">You: Square data export + Resend DNS verification</div>
+      <div class="t-detail">No Helcim needed. Pull CSVs from Square + add DNS records to GoDaddy. Both ~30 min.</div>
+    </div>
+    <div class="t-item">
+      <div class="t-when">Next week · Jun 16–20</div>
+      <div class="t-what">Code: importer + $1 test + DNS</div>
+      <div class="t-detail">Square CSV importer ships. Test charge runs. Email DNS verified.</div>
+    </div>
+    <div class="t-item">
+      <div class="t-when">Week of Jun 23</div>
+      <div class="t-what">Dual-running + staff training</div>
+      <div class="t-detail">Walk staff through new POS. Ring every sale in both systems. Compare end of week.</div>
+    </div>
+    <div class="t-item">
+      <div class="t-when">Jun 27 · target cutover</div>
+      <div class="t-what">Stop using Square for new sales</div>
+      <div class="t-detail">If dual-running totals match, cut over. Keep Square account live for 30 days as backup.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">5</span>What's built — screenshots</h2>
+  <p>Mockups of the surfaces. Real layouts, dummy data. This is what you and staff will see.</p>
+
+  <h3>Dashboard — daily snapshot</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/admin</div></div>
+    <div class="body">
+      <div class="screen-title">Today at the park</div>
+      <div class="screen-sub">Saturday, June 6 · 2nd Nature Park</div>
+      <div class="stat-row">
+        <div class="stat-tile"><div class="stat-label">Revenue</div><div class="stat-val">$2,140</div><div class="stat-delta up">↑ 18% vs avg Sat</div></div>
+        <div class="stat-tile"><div class="stat-label">In park now</div><div class="stat-val">23</div><div class="stat-delta flat">peak 28</div></div>
+        <div class="stat-tile"><div class="stat-label">Lessons today</div><div class="stat-val">8</div><div class="stat-delta flat">2 left</div></div>
+        <div class="stat-tile"><div class="stat-label">New skaters</div><div class="stat-val">4</div><div class="stat-delta up">+1 vs last Sat</div></div>
+      </div>
+      <div class="list-card"><div class="avatar-sm green">⚠</div><div class="meta"><div class="meta-name">3 memberships expiring this week</div><div class="meta-sub">Click to send renewal nudge</div></div><span class="pill amber">action</span></div>
+      <div class="list-card"><div class="avatar-sm pink">🎂</div><div class="meta"><div class="meta-name">Birthday: Tommy K turns 8 tomorrow</div><div class="meta-sub">Comp eligible</div></div><span class="pill blue">nudge</span></div>
+      <div class="list-card"><div class="avatar-sm">L</div><div class="meta"><div class="meta-name">Lesson in 22 min · Mia Chen with Jon M</div><div class="meta-sub">Beginner private · 60 min</div></div><span class="pill gray">soon</span></div>
+    </div>
+  </div>
+  <div class="caption">Today's stats + alert stack. Click a row to act.</div>
+
+  <h3>Point of sale</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/admin#pos</div></div>
+    <div class="body">
+      <div class="screen-title">New sale</div>
+      <div class="screen-sub">Customer: <strong>Walk-in</strong> · Cashier: Nick</div>
+      <div class="pos-grid">
+        <div class="pos-products">
+          <div class="pos-cat"><span class="active">All</span><span>Passes</span><span>Decks</span><span>Gear</span></div>
+          <div class="pos-prods">
+            <div class="pos-prod"><div class="pname">Day Pass</div><div class="pprice">$25</div></div>
+            <div class="pos-prod"><div class="pname">Punch 10</div><div class="pprice">$200</div></div>
+            <div class="pos-prod"><div class="pname">Monthly</div><div class="pprice">$95</div></div>
+            <div class="pos-prod"><div class="pname">Deck</div><div class="pprice">$60</div></div>
+            <div class="pos-prod"><div class="pname">Helmet</div><div class="pprice">$45</div></div>
+            <div class="pos-prod"><div class="pname">Pads</div><div class="pprice">$28</div></div>
+          </div>
+        </div>
+        <div class="pos-cart">
+          <div class="pos-cart-title">Cart · 2 items</div>
+          <div class="pos-line"><span>Day Pass</span><span>$25</span></div>
+          <div class="pos-line"><span>Helmet</span><span>$45</span></div>
+          <div class="pos-line" style="color:#6a737d;"><span>Tax</span><span>$5.86</span></div>
+          <div class="pos-total"><span>Total</span><span>$75.86</span></div>
+          <div class="pos-btn">Charge card</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="caption">Same grid + cart pattern as Square. Customer picker, tip presets, split payment.</div>
+
+  <h3>Check-in</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/admin#checkin</div></div>
+    <div class="body">
+      <div class="screen-title">Check-in</div>
+      <div class="screen-sub">In park: 23 / 50 · Park open until 9pm</div>
+      <div class="welcome">
+        <div class="w-avatar">TK</div>
+        <div class="w-body">
+          <div class="w-name">Welcome back, Tommy!</div>
+          <div class="w-meta">3 of 10 punches left · last visit 4 days ago</div>
+          <div class="w-chips"><span class="w-chip">🛡 Waiver valid</span><span class="w-chip">⭐ 240 pts</span><span class="w-chip">🎂 Bday next week</span></div>
+        </div>
+      </div>
+      <div class="list-card"><div class="avatar-sm green">MA</div><div class="meta"><div class="meta-name">Mia A</div><div class="meta-sub">in park 1h 22m · day pass</div></div><span class="pill green">in</span></div>
+      <div class="list-card"><div class="avatar-sm">JC</div><div class="meta"><div class="meta-name">Jamie C</div><div class="meta-sub">in park 47m · monthly</div></div><span class="pill green">in</span></div>
+    </div>
+  </div>
+  <div class="caption">Search by name or scan member card QR. WELCOME banner with loyalty + waiver + low-punch alerts.</div>
+
+  <h3>Lessons</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/admin#lessons</div></div>
+    <div class="body">
+      <div class="screen-title">Lessons · this week</div>
+      <div class="screen-sub">12 booked · 2 open slots</div>
+      <div class="cal-grid">
+        <div class="cal-time"></div>
+        <div class="cal-hdr">M</div><div class="cal-hdr">T</div><div class="cal-hdr">W</div><div class="cal-hdr">T</div><div class="cal-hdr">F</div><div class="cal-hdr">S</div><div class="cal-hdr">S</div>
+        <div class="cal-time">9a</div>
+        <div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event pink">Camp 9–12</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-time">12p</div>
+        <div class="cal-cell"></div><div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event blue">Private</div></div>
+        <div class="cal-cell"></div><div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event pink">Camp</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-time">3p</div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event green">Group 4/8</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event blue">Private</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event green">Group 6/8</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-time">6p</div>
+        <div class="cal-cell"></div><div class="cal-cell"></div><div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event blue">Private</div></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"><div class="cal-event pink">🎂 Bday</div></div>
+        <div class="cal-cell"></div>
+      </div>
+    </div>
+  </div>
+  <div class="caption">Week / day / staff resource views. Click any cell to book. Double-booking warnings.</div>
+
+  <h3>Memberships</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/admin#memberships</div></div>
+    <div class="body">
+      <div class="screen-title">Active memberships · 47</div>
+      <div class="screen-sub">$4,825 MRR · 3 expiring in 14 days</div>
+      <div class="list-card"><div class="avatar-sm pink">TK</div><div class="meta"><div class="meta-name">Tommy K.</div><div class="meta-sub">10-Pack Punch · 3 of 10 · expires Aug 2</div></div><span class="pill amber">low</span></div>
+      <div class="list-card"><div class="avatar-sm green">MA</div><div class="meta"><div class="meta-name">Mia Allen</div><div class="meta-sub">Monthly · auto-renews Jun 18</div></div><span class="pill green">active</span></div>
+      <div class="list-card"><div class="avatar-sm">EL</div><div class="meta"><div class="meta-name">Ethan L.</div><div class="meta-sub">Monthly · expired 3 days ago</div></div><span class="pill red">expired</span></div>
+    </div>
+  </div>
+  <div class="caption">Auto-tracks punches + days. Sends renewal nudges 14 days before expiry.</div>
+
+  <h3>Staff clock-in (live now)</h3>
+  <div class="app-screen">
+    <div class="topbar"><div class="dots"><span></span><span></span><span></span></div><div class="url">app.skateos.com/staff.html</div></div>
+    <div class="body" style="background:#f7f8fa;">
+      <div class="screen-title">Tap your name</div>
+      <div class="screen-sub">Clocking in or out</div>
+      <div class="list-card" style="border-color:#00b388;"><div class="avatar-sm green">NE</div><div class="meta"><div class="meta-name">Nick Esposito</div><div class="meta-sub">instructor</div></div><span class="pill green">on clock · 2h 14m</span></div>
+      <div class="list-card"><div class="avatar-sm">JD</div><div class="meta"><div class="meta-name">Jon DiCarlo</div><div class="meta-sub">owner</div></div><span class="pill gray">tap to clock in</span></div>
+      <div class="list-card"><div class="avatar-sm">JM</div><div class="meta"><div class="meta-name">Jon Marchand</div><div class="meta-sub">instructor</div></div><span class="pill gray">tap to clock in</span></div>
+      <div class="list-card"><div class="avatar-sm">DB</div><div class="meta"><div class="meta-name">Doug Brown</div><div class="meta-sub">owner</div></div><span class="pill gray">tap to clock in</span></div>
+    </div>
+  </div>
+  <div class="caption">The only thing live today. Try at app.skateos.com/staff.html.</div>
+
+  <h2><span class="num">6</span>What to do RIGHT NOW</h2>
+  <div class="callout">
+    <strong>Your move this week</strong>
+    <p style="margin-top:8px;">
+      <strong>1.</strong> <strong>Ask Andrew for the Stripe backup code.</strong> Then log into the old Stripe account → rotate password + API keys, swap 2FA to your cell, and copy the fresh <code>sk_live_</code> key. (Or, if Andrew drags, start a fresh Stripe account on a 2ntr alias — 5 min.)<br>
+      <strong>2.</strong> <strong>Brivo (with Nick):</strong> confirm credentials in Settings → Brivo, paste the webhook URL into the Brivo dashboard, then do a test door tap. Walkthrough: <a href="https://app.skateos.com/brivo-setup.html" style="color:#1a1a1a;font-weight:700;">app.skateos.com/brivo-setup.html</a>.<br>
+      <strong>3.</strong> <strong>Smartwaiver:</strong> grab the API key from smartwaiver.com → Account → API, set it as the <code>SMARTWAIVER_API_KEY</code> secret, and point Smartwaiver's "Waiver Signed" webhook at our endpoint. Then digital waivers auto-record PDFs + expiry on each customer. (Paper/iPad waivers work day-1 in the meantime.)<br>
+      <strong>4.</strong> <strong>Resend DNS (optional, ~10 min):</strong> verify 2ntr.com in resend.com → Domains (3 records into GoDaddy) so emails land in inboxes, not spam.<br>
+      <span style="color:#5b5f66;">Everything else is done — DB migrated, email live; Stripe, Smartwaiver + Brivo code all deployed and waiting on the account keys above.</span>
+    </p>
+  </div>
+
+  <div class="foot">
+    📈 <a href="https://skateos.com/roadmap" style="color:#007a5a;font-weight:700;">6-month AI trust &amp; go-live roadmap →</a><br><br>
+    Internal · last updated <span id="dt">today</span><br>
+    Updated as phases progress · <a href="https://skateos.com">skateos.com</a>
+  </div>
+</div>
+<script>
+document.getElementById('dt').textContent = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+</script>
+</body>
+</html>

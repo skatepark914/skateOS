@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Square import · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 28px; }
+h2 { font-size: 1.2rem; font-weight: 700; margin-top: 36px; margin-bottom: 14px; color: #1a1a1a; letter-spacing: -.01em; display: flex; align-items: center; gap: 12px; }
+h2 .num { width: 30px; height: 30px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .88rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+p { color: #2c3138; margin-bottom: 12px; font-size: .96rem; }
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 22px 24px; margin-bottom: 16px; }
+.step { display: flex; gap: 14px; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+.step:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0; margin-top: 2px; }
+.step-body strong { display: block; color: #1a1a1a; font-weight: 700; margin-bottom: 4px; }
+.step-body { font-size: .94rem; color: #2c3138; }
+.step-body code { background: #f0f2f5; padding: 1px 6px; border-radius: 4px; font-family: 'SF Mono', Menlo, Consolas, monospace; font-size: .9em; }
+.copyable { background: #1a1a1a; color: #fff; border-radius: 10px; padding: 14px 60px 14px 18px; font-family: 'SF Mono', monospace; font-size: .86rem; word-break: break-all; position: relative; margin: 8px 0; }
+.copyable .copy-btn { position: absolute; right: 8px; top: 8px; background: rgba(255,255,255,.15); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: .74rem; font-weight: 700; cursor: pointer; font-family: inherit; }
+.copyable .copy-btn.copied { background: #00b388; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-green { background: #00b388; color: #fff; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 14px 18px; color: #006148; font-size: .94rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+.warn { background: #fff7e1; border: 1px solid #f5dba6; border-radius: 12px; padding: 14px 18px; color: #5c4d1a; font-size: .94rem; margin: 14px 0; }
+.warn strong { color: #5c4d1a; font-weight: 700; }
+.summary-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+.summary-tile { background: #fafbfc; border: 1px solid #ecedef; border-radius: 10px; padding: 12px 14px; }
+.summary-tile .label { font-size: .68rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; margin-bottom: 2px; }
+.summary-tile .val { font-size: 1.4rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; }
+.summary-tile.go .val { color: #007a5a; }
+.summary-tile.stop .val { color: #b53030; }
+.preview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 12px; }
+.preview-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 10px; padding: 10px; text-align: center; }
+.preview-card .img { width: 100%; aspect-ratio: 1; background: #f0f2f5 center/contain no-repeat; border-radius: 8px; margin-bottom: 8px; }
+.preview-card .pn { font-size: .8rem; font-weight: 700; color: #1a1a1a; line-height: 1.3; }
+.preview-card .pp { font-size: .76rem; color: #6a737d; margin-top: 2px; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d6dc; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; opacity: 0; transition: opacity .2s, transform .2s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+.toast.err { background: #b53030; }
+.foot { margin-top: 50px; padding-top: 22px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Square Direct Import</div>
+  <h1>Pull everything from Square — including photos</h1>
+  <p class="lead">Hits Square's API directly to grab the full product catalog (with image URLs), customers, categories, and variations. Much richer than CSV import. Drop a Square Personal Access Token in once + run.</p>
+
+  <h2><span class="num">1</span>Generate a Square access token</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Open Square Developer Dashboard</strong>
+        <a href="https://developer.squareup.com/apps" target="_blank" style="color:#007a5a;font-weight:700;">developer.squareup.com/apps</a> → log in with same Square account that has 2nd Nature.
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Create app (or pick existing)</strong>Click "+ Create your first application" → name it "skateOS importer" → click Create.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Switch to "Production" mode</strong>Top of app page — toggle from Sandbox to Production. Sandbox tokens won't see your real data.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Copy the "Access token"</strong>Starts with <code>EAAA...</code> — long string. Don't share it publicly; treat it like a password.</div>
+    </div>
+  </div>
+
+  <h2><span class="num">2</span>Set the token in Supabase</h2>
+  <div class="card">
+    <p>Run this in your Terminal, replacing the placeholder with your real token:</p>
+    <div class="copyable" id="setCmd">
+      <span id="cmdVal">supabase secrets set SQUARE_ACCESS_TOKEN=EAAA_YOUR_TOKEN_HERE --project-ref zecurmlenxyxanqucrga</span>
+      <button class="copy-btn" onclick="copyTxt('cmdVal', this)">Copy</button>
+    </div>
+    <div class="warn">
+      <strong>Owner-only.</strong> Skip this if I (Claude) already set it for you — text it to me and I'll set it remotely.
+    </div>
+  </div>
+
+  <h2><span class="num">3</span>Preview what'll be pulled</h2>
+  <div class="card">
+    <p>Dry-run mode. Counts what's available in Square without writing anything to skateOS. Use this to confirm the token is valid + sane data is there.</p>
+    <div class="btn-row">
+      <button class="btn btn-prim" id="previewBtn" onclick="runImport('preview', 'all')">↻ Preview all</button>
+      <button class="btn btn-sec" onclick="runImport('preview', 'products')">Preview products only</button>
+      <button class="btn btn-sec" onclick="runImport('preview', 'customers')">Preview customers only</button>
+    </div>
+    <div id="previewResult"></div>
+  </div>
+
+  <h2><span class="num">4</span>Commit the import</h2>
+  <div class="card">
+    <p><strong>Writes to skateOS.</strong> Products + categories + customers get inserted. Duplicates by SKU / email / phone are skipped automatically. Photos are linked by URL (not re-uploaded — they stay on Square's CDN).</p>
+    <div class="tip">
+      <strong>Idempotent:</strong> Safe to re-run — duplicates skip rather than double-insert. New items from Square get added on subsequent runs.
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-green" onclick="runImport('commit', 'products')">📦 Commit products</button>
+      <button class="btn btn-green" onclick="runImport('commit', 'customers')">👥 Commit customers</button>
+      <button class="btn btn-prim" onclick="runImport('commit', 'all')">⚡ Commit ALL</button>
+    </div>
+    <div id="commitResult"></div>
+  </div>
+
+  <h2><span class="num">5</span>Sales history (orders)</h2>
+  <div class="card">
+    <p><strong>Pull past Square sales</strong> into the skateOS <code>sales</code> + <code>sale_items</code> tables. Default window: last 12 months. Idempotent — re-runs skip already-imported orders via the Square order_id dedupe key.</p>
+    <div class="tip">
+      <strong>Heads up:</strong> Big windows take time. The importer pulls up to 15,000 orders per call (~30 paginated chunks × 500). If there's more, it returns a <code>next_cursor</code> — click the button again to continue from where it stopped.
+    </div>
+    <div class="field">
+      <label>Pull orders since</label>
+      <input type="date" id="ordersSince" value="">
+      <div class="field-hint">Leave blank for "last 12 months". Pick a specific date to import a narrower window.</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-prim" onclick="runImport('preview', 'orders')">↻ Preview orders</button>
+      <button class="btn btn-green" onclick="runImport('commit', 'orders')">🧾 Commit sales history</button>
+      <button class="btn btn-sec" onclick="continueOrdersImport()" id="continueBtn" style="display:none;">⏭ Continue (next cursor)</button>
+    </div>
+    <div id="ordersResult"></div>
+  </div>
+
+  <h2><span class="num">6</span>What gets imported</h2>
+  <div class="card">
+    <div class="step">
+      <div class="step-num">📦</div>
+      <div class="step-body"><strong>Products</strong>Square's catalog ITEM objects flattened to one skateOS product per variation. Includes name, description, SKU, price, image URL, and Square category. Inventory quantity defaults to 0 (Square's stock API needs a separate Locations pull, not included v1).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">🏷</div>
+      <div class="step-body"><strong>Categories</strong>Square CATEGORY objects → skateOS categories rows. Case-insensitive dedup against existing.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">🖼</div>
+      <div class="step-body"><strong>Images</strong>Square IMAGE objects URLs captured + attached to the right product via image_ids. Images stay hosted on Square's CDN (no re-upload).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">👥</div>
+      <div class="step-body"><strong>Customers</strong>Name, email, phone, address, DOB (if filled), notes. Dedup by email then by last-10-digits of phone.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">⊘</div>
+      <div class="step-body"><strong>Not yet imported (v1)</strong>Inventory counts (separate Square API call per location), order history, loyalty point balances, gift card balances. Add later if needed.</div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <a href="/launch-ready.html">Launch Readiness</a> · <a href="/index.html">Admin</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 3000);
+}
+function copyTxt(id, btn){
+  var el = document.getElementById(id);
+  var txt = el ? (el.textContent||'') : '';
+  if(!txt) return;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(function(){
+      if(btn){ btn.textContent = '✓ Copied'; btn.classList.add('copied'); setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600); }
+    });
+  }
+}
+
+function renderSummary(targetId, summary, details){
+  var box = document.getElementById(targetId);
+  var tiles = '';
+  Object.keys(summary).forEach(function(k){
+    if(k === 'action') return;
+    var v = summary[k];
+    // Skip noisy nested objects from tiles — render them inline below
+    if(v && typeof v === 'object' && !Array.isArray(v)) return;
+    if(k === 'next_cursor') return; // not user-meaningful
+    var cls = '';
+    if(k.indexOf('failed') >= 0 && v > 0) cls = 'stop';
+    else if(k.indexOf('inserted') >= 0 && v > 0) cls = 'go';
+    tiles += '<div class="summary-tile '+cls+'"><div class="label">'+k.replace(/_/g,' ')+'</div><div class="val">'+v+'</div></div>';
+  });
+  // Orders sample preview
+  if(details && details.orders_sample && details.orders_sample.length){
+    var winLine = summary.orders_window ? ('Window: ' + summary.orders_window.since.slice(0,10) + ' → ' + summary.orders_window.until.slice(0,10)) : '';
+    tiles += '<div style="grid-column:1/-1;font-size:.78rem;color:#6a737d;padding:0 4px;">' + winLine + '</div>';
+  }
+  var preview = '';
+  if(details && details.products_sample && details.products_sample.length){
+    preview += '<h3 style="margin-top:18px;font-size:.96rem;font-weight:700;">Sample products (' + details.products_sample.length + ')</h3>';
+    preview += '<div class="preview-grid">';
+    details.products_sample.forEach(function(p){
+      preview += '<div class="preview-card">'
+        + '<div class="img" style="background-image:url(\'' + (p.image_url||'') + '\');"></div>'
+        + '<div class="pn">' + (p.name||'').slice(0,40) + '</div>'
+        + '<div class="pp">$' + (p.price||0).toFixed(2) + '</div>'
+        + '</div>';
+    });
+    preview += '</div>';
+  }
+  if(details && details.customers_sample && details.customers_sample.length){
+    preview += '<h3 style="margin-top:18px;font-size:.96rem;font-weight:700;">Sample customers (' + details.customers_sample.length + ')</h3>';
+    preview += '<ul style="list-style:none;padding-left:0;margin-top:6px;font-size:.88rem;color:#4a525c;">';
+    details.customers_sample.forEach(function(c){
+      preview += '<li style="padding:4px 0;">· ' + (c.name||'(no name)') + ' — ' + (c.email||c.phone||'(no contact)') + '</li>';
+    });
+    preview += '</ul>';
+  }
+  if(details && details.orders_sample && details.orders_sample.length){
+    preview += '<h3 style="margin-top:18px;font-size:.96rem;font-weight:700;">Sample orders (' + details.orders_sample.length + ')</h3>';
+    preview += '<ul style="list-style:none;padding-left:0;margin-top:6px;font-size:.88rem;color:#4a525c;font-family:SF Mono,monospace;">';
+    details.orders_sample.forEach(function(o){
+      var dt = o.closed_at ? new Date(o.closed_at).toLocaleDateString() : '?';
+      preview += '<li style="padding:4px 0;">' + dt + ' · $' + o.total + ' · ' + o.line_count + ' line(s) · ' + (o.tender||'?') + ' · ' + o.id.slice(-8) + '</li>';
+    });
+    preview += '</ul>';
+  }
+  box.innerHTML = '<div class="summary-tiles">'+tiles+'</div>' + preview;
+}
+
+// Orders import keeps track of the cursor so "Continue" picks up where we stopped
+var _ordersCursor = null;
+var _ordersSince  = null;
+
+async function runImport(action, what){
+  var isOrders = (what === 'orders');
+  var target = isOrders ? 'ordersResult'
+    : action === 'commit' ? 'commitResult' : 'previewResult';
+  var box = document.getElementById(target);
+  box.innerHTML = '<div style="padding:18px;text-align:center;color:#6a737d;"><span class="spinner"></span>' + (action === 'preview' ? 'Probing Square…' : 'Committing import — may take a minute…') + '</div>';
+
+  var payload = { action: action, what: what };
+  if(isOrders){
+    var sinceVal = document.getElementById('ordersSince').value;
+    if(sinceVal){ payload.since = sinceVal; _ordersSince = sinceVal; }
+    if(action === 'commit' && _ordersCursor && _ordersSince){
+      payload.cursor = _ordersCursor;
+      payload.since  = _ordersSince;
+    }
+  }
+
+  try {
+    var r = await fetch(SUPA + '/functions/v1/square-import', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json', 'Authorization':'Bearer ' + KEY },
+      body: JSON.stringify(payload)
+    });
+    var j = await r.json();
+    if(!j.ok){
+      box.innerHTML = '<div style="background:#fef0ee;border:1px solid #f5c2bb;border-radius:8px;padding:14px;color:#b53030;font-size:.92rem;"><strong>Error:</strong> ' + (j.error || JSON.stringify(j)).slice(0,400) + '</div>';
+      toast('Import failed','err');
+      return;
+    }
+    renderSummary(target, j.summary, j.details);
+    toast(action === 'commit' ? '✓ Import committed' : '✓ Preview complete', 'success');
+
+    // If orders import has more data, expose Continue button
+    if(isOrders && action === 'commit'){
+      var nextC = j.summary && j.summary.next_cursor;
+      var contBtn = document.getElementById('continueBtn');
+      if(nextC){
+        _ordersCursor = nextC;
+        if(!_ordersSince) _ordersSince = j.summary.orders_window && j.summary.orders_window.since;
+        contBtn.style.display = 'inline-flex';
+        contBtn.textContent = '⏭ Continue · ' + (j.summary.sales_inserted || 0) + ' done · more remain';
+      } else {
+        _ordersCursor = null;
+        contBtn.style.display = 'none';
+      }
+    }
+  } catch(e){
+    box.innerHTML = '<div style="background:#fef0ee;border:1px solid #f5c2bb;border-radius:8px;padding:14px;color:#b53030;font-size:.92rem;"><strong>Network error:</strong> ' + e.message + '</div>';
+    toast('Network error','err');
+  }
+}
+
+function continueOrdersImport(){ runImport('commit', 'orders'); }
+</script>
+</body>
+</html>

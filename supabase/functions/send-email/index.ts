@@ -4,9 +4,7 @@
 // Resend-based outbound email proxy. Solves browser-side CORS
 // on the Resend API and keeps the API key server-side only.
 //
-// Adapted structurally from BM's send-email function
-// (see _bm-reference/supabase-functions/send-email/index.ts) —
-// BM uses SendGrid; skateOS uses Resend per Settings → Integrations.
+// Resend integration per Settings → Integrations.
 //
 // IMPORTANT — STATUS as of 2026-04-29
 // ----------

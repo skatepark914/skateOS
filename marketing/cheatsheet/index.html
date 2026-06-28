@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>skateOS — Front Desk Cheat Sheet</title>
+<style>
+  :root{--ink:#16131d;--paper:#fff;--line:#e3ddf0;--soft:#6b6480;--rose:#c9572e;--lime:#3f7d5f;--blue:#2f6db0}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,sans-serif;color:var(--ink);background:#f4f1fb;line-height:1.45}
+  .sheet{max-width:840px;margin:0 auto;padding:26px 22px 60px;background:#fff}
+  .hd{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid var(--ink);padding-bottom:10px;margin-bottom:16px}
+  .hd h1{font-size:1.7rem;font-weight:900;letter-spacing:-.02em}
+  .hd .sub{font-size:.82rem;color:var(--soft);font-weight:700}
+  .golden{background:#fff3ee;border:2px solid var(--rose);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:1.02rem;font-weight:800}
+  .golden span{color:var(--rose)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:680px){.grid{grid-template-columns:1fr}}
+  .card{border:1px solid var(--line);border-radius:12px;padding:14px 16px;break-inside:avoid}
+  .card h2{font-size:.74rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--rose);margin-bottom:8px}
+  .card.b h2{color:var(--blue)}.card.g h2{color:var(--lime)}
+  ol,ul{margin:0 0 0 18px}li{margin:5px 0;font-size:.92rem}
+  .big{font-size:1.05rem;font-weight:800}
+  kbd{background:#16131d;color:#fff;border-radius:5px;padding:1px 7px;font-size:.8rem;font-weight:700}
+  .pay{display:flex;gap:8px;margin-top:6px;flex-wrap:wrap}
+  .pill{border:1px solid var(--line);border-radius:8px;padding:6px 10px;font-size:.84rem;font-weight:700;flex:1;min-width:120px}
+  .pill b{display:block;font-size:.72rem;color:var(--soft);font-weight:800;text-transform:uppercase}
+  .foot{margin-top:18px;border-top:1px solid var(--line);padding-top:10px;font-size:.82rem;color:var(--soft);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px}
+  .noprint{margin:16px 0}.btn{border:1px solid var(--line);background:#16131d;color:#fff;border-radius:9px;padding:9px 16px;font-weight:800;font-size:.86rem;cursor:pointer}
+  @media print{body{background:#fff}.noprint{display:none}.sheet{padding:0}}
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="hd"><div><h1>🛹 Front Desk Cheat Sheet</h1><div class="sub">2nd Nature Park · skateOS · app.skateos.com</div></div><div class="sub">v1 · launch</div></div>
+
+  <div class="golden">⭐ The one rule: <span>ring EVERY sale in skateOS.</span> Cash, card, comp — all of it. That's how the numbers stay right.</div>
+
+  <div class="grid">
+    <div class="card">
+      <h2>💳 Make a sale — 4 taps</h2>
+      <ol>
+        <li><b>Tap the items</b> (or scan a barcode / member card).</li>
+        <li><b>Pick the customer</b> — search their name, or leave <em>Walk-in</em>.</li>
+        <li><b>Take payment</b> (see below).</li>
+        <li><b>Tap the big <span style="color:var(--rose)">Charge</span> button.</b> Done — offer receipt.</li>
+      </ol>
+      <div class="pay">
+        <div class="pill"><b>Cash</b>Take cash. Screen shows change due.</div>
+        <div class="pill"><b>Card</b>Swipe on the <b>Square reader</b>, then pick "Credit Card" → Charge.</div>
+        <div class="pill"><b>Comp</b>Use the Comp button + reason.</div>
+      </div>
+    </div>
+
+    <div class="card b">
+      <h2>🪪 Check a skater in</h2>
+      <ol>
+        <li>Check-In page → <b>type their name</b> (or scan member card / QR).</li>
+        <li>Tap their name → <b>Check In</b>. Watch for the green WELCOME.</li>
+        <li>Punch card auto-decrements; low-punch warning pops if they're running out.</li>
+      </ol>
+      <div class="big" style="margin-top:8px;color:var(--blue)">No waiver? → resolve first.</div>
+      <ul><li>Email/text them the waiver link, <b>or</b> have them sign on the iPad — then check in.</li></ul>
+    </div>
+
+    <div class="card g">
+      <h2>🎓 Lessons &amp; parties</h2>
+      <ul>
+        <li><b>Lessons page</b> → tap a slot → pick skater + instructor → Save.</li>
+        <li>Party / birthday → Tools → <b>Party quote</b>.</li>
+        <li>Day-of: check the <b>"Coming up"</b> strip on Check-In.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>🌙 End of day</h2>
+      <ol>
+        <li>Sales → <b>Close out day</b> → count the drawer (use the denomination helper).</li>
+        <li><b>Close park</b> on Check-In → checks everyone out.</li>
+        <li>Lock up, helmets/loaner gear away.</li>
+      </ol>
+    </div>
+
+    <div class="card b">
+      <h2>⌨️ Speed tips</h2>
+      <ul>
+        <li><kbd>/</kbd> jump to product search · <kbd>1–6</kbd> quick-add top sellers</li>
+        <li><kbd>⌘+Enter</kbd> complete sale · <kbd>?</kbd> all shortcuts</li>
+        <li>Mid-sale, someone walks up? <b>Hold sale</b> → ring them → Restore.</li>
+      </ul>
+    </div>
+
+    <div class="card g">
+      <h2>🆘 If something's off</h2>
+      <ul>
+        <li>Wrong sale? <b>Void</b> it (within 10 min) — for returns use <b>Refund</b> (reason required).</li>
+        <li>Card reader down? Take cash or text the customer a pay link.</li>
+        <li>App acting weird? Tap the <b>version chip</b> (top-right) to hard-refresh.</li>
+        <li>Stuck → <b>text Doug.</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot"><span>Square reader stays as the card swiper while we settle in. skateOS rings every sale either way.</span><span>skateos.com/cheatsheet</span></div>
+
+  <div class="noprint"><button class="btn" onclick="window.print()">🖨️ Print this</button></div>
+</div>
+</body>
+</html>

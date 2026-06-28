@@ -1,0 +1,9 @@
+{
+  "name": "skateos-connector",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-06-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "vars": { "SUPABASE_REF": "zecurmlenxyxanqucrga" },
+  "durable_objects": { "bindings": [{ "name": "SKATE_MCP", "class_name": "SkateMCP" }] },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["SkateMCP"] }]
+}

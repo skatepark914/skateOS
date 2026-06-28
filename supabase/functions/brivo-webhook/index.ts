@@ -347,6 +347,128 @@ Deno.serve(async (req) => {
         });
       }
 
+      // ── Staff clock-in/out email prompt (mig 072) ────────────────
+      // When staff tap any door (park or shop), email them a one-tap
+      // link asking "Clock in?" or "Clock out?" depending on whether
+      // they have an open time_entry. They often come in NOT working
+      // (pickups, hangout), so we always ask — never auto-clock.
+      // Email chosen over SMS to bypass US carrier A2P 10DLC blocking.
+      // Idempotent per door tap. Best-effort, non-blocking.
+      const isGrantForStaffPrompt = eventType === "access_granted" || eventType === "face_matched";
+      // Removed bare DEBUG insert (was dumping a `block_enter_dbg` row on
+      // every door tap with no try/catch — would kill the downstream
+      // staff-clock + alert path if webhook_log schema/RLS changed).
+      if (isGrantForStaffPrompt && brivoUserId) {
+        try {
+          const { data: staffRow, error: staffErr } = await sb
+            .from("staff")
+            .select("id, display_name, email")
+            .eq("brivo_user_id", brivoUserId)
+            .maybeSingle();
+          // Debug log: staff lookup outcome
+          try {
+            await sb.from("webhook_log").insert({
+              source: "brivo", event_type: "staff_lookup_dbg",
+              status: staffRow ? "found" : "miss",
+              payload: { brivo_user_id: brivoUserId, sid: staffRow?.id, email: staffRow?.email, err: staffErr?.message },
+            });
+          } catch (_) {}
+          if (staffRow?.id && staffRow.email) {
+            // De-dup: don't re-send if we already prompted for this event
+            const promptMarker = `[staff-clock-prompt:${eventId || "noevent"}]`;
+            const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+            const { data: dup } = await sb.from("webhook_log")
+              .select("id")
+              .eq("source", "brivo")
+              .eq("event_type", "staff_clock_prompt")
+              .gte("created_at", fifteenMinAgo)
+              .ilike("payload->>marker", `%${promptMarker}%`)
+              .limit(1);
+            if (!dup || dup.length === 0) {
+              // Decide action: in if no open time_entry, out if there is one
+              const { data: openEntry } = await sb
+                .from("time_entries")
+                .select("id")
+                .eq("staff_id", staffRow.id)
+                .is("clock_out", null)
+                .not("clock_in", "is", null)
+                .order("clock_in", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+              const action = openEntry?.id ? "out" : "in";
+              // Issue a one-shot signed token
+              const { data: tokenRes } = await sb.rpc("issue_staff_clock_token", {
+                p_staff_id: staffRow.id,
+                p_action:   action,
+              });
+              const token = tokenRes as string | null;
+              if (token) {
+                const appBase = Deno.env.get("APP_BASE_URL") || "https://app.skateos.com";
+                const link = `${appBase}/clock.html?t=${token}&action=${action}`;
+                const verb = action === "in" ? "Clock in?" : "Clock out?";
+                const firstName = (staffRow.display_name || "").split(" ")[0] || "there";
+                const subject = `${verb} — skateOS`;
+                const accent  = action === "in" ? "#6abb1e" : "#d44";
+                const html = `
+                  <div style="font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;color:#1a1f2e;">
+                    <div style="font-size:13px;font-weight:800;letter-spacing:.8px;color:#6abb1e;margin-bottom:18px;">skateOS · STAFF</div>
+                    <h1 style="font-size:24px;margin:0 0 14px 0;color:#1a1f2e;">Hey ${firstName} — ${verb}</h1>
+                    <p style="font-size:15px;color:#4a5060;margin:0 0 28px 0;">
+                      Door tap detected at the ${accessPoint === "park_door" ? "park" : accessPoint === "shop_door" ? "shop" : ""} door.
+                      ${action === "in" ? "Tap below to start your shift." : "Tap below to end your shift."}
+                      Not working right now? Ignore this email — nothing happens unless you tap.
+                    </p>
+                    <p style="margin:0 0 28px 0;">
+                      <a href="${link}" style="display:inline-block;background:${accent};color:#fff;font-weight:900;text-decoration:none;padding:14px 32px;border-radius:999px;font-size:16px;">
+                        ${action === "in" ? "Clock me in" : "Clock me out"}
+                      </a>
+                    </p>
+                    <p style="font-size:12px;color:#7a8090;margin:0;">
+                      Link expires in 2 hours. From skateOS at ${new Date().toLocaleString("en-US",{timeZone:"America/New_York"})} ET.
+                    </p>
+                  </div>`;
+                const text = `${verb} ${link}`;
+                // Fire send-email Edge Function (fire-and-forget)
+                const supaUrl = Deno.env.get("SUPABASE_URL")!;
+                const supaSrv = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+                const emailResp = await fetch(`${supaUrl}/functions/v1/send-email`, {
+                  method:  "POST",
+                  headers: {
+                    "Content-Type":  "application/json",
+                    "Authorization": `Bearer ${supaSrv}`,
+                  },
+                  body: JSON.stringify({
+                    to:      staffRow.email,
+                    subject,
+                    html,
+                    text,
+                    tags:    [{ name: "type", value: "staff_clock_prompt" }],
+                  }),
+                });
+                const emailStatus = emailResp.ok ? "sent" : `failed_${emailResp.status}`;
+                try {
+                  await sb.from("webhook_log").insert({
+                    source:     "brivo",
+                    event_type: "staff_clock_prompt",
+                    status:     emailStatus,
+                    payload:    {
+                      marker:   promptMarker,
+                      staff_id: staffRow.id,
+                      action,
+                      email:    staffRow.email,
+                      door:     accessPoint,
+                    },
+                  });
+                } catch (_logErr) { /* non-blocking */ }
+              }
+            }
+          }
+        } catch (promptErr) {
+          // Non-blocking — staff prompt is a nice-to-have
+          console.warn("brivo staff clock prompt non-fatal:", promptErr);
+        }
+      }
+
       // ── Failed-access alert: 3+ denials in 5 min → Team Chat ──────
       // Catches lapsed memberships at the door, lost phones, banned
       // customers testing the system. One alert per customer per 30 min

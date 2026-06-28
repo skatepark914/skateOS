@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Confirmed · 2nd Nature Park</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛹</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0e10; --ink-soft: #4a4d55; --ink-mute: #7a7e85;
+    --line: #e6e7ea; --bg: #f6f7f9; --green: #007a52; --green-light: #ecfdf5;
+    --rose: #d11a2a; --rose-light: #fef0ee;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); }
+  header { background: #fff; border-bottom: 1px solid var(--line); padding: 14px 24px; }
+  .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; display: flex; align-items: center; }
+  .brand .em { margin-right: 6px; }
+  .brand-logo { height: 42px; width: auto; display: block; }
+  .wrap { max-width: 540px; margin: 36px auto; padding: 0 20px; }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 36px 28px; text-align: center; }
+  .check {
+    width: 84px; height: 84px; border-radius: 50%;
+    background: var(--green-light); color: var(--green);
+    font-size: 2.6rem; margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .check.err { background: var(--rose-light); color: var(--rose); }
+  h1 { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+  .lede { color: var(--ink-soft); font-size: .96rem; margin-bottom: 22px; line-height: 1.55; }
+  .conf {
+    display: inline-block; background: var(--bg);
+    padding: 11px 18px; border-radius: 9px;
+    font-family: 'SF Mono', Menlo, monospace; font-weight: 800; font-size: .94rem;
+    margin: 14px 0 22px;
+  }
+  .summary { background: var(--bg); border-radius: 10px; padding: 16px; text-align: left; margin-bottom: 22px; font-size: .9rem; line-height: 1.7; }
+  .summary strong { color: var(--ink); }
+  .btn { display: inline-block; padding: 12px 22px; border-radius: 9px; font-weight: 800; font-family: inherit; cursor: pointer; border: none; text-decoration: none; font-size: .94rem; }
+  .btn-prim { background: var(--ink); color: #fff; }
+  .btn-sec { background: #fff; border: 1.5px solid var(--line); color: var(--ink); margin-right: 8px; }
+  .err-box { background: var(--rose-light); border: 1px solid #fecaca; color: #b91c1c; padding: 12px 14px; border-radius: 8px; font-size: .88rem; margin: 14px 0; }
+  .spin { display: inline-block; width: 18px; height: 18px; border: 3px solid var(--line); border-top-color: var(--ink); border-radius: 50%; animation: sp .8s linear infinite; vertical-align: middle; }
+  @keyframes sp { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<header><div class="brand"><img src="/2ntr/assets/logo.png" alt="2nd Nature Park" class="brand-logo"></div></header>
+<div class="wrap">
+  <div class="panel" id="panel">
+    <div class="check"><span class="spin"></span></div>
+    <h1>Confirming…</h1>
+    <p class="lede">Checking with Square that your payment went through.</p>
+  </div>
+</div>
+
+<script>
+var SUPA = 'https://zecurmlenxyxanqucrga.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+var H = { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json' };
+
+function getParam(n){ return new URLSearchParams(location.search).get(n); }
+
+async function confirmLesson(){
+  var lessonId = getParam('lesson');
+  var panel = document.getElementById('panel');
+  if (!lessonId){
+    panel.innerHTML = '<div class="check err">✗</div><h1>Missing lesson ID</h1><p class="lede">If your payment went through, contact us at (914) 402-4624 with your Square confirmation and we\'ll get you booked.</p><a href="/2ntr/lessons" class="btn btn-prim">Try again</a>';
+    return;
+  }
+  try {
+    var r = await fetch(SUPA + '/rest/v1/rpc/public_confirm_lesson_payment', {
+      method: 'POST', headers: H,
+      body: JSON.stringify({ p_lesson_id: lessonId })
+    });
+    var d = await r.json();
+    if (!d.ok){
+      panel.innerHTML = '<div class="check err">⚠</div><h1>Hmm — couldn\'t confirm</h1>'
+        + '<p class="lede">' + (d.error || 'Unknown issue') + '</p>'
+        + '<div class="err-box">If Square took the payment, call (914) 402-4624 with your confirmation code and we\'ll fix it manually.</div>'
+        + '<a href="/2ntr/lessons" class="btn btn-prim">Try again</a>';
+      return;
+    }
+    var dt = d.scheduled_at ? new Date(d.scheduled_at) : null;
+    var dateStr = dt ? dt.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}) + ' at ' + dt.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'}) : '';
+    panel.innerHTML = '<div class="check">✓</div>'
+      + '<h1>You\'re booked!</h1>'
+      + '<p class="lede">Your payment was received and your lesson is on the schedule. We\'ll send you an email reminder the day before.</p>'
+      + '<div class="conf">CONFIRMATION-' + (d.confirmation || 'OK') + '</div>'
+      + (dateStr ? '<div class="summary">'
+          + '<div><strong>Lesson:</strong> ' + (d.type||'') + ' with ' + (d.instructor||'') + '</div>'
+          + '<div><strong>When:</strong> ' + dateStr + '</div>'
+        + '</div>' : '')
+      + '<a href="/2ntr" class="btn btn-sec">Home</a>'
+      + '<a href="/2ntr/lessons" class="btn btn-prim">Book another</a>';
+  } catch(e){
+    panel.innerHTML = '<div class="check err">⚠</div><h1>Connection issue</h1><p class="lede">Couldn\'t reach the server. ' + e.message + '</p><a href="/2ntr/lessons" class="btn btn-prim">Try again</a>';
+  }
+}
+confirmLesson();
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Hudson Valley AI — Target List / CRM (internal)</title>
+<style>
+  :root{--ink:#16140f;--paper:#faf7f0;--card:#fff;--line:#e7e0d2;--soft:#6f685c;--accent:#2f7d52;--accent2:#c9572e;--blue:#2f6db0;--gold:#caa24a}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,-apple-system,"Segoe UI",Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:22px 14px 70px}
+  header.h{background:var(--ink);color:#fff;border-radius:16px;padding:20px 22px}
+  header .k{font-size:.68rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
+  header h1{font-size:1.5rem;font-weight:900;margin-top:6px}
+  header p{color:#cdc6bd;margin-top:7px;font-size:.9rem;max-width:70ch}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0}
+  .bar select,.bar input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:.86rem;background:#fff}
+  .stat{margin-left:auto;font-size:.84rem;color:var(--soft);font-weight:700}
+  table{width:100%;border-collapse:collapse;font-size:.86rem;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  th,td{padding:9px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);background:#f4efe6;position:sticky;top:0}
+  tr:last-child td{border-bottom:none}
+  .seg{display:inline-block;font-size:.62rem;font-weight:900;border-radius:5px;padding:2px 7px;text-transform:uppercase;white-space:nowrap}
+  .s-fit{background:#e7f5ec;color:var(--accent)}.s-trade{background:#fdeee7;color:var(--accent2)}.s-food{background:#fbf3e0;color:#8a6d1a}.s-retail{background:#eef2fb;color:var(--blue)}.s-pro{background:#efe9f7;color:#6b46c1}
+  .nm{font-weight:800}
+  .saas{font-size:.8rem;color:var(--soft)}
+  .stsel{border:1px solid var(--line);border-radius:7px;padding:5px 7px;font-size:.8rem;font-family:inherit;background:#fff}
+  .stsel.contacted{background:#fff7e6}.stsel.call{background:#e6f0fb}.stsel.won{background:#e7f5ec}.stsel.pass{background:#f0eee9;color:#999}
+  .note{width:100%;border:1px solid var(--line);border-radius:7px;padding:5px 7px;font-family:inherit;font-size:.8rem;min-height:30px;resize:vertical}
+  .g{color:var(--accent);font-weight:700;font-size:.82rem}
+  .foot{margin-top:18px;font-size:.82rem;color:var(--soft)}
+  a{color:var(--accent);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="h">
+    <div class="k">Hudson Valley AI · internal · target list</div>
+    <h1>Lead tracker — local businesses to land</h1>
+    <p>Real businesses researched from the target segments, sorted best-fit first. Set status + notes per row (saves to this device). <b>Verify the owner/email/phone per row before reaching out</b> — names + likely-SaaS are researched, exact contacts you confirm via their site / Google.</p>
+  </header>
+
+  <div class="bar">
+    <select id="fSeg"><option value="">All segments</option><option>Fitness/Wellness</option><option>Home Services</option><option>Restaurant/Brewery</option><option>Retail</option></select>
+    <select id="fStatus"><option value="">All statuses</option><option>New</option><option>Contacted</option><option>Call set</option><option>Won</option><option>Pass</option></select>
+    <input id="fSearch" placeholder="Search…" oninput="render()">
+    <span class="stat" id="stat"></span>
+  </div>
+
+  <table>
+    <thead><tr><th>Business</th><th>Segment</th><th>Where</th><th>Likely on</th><th>Hook</th><th>Status</th><th>Notes</th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+
+  <div class="foot">
+    Add more anytime by walking Beacon's Main St (90+ boutiques) or Google-Mapping "[segment] near Peekskill." Want me to keep growing this list or pull phone/owner details for the top 10? Just ask.<br>
+    Internal · not for public sharing · <a href="plan.html">← back to the plan</a>
+  </div>
+</div>
+<script>
+var LEADS=[
+ // Fitness / Wellness — best fit, you ARE one (2nd Nature)
+ {n:'PranaMoon Yoga',s:'Fitness/Wellness',l:'Peekskill (Hat Factory)',saas:'Mindbody / Vagaro',h:'Mindbody price hikes → own your bookings + memberships'},
+ {n:'Pilates On Hudson',s:'Fitness/Wellness',l:'Peekskill',saas:'Mindbody / Vagaro',h:'Private+group scheduling that fits, no per-booking fees'},
+ {n:'Lila Within (Hot Yoga)',s:'Fitness/Wellness',l:'Cortlandt Manor',saas:'Mindbody',h:'Class packs + memberships you own'},
+ {n:'BodySculpt by Karen',s:'Fitness/Wellness',l:'Peekskill area',saas:'Mindbody / Vagaro',h:'Drop the monthly + the markup'},
+ {n:'Elevate Yoga',s:'Fitness/Wellness',l:'Hudson Valley',saas:'Mindbody',h:'Own your studio software'},
+ {n:'Universal Healing Arts',s:'Fitness/Wellness',l:'Peekskill',saas:'Mindbody / Vagaro',h:'Booking + intake forms, owned'},
+ {n:'APG Pilates',s:'Fitness/Wellness',l:'Hopewell Junction',saas:'Mindbody',h:'Multi-discipline scheduling, your way'},
+ {n:'Millbrook Movement & Wellness',s:'Fitness/Wellness',l:'Millbrook',saas:'Mindbody',h:'Gyrotonic/specialty classes SaaS handles poorly'},
+ // Home services / trades — high SaaS cost ($8-15k)
+ {n:'Bruni & Campisi',s:'Home Services',l:'Peekskill (since 1979)',saas:'ServiceTitan / Housecall',h:'Established — bigger fish; lead with "stop the $10k/yr"'},
+ {n:'James Ford Plumbing & Heating',s:'Home Services',l:'Yorktown',saas:'Jobber / Housecall',h:'Owner-operated = ideal; scheduling+invoicing you own'},
+ {n:'(Local landscapers — Google Maps)',s:'Home Services',l:'Peekskill/Cortlandt',saas:'Jobber',h:'Smaller crews on Jobber = easiest wins. Find 5-10.'},
+ {n:'(Local cleaning/pest co — Google Maps)',s:'Home Services',l:'Westchester',saas:'Jobber / Housecall',h:'Recurring scheduling pain → owned tool'},
+ // Restaurants / breweries — Toast payment markup
+ {n:'Bean Runner Cafe',s:'Restaurant/Brewery',l:'Peekskill',saas:'Square / Toast',h:'Toast takes a cut of every swipe — keep the ring, drop the fee'},
+ {n:'Whiskey River NY',s:'Restaurant/Brewery',l:'Peekskill',saas:'Toast / Square',h:'Own ordering + lower payment fees'},
+ {n:'824 Main Street',s:'Restaurant/Brewery',l:'Peekskill',saas:'Toast',h:'Reservations/POS that fit, owned'},
+ {n:'Division Street Grill',s:'Restaurant/Brewery',l:'Peekskill',saas:'Toast / Square',h:'Drop the per-transaction markup'},
+ {n:"Gleason's Restaurant",s:'Restaurant/Brewery',l:'Peekskill',saas:'Toast / Square',h:'Owned POS + loyalty'},
+ {n:'River Outpost Brewing',s:'Restaurant/Brewery',l:'Peekskill (Riverfront)',saas:'Square / Toast',h:'Taproom POS + events + memberships'},
+ {n:'Sing Sing Kill Brewery',s:'Restaurant/Brewery',l:'Ossining',saas:'Square',h:'Owned taproom system'},
+ {n:'Hudson Valley Brewery',s:'Restaurant/Brewery',l:'Beacon',saas:'Square / Toast',h:'Releases/club + payments, owned'},
+ // Retail — Square/Shopify
+ {n:'A&D Jewelry',s:'Retail',l:'Peekskill',saas:'Square / Lightspeed',h:'Inventory + repairs ticketing that fits'},
+ {n:'Bruised Apple Books',s:'Retail',l:'Peekskill',saas:'Square / Shopify',h:'Used-book inventory SaaS handles badly'},
+ {n:'Beer World Peekskill',s:'Retail',l:'Peekskill',saas:'Lightspeed / Square',h:'Large SKU count → custom inventory'},
+ {n:'Beacon Main St boutiques (90+)',s:'Retail',l:'Beacon',saas:'Square / Shopify',h:'Walk the street — richest vein of owner-operated retail nearby'}
+];
+var SEGCLS={'Fitness/Wellness':'s-fit','Home Services':'s-trade','Restaurant/Brewery':'s-food','Retail':'s-retail'};
+function load(){try{return JSON.parse(localStorage.getItem('hva_leads')||'{}');}catch(e){return{};}}
+function save(d){try{localStorage.setItem('hva_leads',JSON.stringify(d));}catch(e){}}
+var state=load();
+function render(){
+  var seg=document.getElementById('fSeg').value, st=document.getElementById('fStatus').value, q=(document.getElementById('fSearch').value||'').toLowerCase();
+  var rows='',shown=0;
+  LEADS.forEach(function(L,i){
+    var d=state[L.n]||{status:'New',note:''};
+    if(seg&&L.s!==seg)return; if(st&&(d.status||'New')!==st)return;
+    if(q&&(L.n+L.l+L.saas+L.h).toLowerCase().indexOf(q)<0)return;
+    shown++;
+    var stcls=({Contacted:'contacted','Call set':'call',Won:'won',Pass:'pass'})[d.status]||'';
+    rows+='<tr>'
+      +'<td class="nm">'+L.n+'</td>'
+      +'<td><span class="seg '+(SEGCLS[L.s]||'')+'">'+L.s.split('/')[0]+'</span></td>'
+      +'<td>'+L.l+'</td>'
+      +'<td class="saas">'+L.saas+'</td>'
+      +'<td class="g">'+L.h+'</td>'
+      +'<td><select class="stsel '+stcls+'" data-n="'+encodeURIComponent(L.n)+'">'
+        +['New','Contacted','Call set','Won','Pass'].map(function(o){return '<option'+((d.status||'New')===o?' selected':'')+'>'+o+'</option>';}).join('')+'</select></td>'
+      +'<td><textarea class="note" data-nn="'+encodeURIComponent(L.n)+'" placeholder="notes, owner, phone…">'+(d.note||'')+'</textarea></td>'
+      +'</tr>';
+  });
+  document.getElementById('rows').innerHTML=rows;
+  var done=LEADS.filter(function(L){var d=state[L.n];return d&&d.status&&d.status!=='New';}).length;
+  document.getElementById('stat').textContent=shown+' shown · '+LEADS.length+' total · '+done+' worked';
+}
+document.getElementById('rows').addEventListener('change',function(e){
+  if(e.target.classList.contains('stsel')){var n=decodeURIComponent(e.target.dataset.n);state[n]=state[n]||{};state[n].status=e.target.value;save(state);render();}
+});
+document.getElementById('rows').addEventListener('input',function(e){
+  if(e.target.classList.contains('note')){var n=decodeURIComponent(e.target.dataset.nn);state[n]=state[n]||{};state[n].note=e.target.value;save(state);}
+});
+document.getElementById('fSeg').addEventListener('change',render);
+document.getElementById('fStatus').addEventListener('change',render);
+render();
+</script>
+</body>
+</html>

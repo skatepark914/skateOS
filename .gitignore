@@ -44,3 +44,6 @@ Desktop.ini
 
 # Empty / scratch
 3D Project
+
+.dev.vars*
+!.dev.vars.example

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#e11d48">
+<title>Media Center — 2nd Nature Park</title>
+<meta name="robots" content="noindex,nofollow">
+<!-- Skate-shaped media center (pattern inspired by BM mediacenter, written fresh).
+     Snap session/trick/event photos → tag + caption → review → build a post.
+     v1 stores on this device (localStorage, images auto-resized). Cloud-shared
+     storage (Supabase) is the planned upgrade. -->
+<style>
+  :root{--rose:#e11d48;--rose-dark:#be123c;--ink:#0f1115;--soft:#5b5f66;--bg:#faf9f6;--line:#e7e7e2;--ok:#16a34a;}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,Inter,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5}
+  .wrap{max-width:1000px;margin:0 auto;padding:22px 16px 90px}
+  .top{display:flex;align-items:center;gap:12px;margin-bottom:8px;flex-wrap:wrap}
+  .top img{height:36px}
+  h1{font-size:1.5rem;font-weight:900;letter-spacing:-.02em}
+  .sub{color:var(--soft);font-size:.9rem;margin-bottom:18px}
+  .btn{border:none;border-radius:11px;padding:11px 16px;font-weight:800;font-size:.92rem;cursor:pointer;font-family:inherit}
+  .btn-primary{background:var(--rose);color:#fff}.btn-primary:hover{background:var(--rose-dark)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1.5px solid var(--line)}.btn-ghost:hover{border-color:var(--rose)}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+  .bar .chip{background:#fff;border:1.5px solid var(--line);border-radius:20px;padding:7px 13px;font-size:.82rem;font-weight:700;cursor:pointer;color:var(--soft)}
+  .bar .chip.on{background:var(--rose);color:#fff;border-color:var(--rose)}
+  .bar input{flex:1;min-width:140px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.9rem;font-family:inherit}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .tile{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;cursor:pointer;position:relative}
+  .tile img,.tile video{width:100%;height:130px;object-fit:cover;display:block;background:#000}
+  .tile .cap{padding:8px 10px;font-size:.78rem;color:var(--soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tile .badge{position:absolute;top:8px;left:8px;background:var(--rose);color:#fff;font-size:.62rem;font-weight:800;padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em}
+  .tile .new{position:absolute;top:8px;right:8px;width:10px;height:10px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(22,163,74,.25)}
+  .empty{text-align:center;color:var(--soft);padding:50px 20px;background:#fff;border:1px dashed var(--line);border-radius:16px}
+  /* modal */
+  .ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:50;align-items:flex-start;justify-content:center;padding:20px;overflow:auto}
+  .ov.show{display:flex}
+  .modal{background:#fff;border-radius:18px;max-width:540px;width:100%;padding:22px;margin-top:20px}
+  .modal h2{font-size:1.15rem;font-weight:900;margin-bottom:14px}
+  .modal img,.modal video{width:100%;max-height:300px;object-fit:contain;background:#000;border-radius:12px;margin-bottom:14px}
+  label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--soft);display:block;margin:10px 0 5px}
+  input[type=text],select,textarea{width:100%;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;font-size:.95rem;font-family:inherit}
+  textarea{min-height:70px;resize:vertical}
+  .row{display:flex;gap:10px}.row>*{flex:1}
+  .modal-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .hidden{display:none}
+  #drop{border:2px dashed var(--line);border-radius:16px;padding:26px;text-align:center;color:var(--soft);margin-bottom:18px;cursor:pointer;background:#fff}
+  #drop.drag{border-color:var(--rose);background:#fff5f7}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:10px;font-weight:700;font-size:.88rem;opacity:0;transition:opacity .2s;z-index:99}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <img src="/assets/logo.png" alt="2nd Nature" onerror="this.style.display='none'">
+    <div><h1>📸 Media Center</h1></div>
+    <button class="btn btn-primary" style="margin-left:auto" onclick="document.getElementById('file').click()">+ Add photos / video</button>
+  </div>
+  <div class="sub">Capture session, trick, event + lesson moments → tag, caption, and build a ready-to-post.</div>
+  <input type="file" id="file" accept="image/*,video/*" multiple class="hidden">
+
+  <div id="drop">Drop photos/videos here, or tap “Add”. <span id="usage" style="display:block;font-size:.78rem;margin-top:4px"></span></div>
+
+  <div class="bar">
+    <span class="chip on" data-f="all">All</span>
+    <span class="chip" data-f="unreviewed">🟢 New</span>
+    <span class="chip" data-f="photo">Photos</span>
+    <span class="chip" data-f="video">Videos</span>
+    <input type="text" id="search" placeholder="Search caption / skater / tag…">
+  </div>
+
+  <div id="grid" class="grid"></div>
+</div>
+
+<!-- Detail / post-builder modal -->
+<div class="ov" id="ov">
+  <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+  var KEY='2ntr-media', TAGS=['session','trick','event','lesson','camp','park','team rider'];
+  var HASHTAGS='#2ndnaturepark #skateboarding #skatepark #peekskill #hudsonvalley #skatelife #sk8';
+  var BIZ='2nd Nature Park';
+  var state={filter:'all',q:''};
+
+  function getAll(){try{return JSON.parse(localStorage.getItem(KEY))||[]}catch(e){return[]}}
+  function save(a){try{localStorage.setItem(KEY,JSON.stringify(a));return true}catch(e){toast('Storage full — delete some items.');return false}}
+  function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2200)}
+  function uid(){return 'm'+Math.random().toString(36).slice(2)+Date.now().toString(36)}
+  function esc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+  // ---- resize images to keep localStorage sane (max 1280px, JPEG 0.82) ----
+  function processImage(file,cb){
+    var img=new Image(),url=URL.createObjectURL(file);
+    img.onload=function(){
+      var max=1280,w=img.width,h=img.height;
+      if(w>max||h>max){var r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r);}
+      var c=document.createElement('canvas');c.width=w;c.height=h;
+      c.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      cb(c.toDataURL('image/jpeg',0.82));
+    };
+    img.onerror=function(){URL.revokeObjectURL(url);cb(null)};
+    img.src=url;
+  }
+  // videos: store a poster frame only (full video too big for localStorage); keep filename
+  function processVideo(file,cb){
+    var v=document.createElement('video'),url=URL.createObjectURL(file);
+    v.preload='metadata';v.muted=true;
+    v.onloadeddata=function(){try{v.currentTime=Math.min(1,(v.duration||2)/2)}catch(e){}};
+    v.onseeked=function(){
+      var c=document.createElement('canvas');c.width=Math.min(640,v.videoWidth||640);c.height=c.width*(v.videoHeight/v.videoWidth||0.56);
+      c.getContext('2d').drawImage(v,0,0,c.width,c.height);URL.revokeObjectURL(url);
+      cb(c.toDataURL('image/jpeg',0.7));
+    };
+    v.onerror=function(){URL.revokeObjectURL(url);cb(null)};
+    v.src=url;
+  }
+
+  function addFiles(files){
+    var arr=[].slice.call(files),done=0,items=getAll();
+    if(!arr.length)return;
+    arr.forEach(function(f){
+      var isVid=f.type.indexOf('video')===0;
+      (isVid?processVideo:processImage)(f,function(dataUrl){
+        done++;
+        if(dataUrl){items.unshift({id:uid(),type:isVid?'video':'photo',thumb:dataUrl,filename:f.name,caption:'',skater:'',tag:'session',date:new Date().toISOString(),reviewed:false});}
+        if(done===arr.length){save(items);render();toast(done+' added'+(arr.some(function(x){return x.type.indexOf('video')===0})?' (video = poster frame; keep the file to post)':''));}
+      });
+    });
+  }
+
+  document.getElementById('file').addEventListener('change',function(e){addFiles(e.target.files);this.value='';});
+  var drop=document.getElementById('drop');
+  drop.addEventListener('click',function(){document.getElementById('file').click()});
+  ['dragover','dragenter'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add('drag')})});
+  ['dragleave','drop'].forEach(function(ev){drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove('drag')})});
+  drop.addEventListener('drop',function(e){addFiles(e.dataTransfer.files)});
+
+  document.querySelectorAll('.chip').forEach(function(c){c.addEventListener('click',function(){
+    document.querySelectorAll('.chip').forEach(function(x){x.classList.remove('on')});c.classList.add('on');state.filter=c.dataset.f;render();
+  })});
+  document.getElementById('search').addEventListener('input',function(e){state.q=e.target.value.toLowerCase();render()});
+
+  function filtered(){
+    return getAll().filter(function(m){
+      if(state.filter==='unreviewed'&&m.reviewed)return false;
+      if(state.filter==='photo'&&m.type!=='photo')return false;
+      if(state.filter==='video'&&m.type!=='video')return false;
+      if(state.q){var hay=((m.caption||'')+' '+(m.skater||'')+' '+(m.tag||'')).toLowerCase();if(hay.indexOf(state.q)<0)return false;}
+      return true;
+    });
+  }
+  function render(){
+    var list=filtered(),g=document.getElementById('grid');
+    var all=getAll();var bytes=(localStorage.getItem(KEY)||'').length;
+    document.getElementById('usage').textContent=all.length+' items · ~'+(bytes/1048576).toFixed(1)+' MB used (this device)';
+    if(!list.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">No media yet. Add session photos to get started.</div>';return;}
+    g.innerHTML=list.map(function(m){
+      return '<div class="tile" onclick="openItem(\''+m.id+'\')">'+
+        '<span class="badge">'+esc(m.tag)+'</span>'+(m.reviewed?'':'<span class="new"></span>')+
+        '<img src="'+m.thumb+'" alt="">'+
+        '<div class="cap">'+(m.type==='video'?'▶ ':'')+esc(m.caption||m.skater||m.filename||'untitled')+'</div></div>';
+    }).join('');
+  }
+
+  window.openItem=function(id){
+    var m=getAll().filter(function(x){return x.id===id})[0];if(!m)return;
+    var modal=document.getElementById('modal');
+    modal.innerHTML='<h2>'+(m.type==='video'?'🎬 Video':'📷 Photo')+'</h2>'+
+      '<img src="'+m.thumb+'">'+
+      (m.type==='video'?'<div style="font-size:.8rem;color:var(--soft);margin:-8px 0 10px">Poster frame shown · post the original file: '+esc(m.filename||'')+'</div>':'')+
+      '<div class="row"><div><label>Skater</label><input type="text" id="m-skater" value="'+esc(m.skater)+'"></div>'+
+      '<div><label>Tag</label><select id="m-tag">'+TAGS.map(function(t){return '<option'+(t===m.tag?' selected':'')+'>'+t+'</option>'}).join('')+'</select></div></div>'+
+      '<label>Caption / notes</label><textarea id="m-cap" placeholder="What went down? (used to build the post)">'+esc(m.caption)+'</textarea>'+
+      '<div class="modal-actions">'+
+        '<button class="btn btn-primary" onclick="buildPost(\''+m.id+'\')">📝 Build post</button>'+
+        '<button class="btn btn-ghost" onclick="downloadItem(\''+m.id+'\')">⬇ Download</button>'+
+        '<button class="btn btn-ghost" onclick="saveItem(\''+m.id+'\','+(!m.reviewed)+')">'+(m.reviewed?'↩ Mark new':'✓ Mark reviewed')+'</button>'+
+        '<button class="btn btn-ghost" style="color:var(--rose)" onclick="delItem(\''+m.id+'\')">Delete</button>'+
+        '<button class="btn btn-ghost" style="margin-left:auto" onclick="closeOv()">Close</button>'+
+      '</div>';
+    document.getElementById('ov').classList.add('show');
+  };
+  function patch(id,fn){var a=getAll();var i=a.findIndex(function(x){return x.id===id});if(i<0)return;fn(a[i]);save(a);}
+  window.saveItem=function(id,reviewed){patch(id,function(m){m.skater=val('m-skater');m.tag=val('m-tag');m.caption=val('m-cap');if(reviewed!==undefined)m.reviewed=reviewed;});render();toast('Saved');closeOv();};
+  function val(id){var e=document.getElementById(id);return e?e.value.trim():'';}
+  window.delItem=function(id){if(!confirm('Delete this item?'))return;save(getAll().filter(function(x){return x.id!==id}));render();closeOv();toast('Deleted');};
+  window.downloadItem=function(id){var m=getAll().filter(function(x){return x.id===id})[0];if(!m)return;var a=document.createElement('a');a.href=m.thumb;a.download=(m.skater||m.tag||'2ntr')+'-'+id+'.jpg';a.click();};
+  window.closeOv=function(){document.getElementById('ov').classList.remove('show')};
+  document.getElementById('ov').addEventListener('click',function(e){if(e.target===this)closeOv()});
+
+  // ---- caption builder ----
+  window.buildPost=function(id){
+    // persist current edits first
+    patch(id,function(m){m.skater=val('m-skater');m.tag=val('m-tag');m.caption=val('m-cap');m.reviewed=true;});
+    var m=getAll().filter(function(x){return x.id===id})[0];
+    var lead=m.caption||'';
+    var tagLine={session:'Good session today',trick:'Trick of the day',event:'Event vibes',lesson:'Lesson win',camp:'Camp days',park:'Another day at the park','team rider':'Team rider spotlight'}[m.tag]||'At the park';
+    var draft=(lead?lead:tagLine)+(m.skater?' — shoutout '+m.skater+'! ':' ')+'🛹\n\nCome skate with us at '+BIZ+', Peekskill NY.\nMemberships · day passes · lessons · parties → link in bio.\n\n'+HASHTAGS;
+    var modal=document.getElementById('modal');
+    modal.innerHTML='<h2>📝 Ready to post</h2>'+
+      '<img src="'+m.thumb+'">'+
+      '<label>Caption (edit, then copy)</label><textarea id="post-cap" style="min-height:150px">'+esc(draft)+'</textarea>'+
+      '<div class="modal-actions">'+
+        '<button class="btn btn-primary" onclick="copyCap()">📋 Copy caption</button>'+
+        '<button class="btn btn-ghost" onclick="downloadItem(\''+m.id+'\')">⬇ Download '+(m.type==='video'?'poster':'photo')+'</button>'+
+        '<button class="btn btn-ghost" style="margin-left:auto" onclick="openItem(\''+m.id+'\')">Back</button>'+
+      '</div>'+
+      '<div style="font-size:.78rem;color:var(--soft);margin-top:12px;line-height:1.6">Copy the caption → open Instagram / Facebook / TikTok → upload the '+(m.type==='video'?'video file':'photo')+' → paste caption → post. <em>(One-click auto-posting via Ayrshare is the planned next step.)</em></div>';
+  };
+  window.copyCap=function(){var t=document.getElementById('post-cap');t.select();try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}toast('Caption copied');};
+
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>Dual-run reconciliation · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 940px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 2rem; font-weight: 800; line-height: 1.1; margin-bottom: 10px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 24px; }
+h2 { font-size: 1.2rem; font-weight: 700; margin-top: 36px; margin-bottom: 12px; color: #1a1a1a; letter-spacing: -.02em; display: flex; align-items: center; gap: 12px; }
+h2 .num { width: 30px; height: 30px; border-radius: 50%; background: #1a1a1a; color: #fff; font-size: .88rem; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+p { color: #2c3138; margin-bottom: 12px; font-size: .96rem; }
+
+.summary-card { background: #fff; border: 1px solid #e6e8ec; border-radius: 16px; padding: 24px; margin-bottom: 24px; }
+.summary-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
+.summary-tile { background: #fafbfc; border: 1px solid #ecedef; border-radius: 10px; padding: 14px 16px; }
+.summary-tile .label { font-size: .68rem; color: #6a737d; text-transform: uppercase; letter-spacing: .8px; font-weight: 700; margin-bottom: 4px; }
+.summary-tile .value { font-size: 1.5rem; font-weight: 800; color: #1a1a1a; letter-spacing: -.02em; }
+.summary-tile .sub { font-size: .76rem; color: #6a737d; margin-top: 2px; font-weight: 500; }
+.summary-tile.go .value { color: #007a5a; }
+.summary-tile.warn .value { color: #b89000; }
+.summary-tile.stop .value { color: #b53030; }
+
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 10px; font-weight: 700; font-size: .92rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-red { background: #b53030; color: #fff; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+
+.recon-table { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; overflow: hidden; margin-bottom: 24px; }
+.recon-table table { width: 100%; border-collapse: collapse; font-size: .92rem; }
+.recon-table th { background: #f7f8fa; padding: 12px 14px; text-align: left; font-weight: 700; color: #1a1a1a; font-size: .76rem; text-transform: uppercase; letter-spacing: .8px; border-bottom: 1px solid #e6e8ec; }
+.recon-table th.right { text-align: right; }
+.recon-table td { padding: 12px 14px; border-bottom: 1px solid #f0f2f5; vertical-align: middle; }
+.recon-table td.right { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
+.recon-table tr:last-child td { border-bottom: none; }
+.recon-table tr.today { background: #fafbfc; }
+.recon-table tr.today td { font-weight: 700; }
+.recon-table .date-col { color: #1a1a1a; font-weight: 700; }
+.recon-table .skateos-col { color: #1a1a1a; }
+.recon-table .square-input { width: 100%; min-width: 110px; padding: 8px 10px; border: 1px solid #d1d6dc; border-radius: 6px; font-family: inherit; font-size: .92rem; font-variant-numeric: tabular-nums; text-align: right; }
+.recon-table .square-input:focus { outline: none; border-color: #1a1a1a; }
+.recon-table .variance { font-weight: 700; padding: 4px 10px; border-radius: 6px; display: inline-block; font-variant-numeric: tabular-nums; }
+.recon-table .variance.match { background: #e6faf3; color: #007a5a; }
+.recon-table .variance.close { background: #fff7e1; color: #b89000; }
+.recon-table .variance.off { background: #fde1e1; color: #b53030; }
+.recon-table .variance.empty { color: #d1d6dc; font-weight: 500; }
+.recon-table .notes-input { width: 100%; min-width: 140px; padding: 8px 10px; border: 1px solid #ecedef; border-radius: 6px; font-family: inherit; font-size: .84rem; background: #fafbfc; }
+.recon-table .notes-input:focus { outline: none; border-color: #d1d6dc; background: #fff; }
+.recon-table .row-actions { display: flex; gap: 6px; }
+.recon-table .row-actions button { background: transparent; border: 1px solid #ecedef; color: #4a525c; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-family: inherit; font-size: .82rem; font-weight: 600; }
+.recon-table .row-actions button:hover { background: #f7f8fa; }
+
+.callout { background: #fffaeb; border: 1px solid #f5dba6; border-radius: 12px; padding: 16px 20px; color: #5c4d1a; font-size: .94rem; margin: 16px 0; }
+.callout strong { color: #1a1a1a; font-weight: 700; }
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 14px 18px; color: #006148; font-size: .94rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+
+.empty { text-align: center; padding: 40px 20px; color: #6a737d; }
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #d1d6dc; border-top-color: #1a1a1a; border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; opacity: 0; transition: opacity .2s, transform .2s; z-index: 9999; pointer-events: none; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+
+.foot { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e6e8ec; text-align: center; color: #9aa3ad; font-size: .82rem; }
+.foot a { color: #4a525c; text-decoration: none; font-weight: 600; }
+
+@media (max-width: 600px) {
+  .recon-table { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .recon-table table { min-width: 700px; }
+}
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Dual-run Reconcile</div>
+  <h1>Square vs skateOS — daily comparison</h1>
+  <p class="lead">For the 1-week dual-running period. Type Square's daily gross next to each day. skateOS auto-fills from your sales table. The variance column tells you whether the two systems agree. <strong>3 days of green and you're safe to cut over.</strong></p>
+
+  <div class="callout">
+    <strong>How to use:</strong> Each evening during dual-running, check Square Dashboard → today's gross sales → type it in the Square column below. Variance under $1 is rounding (fine). Over $5 means something didn't get rung up in one system.
+  </div>
+
+  <div class="summary-card">
+    <div class="summary-row">
+      <div class="summary-tile">
+        <div class="label">Days compared</div>
+        <div class="value" id="sumDays">—</div>
+        <div class="sub">last 14 days</div>
+      </div>
+      <div class="summary-tile" id="tileMatch">
+        <div class="label">Days matching</div>
+        <div class="value" id="sumMatch">—</div>
+        <div class="sub">variance &lt; $1</div>
+      </div>
+      <div class="summary-tile" id="tileOff">
+        <div class="label">Days off</div>
+        <div class="value" id="sumOff">—</div>
+        <div class="sub">variance ≥ $5</div>
+      </div>
+      <div class="summary-tile">
+        <div class="label">Avg variance</div>
+        <div class="value" id="sumAvg">—</div>
+        <div class="sub">absolute, $</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prim" onclick="loadData()">↻ Refresh from skateOS</button>
+    <button class="btn btn-sec" onclick="exportCSV()">⬇ Export CSV</button>
+    <button class="btn btn-sec" onclick="resetEntries()">Reset Square entries</button>
+    <a class="btn btn-sec" href="/launch-ready.html">Launch readiness →</a>
+    <a class="btn btn-sec" href="/cutover.html">Cutover playbook →</a>
+  </div>
+
+  <div class="recon-table" id="reconBox">
+    <div class="empty"><span class="spinner"></span> Loading sales data…</div>
+  </div>
+
+  <h2><span class="num">?</span>How variance is calculated</h2>
+  <p>For each day:</p>
+  <ul style="list-style:none;padding-left:0;">
+    <li style="padding:8px 0 8px 24px;position:relative;color:#2c3138;font-size:.94rem;">
+      <span style="position:absolute;left:0;color:#1a1a1a;font-weight:800;">·</span>
+      <strong>skateOS gross</strong> = sum of <code style="background:#f0f2f5;padding:1px 5px;border-radius:4px;font-family:'SF Mono',monospace;font-size:.86em;">sales.total</code> for the day, net of refunds, excluding voided.
+    </li>
+    <li style="padding:8px 0 8px 24px;position:relative;color:#2c3138;font-size:.94rem;">
+      <span style="position:absolute;left:0;color:#1a1a1a;font-weight:800;">·</span>
+      <strong>Square gross</strong> = what you type. Should match Square's Dashboard daily summary.
+    </li>
+    <li style="padding:8px 0 8px 24px;position:relative;color:#2c3138;font-size:.94rem;">
+      <span style="position:absolute;left:0;color:#1a1a1a;font-weight:800;">·</span>
+      <strong>Variance</strong> = Square − skateOS. Positive means Square rang up more.
+    </li>
+  </ul>
+
+  <div class="tip">
+    <strong>Likely causes of variance &gt; $5:</strong>
+    <ul style="list-style:none;padding-left:0;margin-top:6px;">
+      <li style="padding:3px 0 3px 18px;position:relative;font-size:.9rem;">
+        <span style="position:absolute;left:0;font-weight:800;">→</span>
+        A sale rang in Square but not skateOS (cashier defaulted to old habit). Find it in Square + retroactively log in skateOS.
+      </li>
+      <li style="padding:3px 0 3px 18px;position:relative;font-size:.9rem;">
+        <span style="position:absolute;left:0;font-weight:800;">→</span>
+        Refund processed in skateOS but not Square (or vice-versa). Sync them.
+      </li>
+      <li style="padding:3px 0 3px 18px;position:relative;font-size:.9rem;">
+        <span style="position:absolute;left:0;font-weight:800;">→</span>
+        Tax / tip configuration differs between systems. Check Settings.
+      </li>
+      <li style="padding:3px 0 3px 18px;position:relative;font-size:.9rem;">
+        <span style="position:absolute;left:0;font-weight:800;">→</span>
+        Cash sale rung without entry in one of the two systems.
+      </li>
+    </ul>
+  </div>
+
+  <div class="foot">
+    Entries save to this device only · <a href="/launch-ready.html">Launch Readiness</a> · <a href="/cutover.html">Cutover</a> · <a href="/index.html">Admin</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+var H = { 'Content-Type':'application/json', 'apikey':KEY, 'Authorization':'Bearer ' + KEY };
+
+var STORAGE_KEY = 'skateos_dualrun_entries_v1';
+var DAYS_BACK = 14;
+
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 2800);
+}
+function money(n){ return '$' + (Number(n)||0).toFixed(2); }
+function moneyShort(n){
+  n = Number(n) || 0;
+  return (n < 0 ? '-' : '') + '$' + Math.abs(n).toFixed(2);
+}
+
+function loadEntries(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveEntries(e){
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(e)); } catch(_) {}
+}
+
+function dateKey(d){
+  return d.getFullYear() + '-' +
+    String(d.getMonth()+1).padStart(2,'0') + '-' +
+    String(d.getDate()).padStart(2,'0');
+}
+function fmtDate(key){
+  var p = key.split('-');
+  var d = new Date(parseInt(p[0],10), parseInt(p[1],10)-1, parseInt(p[2],10));
+  return d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+}
+
+var skateosByDay = {};
+
+async function fetchSkateosTotals(){
+  // Pull last 30 days of completed sales (overshoot to be safe).
+  // Aggregate by local date (created_at::date in browser TZ).
+  var since = new Date();
+  since.setDate(since.getDate() - 30);
+  var sinceIso = since.toISOString();
+  try {
+    var r = await fetch(SUPA + '/rest/v1/sales?select=created_at,total,refunded_amount,status&created_at=gte.' + encodeURIComponent(sinceIso) + '&status=in.(completed,refunded)&limit=10000', { headers: H });
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    var rows = await r.json();
+    var by = {};
+    rows.forEach(function(s){
+      if(s.status === 'voided') return;
+      var d = new Date(s.created_at);
+      var k = dateKey(d);
+      var net = (Number(s.total)||0) - (Number(s.refunded_amount)||0);
+      by[k] = (by[k] || 0) + net;
+    });
+    skateosByDay = by;
+    return by;
+  } catch(e) {
+    document.getElementById('reconBox').innerHTML = '<div class="empty">Couldn\'t load sales — ' + e.message + '</div>';
+    return {};
+  }
+}
+
+function getDayList(){
+  // Last DAYS_BACK days, newest first
+  var days = [];
+  var today = new Date();
+  for(var i = 0; i < DAYS_BACK; i++){
+    var d = new Date(today);
+    d.setDate(d.getDate() - i);
+    days.push(dateKey(d));
+  }
+  return days;
+}
+
+function classifyVariance(varAmt){
+  var abs = Math.abs(varAmt);
+  if(abs < 0.01) return 'match';
+  if(abs < 1.0) return 'match';
+  if(abs < 5.0) return 'close';
+  return 'off';
+}
+
+function renderTable(){
+  var entries = loadEntries();
+  var days = getDayList();
+  var todayKey = dateKey(new Date());
+  var html = '<table><thead><tr>'
+    + '<th>Date</th>'
+    + '<th class="right">skateOS</th>'
+    + '<th class="right">Square</th>'
+    + '<th class="right">Variance</th>'
+    + '<th>Notes</th>'
+    + '<th></th>'
+    + '</tr></thead><tbody>';
+
+  var totalDays = 0, matchDays = 0, offDays = 0, sumAbsVariance = 0, varCount = 0;
+
+  days.forEach(function(key){
+    var skateosVal = Number(skateosByDay[key] || 0);
+    var entry = entries[key] || {};
+    var squareVal = entry.square !== undefined && entry.square !== '' ? Number(entry.square) : null;
+    var notes = entry.notes || '';
+    var hasVar = (squareVal !== null) && !isNaN(squareVal);
+    var varAmt = hasVar ? (squareVal - skateosVal) : null;
+    var varCls = hasVar ? classifyVariance(varAmt) : 'empty';
+    var varStr = hasVar ? (varAmt >= 0 ? '+' : '-') + '$' + Math.abs(varAmt).toFixed(2) : '—';
+
+    totalDays++;
+    if(hasVar){
+      varCount++;
+      sumAbsVariance += Math.abs(varAmt);
+      if(varCls === 'match') matchDays++;
+      else if(varCls === 'off') offDays++;
+    }
+
+    html += '<tr' + (key === todayKey ? ' class="today"' : '') + '>'
+      + '<td class="date-col">' + fmtDate(key) + (key === todayKey ? ' <span style="font-size:.7rem;color:#6a737d;font-weight:500;">· today</span>' : '') + '</td>'
+      + '<td class="right skateos-col">' + (skateosVal > 0 ? money(skateosVal) : '<span style="color:#d1d6dc;">$0</span>') + '</td>'
+      + '<td class="right"><input type="number" step="0.01" min="0" class="square-input" data-key="' + key + '" placeholder="—" value="' + (squareVal !== null ? squareVal : '') + '" oninput="onSquareInput(this)" /></td>'
+      + '<td class="right"><span class="variance ' + varCls + '">' + varStr + '</span></td>'
+      + '<td><input type="text" class="notes-input" data-key="' + key + '" placeholder="' + (key === todayKey ? 'e.g. closed early' : '') + '" value="' + (notes || '').replace(/"/g,'&quot;') + '" oninput="onNotesInput(this)" /></td>'
+      + '<td><div class="row-actions"><button onclick="copySquareFromSkateos(\'' + key + '\')" title="Copy skateOS value to Square column">≡</button></div></td>'
+      + '</tr>';
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('reconBox').innerHTML = html;
+
+  // Update summary
+  document.getElementById('sumDays').textContent = varCount;
+  document.getElementById('sumMatch').textContent = matchDays;
+  document.getElementById('sumOff').textContent = offDays;
+  document.getElementById('sumAvg').textContent = varCount > 0 ? '$' + (sumAbsVariance / varCount).toFixed(2) : '$0.00';
+
+  // Color the summary tiles
+  document.getElementById('tileMatch').className = 'summary-tile ' + (varCount > 0 && matchDays / varCount > 0.7 ? 'go' : (varCount === 0 ? '' : 'warn'));
+  document.getElementById('tileOff').className = 'summary-tile ' + (offDays === 0 && varCount > 0 ? 'go' : (offDays > 0 ? 'stop' : ''));
+}
+
+function onSquareInput(input){
+  var key = input.getAttribute('data-key');
+  var val = input.value;
+  var entries = loadEntries();
+  if(!entries[key]) entries[key] = {};
+  entries[key].square = val;
+  saveEntries(entries);
+  renderTable();
+}
+function onNotesInput(input){
+  var key = input.getAttribute('data-key');
+  var val = input.value;
+  var entries = loadEntries();
+  if(!entries[key]) entries[key] = {};
+  entries[key].notes = val;
+  saveEntries(entries);
+}
+function copySquareFromSkateos(key){
+  var skateosVal = Number(skateosByDay[key] || 0);
+  if(skateosVal === 0){ toast('No skateOS value to copy','err'); return; }
+  var entries = loadEntries();
+  if(!entries[key]) entries[key] = {};
+  entries[key].square = skateosVal.toFixed(2);
+  saveEntries(entries);
+  renderTable();
+  toast('Copied — adjust if Square differs');
+}
+function resetEntries(){
+  if(!confirm('Clear all Square + notes entries from this device? skateOS data stays.')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  renderTable();
+  toast('Square entries cleared','success');
+}
+function exportCSV(){
+  var entries = loadEntries();
+  var days = getDayList();
+  var lines = ['Date,skateOS,Square,Variance,Notes'];
+  days.forEach(function(key){
+    var skateosVal = Number(skateosByDay[key] || 0).toFixed(2);
+    var e = entries[key] || {};
+    var squareVal = e.square !== undefined && e.square !== '' ? Number(e.square).toFixed(2) : '';
+    var v = squareVal !== '' ? (Number(squareVal) - Number(skateosVal)).toFixed(2) : '';
+    var n = (e.notes || '').replace(/"/g, '""');
+    lines.push([key, skateosVal, squareVal, v, '"' + n + '"'].join(','));
+  });
+  var blob = new Blob([lines.join('\n')], {type:'text/csv'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'skateos-square-recon-' + dateKey(new Date()) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  toast('CSV downloaded','success');
+}
+
+async function loadData(){
+  document.getElementById('reconBox').innerHTML = '<div class="empty"><span class="spinner"></span> Loading sales data…</div>';
+  await fetchSkateosTotals();
+  renderTable();
+}
+
+loadData();
+</script>
+</body>
+</html>

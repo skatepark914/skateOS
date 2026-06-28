@@ -21,35 +21,45 @@
 ===================================================================== -->
 <style>
   :root {
-    --rose:       #e11d48;
-    --rose-dark:  #be123c;
-    --rose-light: #ffe4e6;
-    --ink:        #14161a;
-    --ink-soft:   #555a63;
-    --bg:         #f6f6f4;
-    --line:       #e6e6e1;
-    --green:      #16a34a;
-    --green-bg:   #dcfce7;
-    --amber:      #d97706;
-    --amber-bg:   #fef3c7;
-    --red:        #dc2626;
-    --red-bg:     #fee2e2;
+    /* Brand accents — rose still used for tier badges + special highlights */
+    --rose:       #d11a2a;
+    --rose-dark:  #9c0e1c;
+    --rose-light: #fef0ee;
+    --ink:        #0e0e10;
+    --ink-soft:   #4a4d55;
+    --ink-mute:   #7a7e85;
+    --bg:         #f6f7f9;
+    --line:       #e6e7ea;
+    --line-strong: #d2d4d8;
+    --green:      #007a52;
+    --green-bg:   #ecfdf5;
+    --amber:      #b88200;
+    --amber-bg:   #fff8e6;
+    --red:        #d11a2a;
+    --red-bg:     #fef0ee;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, Roboto, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg); color: var(--ink);
     min-height: 100vh;
     -webkit-font-smoothing: antialiased;
   }
+  /* Square-clean header — white bg, black brand, subtle border */
   .topbar {
-    background: linear-gradient(135deg, var(--rose-dark) 0%, var(--rose) 100%);
-    color: #fff;
-    padding: 18px 20px;
-    text-align: center;
+    background: #fff;
+    color: var(--ink);
+    padding: 18px 24px;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 2px rgba(20,24,30,.03);
   }
-  .topbar h1 { font-size: 22px; font-weight: 900; letter-spacing: -0.02em; }
-  .topbar .sub { font-size: 13px; opacity: .9; margin-top: 2px; }
+  .topbar h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; }
+  .topbar h1 .em { margin-right: 6px; }
+  .topbar .sub { font-size: 12.5px; color: var(--ink-mute); margin-top: 2px; font-weight: 500; }
+  .topbar .back-link { font-size: 13.5px; color: var(--ink-mute); font-weight: 600; text-decoration: none; }
+  .topbar .back-link:hover { color: var(--ink); }
 
   .container { max-width: 600px; margin: 0 auto; padding: 20px; }
 
@@ -67,14 +77,17 @@
     font-size: 16px; font-family: inherit; color: var(--ink);
     margin-bottom: 12px;
   }
-  input[type=email]:focus { outline: 2px solid var(--rose); outline-offset: -1px; border-color: var(--rose); }
+  input[type=email]:focus { outline: 2px solid var(--ink); outline-offset: -1px; border-color: var(--ink); }
   .btn {
     width: 100%; padding: 14px; border: none; border-radius: 10px;
-    background: var(--rose); color: #fff;
+    background: var(--ink); color: #fff;
     font-size: 15px; font-weight: 800; cursor: pointer;
+    letter-spacing: -0.01em;
     font-family: inherit;
+    transition: opacity .15s, transform .08s;
   }
-  .btn:hover { background: var(--rose-dark); }
+  .btn:active { transform: scale(.99); }
+  .btn:hover { opacity: 0.92; }
   .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-ghost {
     background: transparent; color: var(--ink-soft);
@@ -147,8 +160,11 @@
 <body>
 
 <div class="topbar">
-  <h1 id="topTitle">My Account</h1>
-  <div class="sub" id="topSub">2nd Nature Park</div>
+  <div>
+    <h1 id="topTitle"><span class="em">🛹</span>My Account</h1>
+    <div class="sub" id="topSub">2nd Nature Park</div>
+  </div>
+  <a href="/2ntr" class="back-link">← Park home</a>
 </div>
 
 <div class="container">

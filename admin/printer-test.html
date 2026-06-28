@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>Printer test · skateOS</title>
+<meta name="robots" content="noindex,nofollow">
+<script src="config.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #f7f8fa; color: #1a1a1a; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+.wrap { max-width: 580px; margin: 0 auto; padding: 40px 24px 80px 24px; }
+.brand { display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; color: #6a737d; margin-bottom: 14px; }
+h1 { font-size: 1.8rem; font-weight: 800; line-height: 1.1; margin-bottom: 12px; letter-spacing: -.02em; color: #1a1a1a; }
+.lead { font-size: 1rem; color: #4a525c; margin-bottom: 28px; }
+h2 { font-size: 1.15rem; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: #1a1a1a; letter-spacing: -.01em; }
+.card { background: #fff; border: 1px solid #e6e8ec; border-radius: 14px; padding: 24px; margin-bottom: 16px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 14px 24px; border-radius: 10px; font-weight: 700; font-size: 1rem; border: none; cursor: pointer; transition: opacity .15s, transform .1s; letter-spacing: -.01em; text-decoration: none; font-family: inherit; }
+.btn:active { transform: scale(.98); }
+.btn-prim { background: #1a1a1a; color: #fff; }
+.btn-prim:hover { opacity: .88; }
+.btn-green { background: #00b388; color: #fff; }
+.btn-red { background: #b53030; color: #fff; }
+.btn-sec { background: #f0f2f5; color: #1a1a1a; }
+.btn-full { width: 100%; padding: 16px; font-size: 1.05rem; margin-top: 8px; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.step { display: flex; gap: 14px; align-items: flex-start; padding: 14px 0; border-bottom: 1px solid #f0f2f5; }
+.step:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #1a1a1a; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: .82rem; flex-shrink: 0; }
+.step-body strong { display: block; color: #1a1a1a; font-weight: 700; margin-bottom: 4px; }
+.step-body { font-size: .95rem; color: #2c3138; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: .82rem; font-weight: 700; color: #1a1a1a; margin-bottom: 6px; letter-spacing: -.01em; }
+.field input[type=text], .field select, .field textarea { width: 100%; background: #fff; border: 1px solid #d1d6dc; border-radius: 8px; padding: 10px 14px; font-size: .95rem; font-family: inherit; color: #1a1a1a; }
+.field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: #1a1a1a; }
+.field textarea { min-height: 70px; resize: vertical; }
+.field .field-hint { font-size: .78rem; color: #6a737d; margin-top: 4px; }
+.radio-group { display: flex; gap: 8px; flex-wrap: wrap; }
+.radio-pill { background: #f0f2f5; color: #4a525c; padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: .9rem; cursor: pointer; border: 1px solid transparent; }
+.radio-pill input { display: none; }
+.radio-pill.sel-yes.selected { background: #e6faf3; color: #007a5a; border-color: #00b388; }
+.radio-pill.sel-no.selected { background: #fde1e1; color: #b53030; border-color: #b53030; }
+.radio-pill.sel-mixed.selected { background: #fff7e1; color: #b89000; border-color: #b89000; }
+.tip { background: #e6faf3; border: 1px solid #b8e8d9; border-radius: 12px; padding: 12px 16px; color: #006148; font-size: .92rem; margin: 14px 0; }
+.tip strong { color: #006148; font-weight: 700; }
+.toast { position: fixed; left: 50%; bottom: 30px; transform: translateX(-50%); background: #1a1a1a; color: #fff; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: .94rem; opacity: 0; transition: opacity .2s, transform .2s; z-index: 9999; pointer-events: none; max-width: 92vw; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+.toast.success { background: #00b388; }
+.toast.err { background: #b53030; }
+
+/* Receipt preview look */
+.preview { background: #fff; border: 1px dashed #d1d6dc; border-radius: 10px; padding: 20px 18px; font-family: 'Courier New', monospace; font-size: .82rem; line-height: 1.5; color: #1a1a1a; max-width: 320px; margin: 18px auto; }
+.preview .hdr { text-align: center; font-weight: 800; font-size: 1rem; margin-bottom: 10px; }
+.preview .sub { text-align: center; font-size: .72rem; color: #4a525c; margin-bottom: 12px; }
+.preview .div { border-top: 1px dashed #d1d6dc; margin: 8px 0; }
+.preview .row { display: flex; justify-content: space-between; }
+.preview .total { font-weight: 800; font-size: .95rem; padding-top: 6px; border-top: 2px solid #1a1a1a; margin-top: 8px; }
+
+@media print {
+  body { background: #fff; }
+  .wrap > .no-print, .wrap > h2, .wrap > h1, .wrap > .brand, .wrap > .lead, .wrap > .card.no-print { display: none !important; }
+  .preview { border: none; width: 80mm; max-width: 80mm; font-size: 12pt; padding: 6mm 4mm; margin: 0; }
+  @page { size: 80mm auto; margin: 0; }
+}
+</style>
+<link rel="stylesheet" href="/styles/tokens.css">
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">skateOS · Printer Test</div>
+  <h1>Receipt printer compatibility test</h1>
+  <p class="lead">Hey Jon — when you're at the front desk anyway, run this. Takes ~10 min. Tells us if the existing thermal printer plays nice with skateOS, or if we need a driver tweak or a new printer before cutover.</p>
+
+  <h2>Steps</h2>
+  <div class="card no-print">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body"><strong>Open this page on the front-desk iPad</strong>Tap the "Print test receipt" button below. Your browser's print dialog opens with the thermal printer pre-selected (if it's the system default).</div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body"><strong>Print to the thermal printer</strong>Pick the Star or Epson printer in the dialog. Use the "80mm receipt" paper size if it's an option.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body"><strong>Check the paper that comes out</strong>Look for: header lines, line-item rows, subtotal/tax/total math, the "thanks" footer. Each row should be readable.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-body"><strong>Fill out the form below</strong>Even a quick "yep it works" is enough. Anything weird, snap a photo + describe what you saw.</div>
+    </div>
+  </div>
+
+  <h2>Test receipt</h2>
+  <div class="preview" id="receipt">
+    <div class="hdr">2nd NATURE PARK</div>
+    <div class="sub">(914) 647-7276 · Peekskill, NY<br>printer test · 2026-06-06 14:32</div>
+    <div class="div"></div>
+    <div class="row"><span>1x Day Pass</span><span>$25.00</span></div>
+    <div class="row"><span>1x Helmet (M)</span><span>$45.00</span></div>
+    <div class="row"><span>2x Wax · single</span><span>$10.00</span></div>
+    <div class="row"><span>1x Comp note</span><span>-$5.00</span></div>
+    <div class="div"></div>
+    <div class="row"><span>Subtotal</span><span>$75.00</span></div>
+    <div class="row"><span>Tax (8.375%)</span><span>$6.28</span></div>
+    <div class="row"><span>Tip</span><span>$15.00</span></div>
+    <div class="row total"><span>TOTAL</span><span>$96.28</span></div>
+    <div class="div"></div>
+    <div class="row"><span>Pay · Credit card</span><span>**** 4242</span></div>
+    <div class="row"><span>Cashier</span><span>Jon M</span></div>
+    <div class="div"></div>
+    <div style="text-align:center;margin-top:12px;font-size:.74rem;color:#4a525c;">
+      thanks — see you soon<br>
+      receipt #SK-TEST-001
+    </div>
+  </div>
+
+  <div class="card no-print">
+    <div class="btn-row">
+      <button class="btn btn-prim btn-full" onclick="window.print()">🖨 Print test receipt</button>
+    </div>
+    <div class="tip">
+      <strong>Tip:</strong> If the print dialog opens but you don't see the thermal printer, it may not be installed on the iPad. Pick "Save as PDF" instead, AirDrop the PDF to a computer that's set up with the printer, and try from there.
+    </div>
+  </div>
+
+  <h2>Report what you saw</h2>
+  <div class="card no-print">
+    <div class="field">
+      <label>How did it look?</label>
+      <div class="radio-group">
+        <label class="radio-pill sel-yes" onclick="pickPill(this, 'result', 'yes')"><input type="radio" name="result" value="yes"> ✓ Clean print</label>
+        <label class="radio-pill sel-mixed" onclick="pickPill(this, 'result', 'mixed')"><input type="radio" name="result" value="mixed"> ~ Mostly OK, some issues</label>
+        <label class="radio-pill sel-no" onclick="pickPill(this, 'result', 'no')"><input type="radio" name="result" value="no"> ✕ Broken / unusable</label>
+      </div>
+    </div>
+    <div class="field">
+      <label>Which printer model?</label>
+      <input type="text" id="model" placeholder="Star TSP143 / Epson TM-T20 / not sure">
+    </div>
+    <div class="field">
+      <label>Issues you saw (if any)</label>
+      <textarea id="issues" placeholder="e.g. header got cut off, totals misaligned, paper jammed, font too small to read..."></textarea>
+    </div>
+    <div class="field">
+      <label>Photo of the printed receipt (optional)</label>
+      <input type="text" id="photo_url" placeholder="Paste a Google Photos / iCloud link here">
+      <div class="field-hint">Or text the photo to (914) 647-7276 with "printer test" in the message.</div>
+    </div>
+    <div class="field">
+      <label>Your name</label>
+      <input type="text" id="tester" placeholder="Jon Marchand" value="Jon Marchand">
+    </div>
+    <button class="btn btn-green btn-full" onclick="submitReport()">Submit report</button>
+  </div>
+
+  <h2 class="no-print">What this tests</h2>
+  <div class="card no-print">
+    <div class="step">
+      <div class="step-num">A</div>
+      <div class="step-body"><strong>80mm thermal width</strong>The receipt is sized for standard thermal rolls. If it overflows the paper, we have a width problem.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">B</div>
+      <div class="step-body"><strong>Monospace alignment</strong>Two-column rows (item + price) need to line up. If they don't, the cashier can't read the totals at a glance.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">C</div>
+      <div class="step-body"><strong>Dashed dividers</strong>If the printer can't render dashed lines, sections smush together.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">D</div>
+      <div class="step-body"><strong>Cut + feed</strong>Did the printer cut the paper at the right spot, or did you have to tear it manually?</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+var CFG  = window.APP_CONFIG || {};
+var SUPA = (CFG.supabaseUrl||'').replace(/\/$/, '');
+var KEY  = CFG.supabaseKey || '';
+function pickPill(el, name, val){
+  document.querySelectorAll('.radio-pill[onclick*="'+name+'"]').forEach(function(p){ p.classList.remove('selected'); });
+  el.classList.add('selected');
+  var inp = el.querySelector('input');
+  if(inp) inp.checked = true;
+}
+function toast(msg, kind){
+  var t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (kind||'');
+  setTimeout(function(){ t.className = 'toast'; }, 3500);
+}
+async function submitReport(){
+  var result = document.querySelector('input[name="result"]:checked');
+  if(!result){ toast('Pick how it looked first.', 'err'); return; }
+  var report = {
+    when: new Date().toISOString(),
+    result: result.value,
+    model: (document.getElementById('model').value||'').trim() || '(not given)',
+    issues: (document.getElementById('issues').value||'').trim(),
+    photo_url: (document.getElementById('photo_url').value||'').trim(),
+    tester: (document.getElementById('tester').value||'').trim() || 'anon'
+  };
+  // Best-effort log to webhook_log so Doug can see it in admin
+  try {
+    if(SUPA && KEY){
+      var rep = await fetch(SUPA + '/rest/v1/webhook_log', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json', 'apikey':KEY, 'Authorization':'Bearer ' + KEY, 'Prefer':'return=minimal' },
+        body: JSON.stringify({ source: 'printer-test', event_type: 'compat_report', status: result.value, payload: report })
+      });
+      if(rep.ok){
+        toast('✓ Report submitted. Thanks Jon.', 'success');
+        setTimeout(function(){ document.querySelector('.card.no-print:last-of-type').innerHTML = '<div style="text-align:center;padding:20px;"><div style="font-size:2rem;margin-bottom:8px;">✓</div><div style="font-weight:700;color:#007a5a;">Report submitted</div><div style="color:#6a737d;font-size:.92rem;margin-top:6px;">Doug will see this in admin. Thanks for testing.</div></div>'; }, 600);
+        return;
+      }
+    }
+  } catch(e){ /* fall through to mailto */ }
+  // Fallback: mailto
+  var body = 'Printer test report:\n\n' + Object.keys(report).map(function(k){ return k+': '+report[k]; }).join('\n');
+  window.location.href = 'mailto:info@2ntr.com?subject=skateOS%20printer%20test%20report&body=' + encodeURIComponent(body);
+  toast('Opening email — submit by sending the message.', 'success');
+}
+</script>
+</body>
+</html>
