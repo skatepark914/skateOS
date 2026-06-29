@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>skateOS Lite — Clock &amp; Door</title>
+<style>
+  :root{
+    --rose:#e11d63; --rose-d:#b3144e; --ink:#1c1626; --muted:#7a7287;
+    --bg:#faf7fb; --card:#fff; --line:#ece6f0; --green:#16a34a; --amber:#d97706; --red:#dc2626;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font:16px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+  header{background:linear-gradient(135deg,var(--rose),var(--rose-d));color:#fff;padding:18px 20px;position:sticky;top:0;z-index:5}
+  header h1{margin:0;font-size:20px;font-weight:800;letter-spacing:.3px}
+  header .sub{opacity:.85;font-size:13px;margin-top:2px}
+  .wrap{max-width:920px;margin:0 auto;padding:16px}
+  .tabs{display:flex;gap:8px;margin:0 0 16px}
+  .tab{flex:1;padding:12px;border:none;border-radius:12px;background:var(--card);color:var(--muted);font-weight:700;font-size:15px;box-shadow:0 1px 3px rgba(0,0,0,.06);cursor:pointer}
+  .tab.active{background:var(--rose);color:#fff}
+  section{display:none}
+  section.active{display:block}
+  .h2{font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:800;margin:6px 4px 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+  .scard{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;transition:.12s;text-align:center;position:relative}
+  .scard:active{transform:scale(.97)}
+  .scard.on{border-color:var(--green);background:#f0fdf4}
+  .avatar{width:54px;height:54px;border-radius:50%;margin:0 auto 8px;background:var(--rose);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px}
+  .nm{font-weight:700;font-size:15px;line-height:1.2}
+  .rl{font-size:11px;color:var(--muted);text-transform:capitalize;margin-top:1px}
+  .state{margin-top:8px;font-size:12px;font-weight:700;padding:4px 8px;border-radius:20px;display:inline-block}
+  .state.off{background:#f3f0f6;color:var(--muted)}
+  .state.on{background:#dcfce7;color:var(--green)}
+  .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green);margin-right:5px;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .stat-row{display:flex;gap:10px;margin-bottom:14px}
+  .stat{flex:1;background:var(--card);border-radius:14px;padding:12px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+  .stat .v{font-size:24px;font-weight:800}
+  .stat .l{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:2px}
+  .ev{background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:8px;display:flex;align-items:center;gap:11px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  .ev .ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 auto}
+  .ev .mid{flex:1;min-width:0}
+  .ev .t1{font-weight:700;font-size:14px}
+  .ev .t2{font-size:12px;color:var(--muted)}
+  .ev .when{font-size:12px;color:var(--muted);white-space:nowrap;text-align:right}
+  .pill{font-size:11px;font-weight:700;padding:2px 7px;border-radius:20px;margin-left:6px}
+  .pill.park{background:#fce7f0;color:var(--rose-d)} .pill.shop{background:#e0f2fe;color:#0369a1} .pill.other{background:#f3f0f6;color:var(--muted)}
+  .empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:14px}
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:.2s;z-index:50;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  .toast.show{opacity:1}
+  .refresh{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:center;justify-content:center;z-index:40;padding:20px}
+  .modal-bg.show{display:flex}
+  .modal{background:#fff;border-radius:18px;padding:22px;max-width:340px;width:100%}
+  .modal h3{margin:0 0 4px;font-size:18px}
+  .modal p{margin:0 0 16px;color:var(--muted);font-size:14px}
+  .shift-opt{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+  .shift-opt button{flex:1 0 30%;padding:11px;border:2px solid var(--line);border-radius:10px;background:#fff;font-weight:700;font-size:13px;cursor:pointer;text-transform:capitalize}
+  .shift-opt button.sel{border-color:var(--rose);background:#fce7f0;color:var(--rose-d)}
+  .mbtn{width:100%;padding:14px;border:none;border-radius:12px;background:var(--rose);color:#fff;font-weight:800;font-size:16px;cursor:pointer}
+  .mbtn.ghost{background:#f3f0f6;color:var(--ink);margin-top:8px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🛹 2nd Nature Park</h1>
+  <div class="sub">skateOS Lite · staff clock &amp; door activity</div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="clock" onclick="showTab('clock')">⏱️ Clock In / Out</button>
+    <button class="tab" data-tab="door" onclick="showTab('door')">🚪 Door Activity</button>
+  </div>
+
+  <section id="tab-clock" class="active">
+    <div class="h2" id="onshift-label">On the clock</div>
+    <div class="grid" id="staffGrid"><div class="empty">Loading staff…</div></div>
+    <div class="refresh" id="clockRefresh"></div>
+  </section>
+
+  <section id="tab-door">
+    <div class="stat-row">
+      <div class="stat"><div class="v" id="stToday">–</div><div class="l">Events today</div></div>
+      <div class="stat"><div class="v" id="stGrant">–</div><div class="l">Granted</div></div>
+      <div class="stat"><div class="v" id="stLast">–</div><div class="l">Last event</div></div>
+    </div>
+    <div class="h2">Recent door activity</div>
+    <div id="eventList"><div class="empty">Loading door events…</div></div>
+    <div class="refresh" id="doorRefresh"></div>
+  </section>
+</div>
+
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <h3 id="mTitle">Clock in</h3>
+    <p id="mSub"></p>
+    <div class="shift-opt" id="shiftOpts"></div>
+    <button class="mbtn" id="mGo">Clock in</button>
+    <button class="mbtn ghost" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+const SB_URL = 'https://zecurmlenxyxanqucrga.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplY3VybWxlbnh5eGFucXVjcmdhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NTUzMjIsImV4cCI6MjA5MzAzMTMyMn0.PtW3hxsok3ZUw0CFdB7aysnJ2UFkwltHq2Bt1Pw-hK8';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+const SHIFTS = ['front_desk','instructor','party','cleanup','admin','other'];
+
+let staff = [];
+let pendingShift = 'front_desk';
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2400);}
+function showTab(n){
+  document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===n));
+  document.querySelectorAll('section').forEach(s=>s.classList.toggle('active',s.id==='tab-'+n));
+  if(n==='door') loadEvents();
+}
+function initials(name){return (name||'?').split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();}
+function ago(iso){
+  if(!iso) return '';
+  const s=Math.floor((Date.now()-new Date(iso))/1000);
+  if(s<60) return s+'s ago';
+  if(s<3600) return Math.floor(s/60)+'m ago';
+  if(s<86400) return Math.floor(s/3600)+'h '+Math.floor((s%3600)/60)+'m';
+  return Math.floor(s/86400)+'d ago';
+}
+function elapsed(iso){
+  const s=Math.floor((Date.now()-new Date(iso))/1000);
+  const h=Math.floor(s/3600), m=Math.floor((s%3600)/60);
+  return h>0? `${h}h ${m}m` : `${m}m`;
+}
+
+// ---- Clock ----
+async function loadStaff(){
+  const {data,error}=await sb.rpc('staff_kiosk_list');
+  if(error){document.getElementById('staffGrid').innerHTML='<div class="empty">Could not load staff. '+error.message+'</div>';return;}
+  staff=data||[];
+  const on=staff.filter(s=>s.is_clocked_in);
+  document.getElementById('onshift-label').textContent = on.length? `On the clock · ${on.length} working now` : 'On the clock · nobody clocked in';
+  document.getElementById('staffGrid').innerHTML = staff.map(s=>`
+    <div class="scard ${s.is_clocked_in?'on':''}" onclick="tapStaff('${s.staff_id}')">
+      <div class="avatar">${initials(s.display_name)}</div>
+      <div class="nm">${s.display_name||'—'}</div>
+      <div class="rl">${s.role||''}</div>
+      <div class="state ${s.is_clocked_in?'on':'off'}">
+        ${s.is_clocked_in? `<span class="dot"></span>${elapsed(s.clocked_in_at)}` : 'Tap to clock in'}
+      </div>
+    </div>`).join('');
+  document.getElementById('clockRefresh').textContent='Updated '+new Date().toLocaleTimeString();
+}
+function tapStaff(id){
+  const s=staff.find(x=>x.staff_id===id); if(!s) return;
+  const bg=document.getElementById('modalBg');
+  if(s.is_clocked_in){
+    document.getElementById('mTitle').textContent='Clock out';
+    document.getElementById('mSub').textContent=`${s.display_name} — on the clock ${elapsed(s.clocked_in_at)}. Clock out now?`;
+    document.getElementById('shiftOpts').style.display='none';
+    const go=document.getElementById('mGo'); go.textContent='Clock out'; go.style.background='var(--amber)';
+    go.onclick=()=>doClockOut(s.staff_id);
+  }else{
+    pendingShift = (s.role==='instructor')?'instructor':'front_desk';
+    document.getElementById('mTitle').textContent='Clock in';
+    document.getElementById('mSub').textContent=`${s.display_name} — pick a role for this shift:`;
+    const opts=document.getElementById('shiftOpts'); opts.style.display='flex';
+    opts.innerHTML=SHIFTS.map(sh=>`<button class="${sh===pendingShift?'sel':''}" onclick="pickShift('${sh}',this)">${sh.replace('_',' ')}</button>`).join('');
+    const go=document.getElementById('mGo'); go.textContent='Clock in'; go.style.background='var(--rose)';
+    go.onclick=()=>doClockIn(s.staff_id);
+  }
+  bg.classList.add('show');
+}
+function pickShift(sh,el){pendingShift=sh;document.querySelectorAll('#shiftOpts button').forEach(b=>b.classList.remove('sel'));el.classList.add('sel');}
+function closeModal(){document.getElementById('modalBg').classList.remove('show');}
+async function doClockIn(id){
+  closeModal();
+  const {error}=await sb.rpc('staff_kiosk_clock_in',{p_staff_id:id,p_shift_type:pendingShift});
+  if(error){toast('Error: '+error.message);return;}
+  toast('✓ Clocked in'); loadStaff();
+}
+async function doClockOut(id){
+  closeModal();
+  const {error}=await sb.rpc('staff_kiosk_clock_out',{p_staff_id:id});
+  if(error){toast('Error: '+error.message);return;}
+  toast('✓ Clocked out'); loadStaff();
+}
+
+// ---- Door activity ----
+function doorPill(ap){
+  if(ap==='park_door') return '<span class="pill park">PARK</span>';
+  if(ap==='shop_door') return '<span class="pill shop">SHOP</span>';
+  return '<span class="pill other">OTHER</span>';
+}
+function evIcon(type){
+  const t=(type||'').toLowerCase();
+  if(t.includes('grant')) return ['🔓','#dcfce7'];
+  if(t.includes('den')) return ['🚫','#fee2e2'];
+  if(t.includes('ajar')||t.includes('open too long')||t.includes('forced')||t.includes('held')) return ['⚠️','#fef3c7'];
+  if(t.includes('login')) return ['👤','#e0e7ff'];
+  return ['🚪','#f3f0f6'];
+}
+function titleCase(s){return (s||'').replace(/_/g,' ').replace(/\b\w/g,c=>c.toUpperCase());}
+async function loadEvents(){
+  const {data,error}=await sb.from('brivo_access_log')
+    .select('occurred_at,event_type,access_point,customer_id')
+    .order('occurred_at',{ascending:false}).limit(30);
+  if(error){document.getElementById('eventList').innerHTML='<div class="empty">Could not load door events. '+error.message+'</div>';return;}
+  const evs=data||[];
+  const today=new Date().toDateString();
+  const todays=evs.filter(e=>new Date(e.occurred_at).toDateString()===today);
+  document.getElementById('stToday').textContent=todays.length;
+  document.getElementById('stGrant').textContent=todays.filter(e=>(e.event_type||'').toLowerCase().includes('grant')).length;
+  document.getElementById('stLast').textContent=evs.length? ago(evs[0].occurred_at):'—';
+  document.getElementById('eventList').innerHTML = evs.length? evs.map(e=>{
+    const [ic,bg]=evIcon(e.event_type);
+    return `<div class="ev">
+      <div class="ico" style="background:${bg}">${ic}</div>
+      <div class="mid"><div class="t1">${titleCase(e.event_type)} ${doorPill(e.access_point)}</div>
+      <div class="t2">${e.customer_id?'Linked member':'No member match'}</div></div>
+      <div class="when">${new Date(e.occurred_at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})}<br>${ago(e.occurred_at)}</div>
+    </div>`;}).join('') : '<div class="empty">No door events yet. Tap a Brivo pass at the door — it appears here within a minute.</div>';
+  document.getElementById('doorRefresh').textContent='Updated '+new Date().toLocaleTimeString();
+}
+
+// ---- Boot + auto-refresh ----
+loadStaff();
+setInterval(()=>{ if(document.getElementById('tab-clock').classList.contains('active')) loadStaff(); },30000);
+setInterval(()=>{ if(document.getElementById('tab-door').classList.contains('active')) loadEvents(); },30000);
+</script>
+</body>
+</html>
