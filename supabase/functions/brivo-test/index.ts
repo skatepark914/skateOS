@@ -162,6 +162,20 @@ Deno.serve(async (req) => {
     }
   }
 
+  // ── Step 4: Discover groups + access points (for env IDs) ────
+  result.discovery = {};
+  for (const [label, path] of [["groups", "/groups?pageSize=100"], ["access_points", "/access-points?pageSize=100"]]) {
+    try {
+      const r = await fetch(`${API_BASE}${path}`, { headers: { "Authorization": `Bearer ${token}`, "api-key": apiKey } });
+      const b = await r.text();
+      let parsed: any = null; try { parsed = JSON.parse(b); } catch {}
+      const arr = parsed?.data || parsed || [];
+      result.discovery[label] = Array.isArray(arr)
+        ? arr.map((x: any) => ({ id: x.id, name: x.name }))
+        : { status: r.status, body: b.slice(0, 150) };
+    } catch (e) { result.discovery[label] = { error: (e as Error).message }; }
+  }
+
   result.ok = !!result.events_probe?.working_url;
   if (!result.ok) {
     result.next_step = "Events endpoint not found at standard paths. Your Brivo tier may not include API event access. Either upgrade Brivo or skip polling (option C from the chat).";
