@@ -143,6 +143,13 @@
 
 <!-- ============ TOC SIDEBAR ============ -->
 <aside class="toc">
+  <h4>📌 Now — 2026-06-29</h4>
+  <a href="#status">Status</a>
+  <a href="#what-nick">Nick: 3 things</a>
+  <a href="#what-jon">Jon: 3 things</a>
+  <a href="#test-plan">Test plan</a>
+  <a href="#urls-now">Key URLs</a>
+
   <h4>Get started</h4>
   <a href="#recap">Marathon recap</a>
   <a href="#tomorrow">First thing tomorrow</a>
@@ -169,14 +176,72 @@
 
 <!-- ============ HERO ============ -->
 <header class="hero">
-  <div class="badge">🛹 BUILT 2026-05-15/16 · MARATHON</div>
-  <h1>skateOS @ 2nd Nature — full handoff</h1>
+  <div class="badge">📌 LIVE STATE · UPDATED 2026-06-29</div>
+  <h1>skateOS @ 2nd Nature — handoff</h1>
   <p>
-    Everything we shipped in the two-day Brivo marathon: door integration, member self-serve, event passes,
-    emergency lockdown, party auto-pass, Vision Box scaffold, per-tenant white-label, and the public sites at
-    <a href="/2ntr">/2ntr</a> + <a href="/sales">/sales</a>. Use this as your reference doc.
+    Living doc for Doug + Nick + Jon. Top of the page = where we are <strong>right now</strong> and what's blocking
+    the Brivo door system from being fully production-grade. Everything below the "Marathon recap" line is reference
+    material from the original 2026-05-15/16 build.
   </p>
 </header>
+
+<!-- ============ STATUS (simplified) ============ -->
+<section id="status">
+  <h2>📌 Status — 2026-06-29</h2>
+  <ul>
+    <li>✅ skateOS live · Square data imported (27,639 customers) · Stripe Tap-to-Pay live · backups daily + weekly off-site</li>
+    <li>✅ Brivo API works — provisioned 30 Mobile Passes in a 30-sec test today</li>
+    <li>⏸ Square → skateOS sync <strong>paused on purpose</strong> until 2 staff test the door end-to-end</li>
+    <li>🚧 To finish: real-time Square webhook (closes 24h delay) + Brivo rate-limit throttle</li>
+  </ul>
+</section>
+
+<!-- ============ NICK ============ -->
+<section id="what-nick">
+  <h2>🔑 Nick — 3 things to confirm</h2>
+  <ol>
+    <li><strong>Brivo API rate limit?</strong> What's our actual ceiling — calls/min or calls/hour? I want to throttle our queue to respect it instead of hitting cooldowns.</li>
+    <li><strong>Webhook URL on Brivo's side still:</strong> <code>https://zecurmlenxyxanqucrga.supabase.co/functions/v1/brivo-webhook</code> ?</li>
+    <li><strong>No marketplace OAuth needed</strong> — the existing API credentials work. Just confirm you don't need me to migrate to anything new.</li>
+  </ol>
+</section>
+
+<!-- ============ JON ============ -->
+<section id="what-jon">
+  <h2>👥 Jon — 3 things you do</h2>
+  <ol>
+    <li><strong>Confirm:</strong> email <code>jdicarlo198924@gmail.com</code> + best phone number for SMS receipt test</li>
+    <li><strong>Sign the Smartwaiver</strong> (or tell Doug he can mark you signed for the test)</li>
+    <li><strong>Install Brivo Mobile Pass</strong> on your phone when the email arrives → walk to the door → tap → verify it unlocks</li>
+  </ol>
+</section>
+
+<!-- ============ TEST PLAN ============ -->
+<section id="test-plan">
+  <h2>🧪 Test plan</h2>
+  <p>Two test customers (Doug + Jon) before we open the gates to the full member base.</p>
+  <ol>
+    <li>Create test customer records for Doug + Jon, tagged <code>test_staff</code></li>
+    <li>Stamp waiver signed + add active "Monthly Unlimited" subscription</li>
+    <li>5-min cron auto-provisions them in Brivo</li>
+    <li>Each gets a Brivo Mobile Pass invite email → install app → tap door</li>
+    <li>Verify door unlocks + event lands in skateOS Activity Log</li>
+    <li>If all 5 pass → un-pause Square sync → real members get door access</li>
+  </ol>
+</section>
+
+<!-- ============ KEY URLS ============ -->
+<section id="urls-now">
+  <h2>🔗 Key URLs</h2>
+  <table>
+    <tr><th>What</th><th>URL</th></tr>
+    <tr><td>This handoff page</td><td><a href="https://skateos.com/locked">skateos.com/locked</a></td></tr>
+    <tr><td>Admin (staff)</td><td><a href="https://app.skateos.com">app.skateos.com</a></td></tr>
+    <tr><td>Member self-serve portal</td><td><a href="https://app.skateos.com/me.html">app.skateos.com/me.html</a> — magic-link login, see passes / loyalty / cancel-pause subs</td></tr>
+    <tr><td>New member signup</td><td><a href="https://app.skateos.com/join.html">app.skateos.com/join.html</a></td></tr>
+    <tr><td>Brivo webhook receiver</td><td><code>https://zecurmlenxyxanqucrga.supabase.co/functions/v1/brivo-webhook</code></td></tr>
+  </table>
+</section>
 
 <!-- ============ RECAP ============ -->
 <section id="recap">
