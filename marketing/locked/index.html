@@ -187,22 +187,33 @@
 
 <!-- ============ STATUS (simplified) ============ -->
 <section id="status">
-  <h2>📌 Status — 2026-06-29</h2>
+  <h2>📌 Status — 2026-06-29 (evening)</h2>
+  <div class="callout green">
+    <strong>🔓 Brivo door → skateOS is LIVE.</strong> Door events now flow into skateOS automatically every minute — the first time this has worked end-to-end. See the breakthrough note below.
+  </div>
   <ul>
     <li>✅ skateOS live · Square data imported (27,639 customers) · Stripe Tap-to-Pay live · backups daily + weekly off-site</li>
-    <li>✅ Brivo API works — provisioned 30 Mobile Passes in a 30-sec test today</li>
-    <li>⏸ Square → skateOS sync <strong>paused on purpose</strong> until 2 staff test the door end-to-end</li>
-    <li>🚧 To finish: real-time Square webhook (closes 24h delay) + Brivo rate-limit throttle</li>
+    <li>✅ <strong>Brivo door reporting LIVE</strong> — <code>brivo-poll</code> pulls door events every minute into <code>brivo_access_log</code>. Verified today with real Park/Shop door events.</li>
+    <li>✅ <strong>skateOS Lite shipped</strong> — simple staff clock in/out + live door activity at <a href="https://app.skateos.com/lite">app.skateos.com/lite</a> (no login needed). The "start small" on-ramp for staff.</li>
+    <li>🧪 <strong>Live door test in progress</strong> — tapping the Park Door to confirm it lands in skateOS Lite within ~1 min.</li>
+    <li>⏳ <strong>Member access is next</strong> — 0 members provisioned yet (the broken auth blocked it until today). Rolling out via a dedicated <code>skateOS Active Members</code> group, Doug tested first.</li>
   </ul>
+  <details>
+    <summary>🔧 What was actually broken (today's breakthrough)</summary>
+    <p>The integration never fully worked because it used the wrong OAuth grant. Brivo server integrations need the <strong>password grant</strong> (grant_types: <code>refresh_token,password</code>) authenticating as the <strong>Admin ID</strong> (<code>doug-JFVqe</code>) — not <code>client_credentials</code> with an email. Also: this Brivo tier doesn't support URL webhooks, so skateOS now <strong>polls</strong> the events API every minute (pg_cron) instead. Fixed: the grant type, the events query format (<code>occurredAfter</code> as epoch-millis, no <code>offset</code>), and the event field mapping (<code>uuid</code>, <code>securityAction.action</code>, <code>eventObject</code>). Created a fresh "SkateOS" API integration in the Brivo Marketplace today (2-legged · Password type).</p>
+  </details>
 </section>
 
 <!-- ============ NICK ============ -->
 <section id="what-nick">
-  <h2>🔑 Nick — 3 things to confirm</h2>
+  <h2>🔑 Nick — current state + what we need</h2>
+  <div class="callout green">
+    <strong>Door → skateOS reporting is live.</strong> skateOS polls Brivo's events API every minute (your tier doesn't do URL webhooks, so polling is the path — no webhook setup needed on your end). Auth is a new "SkateOS" Marketplace API integration (2-legged · Password grant).
+  </div>
   <ol>
-    <li><strong>Brivo API rate limit?</strong> What's our actual ceiling — calls/min or calls/hour? I want to throttle our queue to respect it instead of hitting cooldowns.</li>
-    <li><strong>Webhook URL on Brivo's side still:</strong> <code>https://zecurmlenxyxanqucrga.supabase.co/functions/v1/brivo-webhook</code> ?</li>
-    <li><strong>No marketplace OAuth needed</strong> — the existing API credentials work. Just confirm you don't need me to migrate to anything new.</li>
+    <li><strong>Dedicated members group:</strong> we're standing up a <code>skateOS Active Members</code> group that skateOS manages via API, with <strong>Park Door</strong> access on a 24/7 schedule. Can you confirm the Park Door + a 24/7 schedule are available to assign to it — or that we can create + assign it via API with the SkateOS integration's permissions? (Today only a <code>Memebers</code> + <code>Staff</code> group exist.)</li>
+    <li><strong>Brivo API rate limit?</strong> What's our ceiling — calls/min or calls/hour? We'll throttle the provisioning queue to respect it.</li>
+    <li><strong>Hands-off the members group:</strong> once live, please don't add/remove people from <code>skateOS Active Members</code> by hand — skateOS reconciles it every 5 min. The <code>Staff</code> group + shop door stay 100% yours.</li>
   </ol>
 </section>
 
