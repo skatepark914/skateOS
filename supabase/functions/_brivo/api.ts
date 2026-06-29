@@ -37,6 +37,11 @@ export interface BrivoEnv {
   clientSecret: string;
   apiKey:       string;
   accountId:    string;
+  // Brivo uses the OAuth password grant (grant_types: refresh_token,password)
+  // for server integrations — these are the service-account credentials the
+  // token call authenticates as.
+  username?:    string;
+  password?:    string;
   // Optional per-tenant Brivo dashboard config (mig 069). When set, the
   // Edge Function uses these instead of the BRIVO_*_ID env vars.
   activeMembersGroupId?:      string;
@@ -55,9 +60,11 @@ export function loadBrivoEnv(): BrivoEnv | null {
   const clientSecret = Deno.env.get("BRIVO_CLIENT_SECRET");
   const apiKey       = Deno.env.get("BRIVO_API_KEY");
   const accountId    = Deno.env.get("BRIVO_ACCOUNT_ID");
-  if (!clientId || !clientSecret || !apiKey || !accountId) return null;
+  const username     = Deno.env.get("BRIVO_USERNAME");
+  const password     = Deno.env.get("BRIVO_PASSWORD");
+  if (!clientId || !clientSecret || !apiKey || !accountId || !username || !password) return null;
   return {
-    clientId, clientSecret, apiKey, accountId,
+    clientId, clientSecret, apiKey, accountId, username, password,
     activeMembersGroupId:     Deno.env.get("BRIVO_ACTIVE_MEMBERS_GROUP_ID") || undefined,
     parkDoorAccessPointId:    Deno.env.get("BRIVO_PARK_DOOR_AP_ID") || undefined,
     shopDoorAccessPointId:    Deno.env.get("BRIVO_SHOP_DOOR_AP_ID") || undefined,
@@ -98,6 +105,8 @@ export async function loadBrivoEnvForTenant(
       clientSecret:              data.client_secret,
       apiKey:                    data.api_key,
       accountId:                 data.account_id,
+      username:                  data.username || Deno.env.get("BRIVO_USERNAME") || undefined,
+      password:                  data.password || Deno.env.get("BRIVO_PASSWORD") || undefined,
       activeMembersGroupId:      data.active_members_group_id     || Deno.env.get("BRIVO_ACTIVE_MEMBERS_GROUP_ID") || undefined,
       parkDoorAccessPointId:     data.park_door_ap_id              || Deno.env.get("BRIVO_PARK_DOOR_AP_ID") || undefined,
       shopDoorAccessPointId:     data.shop_door_ap_id              || Deno.env.get("BRIVO_SHOP_DOOR_AP_ID") || undefined,
@@ -121,7 +130,13 @@ export async function getBrivoToken(env: BrivoEnv): Promise<string> {
     return _tokenCache.token;
   }
   const basic = btoa(`${env.clientId}:${env.clientSecret}`);
-  const body = new URLSearchParams({ grant_type: "client_credentials" });
+  // Brivo server integrations use the OAuth password grant (grant_types:
+  // refresh_token,password) — authenticate as the service-account user.
+  const body = new URLSearchParams({
+    grant_type: "password",
+    username:   env.username ?? "",
+    password:   env.password ?? "",
+  });
   const r = await fetch(BRIVO_OAUTH_URL, {
     method: "POST",
     headers: {

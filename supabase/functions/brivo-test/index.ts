@@ -55,9 +55,11 @@ Deno.serve(async (req) => {
   let token: string | null = null;
   try {
     const basicAuth = btoa(`${cid}:${csec}`);
+    // Brivo server integrations use the OAuth password grant.
     const form = new URLSearchParams({
-      grant_type: "client_credentials",
-      scope: "Brivo.API.OnAir",
+      grant_type: "password",
+      username: Deno.env.get("BRIVO_USERNAME") ?? "",
+      password: Deno.env.get("BRIVO_PASSWORD") ?? "",
     });
     const r = await fetch(OAUTH_URL, {
       method: "POST",
@@ -123,9 +125,13 @@ Deno.serve(async (req) => {
   // ── Step 3: Probe events endpoint (the one we'll poll) ─────
   // Brivo's events endpoint is on the access control sub-API.
   // Path can vary by tier — try the standard one first.
+  const _ms   = Date.now() - 6 * 60 * 60 * 1000;   // 6h ago
+  const _isoZ = new Date(_ms).toISOString().replace(/\.\d{3}Z$/, "Z"); // no millis
+  const _isoFull = new Date(_ms).toISOString();
   const eventsTries = [
-    `${API_BASE}/events?offset=0&pageSize=10`,
-    `${API_BASE}/accounts/${acctId}/events?offset=0&pageSize=10`,
+    `${API_BASE}/events?occurredAfter=${_ms}&pageSize=100&offset=0`,       // poll's exact (suspect) FIRST
+    `${API_BASE}/events?occurredAfter=${_ms}&pageSize=100`,                // pageSize 100, no offset
+    `${API_BASE}/events?occurredAfter=${_ms}&pageSize=5`,                  // known-good baseline last
   ];
   for (const url of eventsTries) {
     try {

@@ -34,7 +34,7 @@ function jsonResponse(body: unknown, status = 200) {
 
 // Map Brivo event payload → skateOS event_type the rest of the system uses
 function classifyEventType(e: any): string {
-  const name = String(e?.occurred_event_type_name || e?.event_type || "").toLowerCase();
+  const name = String(e?.securityAction?.action || e?.occurred_event_type_name || e?.event_type || "").toLowerCase();
   if (name.includes("granted")  || name.includes("permitted")) return "access_granted";
   if (name.includes("denied")   || name.includes("rejected"))  return "access_denied";
   if (name.includes("forced"))                                 return "door_forced";
@@ -43,10 +43,12 @@ function classifyEventType(e: any): string {
 }
 
 // Map Brivo's access point → park_door / shop_door (env-configured AP IDs)
-function classifyDoor(apId: string | null | undefined): string {
-  if (!apId) return "other";
-  if (apId === Deno.env.get("BRIVO_PARK_DOOR_AP_ID")) return "park_door";
-  if (apId === Deno.env.get("BRIVO_SHOP_DOOR_AP_ID")) return "shop_door";
+function classifyDoor(apId: string | null | undefined, name?: string | null): string {
+  const n = String(name || "").toLowerCase();
+  if (n.includes("park")) return "park_door";
+  if (n.includes("shop")) return "shop_door";
+  if (apId && apId === Deno.env.get("BRIVO_PARK_DOOR_AP_ID")) return "park_door";
+  if (apId && apId === Deno.env.get("BRIVO_SHOP_DOOR_AP_ID")) return "shop_door";
   return "other";
 }
 
@@ -93,32 +95,29 @@ Deno.serve(async (req) => {
   const nowIso = new Date().toISOString();
 
   // Fetch from Brivo
-  // /v1/api/events?fromOccurredOn=<ISO>&pageSize=100&offset=N
-  // (Brivo's exact field name is tier-dependent; we try the documented
-  //  approach, fall back if needed.)
+  // /v1/api/events?occurredAfter=<ISO>&pageSize=100&offset=N
+  // Brivo requires at least one of: uuid, occurredAfter, occurredBefore.
   const collected: any[] = [];
-  let page = 0;
-  const MAX_PAGES = 10; // 1000 events per run cap so we don't time out
-  while (page < MAX_PAGES) {
+  // Brivo's events `offset` is a TIME cursor (not a row index), so we can't
+  // offset-paginate. Pull the most recent pageSize events since occurredAfter.
+  // For a ~1-min poll window, 100 is far more than a door produces.
+  // brivoFetch returns { status, data, raw } — not { ok, json, body }.
+  {
     const qs = new URLSearchParams({
       pageSize: "100",
-      offset: String(page * 100),
-      fromOccurredOn: fromIso,
+      occurredAfter: String(new Date(fromIso).getTime()),   // Brivo wants epoch millis
     });
     try {
       const r = await brivoFetch(env, `/events?${qs.toString()}`);
-      if (!r.ok) {
+      if (r.status < 200 || r.status >= 300) {
         return jsonResponse({
           ok: false,
-          error: `Brivo /events failed ${r.status}: ${r.body?.slice(0, 240) || ""}`,
+          error: `Brivo /events failed ${r.status}: ${r.raw?.slice(0, 240) || ""}`,
           from: fromIso,
         }, 502);
       }
-      const items: any[] = r.json?.data || r.json?.events || r.json || [];
-      if (!Array.isArray(items) || items.length === 0) break;
-      collected.push(...items);
-      if (items.length < 100) break; // last page
-      page++;
+      const items: any[] = r.data?.data || r.data?.events || (Array.isArray(r.data) ? r.data : []);
+      if (Array.isArray(items)) collected.push(...items);
     } catch (e) {
       return jsonResponse({
         ok: false,
@@ -135,13 +134,7 @@ Deno.serve(async (req) => {
 
   if (dryRun) {
     summary.dry_run = true;
-    summary.sample = collected.slice(0, 3).map((e: any) => ({
-      id: e.id,
-      occurred_on: e.occurred,
-      type: classifyEventType(e),
-      user_id: e.actor?.id,
-      access_point_id: e.object?.id,
-    }));
+    summary.sample = collected.slice(0, 6);   // full raw events for field inspection
     return jsonResponse({ ok: true, summary });
   }
 
@@ -154,7 +147,7 @@ Deno.serve(async (req) => {
 
   for (const e of collected) {
     try {
-      const eventId = String(e.id ?? e.event_id ?? "");
+      const eventId = String(e.uuid ?? e.id ?? e.event_id ?? "");
       if (!eventId) continue;
 
       // Dedup against brivo_access_log by brivo_event_id
@@ -167,8 +160,8 @@ Deno.serve(async (req) => {
 
       const occurredOn: string = e.occurred ?? e.occurred_on ?? nowIso;
       const brivoUserId = e.actor?.id != null ? String(e.actor.id) : null;
-      const accessPointId = e.object?.id != null ? String(e.object.id) : null;
-      const accessPoint = classifyDoor(accessPointId);
+      const accessPointId = e.eventObject?.id != null ? String(e.eventObject.id) : null;
+      const accessPoint = classifyDoor(accessPointId, e.eventObject?.name);
       const eventType = classifyEventType(e);
 
       // Look up the customer
