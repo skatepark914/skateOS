@@ -149,6 +149,7 @@
   <a href="#what-jon">Jon: 3 things</a>
   <a href="#test-plan">Test plan</a>
   <a href="#urls-now">Key URLs</a>
+  <a href="#brivo-howto">Brivo how-to</a>
 
   <h4>Get started</h4>
   <a href="#recap">Marathon recap</a>
@@ -195,8 +196,9 @@
     <li>✅ skateOS live · Square data imported (27,639 customers) · Stripe Tap-to-Pay live · backups daily + weekly off-site</li>
     <li>✅ <strong>Brivo door reporting LIVE</strong> — <code>brivo-poll</code> pulls door events every minute into <code>brivo_access_log</code>. Verified today with real Park/Shop door events.</li>
     <li>✅ <strong>skateOS Lite shipped</strong> — simple staff clock in/out + live door activity at <a href="https://app.skateos.com/lite">app.skateos.com/lite</a> (no login needed). The "start small" on-ramp for staff.</li>
-    <li>🧪 <strong>Live door test in progress</strong> — tapping the Park Door to confirm it lands in skateOS Lite within ~1 min.</li>
-    <li>⏳ <strong>Member access is next</strong> — 0 members provisioned yet (the broken auth blocked it until today). Rolling out via a dedicated <code>skateOS Active Members</code> group, Doug tested first.</li>
+    <li>✅ <strong>Dedicated group created</strong> — <code>skateOS Active Members</code> (id 86122469) created via API + wired into skateOS. <strong>One dashboard step left:</strong> grant it Park Door access on the 24/7 schedule (Brivo's API wouldn't assign it — see how-to below).</li>
+    <li>⏳ <strong>Member access is next</strong> — 0 members provisioned yet (broken auth blocked it until today). Once the group has door access, new members auto-provision on purchase.</li>
+    <li>💡 <strong>Door is on an open-hours unlock schedule</strong> — during business hours the Park Door sits unlocked, so a pass tap is a no-op + logs no event (normal). The Brivo pass only <em>unlocks</em>, never locks. Test a tap after hours when the door's locked. See "Change the door schedule" below.</li>
   </ul>
   <details>
     <summary>🔧 What was actually broken (today's breakthrough)</summary>
@@ -252,6 +254,47 @@
     <tr><td>New member signup</td><td><a href="https://app.skateos.com/join.html">app.skateos.com/join.html</a></td></tr>
     <tr><td>Brivo webhook receiver</td><td><code>https://zecurmlenxyxanqucrga.supabase.co/functions/v1/brivo-webhook</code></td></tr>
   </table>
+</section>
+
+<!-- ============ BRIVO HOW-TO ============ -->
+<section id="brivo-howto">
+  <h2>🚪 Brivo how-to (dashboard)</h2>
+  <p>Common door tasks in the Brivo dashboard (<a href="https://access.brivo.com">access.brivo.com</a>). Nick owns hardware + staff credentials; skateOS automates member credentials.</p>
+
+  <h3>Change the door unlock schedule — when the door auto-locks / unlocks</h3>
+  <div class="callout amber">
+    <strong>Why it matters:</strong> the Park Door is set to auto-<em>unlock</em> during open hours. While it's scheduled-unlocked, a pass tap does nothing (the door's already open) and logs no event — that's normal, not a bug. The Brivo Mobile Pass only <em>unlocks</em>; it never locks. To change open hours or test a tap, edit the schedule.
+  </div>
+  <ol class="checklist">
+    <li>Log into <a href="https://access.brivo.com">access.brivo.com</a> → left menu → <strong>Settings</strong> → <strong>Timetables</strong> → <strong>Schedules</strong></li>
+    <li>Existing schedules: <code>24/7</code> · <code>24x7 Schedule</code> · <code>(Always Access)</code> · <code>9am-5pm</code></li>
+    <li><strong>To change WHEN the door is unlocked:</strong> open the schedule the Park Door uses → edit its time blocks (days + start/end times) → Save</li>
+    <li><strong>To change WHICH schedule the door uses</strong> (or turn auto-unlock off so every entry needs a pass tap): <strong>Devices</strong> / Access Points → <strong>Park Door</strong> → its auto-activation / unlock schedule → pick a different schedule (or "None" to keep it always locked)</li>
+  </ol>
+  <div class="callout blue">
+    <strong>skateOS can drive this too:</strong> admin → Settings → Brivo → <em>"Push hours to Brivo"</em> syncs skateOS park hours into a Brivo schedule (needs <code>BRIVO_OPERATING_HOURS_SCHEDULE_ID</code> set first). Manage hours in one place → push to the door.
+  </div>
+
+  <h3>Grant the skateOS members group Park Door access (the pending setup step)</h3>
+  <div class="callout amber">This is the one step left to turn on member auto-provisioning. skateOS created the group via API but Brivo's API wouldn't assign the door — so do it once in the dashboard:</div>
+  <ol class="checklist">
+    <li>Settings → <strong>Groups</strong> → open <code>skateOS Active Members</code> (id 86122469)</li>
+    <li>Add an access point → pick <strong>Park Door</strong> → assign the <strong>24/7</strong> schedule → Save</li>
+    <li>Done — every member skateOS adds to this group now gets 24/7 Park Door access automatically.</li>
+  </ol>
+
+  <h3>Staff door access (Nick owns this)</h3>
+  <p>Staff credentials live in the <code>Staff</code> group, managed by hand in Brivo — skateOS never touches it. To add a staffer: <strong>Users</strong> → create user → add to <code>Staff</code> group → they get a Mobile Pass invite.</p>
+
+  <h3>See who got in (door activity)</h3>
+  <ul>
+    <li>Quick, no login: <a href="https://app.skateos.com/lite">app.skateos.com/lite</a> → <strong>Door Activity</strong> tab</li>
+    <li>Full admin: <a href="https://app.skateos.com">app.skateos.com</a> → Activity Log → Brivo events</li>
+    <li>In Brivo itself: <strong>Events</strong> in the left menu</li>
+  </ul>
+
+  <h3>How skateOS reads the door (for reference)</h3>
+  <p>This Brivo tier doesn't support URL webhooks, so skateOS <strong>polls</strong> Brivo's events API every minute (pg_cron) and records each door event. Auth is a "SkateOS" Marketplace API integration — <strong>2-legged · Password grant</strong>, authenticating as Admin ID <code>doug-JFVqe</code>. Door reporting went live 2026-06-29.</p>
 </section>
 
 <!-- ============ RECAP ============ -->
