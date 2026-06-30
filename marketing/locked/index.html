@@ -145,6 +145,7 @@
 <aside class="toc">
   <h4>📌 Now — 2026-06-29</h4>
   <a href="#status">Status</a>
+  <a href="#how-it-works">How it all works</a>
   <a href="#what-nick">Nick: 3 things</a>
   <a href="#what-jon">Jon: 3 things</a>
   <a href="#test-plan">Test plan</a>
@@ -204,6 +205,48 @@
     <summary>🔧 What was actually broken (today's breakthrough)</summary>
     <p>The integration never fully worked because it used the wrong OAuth grant. Brivo server integrations need the <strong>password grant</strong> (grant_types: <code>refresh_token,password</code>) authenticating as the <strong>Admin ID</strong> (<code>doug-JFVqe</code>) — not <code>client_credentials</code> with an email. Also: this Brivo tier doesn't support URL webhooks, so skateOS now <strong>polls</strong> the events API every minute (pg_cron) instead. Fixed: the grant type, the events query format (<code>occurredAfter</code> as epoch-millis, no <code>offset</code>), and the event field mapping (<code>uuid</code>, <code>securityAction.action</code>, <code>eventObject</code>). Created a fresh "SkateOS" API integration in the Brivo Marketplace today (2-legged · Password type).</p>
   </details>
+</section>
+
+<!-- ============ HOW IT ALL WORKS ============ -->
+<section id="how-it-works">
+  <h2>🧭 How it all works (the simple version)</h2>
+  <p>Three systems, each with one job:</p>
+  <table class="compact">
+    <thead><tr><th>System</th><th>Its one job</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Square</strong></td><td>The old register — where sales &amp; memberships have lived. Its info flows into skateOS.</td></tr>
+      <tr><td><strong>skateOS</strong></td><td>The brain. Knows every customer — who's a paying member, who's banned, whose waiver is good. Everything else listens to it.</td></tr>
+      <tr><td><strong>Brivo</strong></td><td>The lock on the door. Opens for the people skateOS says are allowed in.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>The flow, start to finish</h3>
+  <ol class="checklist">
+    <li>A skater buys a membership (at the register).</li>
+    <li>skateOS sees they're now an active member.</li>
+    <li>skateOS tells Brivo to give them a phone "pass."</li>
+    <li>They get an email, install the Brivo app, and tap their phone at the door to get in — 24/7.</li>
+    <li>Every tap is recorded back in skateOS, so you can see who came in and when.</li>
+    <li>If their membership lapses, they get banned, or their waiver expires → skateOS tells Brivo to switch off their pass. No staff action needed.</li>
+  </ol>
+
+  <div class="callout green">
+    <strong>The one idea:</strong> skateOS is the middle. Membership info comes in from the register, and skateOS automatically controls the door through Brivo. You manage members in one place — the door just follows.
+  </div>
+
+  <h3>Two doors, two kinds of people</h3>
+  <table class="compact">
+    <thead><tr><th></th><th>Members</th><th>Staff</th></tr></thead>
+    <tbody>
+      <tr><td>Which door</td><td>Park Door</td><td>Both doors</td></tr>
+      <tr><td>Managed by</td><td><strong>skateOS</strong>, automatically</td><td><strong>Nick</strong>, by hand in Brivo</td></tr>
+      <tr><td>Pass turns on when…</td><td>they pay for a membership</td><td>Nick adds them</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout blue">
+    <strong>Why Brivo isn't wired straight to Square:</strong> Square is just a cash register — it can't decide who a door should open for. skateOS holds the membership rules (active? banned? waiver good?), so the door runs through skateOS, not Square.
+  </div>
 </section>
 
 <!-- ============ NICK ============ -->
